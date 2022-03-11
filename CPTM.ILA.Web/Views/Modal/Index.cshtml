@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Modal Principal";
+    Layout = "~/Views/Shared/_LayoutModal.cshtml";
+    ViewBag.LarguraModal = "800px";
+    ViewBag.LoremIpsum = @"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+}
+<div class='row'>
+    <div class='col-xs-12'>
+        <h3>
+            Clique no Cabeçalho para retrair</h3>
+    </div>
+    <div class='col-xs-12'>
+        @String.Join(Environment.NewLine, Enumerable.Repeat(ViewBag.LoremIpsum, 5));
+    </div>
+    <div class='row'>
+        <div class='col-xs-12' style='text-align: right; padding-right: 20px'>
+            <button class='btn btn-success' title='Abre uma nova modal' onclick='mostrarCaixaDialogoAjax("divModalFilha1","@Url.Action("Modal1", "Modal")")'>
+                Abrir Nova</button>
+            <button class='btn btn-alert' data-fechar='modal' title='Limpa o conteúdo da modal e a fecha' data-limpar='modal'>
+                Limpar e fechar
+            </button>
+            <button class='btn btn-danger' title='Fecha a modal' data-fechar='modal'>
+                Fechar</button>
+            <button class='btn btn-danger' title='Fecha a modal usando Javascript' onclick="$(this).closest('.modal').modal('hide')">
+                Fechar Javascript</button>
+        </div>
+        <script type="text/javascript">
+            $('.btn').tooltip()
+        </script>
+    </div>
+</div>
+

@@ -1,0 +1,22 @@
+﻿@using CPTM.Comum;
+
+@{
+    ViewBag.Title = "Mapa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="divMapa" class="mapa"></div>
+
+@*Java Script - JQuery *@
+<script type="text/javascript">
+
+    var mapa;
+
+    $(document).ready(function () {
+
+        mapa = inicializarMapa('divMapa');
+
+    });
+
+</script>
+@*Java Script - JQuery *@

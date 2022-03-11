@@ -1,0 +1,994 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Entidades.Store" Provider="Oracle.ManagedDataAccess.Client" ProviderManifestToken="12.1" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ILA_CATEGORIA">
+          <Key>
+            <PropertyRef Name="ID_CATEGORIA" />
+          </Key>
+          <Property Name="ID_CATEGORIA" Type="number" Precision="3" Scale="0" Nullable="false" />
+          <Property Name="TX_CATEGORIA" Type="varchar2" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ILA_CONFIGURACAO">
+          <Key>
+            <PropertyRef Name="PARAMETRO" />
+          </Key>
+          <Property Name="PARAMETRO" Type="varchar2" MaxLength="250" Nullable="false" />
+          <Property Name="TX_DESCRICAO" Type="varchar2" MaxLength="4000" />
+          <Property Name="VALOR" Type="varchar2" MaxLength="4000" />
+          <Property Name="ID_CODUSUARIO_CADASTRO" Type="number" Precision="6" Scale="0" Nullable="false" />
+          <Property Name="DT_CADASTRO" Type="date" Nullable="false" />
+          <Property Name="ID_CODUSUARIO_ALTERACAO" Type="number" Precision="6" Scale="0" />
+          <Property Name="DT_ALTERACAO" Type="date" />
+        </EntityType>
+        <EntityType Name="ILA_HISTORICO_EVENTO">
+          <Key>
+            <PropertyRef Name="ID_HISTORICO" />
+          </Key>
+          <Property Name="ID_HISTORICO" Type="varchar2" MaxLength="100" Nullable="false" />
+          <Property Name="ID_AGREGATE" Type="varchar2" MaxLength="100" />
+          <Property Name="TX_TIPO_MENSAGEM" Type="varchar2" MaxLength="100" />
+          <Property Name="TX_VALOR" Type="varchar2" MaxLength="4000" />
+          <Property Name="TX_ACAO" Type="varchar2" MaxLength="100" />
+          <Property Name="DT_EVENTO" Type="date" />
+          <Property Name="TX_USUARIO" Type="varchar2" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="ILA_MEDIDA">
+          <Key>
+            <PropertyRef Name="ID_MEDIDA" />
+          </Key>
+          <Property Name="ID_MEDIDA" Type="number" Precision="3" Scale="0" Nullable="false" />
+          <Property Name="TX_MEDIDA" Type="varchar2" MaxLength="10" />
+          <Property Name="TX_DESCR_MEDIDA" Type="varchar2" MaxLength="100" />
+          <Property Name="FL_FRACAO" Type="number" Precision="1" Scale="0" />
+        </EntityType>
+        <EntityType Name="ILA_MOVIMENTACAO">
+          <Key>
+            <PropertyRef Name="ID_MOVIMENTACAO" />
+          </Key>
+          <Property Name="ID_MOVIMENTACAO" Type="number" Precision="30" Scale="0" Nullable="false" />
+          <Property Name="ID_OPERACAO" Type="number" Precision="20" Scale="0" Nullable="false" />
+          <Property Name="ID_TIPO_MOVIMENTACAO" Type="number" Precision="2" Scale="0" Nullable="false" />
+          <Property Name="ID_PRODUTO" Type="number" Precision="8" Scale="0" Nullable="false" />
+          <Property Name="NR_QUANTIDADE" Type="number" Precision="15" Scale="4" Nullable="false" />
+          <Property Name="ID_CODUSUARIO_INCLUSAO" Type="number" Precision="8" Scale="0" Nullable="false" />
+          <Property Name="DT_INCLUSAO" Type="date" Nullable="false" />
+          <Property Name="ID_CODUSUARIO_ALTERACAO" Type="number" Precision="8" Scale="0" />
+          <Property Name="DT_ALTERACAO" Type="date" />
+          <Property Name="FL_ATIVO" Type="number" Precision="1" Scale="0" />
+        </EntityType>
+        <EntityType Name="ILA_OPERACAO">
+          <Key>
+            <PropertyRef Name="ID_OPERACAO" />
+          </Key>
+          <Property Name="ID_OPERACAO" Type="number" Precision="20" Scale="0" Nullable="false" />
+          <Property Name="ID_CLIENTE" Type="number" Precision="10" Scale="0" />
+          <Property Name="ID_CODUSUARIO_INCLUSAO" Type="number" Precision="8" Scale="0" />
+          <Property Name="DT_INCLUSAO" Type="date" />
+          <Property Name="ID_CODUSUARIO_ALTERACAO" Type="number" Precision="8" Scale="0" />
+          <Property Name="DT_ALTERACAO" Type="date" />
+          <Property Name="FL_ATIVO" Type="number" Precision="1" Scale="0" />
+        </EntityType>
+        <EntityType Name="ILA_PRODUTO">
+          <Key>
+            <PropertyRef Name="ID_PRODUTO" />
+          </Key>
+          <Property Name="ID_PRODUTO" Type="number" Precision="8" Scale="0" Nullable="false" />
+          <Property Name="TX_ITEM" Type="varchar2" MaxLength="50" Nullable="false" />
+          <Property Name="ID_CATEGORIA" Type="number" Precision="3" Scale="0" Nullable="false" />
+          <Property Name="NR_VALOR" Type="number" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="ID_CODUSAURIO_CADASTRO" Type="number" Precision="8" Scale="0" Nullable="false" />
+          <Property Name="DT_CADASTRO" Type="date" Nullable="false" />
+          <Property Name="ID_CODUSUARIO_ALTERACAO" Type="number" Precision="8" Scale="0" />
+          <Property Name="DT_ALTERACAO" Type="date" />
+          <Property Name="FL_ATIVO" Type="number" Precision="1" Scale="0" Nullable="false" />
+          <Property Name="ID_MEDIDA" Type="number" Precision="3" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ILA_TIPO_MOVIMENTACAO">
+          <Key>
+            <PropertyRef Name="ID_TIPO_MOVIMENTACAO" />
+          </Key>
+          <Property Name="ID_TIPO_MOVIMENTACAO" Type="number" Precision="2" Scale="0" Nullable="false" />
+          <Property Name="TX_TIPO_MOVIMENTACAO" Type="varchar2" MaxLength="100" Nullable="false" />
+          <Property Name="NR_MULTIPLICADOR" Type="number" Precision="2" Scale="1" />
+        </EntityType>
+        <EntityType Name="ILA_USUARIO_PREFERENCIA">
+          <Key>
+            <PropertyRef Name="ID_CODUSUARIO" />
+            <PropertyRef Name="TX_CATEGORIA" />
+          </Key>
+          <Property Name="ID_CODUSUARIO" Type="number" Precision="8" Scale="0" Nullable="false" />
+          <Property Name="TX_CATEGORIA" Type="varchar2" MaxLength="100" Nullable="false" />
+          <Property Name="TX_VALOR" Type="clob" />
+        </EntityType>
+        <EntityType Name="ILA_VW_CARGO">
+          <Key>
+            <PropertyRef Name="ID_CARGO" />
+          </Key>
+          <Property Name="ID_CARGO" Type="number" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="TX_CARGO" Type="varchar2" MaxLength="250" />
+          <Property Name="FL_ATIVO" Type="number" Precision="1" Scale="0" />
+        </EntityType>
+        <EntityType Name="ILA_VW_CASIS_GRUPO">
+          <Key>
+            <PropertyRef Name="ID_GRUPO" />
+          </Key>
+          <Property Name="ID_SISTEMA" Type="number" Precision="6" Scale="0" Nullable="false" />
+          <Property Name="TX_SIGLA" Type="varchar2" MaxLength="10" Nullable="false" />
+          <Property Name="ID_GRUPO" Type="number" Precision="6" Scale="0" Nullable="false" />
+          <Property Name="TX_DESCR_GRUPO" Type="varchar2" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ILA_VW_CASIS_GRUPO_USUARIO">
+          <Key>
+            <PropertyRef Name="ID_GRUPO" />
+            <PropertyRef Name="ID_CODUSUARIO" />
+          </Key>
+          <Property Name="ID_GRUPO" Type="number" Precision="6" Scale="0" Nullable="false" />
+          <Property Name="ID_CODUSUARIO" Type="number" Precision="8" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ILA_VW_ESTRUTURA_ORG">
+          <Key>
+            <PropertyRef Name="ID_ESTRUTURA" />
+          </Key>
+          <Property Name="ID_ESTRUTURA" Type="varchar2" MaxLength="40" Nullable="false" />
+          <Property Name="TX_NOME" Type="varchar2" MaxLength="100" />
+          <Property Name="TX_NOME_REDUZIDO" Type="varchar2" MaxLength="100" />
+          <Property Name="TX_LOGRADOURO" Type="varchar2" MaxLength="60" />
+          <Property Name="TX_NUMERO" Type="varchar2" MaxLength="10" />
+          <Property Name="TX_COMPLEMENTO" Type="varchar2" MaxLength="25" />
+          <Property Name="CD_CENTRO_CUSTO" Type="varchar2" MaxLength="15" />
+          <Property Name="TX_BAIRRO" Type="varchar2" MaxLength="50" />
+          <Property Name="TX_CIDADE" Type="varchar2" MaxLength="50" />
+          <Property Name="TX_ESTADO" Type="varchar2" MaxLength="2" />
+          <Property Name="TX_ENDERECO_COMPLETO" Type="varchar2" MaxLength="211" />
+          <Property Name="TX_SIGLA" Type="varchar2" MaxLength="10" />
+          <Property Name="NR_NIVEL" Type="number" Precision="38" Scale="0" />
+          <Property Name="DEP_SIGLA" Type="varchar2" MaxLength="10" />
+          <Property Name="GER_SIGLA" Type="varchar2" MaxLength="10" />
+          <Property Name="GG_SIGLA" Type="varchar2" MaxLength="10" />
+          <Property Name="DIR_SIGLA" Type="varchar2" MaxLength="10" />
+          <Property Name="FL_ATIVO" Type="number" Precision="38" Scale="0" />
+        </EntityType>
+        <EntityType Name="ILA_VW_FUNCAO">
+          <Key>
+            <PropertyRef Name="ID_FUNCAO" />
+          </Key>
+          <Property Name="ID_FUNCAO" Type="number" Precision="6" Scale="0" Nullable="false" />
+          <Property Name="TX_FUNCAO" Type="varchar2" MaxLength="100" />
+          <Property Name="FL_ATIVO" Type="number" Precision="1" Scale="0" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ILA.ILA_VW_USUARIO' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ILA_VW_USUARIO">
+          <Key>
+            <PropertyRef Name="ID_CODUSUARIO" />
+            
+          </Key>
+          <Property Name="ID_CODUSUARIO" Type="number" Precision="6" Scale="0" Nullable="false" />
+          <Property Name="TX_USERNAME" Type="varchar2" MaxLength="20" Nullable="false" />
+          <Property Name="TX_NOMEUSUARIO" Type="varchar2" MaxLength="100" />
+          <Property Name="TX_APELIDO" Type="varchar2" MaxLength="50" />
+          <Property Name="TX_EMPRESA" Type="varchar2" MaxLength="40" />
+          <Property Name="ID_MIX" Type="number" Precision="10" Scale="0" />
+          <Property Name="MATRICULA" Type="varchar2" MaxLength="20" />
+          <Property Name="MATRICULA_ANTIGA" Type="varchar2" MaxLength="20" />
+          <Property Name="TX_MATRIC_ALTERNATIVA" Type="varchar2" MaxLength="20" />
+          <Property Name="TX_SIGLA_AREA" Type="varchar2" MaxLength="10" />
+          <Property Name="TX_ESTRUTURA" Type="varchar2" MaxLength="40" />
+          <Property Name="DT_NASCIMENTO" Type="date" />
+          <Property Name="DT_ADMISSAO" Type="date" />
+          <Property Name="DT_DEMISSAO" Type="date" />
+          <Property Name="DT_ATUALIZACAO" Type="date" />
+          <Property Name="DT_EXPIRACAO" Type="date" />
+          <Property Name="DT_DESLIGAMENTO_TERCEIRO" Type="date" />
+          <Property Name="CPF" Type="varchar2" MaxLength="20" />
+          <Property Name="RG" Type="varchar2" MaxLength="20" />
+          <Property Name="CD_FUNCIONARIO" Type="number" Precision="38" Scale="0" />
+          <Property Name="CD_TIPO_FUNCIONARIO" Type="varchar2" MaxLength="2" />
+          <Property Name="TX_TIPO_FUNCIONARIO" Type="varchar2" MaxLength="30" />
+          <Property Name="TX_SITE" Type="varchar2" MaxLength="50" />
+          <Property Name="TX_BILHETE_SERVICO" Type="varchar2" MaxLength="15" />
+          <Property Name="ID_CARGO" Type="number" Precision="10" Scale="0" />
+          <Property Name="TX_CARGO" Type="varchar2" MaxLength="100" />
+          <Property Name="ID_FUNCAO" Type="number" Precision="6" Scale="0" />
+          <Property Name="TX_FUNCAO" Type="varchar2" MaxLength="100" />
+          <Property Name="CD_SEXO" Type="char" MaxLength="1" />
+          <Property Name="TX_TELEFONE" Type="varchar2" MaxLength="15" />
+          <Property Name="TX_TELEFONE_CELULAR" Type="varchar2" MaxLength="15" />
+          <Property Name="TX_FAX" Type="varchar2" MaxLength="15" />
+          <Property Name="TX_ENDERECO" Type="varchar2" MaxLength="100" />
+          <Property Name="TX_CEP" Type="varchar2" MaxLength="10" />
+          <Property Name="TX_CIDADE" Type="varchar2" MaxLength="50" />
+          <Property Name="TX_ESTADO" Type="varchar2" MaxLength="40" />
+          <Property Name="TX_EMAIL" Type="varchar2" MaxLength="100" />
+          <Property Name="ID_CODUSUARIO_GESTOR_AD" Type="number" Precision="6" Scale="0" />
+          <Property Name="CD_STATUS_EMPREGADO" Type="varchar2" MaxLength="2" />
+          <Property Name="TX_STATUS_EMPREGADO" Type="varchar2" MaxLength="50" />
+          <Property Name="ID_CHEFE_PONTO" Type="number" Precision="6" Scale="0" />
+          <Property Name="TX_TIPO_CHEFE" Type="varchar2" MaxLength="15" />
+          <Property Name="FL_EMPREGADO" Type="number" Precision="1" Scale="0" />
+          <Property Name="FL_ATIVO" Type="number" Precision="1" Scale="0" />
+          <Property Name="FL_ATIVO_AD" Type="number" Precision="1" Scale="0" />
+          <Property Name="FL_ATV_NRM" Type="number" Precision="1" Scale="0" />
+        </EntityType>
+        <EntityType Name="ILA_VW_USUARIO_FOTO">
+          <Key>
+            <PropertyRef Name="ID_CODUSUARIO" />
+          </Key>
+          <Property Name="ID_CODUSUARIO" Type="number" Precision="8" Scale="0" Nullable="false" />
+          <Property Name="FOTO" Type="blob" />
+          <Property Name="FL_TRATADA" Type="number" Precision="1" Scale="0" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ITEM_01">
+          <End Role="ILA_CATEGORIA" Type="Self.ILA_CATEGORIA" Multiplicity="1" />
+          <End Role="ILA_PRODUTO" Type="Self.ILA_PRODUTO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ILA_CATEGORIA">
+              <PropertyRef Name="ID_CATEGORIA" />
+            </Principal>
+            <Dependent Role="ILA_PRODUTO">
+              <PropertyRef Name="ID_CATEGORIA" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ITEM_02">
+          <End Role="ILA_MEDIDA" Type="Self.ILA_MEDIDA" Multiplicity="1" />
+          <End Role="ILA_PRODUTO" Type="Self.ILA_PRODUTO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ILA_MEDIDA">
+              <PropertyRef Name="ID_MEDIDA" />
+            </Principal>
+            <Dependent Role="ILA_PRODUTO">
+              <PropertyRef Name="ID_MEDIDA" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MOVIMENTACAO_01">
+          <End Role="ILA_TIPO_MOVIMENTACAO" Type="Self.ILA_TIPO_MOVIMENTACAO" Multiplicity="1" />
+          <End Role="ILA_MOVIMENTACAO" Type="Self.ILA_MOVIMENTACAO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ILA_TIPO_MOVIMENTACAO">
+              <PropertyRef Name="ID_TIPO_MOVIMENTACAO" />
+            </Principal>
+            <Dependent Role="ILA_MOVIMENTACAO">
+              <PropertyRef Name="ID_TIPO_MOVIMENTACAO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MOVIMENTACAO_02">
+          <End Role="ILA_PRODUTO" Type="Self.ILA_PRODUTO" Multiplicity="1" />
+          <End Role="ILA_MOVIMENTACAO" Type="Self.ILA_MOVIMENTACAO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ILA_PRODUTO">
+              <PropertyRef Name="ID_PRODUTO" />
+            </Principal>
+            <Dependent Role="ILA_MOVIMENTACAO">
+              <PropertyRef Name="ID_PRODUTO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EntidadesStoreContainer">
+          <EntitySet Name="ILA_CATEGORIA" EntityType="Self.ILA_CATEGORIA" Schema="ILA" store:Type="Tables" />
+          <EntitySet Name="ILA_CONFIGURACAO" EntityType="Self.ILA_CONFIGURACAO" Schema="ILA" store:Type="Tables" />
+          <EntitySet Name="ILA_HISTORICO_EVENTO" EntityType="Self.ILA_HISTORICO_EVENTO" Schema="ILA" store:Type="Tables" />
+          <EntitySet Name="ILA_MEDIDA" EntityType="Self.ILA_MEDIDA" Schema="ILA" store:Type="Tables" />
+          <EntitySet Name="ILA_MOVIMENTACAO" EntityType="Self.ILA_MOVIMENTACAO" Schema="ILA" store:Type="Tables" />
+          <EntitySet Name="ILA_OPERACAO" EntityType="Self.ILA_OPERACAO" Schema="ILA" store:Type="Tables" />
+          <EntitySet Name="ILA_PRODUTO" EntityType="Self.ILA_PRODUTO" Schema="ILA" store:Type="Tables" />
+          <EntitySet Name="ILA_TIPO_MOVIMENTACAO" EntityType="Self.ILA_TIPO_MOVIMENTACAO" Schema="ILA" store:Type="Tables" />
+          <EntitySet Name="ILA_USUARIO_PREFERENCIA" EntityType="Self.ILA_USUARIO_PREFERENCIA" Schema="ILA" store:Type="Tables" />
+          <EntitySet Name="ILA_VW_CARGO" EntityType="Self.ILA_VW_CARGO" Schema="ILA" store:Type="Views" />
+          <EntitySet Name="ILA_VW_CASIS_GRUPO" EntityType="Self.ILA_VW_CASIS_GRUPO" Schema="ILA" store:Type="Views" />
+          <EntitySet Name="ILA_VW_CASIS_GRUPO_USUARIO" EntityType="Self.ILA_VW_CASIS_GRUPO_USUARIO" Schema="ILA" store:Type="Views" />
+          <EntitySet Name="ILA_VW_ESTRUTURA_ORG" EntityType="Self.ILA_VW_ESTRUTURA_ORG" Schema="ILA" store:Type="Views" />
+          <EntitySet Name="ILA_VW_FUNCAO" EntityType="Self.ILA_VW_FUNCAO" Schema="ILA" store:Type="Views" />
+          <EntitySet Name="ILA_VW_USUARIO_FOTO" EntityType="Self.ILA_VW_USUARIO_FOTO" Schema="ILA" store:Type="Views" />
+          <EntitySet Name="ILA_VW_USUARIO" EntityType="Self.ILA_VW_USUARIO" store:Type="Views" store:Schema="ILA">
+            <DefiningQuery>SELECT 
+"ILA_VW_USUARIO"."ID_CODUSUARIO" AS "ID_CODUSUARIO", 
+"ILA_VW_USUARIO"."TX_USERNAME" AS "TX_USERNAME", 
+"ILA_VW_USUARIO"."TX_NOMEUSUARIO" AS "TX_NOMEUSUARIO", 
+"ILA_VW_USUARIO"."TX_APELIDO" AS "TX_APELIDO", 
+"ILA_VW_USUARIO"."TX_EMPRESA" AS "TX_EMPRESA", 
+"ILA_VW_USUARIO"."ID_MIX" AS "ID_MIX", 
+"ILA_VW_USUARIO"."MATRICULA" AS "MATRICULA", 
+"ILA_VW_USUARIO"."MATRICULA_ANTIGA" AS "MATRICULA_ANTIGA", 
+"ILA_VW_USUARIO"."TX_MATRIC_ALTERNATIVA" AS "TX_MATRIC_ALTERNATIVA", 
+"ILA_VW_USUARIO"."TX_SIGLA_AREA" AS "TX_SIGLA_AREA", 
+"ILA_VW_USUARIO"."TX_ESTRUTURA" AS "TX_ESTRUTURA", 
+"ILA_VW_USUARIO"."DT_NASCIMENTO" AS "DT_NASCIMENTO", 
+"ILA_VW_USUARIO"."DT_ADMISSAO" AS "DT_ADMISSAO", 
+"ILA_VW_USUARIO"."DT_DEMISSAO" AS "DT_DEMISSAO", 
+"ILA_VW_USUARIO"."DT_ATUALIZACAO" AS "DT_ATUALIZACAO", 
+"ILA_VW_USUARIO"."DT_EXPIRACAO" AS "DT_EXPIRACAO", 
+"ILA_VW_USUARIO"."DT_DESLIGAMENTO_TERCEIRO" AS "DT_DESLIGAMENTO_TERCEIRO", 
+"ILA_VW_USUARIO"."CPF" AS "CPF", 
+"ILA_VW_USUARIO"."RG" AS "RG", 
+"ILA_VW_USUARIO"."CD_FUNCIONARIO" AS "CD_FUNCIONARIO", 
+"ILA_VW_USUARIO"."CD_TIPO_FUNCIONARIO" AS "CD_TIPO_FUNCIONARIO", 
+"ILA_VW_USUARIO"."TX_TIPO_FUNCIONARIO" AS "TX_TIPO_FUNCIONARIO", 
+"ILA_VW_USUARIO"."TX_SITE" AS "TX_SITE", 
+"ILA_VW_USUARIO"."TX_BILHETE_SERVICO" AS "TX_BILHETE_SERVICO", 
+"ILA_VW_USUARIO"."ID_CARGO" AS "ID_CARGO", 
+"ILA_VW_USUARIO"."TX_CARGO" AS "TX_CARGO", 
+"ILA_VW_USUARIO"."ID_FUNCAO" AS "ID_FUNCAO", 
+"ILA_VW_USUARIO"."TX_FUNCAO" AS "TX_FUNCAO", 
+"ILA_VW_USUARIO"."CD_SEXO" AS "CD_SEXO", 
+"ILA_VW_USUARIO"."TX_TELEFONE" AS "TX_TELEFONE", 
+"ILA_VW_USUARIO"."TX_TELEFONE_CELULAR" AS "TX_TELEFONE_CELULAR", 
+"ILA_VW_USUARIO"."TX_FAX" AS "TX_FAX", 
+"ILA_VW_USUARIO"."TX_ENDERECO" AS "TX_ENDERECO", 
+"ILA_VW_USUARIO"."TX_CEP" AS "TX_CEP", 
+"ILA_VW_USUARIO"."TX_CIDADE" AS "TX_CIDADE", 
+"ILA_VW_USUARIO"."TX_ESTADO" AS "TX_ESTADO", 
+"ILA_VW_USUARIO"."TX_EMAIL" AS "TX_EMAIL", 
+"ILA_VW_USUARIO"."ID_CODUSUARIO_GESTOR_AD" AS "ID_CODUSUARIO_GESTOR_AD", 
+"ILA_VW_USUARIO"."CD_STATUS_EMPREGADO" AS "CD_STATUS_EMPREGADO", 
+"ILA_VW_USUARIO"."TX_STATUS_EMPREGADO" AS "TX_STATUS_EMPREGADO", 
+"ILA_VW_USUARIO"."ID_CHEFE_PONTO" AS "ID_CHEFE_PONTO", 
+"ILA_VW_USUARIO"."TX_TIPO_CHEFE" AS "TX_TIPO_CHEFE", 
+"ILA_VW_USUARIO"."FL_EMPREGADO" AS "FL_EMPREGADO", 
+"ILA_VW_USUARIO"."FL_ATIVO" AS "FL_ATIVO", 
+"ILA_VW_USUARIO"."FL_ATIVO_AD" AS "FL_ATIVO_AD", 
+"ILA_VW_USUARIO"."FL_ATV_NRM" AS "FL_ATV_NRM"
+FROM "ILA"."ILA_VW_USUARIO" "ILA_VW_USUARIO"</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_ITEM_01" Association="Self.FK_ITEM_01">
+            <End Role="ILA_CATEGORIA" EntitySet="ILA_CATEGORIA" />
+            <End Role="ILA_PRODUTO" EntitySet="ILA_PRODUTO" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ITEM_02" Association="Self.FK_ITEM_02">
+            <End Role="ILA_MEDIDA" EntitySet="ILA_MEDIDA" />
+            <End Role="ILA_PRODUTO" EntitySet="ILA_PRODUTO" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MOVIMENTACAO_01" Association="Self.FK_MOVIMENTACAO_01">
+            <End Role="ILA_TIPO_MOVIMENTACAO" EntitySet="ILA_TIPO_MOVIMENTACAO" />
+            <End Role="ILA_MOVIMENTACAO" EntitySet="ILA_MOVIMENTACAO" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MOVIMENTACAO_02" Association="Self.FK_MOVIMENTACAO_02">
+            <End Role="ILA_PRODUTO" EntitySet="ILA_PRODUTO" />
+            <End Role="ILA_MOVIMENTACAO" EntitySet="ILA_MOVIMENTACAO" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Models" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Categoria">
+          <Key>
+            <PropertyRef Name="CategoriaId" />
+          </Key>
+          <Property Name="CategoriaId" Type="Int16" Nullable="false" />
+          <Property Name="Nome" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Produtos" Relationship="Self.FK_ITEM_01" FromRole="ILA_CATEGORIA" ToRole="ILA_PRODUTO" />
+        </EntityType>
+        <EntityType Name="Configuracao">
+          <Key>
+            <PropertyRef Name="Parametro" />
+          </Key>
+          <Property Name="Parametro" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Descricao" Type="String" MaxLength="4000" FixedLength="false" Unicode="false" />
+          <Property Name="Valor" Type="String" MaxLength="4000" FixedLength="false" Unicode="false" />
+          <Property Name="CadastradoPorId" Type="Int32" Nullable="false" />
+          <Property Name="CadastradoEm" Type="DateTime" Nullable="false" />
+          <Property Name="AlteradoPorId" Type="Int32" />
+          <Property Name="AlteradoEm" Type="DateTime" />
+        </EntityType>
+        <EntityType Name="HistoricoEvento">
+          <Key>
+            <PropertyRef Name="HistoricoEventoId" />
+          </Key>
+          <Property Name="HistoricoEventoId" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AgragateId" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TipoMensagem" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Valor" Type="String" MaxLength="4000" FixedLength="false" Unicode="false" />
+          <Property Name="Acao" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="DataEvento" Type="DateTime" />
+          <Property Name="UsuarioNome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="UnidadeMedida">
+          <Key>
+            <PropertyRef Name="UnidadeMedidaId" />
+          </Key>
+          <Property Name="UnidadeMedidaId" Type="Int16" Nullable="false" />
+          <Property Name="Nome" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Descricao" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Fracao" Type="Int16" />
+          <NavigationProperty Name="Produtos" Relationship="Self.FK_ITEM_02" FromRole="ILA_MEDIDA" ToRole="ILA_PRODUTO" />
+        </EntityType>
+        <EntityType Name="Movimentacao">
+          <Key>
+            <PropertyRef Name="MovimentacaoId" />
+          </Key>
+          <Property Name="MovimentacaoId" Type="Decimal" Precision="30" Scale="0" Nullable="false" />
+          <Property Name="OperacaoId" Type="Decimal" Precision="20" Scale="0" Nullable="false" />
+          <Property Name="TipoMovimentacaoId" Type="Int16" Nullable="false" />
+          <Property Name="ProdutoId" Type="Int32" Nullable="false" />
+          <Property Name="Quantidade" Type="Decimal" Precision="15" Scale="4" Nullable="false" />
+          <Property Name="CadastradoPorId" Type="Int32" Nullable="false" />
+          <Property Name="CadastradoEm" Type="DateTime" Nullable="false" />
+          <Property Name="AlteradoPorId" Type="Int32" />
+          <Property Name="AlteradoEm" Type="DateTime" />
+          <Property Name="Ativo" Type="Int16" />
+          <NavigationProperty Name="Operacao" Relationship="Self.FK_MOVIMENTACAO" FromRole="ILA_MOVIMENTACAO" ToRole="ILA_OPERACAO" />
+          <NavigationProperty Name="Produto" Relationship="Self.FK_MOVIMENTACAO_02" FromRole="ILA_MOVIMENTACAO" ToRole="ILA_PRODUTO" />
+          <NavigationProperty Name="TipoMovimentacao" Relationship="Models.TipoMovimentacaoMovimentacao" FromRole="Movimentacao" ToRole="TipoMovimentacao" />
+        </EntityType>
+        <EntityType Name="Operacao">
+          <Key>
+            <PropertyRef Name="OperacaoId" />
+          </Key>
+          <Property Name="OperacaoId" Type="Decimal" Precision="20" Scale="0" Nullable="false" />
+          <Property Name="ClienteId" Type="Int32" />
+          <Property Name="CadastradoPorId" Type="Int32" />
+          <Property Name="CadastradoEm" Type="DateTime" />
+          <Property Name="AlteradoPorId" Type="Int32" />
+          <Property Name="AlteradoEm" Type="DateTime" />
+          <Property Name="Ativo" Type="Int16" />
+          <NavigationProperty Name="Movimentacoes" Relationship="Self.FK_MOVIMENTACAO" FromRole="ILA_OPERACAO" ToRole="ILA_MOVIMENTACAO" />
+        </EntityType>
+        <EntityType Name="Produto">
+          <Key>
+            <PropertyRef Name="ProdutoId" />
+          </Key>
+          <Property Name="ProdutoId" Type="Int32" Nullable="false" >
+          </Property>
+          <Property Name="Nome" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CategoriaId" Type="Int16" Nullable="false" />
+          <Property Name="Valor" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="CadastradoPorId" Type="Int32" Nullable="false" />
+          <Property Name="CadastradoEm" Type="DateTime" Nullable="false" />
+          <Property Name="AlteradoPorId" Type="Int32" />
+          <Property Name="AlteradoEm" Type="DateTime" />
+          <Property Name="Ativo" Type="Int16" Nullable="false" />
+          <Property Name="UnidadeMedidaId" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="Categoria" Relationship="Self.FK_ITEM_01" FromRole="ILA_PRODUTO" ToRole="ILA_CATEGORIA" />
+          <NavigationProperty Name="UnidadeMedida" Relationship="Self.FK_ITEM_02" FromRole="ILA_PRODUTO" ToRole="ILA_MEDIDA" />
+          <NavigationProperty Name="Movimentacoes" Relationship="Self.FK_MOVIMENTACAO_02" FromRole="ILA_PRODUTO" ToRole="ILA_MOVIMENTACAO" />
+        </EntityType>
+        <EntityType Name="TipoMovimentacao">
+          <Key>
+            <PropertyRef Name="TipoMovimentacaoId" />
+          </Key>
+          <Property Name="TipoMovimentacaoId" Type="Int16" Nullable="false" />
+          <Property Name="Nome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Multiplicador" Type="Decimal" Precision="2" Scale="1" />
+          <NavigationProperty Name="Movimentacao" Relationship="Models.TipoMovimentacaoMovimentacao" FromRole="TipoMovimentacao" ToRole="Movimentacao" />
+        </EntityType>
+        <Association Name="FK_ITEM_01">
+          <End Role="ILA_CATEGORIA" Type="Models.Categoria" Multiplicity="1" />
+          <End Role="ILA_PRODUTO" Type="Models.Produto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ILA_CATEGORIA">
+              <PropertyRef Name="CategoriaId" />
+            </Principal>
+            <Dependent Role="ILA_PRODUTO">
+              <PropertyRef Name="CategoriaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ITEM_02">
+          <End Role="ILA_MEDIDA" Type="Models.UnidadeMedida" Multiplicity="1" />
+          <End Role="ILA_PRODUTO" Type="Models.Produto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ILA_MEDIDA">
+              <PropertyRef Name="UnidadeMedidaId" />
+            </Principal>
+            <Dependent Role="ILA_PRODUTO">
+              <PropertyRef Name="UnidadeMedidaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MOVIMENTACAO">
+          <End Role="ILA_OPERACAO" Type="Models.Operacao" Multiplicity="1" />
+          <End Role="ILA_MOVIMENTACAO" Type="Models.Movimentacao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ILA_OPERACAO">
+              <PropertyRef Name="OperacaoId" />
+            </Principal>
+            <Dependent Role="ILA_MOVIMENTACAO">
+              <PropertyRef Name="OperacaoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MOVIMENTACAO_02">
+          <End Role="ILA_PRODUTO" Type="Models.Produto" Multiplicity="1" />
+          <End Role="ILA_MOVIMENTACAO" Type="Models.Movimentacao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ILA_PRODUTO">
+              <PropertyRef Name="ProdutoId" />
+            </Principal>
+            <Dependent Role="ILA_MOVIMENTACAO">
+              <PropertyRef Name="ProdutoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ILAContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categoria" EntityType="Models.Categoria" />
+          <EntitySet Name="Configuracao" EntityType="Models.Configuracao" />
+          <EntitySet Name="HistoricoEvento" EntityType="Models.HistoricoEvento" />
+          <EntitySet Name="UnidadeMedida" EntityType="Models.UnidadeMedida" />
+          <EntitySet Name="Movimentacao" EntityType="Models.Movimentacao" />
+          <EntitySet Name="Operacao" EntityType="Models.Operacao" />
+          <EntitySet Name="Produto" EntityType="Models.Produto" />
+          <EntitySet Name="TipoMovimentacao" EntityType="Models.TipoMovimentacao" />
+          <AssociationSet Name="FK_ITEM_01" Association="Self.FK_ITEM_01">
+            <End Role="ILA_CATEGORIA" EntitySet="Categoria" />
+            <End Role="ILA_PRODUTO" EntitySet="Produto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ITEM_02" Association="Self.FK_ITEM_02">
+            <End Role="ILA_MEDIDA" EntitySet="UnidadeMedida" />
+            <End Role="ILA_PRODUTO" EntitySet="Produto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MOVIMENTACAO" Association="Self.FK_MOVIMENTACAO">
+            <End Role="ILA_OPERACAO" EntitySet="Operacao" />
+            <End Role="ILA_MOVIMENTACAO" EntitySet="Movimentacao" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MOVIMENTACAO_02" Association="Self.FK_MOVIMENTACAO_02">
+            <End Role="ILA_PRODUTO" EntitySet="Produto" />
+            <End Role="ILA_MOVIMENTACAO" EntitySet="Movimentacao" />
+          </AssociationSet>
+          <EntitySet Name="CasisGrupoUsuario" EntityType="Models.CasisGrupoUsuario" />
+          <EntitySet Name="CasisGrupo" EntityType="Models.CasisGrupo" />
+          <EntitySet Name="Usuario" EntityType="Models.Usuario" />
+          <EntitySet Name="UsuarioFoto" EntityType="Models.UsuarioFoto" />
+          <AssociationSet Name="TipoMovimentacaoMovimentacao" Association="Models.TipoMovimentacaoMovimentacao">
+            <End Role="TipoMovimentacao" EntitySet="TipoMovimentacao" />
+            <End Role="Movimentacao" EntitySet="Movimentacao" />
+          </AssociationSet>
+          <EntitySet Name="UsuarioPreferencia" EntityType="Models.UsuarioPreferencia" />
+          <EntitySet Name="Cargo" EntityType="Models.Cargo" />
+          <EntitySet Name="EstruturaOrganizacional" EntityType="Models.EstruturaOrganizacional" />
+          <EntitySet Name="Funcao" EntityType="Models.Funcao" />
+          <AssociationSet Name="CasisGrupoCasisGrupoUsuario" Association="Models.CasisGrupoCasisGrupoUsuario">
+            <End Role="CasisGrupo" EntitySet="CasisGrupo" />
+            <End Role="CasisGrupoUsuario" EntitySet="CasisGrupoUsuario" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioUsuarioPreferencia" Association="Models.UsuarioUsuarioPreferencia">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="UsuarioPreferencia" EntitySet="UsuarioPreferencia" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioCasisGrupoUsuario" Association="Models.UsuarioCasisGrupoUsuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="CasisGrupoUsuario" EntitySet="CasisGrupoUsuario" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="CasisGrupoUsuario">
+          <Key>
+            <PropertyRef Name="GrupoId" />
+            <PropertyRef Name="UsuarioId" />
+          </Key>
+          <Property Name="GrupoId" Type="Int32" Nullable="false" />
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CasisGrupo" Relationship="Models.CasisGrupoCasisGrupoUsuario" FromRole="CasisGrupoUsuario" ToRole="CasisGrupo" />
+          <NavigationProperty Name="Usuario" Relationship="Models.UsuarioCasisGrupoUsuario" FromRole="CasisGrupoUsuario" ToRole="Usuario" />
+        </EntityType>
+        <EntityType Name="CasisGrupo">
+          <Key>
+            <PropertyRef Name="GrupoId" />
+          </Key>
+          <Property Name="SistemaId" Type="Int32" Nullable="false" />
+          <Property Name="SistemaSigla" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="GrupoId" Type="Int32" Nullable="false" />
+          <Property Name="GrupoNome" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Usuarios" Relationship="Models.CasisGrupoCasisGrupoUsuario" FromRole="CasisGrupo" ToRole="CasisGrupoUsuario" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="UsuarioId" />
+          </Key>
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Nome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Apelido" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MixId" Type="Int32" />
+          <Property Name="EmpresaNome" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Matricula" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MatriculaAntiga" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MatriculaAlternativa" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AreaSigla" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="EstruturaOrganizacionalId" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="DataNascimento" Type="DateTime" />
+          <Property Name="DataAdmissao" Type="DateTime" />
+          <Property Name="DataDemissao" Type="DateTime" />
+          <Property Name="DataAtualizacao" Type="DateTime" />
+          <Property Name="DataExpiracao" Type="DateTime" />
+          <Property Name="DataDesligamentoTerceiro" Type="DateTime" />
+          <Property Name="CPF" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RG" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="FuncionarioId" Type="Decimal" Precision="38" Scale="0" />
+          <Property Name="FuncionarioTipoId" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="FuncionarioTipoNome" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Site" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BilheteServico" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="CargoId" Type="Int32" />
+          <Property Name="CargoNome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FuncaoId" Type="Int32" />
+          <Property Name="FuncaoNome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Sexo" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="TelefoneComercial" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="TelefoneCelular" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Fax" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Endereco" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CEP" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Cidade" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Estado" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UsuarioGestorId" Type="Int32" />
+          <Property Name="StatusEmpregadoId" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="StatusEmpregadoNome" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChefePontoId" Type="Int32" />
+          <Property Name="TipoChefeNome" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Empregado" Type="Int16" />
+          <Property Name="Ativo" Type="Int16" />
+          <Property Name="AtivoAD" Type="Int16" />
+          <Property Name="AtivoNormativo" Type="Int16" />
+          <NavigationProperty Name="Preferencias" Relationship="Models.UsuarioUsuarioPreferencia" FromRole="Usuario" ToRole="UsuarioPreferencia" />
+          <NavigationProperty Name="CasisGrupos" Relationship="Models.UsuarioCasisGrupoUsuario" FromRole="Usuario" ToRole="CasisGrupoUsuario" />
+        </EntityType>
+        <EntityType Name="UsuarioFoto">
+          <Key>
+            <PropertyRef Name="UsuarioId" />
+          </Key>
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+          <Property Name="Imagem" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Tratada" Type="Int16" Nullable="false" />
+        </EntityType>
+        <Association Name="TipoMovimentacaoMovimentacao">
+          <End Type="Models.TipoMovimentacao" Role="TipoMovimentacao" Multiplicity="1" />
+          <End Type="Models.Movimentacao" Role="Movimentacao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoMovimentacao">
+              <PropertyRef Name="TipoMovimentacaoId" />
+            </Principal>
+            <Dependent Role="Movimentacao">
+              <PropertyRef Name="TipoMovimentacaoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UsuarioPreferencia">
+          <Key>
+            <PropertyRef Name="UsuarioId" />
+            <PropertyRef Name="Categoria" />
+          </Key>
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+          <Property Name="Categoria" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Valor" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Usuario" Relationship="Models.UsuarioUsuarioPreferencia" FromRole="UsuarioPreferencia" ToRole="Usuario" />
+        </EntityType>
+        <EntityType Name="Cargo">
+          <Key>
+            <PropertyRef Name="CargoId" />
+          </Key>
+          <Property Name="CargoId" Type="Int32" Nullable="false" />
+          <Property Name="Nome" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="Ativo" Type="Int16" />
+        </EntityType>
+        <EntityType Name="EstruturaOrganizacional">
+          <Key>
+            <PropertyRef Name="EstruturaOrganizacionalId" />
+          </Key>
+          <Property Name="EstruturaOrganizacionalId" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Nome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="NomeReduzido" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Logradouro" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="Numero" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Complemento" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="CentroCusto" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Bairro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Cidade" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Estado" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="EnderecoCompleto" Type="String" MaxLength="211" FixedLength="false" Unicode="false" />
+          <Property Name="Sigla" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Nivel" Type="Decimal" Precision="38" Scale="0" />
+          <Property Name="DepartamentoSigla" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="GerenciaSigla" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="GerenciaGeralSigla" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DiretoriaSigla" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Ativo" Type="Decimal" Precision="38" Scale="0" />
+        </EntityType>
+        <EntityType Name="Funcao">
+          <Key>
+            <PropertyRef Name="FuncaoId" />
+          </Key>
+          <Property Name="FuncaoId" Type="Int32" Nullable="false" />
+          <Property Name="Nome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Ativo" Type="Int16" />
+        </EntityType>
+        <Association Name="CasisGrupoCasisGrupoUsuario">
+          <End Type="Models.CasisGrupo" Role="CasisGrupo" Multiplicity="1" />
+          <End Type="Models.CasisGrupoUsuario" Role="CasisGrupoUsuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CasisGrupo">
+              <PropertyRef Name="GrupoId" />
+            </Principal>
+            <Dependent Role="CasisGrupoUsuario">
+              <PropertyRef Name="GrupoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UsuarioUsuarioPreferencia">
+          <End Type="Models.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="Models.UsuarioPreferencia" Role="UsuarioPreferencia" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="UsuarioId" />
+            </Principal>
+            <Dependent Role="UsuarioPreferencia">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UsuarioCasisGrupoUsuario">
+          <End Type="Models.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="Models.CasisGrupoUsuario" Role="CasisGrupoUsuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="UsuarioId" />
+            </Principal>
+            <Dependent Role="CasisGrupoUsuario">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="EntidadesStoreContainer" CdmEntityContainer="ILAContext">
+          <EntitySetMapping Name="Categoria">
+            <EntityTypeMapping TypeName="Models.Categoria">
+              <MappingFragment StoreEntitySet="ILA_CATEGORIA">
+                <ScalarProperty Name="CategoriaId" ColumnName="ID_CATEGORIA" />
+                <ScalarProperty Name="Nome" ColumnName="TX_CATEGORIA" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Configuracao">
+            <EntityTypeMapping TypeName="Models.Configuracao">
+              <MappingFragment StoreEntitySet="ILA_CONFIGURACAO">
+                <ScalarProperty Name="Parametro" ColumnName="PARAMETRO" />
+                <ScalarProperty Name="Valor" ColumnName="VALOR" />
+                <ScalarProperty Name="CadastradoPorId" ColumnName="ID_CODUSUARIO_CADASTRO" />
+                <ScalarProperty Name="CadastradoEm" ColumnName="DT_CADASTRO" />
+                <ScalarProperty Name="AlteradoPorId" ColumnName="ID_CODUSUARIO_ALTERACAO" />
+                <ScalarProperty Name="AlteradoEm" ColumnName="DT_ALTERACAO" />
+                <ScalarProperty Name="Descricao" ColumnName="TX_DESCRICAO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HistoricoEvento">
+            <EntityTypeMapping TypeName="Models.HistoricoEvento">
+              <MappingFragment StoreEntitySet="ILA_HISTORICO_EVENTO">
+                <ScalarProperty Name="HistoricoEventoId" ColumnName="ID_HISTORICO" />
+                <ScalarProperty Name="AgragateId" ColumnName="ID_AGREGATE" />
+                <ScalarProperty Name="TipoMensagem" ColumnName="TX_TIPO_MENSAGEM" />
+                <ScalarProperty Name="Valor" ColumnName="TX_VALOR" />
+                <ScalarProperty Name="Acao" ColumnName="TX_ACAO" />
+                <ScalarProperty Name="DataEvento" ColumnName="DT_EVENTO" />
+                <ScalarProperty Name="UsuarioNome" ColumnName="TX_USUARIO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnidadeMedida">
+            <EntityTypeMapping TypeName="Models.UnidadeMedida">
+              <MappingFragment StoreEntitySet="ILA_MEDIDA">
+                <ScalarProperty Name="UnidadeMedidaId" ColumnName="ID_MEDIDA" />
+                <ScalarProperty Name="Nome" ColumnName="TX_MEDIDA" />
+                <ScalarProperty Name="Descricao" ColumnName="TX_DESCR_MEDIDA" />
+                <ScalarProperty Name="Fracao" ColumnName="FL_FRACAO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Movimentacao">
+            <EntityTypeMapping TypeName="Models.Movimentacao">
+              <MappingFragment StoreEntitySet="ILA_MOVIMENTACAO">
+                <ScalarProperty Name="MovimentacaoId" ColumnName="ID_MOVIMENTACAO" />
+                <ScalarProperty Name="OperacaoId" ColumnName="ID_OPERACAO" />
+                <ScalarProperty Name="TipoMovimentacaoId" ColumnName="ID_TIPO_MOVIMENTACAO" />
+                <ScalarProperty Name="ProdutoId" ColumnName="ID_PRODUTO" />
+                <ScalarProperty Name="Quantidade" ColumnName="NR_QUANTIDADE" />
+                <ScalarProperty Name="CadastradoPorId" ColumnName="ID_CODUSUARIO_INCLUSAO" />
+                <ScalarProperty Name="CadastradoEm" ColumnName="DT_INCLUSAO" />
+                <ScalarProperty Name="AlteradoPorId" ColumnName="ID_CODUSUARIO_ALTERACAO" />
+                <ScalarProperty Name="AlteradoEm" ColumnName="DT_ALTERACAO" />
+                <ScalarProperty Name="Ativo" ColumnName="FL_ATIVO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Operacao">
+            <EntityTypeMapping TypeName="Models.Operacao">
+              <MappingFragment StoreEntitySet="ILA_OPERACAO">
+                <ScalarProperty Name="OperacaoId" ColumnName="ID_OPERACAO" />
+                <ScalarProperty Name="ClienteId" ColumnName="ID_CLIENTE" />
+                <ScalarProperty Name="CadastradoPorId" ColumnName="ID_CODUSUARIO_INCLUSAO" />
+                <ScalarProperty Name="CadastradoEm" ColumnName="DT_INCLUSAO" />
+                <ScalarProperty Name="AlteradoPorId" ColumnName="ID_CODUSUARIO_ALTERACAO" />
+                <ScalarProperty Name="AlteradoEm" ColumnName="DT_ALTERACAO" />
+                <ScalarProperty Name="Ativo" ColumnName="FL_ATIVO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Produto">
+            <EntityTypeMapping TypeName="Models.Produto">
+              <MappingFragment StoreEntitySet="ILA_PRODUTO">
+                <ScalarProperty Name="ProdutoId" ColumnName="ID_PRODUTO" />
+                <ScalarProperty Name="Nome" ColumnName="TX_ITEM" />
+                <ScalarProperty Name="CategoriaId" ColumnName="ID_CATEGORIA" />
+                <ScalarProperty Name="Valor" ColumnName="NR_VALOR" />
+                <ScalarProperty Name="CadastradoPorId" ColumnName="ID_CODUSAURIO_CADASTRO" />
+                <ScalarProperty Name="CadastradoEm" ColumnName="DT_CADASTRO" />
+                <ScalarProperty Name="AlteradoPorId" ColumnName="ID_CODUSUARIO_ALTERACAO" />
+                <ScalarProperty Name="AlteradoEm" ColumnName="DT_ALTERACAO" />
+                <ScalarProperty Name="Ativo" ColumnName="FL_ATIVO" />
+                <ScalarProperty Name="UnidadeMedidaId" ColumnName="ID_MEDIDA" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TipoMovimentacao">
+            <EntityTypeMapping TypeName="Models.TipoMovimentacao">
+              <MappingFragment StoreEntitySet="ILA_TIPO_MOVIMENTACAO">
+                <ScalarProperty Name="TipoMovimentacaoId" ColumnName="ID_TIPO_MOVIMENTACAO" />
+                <ScalarProperty Name="Nome" ColumnName="TX_TIPO_MOVIMENTACAO" />
+                <ScalarProperty Name="Multiplicador" ColumnName="NR_MULTIPLICADOR" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CasisGrupoUsuario">
+            <EntityTypeMapping TypeName="Models.CasisGrupoUsuario">
+              <MappingFragment StoreEntitySet="ILA_VW_CASIS_GRUPO_USUARIO">
+                <ScalarProperty Name="UsuarioId" ColumnName="ID_CODUSUARIO" />
+                <ScalarProperty Name="GrupoId" ColumnName="ID_GRUPO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CasisGrupo">
+            <EntityTypeMapping TypeName="Models.CasisGrupo">
+              <MappingFragment StoreEntitySet="ILA_VW_CASIS_GRUPO">
+                <ScalarProperty Name="GrupoNome" ColumnName="TX_DESCR_GRUPO" />
+                <ScalarProperty Name="GrupoId" ColumnName="ID_GRUPO" />
+                <ScalarProperty Name="SistemaSigla" ColumnName="TX_SIGLA" />
+                <ScalarProperty Name="SistemaId" ColumnName="ID_SISTEMA" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usuario">
+            <EntityTypeMapping TypeName="Models.Usuario">
+              <MappingFragment StoreEntitySet="ILA_VW_USUARIO">
+                <ScalarProperty Name="StatusEmpregadoId" ColumnName="CD_STATUS_EMPREGADO" />
+                <ScalarProperty Name="MixId" ColumnName="ID_MIX" />
+                <ScalarProperty Name="AtivoNormativo" ColumnName="FL_ATV_NRM" />
+                <ScalarProperty Name="AtivoAD" ColumnName="FL_ATIVO_AD" />
+                <ScalarProperty Name="Ativo" ColumnName="FL_ATIVO" />
+                <ScalarProperty Name="Empregado" ColumnName="FL_EMPREGADO" />
+                <ScalarProperty Name="TipoChefeNome" ColumnName="TX_TIPO_CHEFE" />
+                <ScalarProperty Name="ChefePontoId" ColumnName="ID_CHEFE_PONTO" />
+                <ScalarProperty Name="StatusEmpregadoNome" ColumnName="TX_STATUS_EMPREGADO" />
+                <ScalarProperty Name="UsuarioGestorId" ColumnName="ID_CODUSUARIO_GESTOR_AD" />
+                <ScalarProperty Name="Email" ColumnName="TX_EMAIL" />
+                <ScalarProperty Name="Estado" ColumnName="TX_ESTADO" />
+                <ScalarProperty Name="Cidade" ColumnName="TX_CIDADE" />
+                <ScalarProperty Name="CEP" ColumnName="TX_CEP" />
+                <ScalarProperty Name="Endereco" ColumnName="TX_ENDERECO" />
+                <ScalarProperty Name="Fax" ColumnName="TX_FAX" />
+                <ScalarProperty Name="TelefoneCelular" ColumnName="TX_TELEFONE_CELULAR" />
+                <ScalarProperty Name="TelefoneComercial" ColumnName="TX_TELEFONE" />
+                <ScalarProperty Name="Sexo" ColumnName="CD_SEXO" />
+                <ScalarProperty Name="FuncaoNome" ColumnName="TX_FUNCAO" />
+                <ScalarProperty Name="FuncaoId" ColumnName="ID_FUNCAO" />
+                <ScalarProperty Name="CargoNome" ColumnName="TX_CARGO" />
+                <ScalarProperty Name="CargoId" ColumnName="ID_CARGO" />
+                <ScalarProperty Name="BilheteServico" ColumnName="TX_BILHETE_SERVICO" />
+                <ScalarProperty Name="Site" ColumnName="TX_SITE" />
+                <ScalarProperty Name="FuncionarioTipoNome" ColumnName="TX_TIPO_FUNCIONARIO" />
+                <ScalarProperty Name="FuncionarioTipoId" ColumnName="CD_TIPO_FUNCIONARIO" />
+                <ScalarProperty Name="FuncionarioId" ColumnName="CD_FUNCIONARIO" />
+                <ScalarProperty Name="RG" ColumnName="RG" />
+                <ScalarProperty Name="CPF" ColumnName="CPF" />
+                <ScalarProperty Name="DataDesligamentoTerceiro" ColumnName="DT_DESLIGAMENTO_TERCEIRO" />
+                <ScalarProperty Name="DataExpiracao" ColumnName="DT_EXPIRACAO" />
+                <ScalarProperty Name="DataAtualizacao" ColumnName="DT_ATUALIZACAO" />
+                <ScalarProperty Name="DataDemissao" ColumnName="DT_DEMISSAO" />
+                <ScalarProperty Name="DataAdmissao" ColumnName="DT_ADMISSAO" />
+                <ScalarProperty Name="DataNascimento" ColumnName="DT_NASCIMENTO" />
+                <ScalarProperty Name="EstruturaOrganizacionalId" ColumnName="TX_ESTRUTURA" />
+                <ScalarProperty Name="AreaSigla" ColumnName="TX_SIGLA_AREA" />
+                <ScalarProperty Name="MatriculaAlternativa" ColumnName="TX_MATRIC_ALTERNATIVA" />
+                <ScalarProperty Name="MatriculaAntiga" ColumnName="MATRICULA_ANTIGA" />
+                <ScalarProperty Name="Matricula" ColumnName="MATRICULA" />
+                <ScalarProperty Name="EmpresaNome" ColumnName="TX_EMPRESA" />
+                <ScalarProperty Name="Apelido" ColumnName="TX_APELIDO" />
+                <ScalarProperty Name="Nome" ColumnName="TX_NOMEUSUARIO" />
+                <ScalarProperty Name="UserName" ColumnName="TX_USERNAME" />
+                <ScalarProperty Name="UsuarioId" ColumnName="ID_CODUSUARIO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UsuarioFoto">
+            <EntityTypeMapping TypeName="Models.UsuarioFoto">
+              <MappingFragment StoreEntitySet="ILA_VW_USUARIO_FOTO">
+                <ScalarProperty Name="Tratada" ColumnName="FL_TRATADA" />
+                <ScalarProperty Name="Imagem" ColumnName="FOTO" />
+                <ScalarProperty Name="UsuarioId" ColumnName="ID_CODUSUARIO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UsuarioPreferencia">
+            <EntityTypeMapping TypeName="Models.UsuarioPreferencia">
+              <MappingFragment StoreEntitySet="ILA_USUARIO_PREFERENCIA">
+                <ScalarProperty Name="Valor" ColumnName="TX_VALOR" />
+                <ScalarProperty Name="Categoria" ColumnName="TX_CATEGORIA" />
+                <ScalarProperty Name="UsuarioId" ColumnName="ID_CODUSUARIO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cargo">
+            <EntityTypeMapping TypeName="Models.Cargo">
+              <MappingFragment StoreEntitySet="ILA_VW_CARGO">
+                <ScalarProperty Name="Ativo" ColumnName="FL_ATIVO" />
+                <ScalarProperty Name="Nome" ColumnName="TX_CARGO" />
+                <ScalarProperty Name="CargoId" ColumnName="ID_CARGO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EstruturaOrganizacional">
+            <EntityTypeMapping TypeName="Models.EstruturaOrganizacional">
+              <MappingFragment StoreEntitySet="ILA_VW_ESTRUTURA_ORG">
+                <ScalarProperty Name="Ativo" ColumnName="FL_ATIVO" />
+                <ScalarProperty Name="DiretoriaSigla" ColumnName="DIR_SIGLA" />
+                <ScalarProperty Name="GerenciaGeralSigla" ColumnName="GG_SIGLA" />
+                <ScalarProperty Name="GerenciaSigla" ColumnName="GER_SIGLA" />
+                <ScalarProperty Name="DepartamentoSigla" ColumnName="DEP_SIGLA" />
+                <ScalarProperty Name="Nivel" ColumnName="NR_NIVEL" />
+                <ScalarProperty Name="Sigla" ColumnName="TX_SIGLA" />
+                <ScalarProperty Name="EnderecoCompleto" ColumnName="TX_ENDERECO_COMPLETO" />
+                <ScalarProperty Name="Estado" ColumnName="TX_ESTADO" />
+                <ScalarProperty Name="Cidade" ColumnName="TX_CIDADE" />
+                <ScalarProperty Name="Bairro" ColumnName="TX_BAIRRO" />
+                <ScalarProperty Name="CentroCusto" ColumnName="CD_CENTRO_CUSTO" />
+                <ScalarProperty Name="Complemento" ColumnName="TX_COMPLEMENTO" />
+                <ScalarProperty Name="Numero" ColumnName="TX_NUMERO" />
+                <ScalarProperty Name="Logradouro" ColumnName="TX_LOGRADOURO" />
+                <ScalarProperty Name="NomeReduzido" ColumnName="TX_NOME_REDUZIDO" />
+                <ScalarProperty Name="Nome" ColumnName="TX_NOME" />
+                <ScalarProperty Name="EstruturaOrganizacionalId" ColumnName="ID_ESTRUTURA" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Funcao">
+            <EntityTypeMapping TypeName="Models.Funcao">
+              <MappingFragment StoreEntitySet="ILA_VW_FUNCAO">
+                <ScalarProperty Name="Ativo" ColumnName="FL_ATIVO" />
+                <ScalarProperty Name="Nome" ColumnName="TX_FUNCAO" />
+                <ScalarProperty Name="FuncaoId" ColumnName="ID_FUNCAO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

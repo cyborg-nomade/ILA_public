@@ -1,0 +1,73 @@
+Introdução
+----------
+
+Biblioteca responsável pela integração com o Active Directory.
+
+A classe Seguranca dos métodos abaixo são estáticas. Portanto, não é necessário instancia-las.
+
+Configuração
+-------------
+
+O arquivo de configuração deve conter os seguintes atributos:
+
+<appSettings>
+	<add key="CPTMActiveDirectory.ServicoUsuario" value="UsuarioAD" />
+	<add key="CPTMActiveDirectory.ServicoSenha" value="SenhaUsuarioAD" />
+	<add key="CPTM_DOMINIO" value="CPTM" />									// Essa é uma configuração padrão dos servidores, verificar antes se essa configuração já existe no site do servidor.
+</appSettings>
+
+
+Métodos disponíveis
+-------------------
+
+- Autenticar
+  
+  Realiza a autenticação do usuário no domínio.
+  
+  Parâmetros:
+  usuario: Usuário sem domínio. Exemplo: jsilva
+  senha: Senha da rede
+  
+  Retorno:
+  true = Autenticado 
+  false = Não Autenticado
+
+
+- AlterarSenha
+
+  Altera a senha do usuário corrente.
+  
+  Parâmetros:
+  usuario: Usuário sem domínio. Exemplo: jsilva
+  senhaAtual: Senha da rede
+  senhaNova: Nova senha de rede
+
+  Retorno:
+  true = Senha alterada 
+  false = Senha não alterada
+
+
+- AlterarSenhaDeOutraConta
+
+  Altera a senha de usuário utilizando a conta de um usuário administrador. Para que esse método funcione, o usuário informado no arquivo de configuração deverá ser os privilégios necessários no Active Directory.
+  
+  Parâmetros:
+  usuario: Usuário sem domínio. Exemplo: jsilva
+  senhaNova: Nova senha de rede. A senha atual não é necessário porque a senha será alterada utilizando as credenciais de um usuário adminitrador.
+  alterarSenhaProximoLogon: Flag para o usuário alterar a senha no próximo logon.
+  
+  Retorno:
+  true = Senha alterada 
+  false = Senha não alterada
+
+
+- ObterUsuario
+
+  Obtem as informações do usuário no Active Directory personificando um outro usuário.
+  
+  Parâmetros:
+  usuario: Usuário sem domínio. Exemplo: jsilva
+
+  Retorno:
+  Objeto do tipo Objeto do tipo UsuarioAD.
+ 

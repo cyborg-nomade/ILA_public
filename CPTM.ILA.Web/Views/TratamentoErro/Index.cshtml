@@ -1,0 +1,22 @@
+﻿@using CPTM.CasisLibrary.MVC;
+@using CPTM.Comum;
+@{
+    ViewBag.Title = "Exemplo de Notificação";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3>
+            Exemplo de Tratamento de Erro</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        Clique no botão abaixo para simular um erro.
+        <br /><br />    
+        @Html.CPTMActionLink("Simular Erro", "btnSimularErro", tipo: ActionLinkTipo.Customizado, iconeEsquerdo: Icones.Fechar_Circulo_1, actionName: "SimularErro")
+        <br /><br />
+        Obs: Após clicar no botão, uma exceção será lançada e a aplicação será redirecionada para uma página de tratamento de erro. É possível visualizar os detalhes do erro através do sistema de captura de erro.
+    </div>
+</div>  

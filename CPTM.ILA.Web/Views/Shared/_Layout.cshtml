@@ -1,0 +1,363 @@
+﻿@using System.Configuration;
+@using CPTM.CasisLibrary.MVC;
+@using CPTM.Comum;
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ConfigurationManager.AppSettings["CasisLibrary.CodigoSistema"].ToString() - @ViewBag.Title</title>
+    @Html.Partial("_ReferenciasCSSeJS")
+</head>
+<body>
+    @*ProgressBar*@
+    <script type="text/javascript">exibirCarregando();</script>
+    @*ProgressBar*@
+    @*Página*@
+    <div id="pagina" class="container-fluid toggled">
+        @*Cabeçalho*@
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+
+            @*Menu Superior Esquerdo*@
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Navegação</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="@Constantes.EnderecoIntranet" target="_blank">
+                    <img alt="CPTM" src="/Compartilhado/Images/logo_cptm.png" height="20" />
+                </a>
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                    @CPTM.ILA.Web.Util.ConfiguracaoAplicacao.ObterPorParametro(Constantes.ConfiguracaoAplicacaoNome)
+                </a>
+            </div>
+            @*Menu Superior Esquerdo*@
+
+            @*Menu Superior Direito*@
+            <ul class="nav navbar-nav navbar-right">
+                <li id="menu_notificacao" class="dropdown">
+                    <a id="menu_notificacao_link" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-envelope-o fa-fw"></i>
+                        <span class="badge"></span>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-usuario">
+                        <li><a href="#" data-toggle="modal" data-target="#divModalPerfilUsuario"><i class="fa fa-user fa-fw"></i> Perfil do Usuário</a></li>
+                        <li><a href="@Url.Action("Preferencia", "Usuario")"><i class="fa fa-tasks"></i> Preferências</a></li>
+                        <li class="divider"></li>
+                        <li><a href="@Url.Action("Logoff", "Autenticacao")"><i class="fa fa-sign-out fa-fw"></i> Logoff</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-question-circle"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-ajuda">
+                        <li><a href="#"><i class="fa fa-book"></i> Manual</a></li>
+                    </ul>
+                </li>
+            </ul>
+            @*Menu Superior Direito*@
+
+            @*Menu Lateral*@
+            @{
+                // Menu Principal
+                var mnuPrincipal = new MenuExtensions.Menu() { IdMenu = "mnuPrincipal", ServicoSegurancaAtivo = true, Filhos = new List<MenuExtensions.Menu>() };
+
+                // 1 Home
+                var mnuHome = new MenuExtensions.Menu() { IdMenu = "mnuHome", ServicoSegurancaAtivo = true, Texto = "Home", IconeEsquerdo = Icones.Home, Link = Url.Action("Index", "Home") };
+
+                // 2 Exemplo
+                var mnuExemplo = new MenuExtensions.Menu() { IdMenu = "mnuExemplo", ServicoSegurancaAtivo = true, Texto = "Exemplo", IconeEsquerdo = Icones.Kit_Pimeiro_Socorro, Filhos = new List<MenuExtensions.Menu>() };
+                // 2.1 Autenticação
+                var mnuExemploAutenticacao = new MenuExtensions.Menu() { IdMenu = "mnuExemploAutenticacao", ServicoSegurancaAtivo = true, Texto = "Autenticação", IconeEsquerdo = Icones.CadeadoFechado, Link = Url.Action("Login", "Autenticacao") };
+                // 2.2 Controle
+                var mnuExemploControle = new MenuExtensions.Menu() { IdMenu = "mnuExemploControle", ServicoSegurancaAtivo = true, Texto = "Controle CASIS", IconeEsquerdo = Icones.ExibirIconesGrandes, Link = Url.Action("Index", "Controle") };
+                // 2.3 Mensagem
+                var mnuExemploMensagem = new MenuExtensions.Menu() { IdMenu = "mnuExemploMensagem", ServicoSegurancaAtivo = true, Texto = "Mensagem", IconeEsquerdo = Icones.BatePapo, Filhos = new List<MenuExtensions.Menu>() };
+                // 2.3.1 Alerta
+                var mnuExemploMensagemAlerta = new MenuExtensions.Menu() { IdMenu = "mnuExemploMensagemAlerta", ServicoSegurancaAtivo = true, Texto = "Alerta", IconeEsquerdo = Icones.Sino_1, Link = Url.Action("Index", "MensagemAlerta") };
+                // 2.3.2 Notificação
+                var mnuExemploMensagemNotificacao = new MenuExtensions.Menu() { IdMenu = "mnuExemploMensagemNotificacao", ServicoSegurancaAtivo = true, Texto = "Notificação", IconeEsquerdo = Icones.EnvelopeFechado_1, Link = Url.Action("Index", "MensagemNotificacao") };
+                // 2.4 Tratamento de Erro
+                var mnuExemploTratamentoErro = new MenuExtensions.Menu() { IdMenu = "mnuExemploTratamentoErro", ServicoSegurancaAtivo = true, Texto = "Tratamento de Erro", IconeEsquerdo = Icones.Exclamacao_Circulo, Link = Url.Action("Index", "TratamentoErro") };
+                // 2.5 Elementos IU
+                var mnuExemploElementoIU = new MenuExtensions.Menu() { IdMenu = "mnuExemploElementoIU", ServicoSegurancaAtivo = true, Texto = "Elementos IU", IconeEsquerdo = Icones.ChaveDeBoca, Filhos = new List<MenuExtensions.Menu>() };
+                // 2.5.1 Formulário
+                var mnuExemploElementoIUFormulario = new MenuExtensions.Menu() { IdMenu = "mnuExemploElementoIUFormulario", ServicoSegurancaAtivo = true, Texto = "Formulário", IconeEsquerdo = Icones.Nenhum, Link = Url.Action("Formulario", "ElementoIU") };
+                // 2.5.2 Painel
+                var mnuExemploElementoIUPainel = new MenuExtensions.Menu() { IdMenu = "mnuExemploElementoIUPainel", ServicoSegurancaAtivo = true, Texto = "Painel", IconeEsquerdo = Icones.Nenhum, Link = Url.Action("Painel", "ElementoIU") };
+                // 2.5.3 Botões
+                var mnuExemploElementoIUBotoes = new MenuExtensions.Menu() { IdMenu = "mnuExemploElementoIUBotoes", ServicoSegurancaAtivo = true, Texto = "Botão", IconeEsquerdo = Icones.Nenhum, Link = Url.Action("Botao", "ElementoIU") };
+                // 2.5.4 Notificacoes
+                var mnuExemploElementoIUNotificacoes = new MenuExtensions.Menu() { IdMenu = "mnuExemploElementoIUNotificacoes", ServicoSegurancaAtivo = true, Texto = "Notificações", IconeEsquerdo = Icones.Nenhum, Link = Url.Action("Notificacao", "ElementoIU") };
+                // 2.5.5 Tipografia
+                var mnuExemploElementoIUTipografia = new MenuExtensions.Menu() { IdMenu = "mnuExemploElementoIUTipografia", ServicoSegurancaAtivo = true, Texto = "Tipografia", IconeEsquerdo = Icones.Nenhum, Link = Url.Action("Tipografia", "ElementoIU") };
+                // 2.5.6 Grid
+                var mnuExemploElementoIUGrid = new MenuExtensions.Menu() { IdMenu = "mnuExemploElementoIUGrid", ServicoSegurancaAtivo = true, Texto = "Grid", IconeEsquerdo = Icones.Nenhum, Link = Url.Action("Grid", "ElementoIU") };
+                // 2.5.7 Ícones
+                var mnuExemploElementoIUIcone = new MenuExtensions.Menu() { IdMenu = "mnuExemploElementoIUIcone", ServicoSegurancaAtivo = true, Texto = "Ícones", IconeEsquerdo = Icones.Nenhum, Link = Url.Action("Icone", "ElementoIU") };
+                // 2.6 Envio de E-mail
+                var mnuExemploEmail = new MenuExtensions.Menu() { IdMenu = "mnuExemploEmail", ServicoSegurancaAtivo = true, Texto = "Envio de E-mail", IconeEsquerdo = Icones.EnvelopeFechado_1, Link = Url.Action("Index", "Email") };
+                // 2.7 Modais Múltiplas
+                var mnuExemploModal = new MenuExtensions.Menu() { IdMenu = "mnuExemploModal", ServicoSegurancaAtivo = true, Texto = "Modais Múltiplas", IconeEsquerdo = Icones.Arvore, Link = "#", OnClick = "mostrarCaixaDialogoAjax('divModalDialogo','" + Url.Action("Index", "Modal") + "')" };
+                // 2.8 Mapa
+                var mnuExemploMapa = new MenuExtensions.Menu() { IdMenu = "mnuExemploMapa", ServicoSegurancaAtivo = true, Texto = "Mapa", IconeEsquerdo = Icones.Marcador, Link = Url.Action("Index", "Mapa") };
+                // 2.9 TempoReal
+                var mnuExemploTempoReal = new MenuExtensions.Menu() { IdMenu = "mnuExemploTempoReal", ServicoSegurancaAtivo = true, Texto = "Tempo Real", IconeEsquerdo = Icones.Relogio, Filhos = new List<MenuExtensions.Menu>() };
+                // 2.9.1 Chat
+                var mnuExemploTempoRealChat = new MenuExtensions.Menu() { IdMenu = "mnuExemploTempoRealChat", ServicoSegurancaAtivo = true, Texto = "Chat", IconeEsquerdo = Icones.Comentarios_1, Link = Url.Action("Chat", "TempoReal") };
+
+                // Submenus
+                mnuExemploMensagem.Filhos.Add(mnuExemploMensagemAlerta);
+                mnuExemploMensagem.Filhos.Add(mnuExemploMensagemNotificacao);
+                mnuExemploElementoIU.Filhos.Add(mnuExemploElementoIUFormulario);
+                mnuExemploElementoIU.Filhos.Add(mnuExemploElementoIUPainel);
+                mnuExemploElementoIU.Filhos.Add(mnuExemploElementoIUBotoes);
+                mnuExemploElementoIU.Filhos.Add(mnuExemploElementoIUNotificacoes);
+                mnuExemploElementoIU.Filhos.Add(mnuExemploElementoIUTipografia);
+                mnuExemploElementoIU.Filhos.Add(mnuExemploElementoIUGrid);
+                mnuExemploElementoIU.Filhos.Add(mnuExemploElementoIUIcone);
+                mnuExemploTempoReal.Filhos.Add(mnuExemploTempoRealChat);
+
+                mnuExemplo.Filhos.Add(mnuExemploAutenticacao);          // 2.1 Autenticação
+                mnuExemplo.Filhos.Add(mnuExemploControle);              // 2.2 Controle
+                mnuExemplo.Filhos.Add(mnuExemploMensagem);              // 2.3 Mensagem
+                mnuExemplo.Filhos.Add(mnuExemploTratamentoErro);        // 2.4 Tratamento de Erro
+                mnuExemplo.Filhos.Add(mnuExemploElementoIU);            // 2.5 Elementos IU
+                mnuExemplo.Filhos.Add(mnuExemploEmail);                 // 2.6 Envio de E-mail
+                mnuExemplo.Filhos.Add(mnuExemploModal);                 // 2.7 Exemplo de Modal Múltipla
+                mnuExemplo.Filhos.Add(mnuExemploMapa);                  // 2.8 Exemplo de Mapa
+                mnuExemplo.Filhos.Add(mnuExemploTempoReal);             // 2.9 Tempo Real
+
+                // 3 Cadastro
+                var mnuCadastro = new MenuExtensions.Menu() { IdMenu = "mnuCadastro", ServicoSegurancaAtivo = true, Texto = "Cadastro", IconeEsquerdo = Icones.Lapis_Quadrado_2, Filhos = new List<MenuExtensions.Menu>() };
+                // 3.1 Produto
+                var mnuCadastroProduto = new MenuExtensions.Menu() { IdMenu = "mnuCadastroProduto", ServicoSegurancaAtivo = true, Texto = "Produto", IconeEsquerdo = Icones.Arquivo_1, Link = Url.Action("Index", "Produto") };
+
+                // Filhos
+                mnuCadastro.Filhos.Add(mnuCadastroProduto);             // 3.1 Produto
+
+                // 4 Relatório
+                var mnuRelatorio = new MenuExtensions.Menu() { IdMenu = "mnuRelatorio", ServicoSegurancaAtivo = true, Texto = "Relatório", IconeEsquerdo = Icones.Compartilhar_Quadrado_1, Filhos = new List<MenuExtensions.Menu>() };
+                // 4.1 Produto
+                var mnuRelatorioProduto = new MenuExtensions.Menu() { IdMenu = "mnuRelatorioProduto", ServicoSegurancaAtivo = true, Texto = "Produto", IconeEsquerdo = Icones.Arquivo_1, Link = Url.Action("Produto", "Relatorio") };
+
+                mnuRelatorio.Filhos.Add(mnuRelatorioProduto);           // 4.1 Produto
+
+                // 5 Utilitário
+                var mnuUtilitario = new MenuExtensions.Menu() { IdMenu = "mnuUtilitario", ServicoSegurancaAtivo = true, Texto = "Utilitário", IconeEsquerdo = Icones.ChaveDeBoca, Filhos = new List<MenuExtensions.Menu>() };
+                // 5.1 Configuração
+                var mnuUtilitarioConfiguracao = new MenuExtensions.Menu() { IdMenu = "mnuUtilitarioConfiguracao", ServicoSegurancaAtivo = true, Texto = "Configuração", IconeEsquerdo = Icones.Engrenagens, Link = Url.Action("Configuracao", "Utilitario") };
+                // 5.2 Controle de Acesso
+                var mnuUtilitarioControleAcesso = new MenuExtensions.Menu() { IdMenu = "mnuUtilitarioControleAcesso", ServicoSegurancaAtivo = true, Texto = "Controle de Acesso", IconeEsquerdo = Icones.CadeadoFechado, Link = Url.Action("ControleAcesso", "Utilitario") };
+                // 5.3 Notificação
+                var mnuUtilitarioNotificacao = new MenuExtensions.Menu() { IdMenu = "mnuUtilitarioNotificacao", ServicoSegurancaAtivo = true, Texto = "Notificação", IconeEsquerdo = Icones.EnvelopeFechado_1, Link = Url.Action("Notificacao", "Utilitario") };
+                // 5.4 Suporte
+                var mnuUtilitarioSuporte = new MenuExtensions.Menu() { IdMenu = "mnuUtilitarioSuporte", ServicoSegurancaAtivo = true, Texto = "Suporte", IconeEsquerdo = Icones.BaseDeDados, Link = Url.Action("Suporte", "Utilitario") };
+
+                mnuUtilitario.Filhos.Add(mnuUtilitarioConfiguracao);    // 5.1 Configuração
+                mnuUtilitario.Filhos.Add(mnuUtilitarioControleAcesso);  // 5.2 Controle de Acesso
+                mnuUtilitario.Filhos.Add(mnuUtilitarioNotificacao);     // 5.3 Notificação
+                mnuUtilitario.Filhos.Add(mnuUtilitarioSuporte);         // 5.4 Suporte
+
+                // Menu Principal
+                mnuPrincipal.Filhos.Add(mnuHome);                       // 1 Home
+                mnuPrincipal.Filhos.Add(mnuExemplo);                    // 2 Exemplo
+                mnuPrincipal.Filhos.Add(mnuCadastro);                   // 3 Cadastro
+                mnuPrincipal.Filhos.Add(mnuRelatorio);                  // 4 Relatório
+                mnuPrincipal.Filhos.Add(mnuUtilitario);                 // 5 Utilitário
+
+                @*@Html.CPTMMenu(mnuPrincipal, htmlAttributes: new { @class = "menu4 navbar-default sidebar navbar-collapse navbar-collapse collapse in", role = "navigation" });*@
+
+            }
+            @*Menu Lateral*@
+        </nav>
+        @*Cabeçalho*@
+        @*Conteúdo*@
+        <div id="conteudo">
+            @RenderBody()
+        </div>
+        @*Conteúdo*@
+        @*Rodapé*@
+        <div id="rodape" class="col-sm-12 hidden-xs">
+            &copy; 2004-@DateTime.Now.Year - CPTM IntraNet ::: @CPTM.ILA.Web.Util.ConfiguracaoAplicacao.ObterPorParametro(Constantes.ConfiguracaoAplicacaoNome)
+            @CPTM.ILA.Web.Util.ConfiguracaoAplicacao.ObterPorParametro(Constantes.ConfiguracaoAplicacaoVersao)
+            ::: <b>Gestor - <a id="lnkGestor" target="_blank" title="Clique aqui para informações de contato com o gestor desta área" href="@CPTM.ILA.Web.Util.ConfiguracaoAplicacao.ObterPorParametro(Constantes.ConfiguracaoGestorEnderecoIntranet)">@CPTM.ILA.Web.Util.ConfiguracaoAplicacao.ObterPorParametro(Constantes.ConfiguracaoGestorSigla)</a></b>
+            - As informações contidas na Intranet são de uso exclusivo da CPTM, sendo vedado
+            o uso e divulgação fora desse ambiente. <a href="@Constantes.EnderecoNormasEProcedimento" target="_blank">
+                Conheça as normas
+            </a>
+        </div>
+        @*Rodapé*@
+    </div>
+    @*Página*@
+
+    @*Crachá*@
+    @{
+        var user = CPTM.ILA.Web.Util.UsuarioLogado.Dados;
+
+        var base64 = user.Foto != null ? Convert.ToBase64String(user.Foto) : null;
+        var imgSrc = base64 != null ? String.Format("data:image/gif;base64,{0}", base64) : "/Compartilhado/Images/usuarioNaoIdentificado.png";
+    }
+    <div class="modal fade" id="divModalPerfilUsuario" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Perfil do Usuário</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>
+                                    Nome: <br />
+                                    @user.Nome
+                                </p>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>
+                                    Login: <br />
+                                    @user.UserName
+                                </p>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>
+                                    Empresa: <br />
+                                    @user.EmpresaNome
+                                </p>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>
+                                    Área: <br />
+                                    @user.AreaSigla
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <img alt="foto" src="@imgSrc" width="75" height="90" class="img-thumbnail" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Crachá*@
+    @*Exportação Excel - IE*@
+    <iframe id="txtArea1" style="display:none"></iframe>
+    @*Exportação Excel - IE*@
+    @*Diálogo TextArea Grande*@
+    <div class='modal fade' id="divTextoGrande" role="dialog" style='max-width: 800px;
+        height: 350px; margin-left: auto; margin-top: auto; margin-bottom: auto; margin-right: auto;'>
+        <div class="modal-content" style='margin-left: 10px; margin-right: 10px;'>
+            <div class="modal-header">
+                @Html.CPTMLabel("LabelTextoGrande", "")
+                <button type="button" class="close" onclick="$('#divTextoGrande').modal('hide')">
+                    &times;
+                </button>
+            </div>
+            <div class='modal-body'>
+                <div class='row'>
+                    <div class='col-xs-12'>
+                        <textarea rows='8' cols='40' class='form-control' id='textoAmpliado'></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class='modal-footer'>
+                <div class='row'>
+                    <div class='col-xs-11' style='text-align: right'>
+                        <button type="button" class="btn btn-default btn-circle" style='float: right' id='botaoGravarTextoGrande'>
+                            <span class='fa fa-check' style='color: green; cursor: pointer;'></span>
+                        </button>
+                    </div>
+                    <div class='col-xs-1'>
+                        <button type="button" class="btn btn-default btn-circle" onclick="$('#divTextoGrande').modal('hide')">
+                            <span class='fa fa-close' style='color: Red'></span>
+                        </button>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    var elementoTextoGrande;
+                    $("#botaoGravarTextoGrande").click(function () {
+                        top.elementoTextoGrande.val($("#textoAmpliado").val());
+                        $('#divTextoGrande').modal('hide');
+                    })
+                </script>
+            </div>
+        </div>
+    </div>
+    @*Diálogo TextArea Grande*@
+	@*modalUsuarioDetalhe*@
+    <div id="modalUsuarioDetalhe" title="Usuário" class="modal fade" role="dialog"></div>
+    @*modalUsuarioDetalhe*@
+    @*modalUsuarioPesquisar*@
+    <div id="modalUsuarioPesquisar" title="Usuário" class="modal fade" role="dialog"></div>
+    @*modalUsuarioPesquisar*@
+    @*modalEstruturaOrganizacionalDetalhe*@
+    <div id="modalEstruturaOrganizacionalDetalhe" title="Estrutura Organizacional" class="modal fade" role="dialog"></div>
+    @*modalEstruturaOrganizacionalDetalhe*@
+    @*modalEstruturaOrganizacionalPesquisa*@
+    <div id="modalEstruturaOrganizacionalPesquisa" title="Estrutura Organizacional" class="modal fade" role="dialog"></div>
+    @*modalEstruturaOrganizacionalPesquisa*@
+</body>
+</html>
+
+@*Java Script - JQuery *@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        // Carregar Controles
+        carregarControles();
+
+        /* Notificação */
+        @if (CPTM.ILA.Web.Util.UsuarioLogado.Dados != null)
+        {
+        <text>
+            funcaoCallBackMarcadoComoLida = function (notificacaoId) {
+
+            };
+
+            var gnu = new GNU('@CPTM.ILA.Web.Util.UsuarioLogado.Dados.UsuarioId',
+                                          '@ConfigurationManager.AppSettings["CasisLibrary.CodigoSistema"]',
+                                          'menu_notificacao',
+                                           30000,
+                                           funcaoCallBackMarcadoComoLida);
+
+            gnu.iniciarMonitoramento();
+        </text>
+        }
+
+        VerificaMenu();
+
+        // Oculta o progressbar
+        ocultarCarregando();
+    });
+
+    // Mantém o menu oculto ou expandido conforme última seleção do usuário
+    function VerificaMenu() {
+        if (localStorage['visivel'] == "N") {
+            $("#conteudo").css('margin-left', '0');
+            $(".menu4>.nav").hide();
+        } else {
+            $("#conteudo").css('margin-left', larguraMenu);
+            $(".menu4>.nav").show();
+        }
+    }
+</script>
+@*Java Script - JQuery *@

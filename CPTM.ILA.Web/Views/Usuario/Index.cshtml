@@ -1,0 +1,146 @@
+﻿@model CPTM.ILA.Web.Models.Usuario.Filtro
+
+@using CPTM.CasisLibrary.MVC;
+
+@{
+    ViewBag.Title = "Usuários";
+    Layout = "~/Views/Shared/_LayoutModal.cshtml";
+}
+
+@Html.AntiForgeryToken()
+
+@using (Html.BeginForm("Index", "Usuario", FormMethod.Post, new { id = "frmUsuarioFiltroModalUsuario" }))
+{
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading" data-toggle="collapse" data-target="#divUsuarioFiltroModalUsuarioPesquisa" style="cursor: pointer;">
+                    <a href="#"><i class="fa fa-filter"></i> Filtro</a>
+                </div>
+                <div id="divUsuarioFiltroModalUsuarioPesquisa" class="panel-collapse collapse">
+                    @Html.HiddenFor(x => x.OrdenarPorIndiceColuna)
+                    @Html.HiddenFor(x => x.OrdenarPorDirecao)
+                    @Html.HiddenFor(x => x.RegistroInicial)
+                    @Html.HiddenFor(x => x.TamanhoPagina)
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-2 form-group">
+                                @Html.CPTMLabelFor(x => x.UserName)
+                                @Html.CPTMTextBoxFor(x => x.UserName, tipo: EnumTextBoxType.AlfaNumericoSemCaracterEspecialSemEspaco, alteraFocusMaxCaracteres: true, alteraFocusTeclaEnter: true, htmlAttributes: new { id = "FiltroModalUsuarioUserName", TabIndex = 3, MaxLength = "30" })
+                            </div>
+                            <div class="col-md-3 form-group">
+                                @Html.CPTMLabelFor(x => x.Nome)
+                                @Html.CPTMTextBoxFor(x => x.Nome, tipo: EnumTextBoxType.AlfaNumericoSemCaracterEspecial, alteraFocusMaxCaracteres: true, alteraFocusTeclaEnter: true, htmlAttributes: new { id = "FiltroModalUsuarioNome", TabIndex = 4, MaxLength = "30" })
+                            </div>
+                            <div class="col-md-2 form-group">
+                                @Html.CPTMLabelFor(x => x.AreaSigla)
+                                @Html.CPTMTextBoxFor(x => x.AreaSigla, tipo: EnumTextBoxType.AlfaNumericoSemCaracterEspecialSemEspaco, alteraFocusMaxCaracteres: true, alteraFocusTeclaEnter: true, htmlAttributes: new { id = "FiltroModalUsuarioAreaSigla", TabIndex = 5, MaxLength = "5" })
+                            </div>
+                            <div class="col-md-3 form-group">
+                                @Html.CPTMLabelFor(x => x.Endereco)
+                                @Html.CPTMTextBoxFor(x => x.Endereco, tipo: EnumTextBoxType.AlfaNumericoSemCaracterEspecial, alteraFocusMaxCaracteres: true, alteraFocusTeclaEnter: true, htmlAttributes: new { id = "FiltroModalUsuarioEnderecoLogradouro", TabIndex = 6, MaxLength = "30" })
+                            </div>
+                            <div class="col-md-2 form-group">
+                                @Html.CPTMLabelFor(x => x.Ativo)
+                                <br />
+                                @Html.CPTMDropdownListFor(x => x.Ativo, ViewBag.ddlAtivos as List<SelectListItem>, preenchimentoObrigatorio: true, htmlAttributes: new { id = "FiltroModalUsuarioAtivo", TabIndex = 7 })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        @Html.CPTMActionLink("<u>P</u>esquisar", "btnModalUsuarioPesquisar", acaoSubmit: false, tipo: ActionLinkTipo.Customizado, iconeEsquerdo: Icones.Pesquisar, htmlAttributes: new { @accesskey = "P" })
+                        @Html.CPTMActionLink("<u>L</u>impar", "btnModalUsuarioLimpar", acaoSubmit: false, tipo: ActionLinkTipo.Customizado, estilo: BootStrapEstilo.Padrao, iconeEsquerdo: Icones.FecharNegrito, htmlAttributes: new { @accesskey = "L" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<table id="gdvUsuario" class="table table-striped table-bordered table-hover dt-responsive nowrap col6-centro" cellspacing="0" style="width:100%;">
+    <thead>
+        <tr>
+            <th style="width: 5%;">
+                <label title="Login">Login</label>
+            </th>
+            <th style="width: auto;">
+                <label title="Nome">Nome</label>
+            </th>
+            <th style="width: 5%;">
+                <label title="Apelido">Apelido</label>
+            </th>
+            <th style="width: auto;">
+                <label title="Empresa">Empresa</label>
+            </th>
+            <th style="width: 5%;">
+                <label title="Área">Área</label>
+            </th>
+            <th class="nosort" style="width: 8%;">
+                <label>Ações</label>
+            </th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+    </tfoot>
+</table>
+
+<div class='modal-footer'>
+    <div class='row'>
+        <div class='col-xs-12'>
+            <button id="btnModalUsuarioFechar" class='btn btn-default pull-right' onclick='$(this).closest(".modal").modal("hide")'>
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        /* Botões */
+        // Pesquisar
+        $('#btnModalUsuarioPesquisar').click(function () {
+            usuarioPesquisar(true);
+        });
+        // Limpar
+        $('#btnModalUsuarioLimpar').click(function () {
+            controlesFormularioLimpar('frmUsuarioFiltroModalUsuario');
+            $('#FiltroModalUsuarioUserName').focus();
+        });
+        /* Grid */
+        usuarioPesquisar();
+    });
+
+    // Pesquisar
+    function usuarioPesquisar(resetPaginacao) {
+    
+        // Action
+        var ajaxLink = '@Url.Action("Pesquisar", "Usuario")';
+        // Resetar paginação
+        if (resetPaginacao == true)
+            controlesFormularioResetPagina('frmUsuarioFiltroModalUsuario');
+        // Obtém e armazena filtro de pesquisa 
+        var model = controlesFormularioObter('frmUsuarioFiltroModalUsuario');
+        // Gera grid
+        criarDataTable('gdvUsuario', ajaxLink, model, null, null);
+    }
+
+    // Selecionar
+    function modalUsuarioSelecionar(id, userName, nome) {
+        elementoId = '@ViewBag.elementoId';
+        elementoUserName = '@ViewBag.elementoUserName';
+        elementoNome = '@ViewBag.elementoNome';
+
+        if (elementoId.length > 0)
+            $('#' + elementoId).val(id);
+        if (elementoUserName.length > 0)
+            $('#' + elementoUserName).val(userName);
+        if (elementoNome.length > 0)
+            $('#' + elementoNome).val(nome);
+
+        $('#btnModalUsuarioFechar').click();
+    }
+    
+</script>

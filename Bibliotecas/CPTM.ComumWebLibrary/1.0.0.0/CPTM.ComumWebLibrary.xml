@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CPTM.ComumWebLibrary</name>
+    </assembly>
+    <members>
+        <member name="T:CPTM.Comum.Web.Conversores">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.Web.Conversores.RenderRazorViewToString(System.Web.Mvc.ControllerContext,System.String,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="controllerContext"></param>
+            <param name="viewName"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CPTM.Comum.Web.CasisControleDinamico">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.Web.CasisControleDinamico.ObterActionLink(System.Web.Mvc.ControllerContext,System.String,System.String,System.String,System.String,System.Object,System.Boolean,System.String,System.Object,System.Boolean,CPTM.CasisLibrary.MVC.ActionLinkTipo,CPTM.CasisLibrary.MVC.Tamanho,CPTM.CasisLibrary.MVC.BootStrapEstilo,CPTM.CasisLibrary.MVC.Icones,CPTM.CasisLibrary.MVC.Icones,System.Boolean,System.Boolean)">
+            <summary>
+            Obtem um CPTMActionLink dinâmico para utilizar a integração com CASIS
+            </summary>
+            <param name="controllerContext">Utiliza this.ControllerContext</param>
+            <param name="linkText"></param>
+            <param name="idControle"></param>
+            <param name="actionName"></param>
+            <param name="controllerName"></param>
+            <param name="routeValues"></param>
+            <param name="servicoSegurancaAtivo"></param>
+            <param name="idControleSuperior"></param>
+            <param name="htmlAttributes"></param>
+            <param name="acaoSubmit"></param>
+            <param name="tipo"></param>
+            <param name="tamanho"></param>
+            <param name="estilo"></param>
+            <param name="iconeEsquerdo"></param>
+            <param name="iconeDireito"></param>
+            <param name="exibeTexto"></param>
+            <param name="exibeToolTip"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.Comum.Web.CasisControleDinamico.ObterButton(System.Web.Mvc.ControllerContext,System.String,System.String,System.Boolean,System.String,System.Boolean,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="controllerContext"></param>
+            <param name="descricao"></param>
+            <param name="idControle"></param>
+            <param name="servicoSegurancaAtivo"></param>
+            <param name="idControleSuperior"></param>
+            <param name="acaoSubmit"></param>
+            <param name="htmlAttributes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.Comum.Web.CasisControleDinamico.ObterImage(System.Web.Mvc.ControllerContext,System.String,System.String,System.String,System.Boolean,System.String,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="controllerContext"></param>
+            <param name="imageUrl"></param>
+            <param name="idControle"></param>
+            <param name="altText"></param>
+            <param name="servicoSegurancaAtivo"></param>
+            <param name="idControleSuperior"></param>
+            <param name="htmlAttributes"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CPTM.Comum.Web.Exportacao">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.Web.Exportacao.ExportarLista``1(System.Web.Mvc.Controller,System.Collections.Generic.IEnumerable{``0},System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{CPTM.Comum.Web.Exportacao.Coluna},System.Boolean)">
+            <summary>
+            Exporta IEnumerable para DOC, XLS ou PDF
+            </summary>
+            <typeparam name="T">Tipo</typeparam>
+            <param name="controller">Controller que fez a requisição</param>
+            <param name="resultado">IEnumerable</param>
+            <param name="nomeAplicacao">Nome da aplicação que será usado no cabeçalho</param>
+            <param name="tituloRelatorio">Título do relatório</param>
+            <param name="subTituloRelatorio">Subtítulo do relatório</param>
+            <param name="nomeArquivo">Nome do arquivo</param>
+            <param name="tipoArquivo">Tipo do arquivo (DOC, XLS ou PDF)</param>
+            <param name="colunas">Colunas</param>
+            <param name="comCabecalho">Define se o arquivo deve conter cabeçalho</param>
+        </member>
+        <member name="T:CPTM.Comum.Web.Exportacao.Coluna">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Web.Exportacao.Coluna.Descricao">
+            <summary>
+            Nome exibido no relatório
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Web.Exportacao.Coluna.Nome">
+            <summary>
+            Nome do campo na fonte de dados
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Web.Exportacao.Coluna.Tamanho">
+            <summary>
+            Tamanho do campo do relatório
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Web.CodeHelper">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.Web.CodeHelper.QrCode(System.Web.Mvc.HtmlHelper,System.String,System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Gera QR Code
+            </summary>
+            <param name="html"></param>
+            <param name="valor"></param>
+            <param name="alt"></param>
+            <param name="height"></param>
+            <param name="width"></param>
+            <param name="margin"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.Comum.Web.CodeHelper.BarCode(System.Web.Mvc.HtmlHelper,System.String,System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Gera código de barras
+            </summary>
+            <param name="html"></param>
+            <param name="valor"></param>
+            <param name="alt"></param>
+            <param name="height"></param>
+            <param name="width"></param>
+            <param name="margin"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CPTM.Comum.Web.Importacao">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.Web.Importacao.ImportarExcel(OfficeOpenXml.ExcelPackage)">
+            <summary>
+            
+            </summary>
+            <param name="package"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CPTM.Comum.Web.BaseModel">
+            <summary>
+            Classe com as configurações de básicas das models
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.Web.BaseModel.#ctor">
+            <summary>
+            Construtor
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Web.BaseModel.NomeColunas">
+            <summary>
+            DataTables - Nome das colunas
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Web.BaseModel.RegistroInicial">
+            <summary>
+            DataTables - Registro inicial do grid
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Web.BaseModel.TamanhoPagina">
+            <summary>
+            DataTables - Tamanho da página do grid
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Web.BaseModel.PaginaAtual">
+            <summary>
+            DataTables - Páginal atual do grid
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Web.BaseModel.OrdenarPorIndiceColuna">
+            <summary>
+            DataTables - Índice da coluna (NomeColunas) que o grid será ordenado
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Web.BaseModel.OrdenarPorDirecao">
+            <summary>
+            DataTables - Direção da ordenação (ASC ou DESC)
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Web.BaseModel.Ordenacao">
+            <summary>
+            DataTables - Composição da ordenação do grid
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Web.Validacao">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.Web.Validacao.MontarErroModel(System.Web.Mvc.Controller,System.Web.Mvc.ModelStateDictionary)">
+            <summary>
+            
+            </summary>
+            <param name="controller"></param>
+            <param name="modelState"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.Comum.Web.Validacao.MontarErroValidacao(System.Collections.Generic.List{System.String})">
+            <summary>
+            
+            </summary>
+            <param name="listaErros"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CPTM.Comum.Web.ValidateAntiForgeryTokenAjaxPost">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.Web.ValidateAntiForgeryTokenAjaxPost.OnAuthorization(System.Web.Mvc.AuthorizationContext)">
+            <summary>
+            
+            </summary>
+            <param name="filterContext"></param>
+        </member>
+        <member name="T:CPTM.Comum.Web.ViewDataContainer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.Web.ViewDataContainer.#ctor(System.Web.Mvc.ViewDataDictionary)">
+            <summary>
+            
+            </summary>
+            <param name="viewData"></param>
+        </member>
+        <member name="P:CPTM.Comum.Web.ViewDataContainer.ViewData">
+            <summary>
+            
+            </summary>
+        </member>
+    </members>
+</doc>
