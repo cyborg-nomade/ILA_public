@@ -46,6 +46,7 @@ const Login = () => {
       );
 
       const receivedUser: User = responseData.user;
+      console.log(receivedUser);
 
       authContext.login(
         receivedUser.id,

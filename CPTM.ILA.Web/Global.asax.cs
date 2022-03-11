@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -30,7 +31,10 @@ namespace CPTM.ILA.Web
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-
+            if (Request.Headers.AllKeys.Contains("Origin") && Request.HttpMethod == "OPTIONS")
+            {
+                Response.Flush();
+            }
         }
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)

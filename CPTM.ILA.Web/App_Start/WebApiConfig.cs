@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using Newtonsoft.Json;
 
 namespace CPTM.ILA.Web
@@ -12,8 +13,6 @@ namespace CPTM.ILA.Web
     {
         public static void Register(HttpConfiguration config)
         {
-            // Web API configuration and services
-            config.Formatters.Add(new BrowserJsonFormatter());
 
             // Web API routes
             config.MapHttpAttributeRoutes();
@@ -24,13 +23,14 @@ namespace CPTM.ILA.Web
                 defaults: new { id = RouteParameter.Optional }
             );
 
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+            //config.Routes.MapHttpRoute(
+            //    name: "DefaultApi",
+            //    routeTemplate: "api/{controller}/{id}",
+            //    defaults: new { id = RouteParameter.Optional }
+            //);
 
-            
+            // Web API configuration and services
+            config.Formatters.Add(new BrowserJsonFormatter());
         }
     }
 
