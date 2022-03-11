@@ -1,0 +1,148 @@
+﻿@model CPTM.ILA.Web.Models.Configuracao.Filtro
+
+@using CPTM.CasisLibrary.MVC;
+
+@{
+    ViewBag.Title = "Configuração";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3>Configuração</h3>
+    </div>
+</div>
+
+@using (Html.BeginForm("Index", "Configuracao", FormMethod.Post, new { id = "frmConfiguracaoFiltro" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading" data-toggle="collapse" data-target="#divConfiguracaoFiltroPesquisa" style="cursor: pointer;">
+                    <a href="#"><i class="fa fa-filter"></i> Filtro</a>
+                </div>
+                <div id="divConfiguracaoFiltroPesquisa" class="panel-collapse collapse">
+                    @Html.HiddenFor(x => x.OrdenarPorIndiceColuna)
+                    @Html.HiddenFor(x => x.OrdenarPorDirecao)
+                    @Html.HiddenFor(x => x.RegistroInicial)
+                    @Html.HiddenFor(x => x.TamanhoPagina)
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                @Html.CPTMLabelFor(x => x.Parametro)
+                                @Html.CPTMTextBoxFor(x => x.Parametro, tipo: EnumTextBoxType.AlfaNumerico, alteraFocusMaxCaracteres: true, alteraFocusTeclaEnter: true, htmlAttributes: new { id = "FiltroParametro", TabIndex = 1, MaxLength = "250" })
+                            </div>
+                            <div class="col-md-4 form-group">
+                                @Html.CPTMLabelFor(x => x.Descricao)
+                                @Html.CPTMTextBoxFor(x => x.Parametro, tipo: EnumTextBoxType.Padrao, alteraFocusMaxCaracteres: true, alteraFocusTeclaEnter: true, htmlAttributes: new { id = "FiltroDescricao", TabIndex = 2, MaxLength = "250" })
+                            </div>
+                            <div class="col-md-4 form-group">
+                                @Html.CPTMLabelFor(x => x.Valor)
+                                @Html.CPTMTextBoxFor(x => x.Parametro, tipo: EnumTextBoxType.Padrao, alteraFocusMaxCaracteres: true, alteraFocusTeclaEnter: true, htmlAttributes: new { id = "FiltroValor", TabIndex = 3, MaxLength = "250" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        @Html.CPTMActionLink("<u>P</u>esquisar", "btnConfiguracaoPesquisar", acaoSubmit: false, tipo: ActionLinkTipo.Customizado, iconeEsquerdo: Icones.Pesquisar, htmlAttributes: new { @accesskey = "P" })
+                        @Html.CPTMActionLink("<u>L</u>impar", "btnConfiguracaoLimpar", acaoSubmit: false, tipo: ActionLinkTipo.Customizado, estilo: BootStrapEstilo.Padrao, iconeEsquerdo: Icones.FecharNegrito, htmlAttributes: new { @accesskey = "L" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-12 col-md-8 col-lg-10">
+                        @Html.CPTMActionLink("<u>N</u>ovo", "btnConfiguracaoNovo", acaoSubmit: false, tipo: ActionLinkTipo.Customizado, iconeEsquerdo: Icones.Novo, servicoSegurancaAtivo: true, htmlAttributes: new { @accesskey = "N" })
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table id="gdvConfiguracao" class="table table-striped table-bordered table-hover dt-responsive nowrap col4-centro" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width: auto;">
+                                <label>Parâmetro</label>
+                            </th>
+                            <th style="width: auto;">
+                                <label>Descrição</label>
+                            </th>
+                            <th style="width: auto;">
+                                <label>Valor</label>
+                            </th>
+                            <th class="nosort" style="width: 6%;">
+                                <label>Ações</label>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*modalConfiguracaoCadastro*@
+<div id="modalConfiguracaoCadastro" title="Cadastro de Configuracao" class="modal fade" role="dialog"></div>
+@*modalConfiguracaoCadastro*@
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        /* Botões */
+        $('#btnConfiguracaoNovo').click(function () {
+            mostrarCaixaDialogoAjax('modalConfiguracaoCadastro', '@Url.Action("ConfiguracaoInserir", "Utilitario")');
+            return false;
+        });
+        // Pesquisar
+        $('#btnConfiguracaoPesquisar').click(function () {
+            configuracaoPesquisar(true);
+        });
+        // Limpar
+        $('#btnConfiguracaoLimpar').click(function () {
+            controlesFormularioLimpar('frmConfiguracaoFiltro');
+            $('#FiltroParametro').focus();
+        });
+
+        // Carregar filtros armazenados
+        controlesFormularioCarregarDadosSessionStorage('frmConfiguracaoFiltro');
+
+        // Carrega grid
+        configuracaoPesquisar();
+
+    });
+
+    // Pesquisar
+    function configuracaoPesquisar(resetPaginacao) {
+        // Action
+        var ajaxLink = '@Url.Action("ConfiguracaoPesquisar", "Utilitario")';
+        // Resetar paginação
+        if (resetPaginacao == true)
+            controlesFormularioResetPagina('frmConfiguracaoFiltro');
+        // Obtém e armazena filtro de pesquisa 
+        var model = controlesFormularioObter('frmConfiguracaoFiltro');
+        // Gera grid
+        criarDataTable('gdvConfiguracao', ajaxLink, model, null, null);
+    }
+    // Detalhar
+    function configuracaoDetalhar(id) {
+        mostrarCaixaDialogoAjax('modalConfiguracaoCadastro', '@Url.Action("ConfiguracaoDetalhar", "Utilitario")' + '?id=' + id);
+        return false;
+    }
+    // Alterar
+    function configuracaoAlterar(id) {
+        mostrarCaixaDialogoAjax('modalConfiguracaoCadastro', '@Url.Action("ConfiguracaoAlterar", "Utilitario")' + '?id=' + id);
+        return false;
+    }
+    
+</script>

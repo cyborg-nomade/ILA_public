@@ -1,0 +1,84 @@
+﻿@model CPTM.ILA.Web.ViewModels.AutenticacaoViewModel
+
+@using System.Configuration;
+@using CPTM.CasisLibrary.MVC;
+@using CPTM.Comum;
+
+@{
+    ViewBag.Title = "Autenticação";
+    Layout = "~/Views/Shared/_LayoutVazio.cshtml";
+}
+
+@{
+    if (ViewBag.Retorno == Enumerador.EnumRetornoMensagem.Erro)
+    {
+	<script type="text/javascript">
+	    $(document).ready(function () {
+	        mostrarNotificacaoErro("Autenticação", "@Html.Raw(ViewBag.Mensagem)");
+	    });
+	</script>
+    }
+}
+
+<div class="container-fluid toggled">
+    <div id="login">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        @using (Ajax.BeginForm("Login", "Autenticacao", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "login", OnComplete = "ocultarCarregando()", OnBegin = "exibirCarregando()" }, htmlAttributes: new { id = "frmLogin" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(x => x.ReturnUrl)
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <img class="img-fluid" src="/Compartilhado/Images/logo_cptm2.png" />
+                                    </div>
+                                    <div class="col-md-5 text-right">
+                                        <h1>@ConfigurationManager.AppSettings["CasisLibrary.CodigoSistema"].ToString()</h1>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-md-12 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><span class="fa fa-user fa-fw hasTooltip" data-toggle="tooltip" title="Nome de Usuário"></span></span>
+                                            @Html.CPTMTextBoxFor(x => x.UserName, tipo: EnumTextBoxType.AlfaNumericoSemCaracterEspecialSemEspaco, tipoTexto: EnumTextTransform.Maiusculo, alteraFocusMaxCaracteres: true, alteraFocusTeclaEnter: true, preenchimentoObrigatorio: true, htmlAttributes: new { TabIndex = 1, MaxLength = "20", PlaceHolder = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><span class="fa fa-lock fa-fw hasTooltip" data-toggle="tooltip" title="Senha"></span></span>
+                                            @Html.CPTMPasswordFor(x => x.Senha, preenchimentoObrigatorio: true, htmlAttributes: new { TabIndex = 2, MaxLength = "256", PlaceHolder = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 form-group">
+                                        <button id="btnAcessar" class="botaoCustomizado btn btn-lg btn-primary btn-block" tabindex="3"><span class="icon-lock icon-white"></span> Acessar</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        }
+                    </div>
+                    <div class="panel-footer">
+                        Informe o <b>Usuário</b> e a <b>Senha</b> da rede CPTM e clique no botão <b>Acessar</b>.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+		if ($('#ReturnUrl').val() =='') {
+		    $('#ReturnUrl').val(queryString('ReturnUrl'));
+        }
+    });
+
+</script>

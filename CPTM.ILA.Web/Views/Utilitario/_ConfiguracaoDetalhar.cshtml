@@ -1,0 +1,99 @@
+﻿@model CPTM.ILA.Web.Models.Configuracao
+
+@using System.Text;
+@using CPTM.CasisLibrary.MVC;
+@using CPTM.Comum;
+@using CPTM.ILA.Web.Models;
+
+@{
+    if (ViewBag.Retorno == Enumerador.EnumRetornoMensagem.Erro)
+    {
+        <script type="text/javascript">
+	    mostrarNotificacaoErro("Detalhe de Configuração", "@Html.Raw(ViewBag.Mensagem)");
+	    carregarControles();
+        </script>
+    }
+}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+                &times;
+            </button>
+            <h4 class="modal-title">Detalhe de Configuração</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    @Html.CPTMLabelFor(x => x.Parametro)
+                    @Html.CPTMTextBoxFor(x => x.Parametro, tipo: EnumTextBoxType.Padrao, tipoTexto: EnumTextTransform.Normal, htmlAttributes: new { @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    @Html.CPTMLabelFor(x => x.Descricao)
+                    @Html.CPTMTextBoxFor(x => x.Descricao, tipo: EnumTextBoxType.Padrao, tipoTexto: EnumTextTransform.Normal, htmlAttributes: new { @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    @Html.CPTMLabelFor(x => x.Valor)
+                    @Html.CPTMTextBoxFor(x => x.Valor, tipo: EnumTextBoxType.Padrao, tipoTexto: EnumTextTransform.Normal, htmlAttributes: new { @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" data-toggle="collapse" data-target="#divEquipamentoDetalheHistorico"
+                             style="cursor: pointer;">
+                            <a href="#"><i class="fa fa-history"></i> Histórico</a>
+                        </div>
+                        <div id="divEquipamentoDetalheHistorico" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-8 form-group">
+                                        @Html.CPTMLabelFor(x => x.CadastradoPor)
+                                        <p>@((Model.CadastradoPor ?? new Usuario()).Nome)</p>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        @Html.CPTMLabelFor(x => x.CadastradoEm)
+                                        <p>@Model.CadastradoEm</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8 form-group">
+                                        @Html.CPTMLabelFor(x => x.AlteradoPor)
+                                        <p>@((Model.AlteradoPor ?? new Usuario()).Nome)</p>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        @Html.CPTMLabelFor(x => x.AlteradoEm)
+                                        <p>@Model.AlteradoEm</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="row">
+                <div class="col-md-8 text-left">
+                    @Html.CPTMActionLink("Alterar", "btnDetalheConfiguracaoAlterar", string.Empty, string.Empty, null, true, string.Empty, new { onclick = "configuracaoAlterar('" + HttpServerUtility.UrlTokenEncode(Encoding.ASCII.GetBytes(Model.Parametro.ToString())) + "')" }, false, ActionLinkTipo.Customizado, Tamanho.Normal, BootStrapEstilo.Alerta, Icones.Editar, Icones.Nenhum, true, true)
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" tabindex="111"><i class="fa fa-times-circle"></i> Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+    });
+
+</script>

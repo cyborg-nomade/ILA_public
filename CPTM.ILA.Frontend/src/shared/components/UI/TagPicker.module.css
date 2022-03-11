@@ -1,0 +1,7 @@
+.tag-picker-suggestion > ul {
+  list-style-type: none;
+}
+
+.tag-picker-input {
+  width: 100%;
+}

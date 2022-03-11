@@ -1,0 +1,11 @@
+﻿@model CPTM.ILA.Web.Models.Produto.Filtro
+@using ReportViewerForMvc;
+@{
+    ViewBag.Title = "Relatório - Produto";
+    Layout = null;
+}
+@if (ViewBag.ReportViewer != null)
+{
+    <script type="text/javascript" src="/Compartilhado/Scripts/jquery/jquery-3.1.1.min.js"></script>
+    @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer, new { Width = "100%", Height = "100%" })
+}

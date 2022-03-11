@@ -1,0 +1,359 @@
+﻿@model CPTM.ILA.Web.ViewModels.SuporteViewModel
+
+@using CPTM.CasisLibrary.MVC;
+
+@{
+    ViewBag.Title = "Suporte";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3>
+            Suporte
+        </h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="nav nav-tabs">
+            <li class="active"><a id="tabSQL" href="#divSQL" data-toggle="tab">SQL</a></li>
+            <li><a id="tabTabela" href="#divTabela" data-toggle="tab">Tabela</a></li>
+            <li><a id="tabView" href="#divView" data-toggle="tab">View</a></li>
+            <li><a id="tabProcedure" href="#divProcedure" data-toggle="tab">Procedure</a></li>
+            <li><a id="tabPackage" href="#divPackage" data-toggle="tab">Package</a></li>
+            <li><a id="tabFunction" href="#divFunction" data-toggle="tab">Function</a></li>
+            <li><a id="tabTrigger" href="#divTrigger" data-toggle="tab">Trigger</a></li>
+            <li><a id="tabJob" href="#divJob" data-toggle="tab">Job</a></li>
+            <li><a id="tabOutro" href="#divOutro" data-toggle="tab">Outro</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="divSQL" class="tab-pane fade in active">
+                <form id="frmSuporte" role="form">
+                    <br />
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Query
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    @Html.AntiForgeryToken()
+                                    @Html.CPTMTextAreaFor(x => x.Query, preenchimentoObrigatorio: true, alteraFocusMaxCaracteres: true, htmlAttributes: new { TabIndex = 1, Rows = 5, MaxLenght = "5000" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-8">
+                                    <a tabindex="150" accesskey="S" class="btn btn-success botaoCustomizado semSubmit" href="#" id="btnExecutarSQL"><i style="min-width: 14px;width: 14px;" class="fa fa-check-circle"></i> Executar</a>
+                                    <a class="btn btn-default botaoCustomizado semSubmit" href="#" id="btnExportarExcel" onclick="exportarTabelaParaExcel('tabresultadoSQL');"><i style="min-width: 14px;width: 14px;" class="fa fa-file-excel-o"></i> Exportar</a>
+                                </div>
+                                <div class="form-group col-md-4 text-right">
+                                    Limite de linhas de retorno
+                                    <select id="ddlQuantidadeLinhasRetorno" name="LimiteRetorno" class="selectpicker" data-live-search="false">
+                                        <option value="0">Todas</option>
+                                        <option value="100" selected>100</option>
+                                        <option value="250">250</option>
+                                        <option value="500">500</option>
+                                        <option value="1000">1000</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="resultadoSQL" style="overflow:auto;"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div id="divTabela" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <br />
+                        <a class="btn btn-default botaoCustomizado semSubmit" href="#" id="btnExportarExcel" onclick="exportarTabelaParaExcel('tabresultadoTabela');"><i style="min-width: 14px;width: 14px;" class="fa fa-file-excel-o"></i> Exportar</a>
+                        <hr />
+                        <div id="resultadoTabela" style="overflow:auto;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="divView" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <br />
+                        <a class="btn btn-default botaoCustomizado semSubmit" href="#" id="btnExportarExcel" onclick="exportarTabelaParaExcel('tabresultadoView');"><i style="min-width: 14px;width: 14px;" class="fa fa-file-excel-o"></i> Exportar</a>
+                        <hr />
+                        <div id="resultadoView" style="overflow:auto;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="divProcedure" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <br />
+                        <a class="btn btn-default botaoCustomizado semSubmit" href="#" id="btnExportarExcel" onclick="exportarTabelaParaExcel('tabresultadoProcedure');"><i style="min-width: 14px;width: 14px;" class="fa fa-file-excel-o"></i> Exportar</a>
+                        <hr />
+                        <div id="resultadoProcedure" style="overflow:auto;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="divPackage" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <br />
+                        <a class="btn btn-default botaoCustomizado semSubmit" href="#" id="btnExportarExcel" onclick="exportarTabelaParaExcel('tabresultadoPackage');"><i style="min-width: 14px;width: 14px;" class="fa fa-file-excel-o"></i> Exportar</a>
+                        <hr />
+                        <div id="resultadoPackage" style="overflow:auto;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="divFunction" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <br />
+                        <a class="btn btn-default botaoCustomizado semSubmit" href="#" id="btnExportarExcel" onclick="exportarTabelaParaExcel('tabresultadoFunction');"><i style="min-width: 14px;width: 14px;" class="fa fa-file-excel-o"></i> Exportar</a>
+                        <hr />
+                        <div id="resultadoFunction" style="overflow:auto;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="divTrigger" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <br />
+                        <a class="btn btn-default botaoCustomizado semSubmit" href="#" id="btnExportarExcel" onclick="exportarTabelaParaExcel('tabresultadoTrigger');"><i style="min-width: 14px;width: 14px;" class="fa fa-file-excel-o"></i> Exportar</a>
+                        <hr />
+                        <div id="resultadoTrigger" style="overflow:auto;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="divJob" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <br />
+                        <a class="btn btn-default botaoCustomizado semSubmit" href="#" id="btnExportarExcel" onclick="exportarTabelaParaExcel('tabresultadoJob');"><i style="min-width: 14px;width: 14px;" class="fa fa-file-excel-o"></i> Exportar</a>
+                        <hr />
+                        <div id="resultadoJob" style="overflow:auto;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="divOutro" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <br />
+                        <a class="btn btn-default botaoCustomizado semSubmit" href="#" id="btnExportarExcel" onclick="exportarTabelaParaExcel('tabresultadoOutro');"><i style="min-width: 14px;width: 14px;" class="fa fa-file-excel-o"></i> Exportar</a>
+                        <hr />
+                        <div id="resultadoOutro" style="overflow:auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalDetalhe" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+                <h4 class="modal-title">Detalhe do Objeto</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <br />
+                        <div id="resultadoModal" style="overflow:auto;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" accesskey="C" tabindex="111"><i class="fa fa-times-circle"></i> Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*Java Script - JQuery *@
+<script type="text/javascript">
+
+    function executarSQL(query, resultadoObjId, acaoDetalhe) {
+
+        var divResultado = $('#' + resultadoObjId);
+        var linhaClass = 'gridview1-linha2';
+
+        if (query == '') {
+            mostrarMensagem('alerta', '', 'Atenção', 'Informe a query');
+            return;
+        }
+
+        divResultado.empty();
+        divResultado.append('<table id="tab' + resultadoObjId + '" class="table table-striped table-bordered table-hover dt-responsive" cellpadding="0", cellspacing="0" style="width:100%;"><thead><tr></tr></thead><tbody></tbody><tfoot><tr></tr></tfoot></table>');
+
+        // Action
+        $('#Query').val(query);
+
+        $.ajax({
+            url: '@Url.Action("Suporte", "Utilitario")',
+            data: $('#frmSuporte').serialize(),
+            type: 'POST',
+            success: function (data) {
+                var numCol = 0;
+
+                if (data.Status === 400) {
+                    mostrarMensagem('erro', '', 'Erro', data.Mensagem);
+                    return;
+                }
+                else if (data.Status === 200) {
+                    mostrarMensagem('sucesso', '', 'Sucesso', data.Mensagem);
+                    return;
+                }
+
+                if (data.Colunas != null) {
+                    numCol = data.Colunas.length;
+                    $.each(data.Colunas, function (index, itemData) {
+                        divResultado.find('thead tr').append($('<th style="width:auto;">').html(itemData));
+                    });
+
+                    if (acaoDetalhe != null && acaoDetalhe > 0)
+                        divResultado.find('thead tr').append($('<th style="width:auto;">').html('Ação'));
+                }
+
+                if (data.TotalRegistros != null) {
+                    divResultado.find('tfoot tr').empty();
+                    divResultado.find('tfoot tr').append($('<th>').attr('colspan', (acaoDetalhe > 0 ? numCol + 1 : numCol)).html('Registros: ' + data.TotalRegistros).attr('style', 'text-align: right;'));
+                }
+
+                if (data.Registros != null) {
+                    $.each(data.Registros, function (indexI, linha) {
+
+                        var objetoNome;
+
+                        if (linhaClass == 'gridview1-linha1') {
+                            linhaClass = 'gridview1-linha2';
+                        }
+                        else {
+                            linhaClass = 'gridview1-linha1';
+                        }
+                        var tr = $('<tr>').addClass(linhaClass);
+
+                        $.each(linha, function (indexJ, coluna) {
+                            if (indexJ == 0)
+                                objetoNome = coluna;
+
+                            tr.append($('<td style="width:auto;white-space:nowrap;">').html(coluna));
+                        });
+
+                        // Ação de detalhe
+                        if (acaoDetalhe != null && acaoDetalhe > 0)
+                            tr.append($('<td style="width:50px;white-space:nowrap;">').html("<a class='btn-xs btn btn-info botaoCustomizado' data-toggle='tooltip' href='#' id='btnGridDetalhar' title='' data-original-title='Detalhar' onclick='exibirDetalhe(this, " + acaoDetalhe + ");'><i style='min-width: 14px;width: 14px;' class='fa fa-search'></i> </a>"));
+
+                        divResultado.find('tbody').append(tr);
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                mostrarMensagem('erro', '', 'Erro', 'Ocorreu um Erro inesperado.<br/>Por favor entre em contato com o administrador do sistema.', '');
+            },
+            complete: function () {
+
+            }
+        });
+    }
+
+    function exibirDetalhe(obj, tipo) {
+
+        var query;
+
+        var objetoNome = $(obj).parent().parent().find('td:first-child').text();
+
+        switch (tipo) {
+            case 1:
+                query = 'SELECT COLUNAS.COLUMN_NAME AS COLUNA, COLUNAS.DATA_TYPE AS TIPO, DECODE(COLUNAS.DATA_PRECISION, NULL, COLUNAS.CHAR_COL_DECL_LENGTH, COLUNAS.DATA_PRECISION) AS TAMANHO, COLUNAS.NULLABLE AS EH_NULO FROM USER_TABLES TABELA, USER_TAB_COLUMNS COLUNAS WHERE TABELA.TABLE_NAME = COLUNAS.TABLE_NAME AND TABELA.TABLE_NAME = "' + objetoNome + '"';
+                break;
+            case 2:
+                query = 'SELECT TEXT AS CODIGO_FONTE FROM USER_SOURCE WHERE NAME = "' + objetoNome + '" ORDER BY LINE';
+                break;
+            default:
+                query = '';
+                break;
+        }
+
+        executarSQL(query, 'resultadoModal');
+
+        mostrarCaixaDialogo('modalDetalhe');
+    }
+
+    $(document).ready(function () {
+
+        $("a[data-toggle='tab']").on("shown.bs.tab", function (e) {
+
+            var tabId = $(e.target).attr('id')
+            var query, resultadoObjId, acaoDetalhe;
+
+            switch (tabId) {
+                case 'tabTabela':
+                    query = 'SELECT OBJ.OBJECT_NAME, OBJ.STATUS, OBJ.CREATED, OBJ.TEMPORARY, OBJ.GENERATED FROM USER_OBJECTS OBJ WHERE OBJECT_TYPE = \'TABLE\' ORDER BY OBJECT_NAME';
+                    resultadoObjId = 'resultadoTabela';
+                    acaoDetalhe = 1;
+                    break;
+                case 'tabView':
+                    query = 'SELECT OBJ.OBJECT_NAME, OBJ.STATUS, OBJ.CREATED, OBJ.TEMPORARY, OBJ.GENERATED FROM USER_OBJECTS OBJ WHERE OBJECT_TYPE = \'VIEW\' ORDER BY OBJECT_NAME';
+                    resultadoObjId = 'resultadoView';
+                    acaoDetalhe = 0;
+                    break;
+                case 'tabProcedure':
+                    query = 'SELECT OBJ.OBJECT_NAME, OBJ.STATUS, OBJ.CREATED, OBJ.TEMPORARY, OBJ.GENERATED FROM USER_OBJECTS OBJ WHERE OBJECT_TYPE = \'PROCEDURE\' ORDER BY OBJECT_NAME';
+                    resultadoObjId = 'resultadoProcedure';
+                    acaoDetalhe = 2;
+                    break;
+                case 'tabPackage':
+                    query = 'SELECT OBJ.OBJECT_NAME, OBJ.STATUS, OBJ.CREATED, OBJ.TEMPORARY, OBJ.GENERATED FROM USER_OBJECTS OBJ WHERE OBJECT_TYPE = \'PACKAGE\' ORDER BY OBJECT_NAME';
+                    resultadoObjId = 'resultadoPackage';
+                    acaoDetalhe = 2;
+                    break;
+                case 'tabFunction':
+                    query = 'SELECT OBJ.OBJECT_NAME, OBJ.STATUS, OBJ.CREATED, OBJ.TEMPORARY, OBJ.GENERATED FROM USER_OBJECTS OBJ WHERE OBJECT_TYPE = \'FUNCTION\' ORDER BY OBJECT_NAME';
+                    resultadoObjId = 'resultadoFunction';
+                    acaoDetalhe = 2;
+                    break;
+                case 'tabTrigger':
+                    query = 'SELECT OBJ.OBJECT_NAME, OBJ.STATUS, OBJ.CREATED, OBJ.TEMPORARY, OBJ.GENERATED FROM USER_OBJECTS OBJ WHERE OBJECT_TYPE = \'TRIGGER\' ORDER BY OBJECT_NAME';
+                    resultadoObjId = 'resultadoTrigger';
+                    acaoDetalhe = 2;
+                    break;
+                case 'tabJob':
+                    query = 'SELECT JOB, WHAT, BROKEN, FAILURES, LOG_USER, LAST_DATE, NEXT_DATE  FROM ALL_JOBS ORDER BY JOB';
+                    resultadoObjId = 'resultadoJob';
+                    acaoDetalhe = 2;
+                    break;
+                case 'tabOutro':
+                    query = 'SELECT OBJ.OBJECT_TYPE, OBJ.OBJECT_NAME, OBJ.STATUS, OBJ.CREATED, OBJ.TEMPORARY, OBJ.GENERATED FROM USER_OBJECTS OBJ WHERE OBJECT_TYPE NOT IN (\'TABLE\',\'VIEW\',\'PROCEDURE\',\'PACKAGE\',\'FUNCTION\',\'TRIGGER\') ORDER BY OBJECT_TYPE, OBJECT_NAME';
+                    resultadoObjId = 'resultadoOutro';
+                    acaoDetalhe = 0;
+                    break;
+                case 'tabSQL':
+                    $('#Query').val('');
+                    return;
+                default:
+                    query = '';
+                    resultadoObjId = '';
+                    acaoDetalhe = 0;
+                    break;
+            }
+
+            if(query.length > 0)
+                executarSQL(query, resultadoObjId, acaoDetalhe);
+        });
+
+        $('#btnExecutarSQL').click(function () {
+            executarSQL($('#Query').val(), 'resultadoSQL');
+        });
+
+    })
+
+</script>
+

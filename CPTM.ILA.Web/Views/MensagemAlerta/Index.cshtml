@@ -1,0 +1,174 @@
+﻿@using CPTM.CasisLibrary.MVC;
+@using CPTM.Comum;
+@{
+    ViewBag.Title = "Exemplo de Alerta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3>Exemplos de Alerta</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <b>Descrição</b>
+        <p>
+            Função JavaScript que exibe mensagem customizada.</p>
+        <b>Funções adicionais</b>:
+        <ul>
+            <li>Redireciona para um endereço especificado após fechamento da mensagem.</li>
+            <li>Executa função callback após fechamento da mensagem.</li>
+        </ul>
+        <b>Parâmetros</b>
+        <ol>
+            <li>tipo: sucesso / informacao / erro / alerta / nenhum(vazio)</li>
+            <li>icone: Classe de ícones do Font-Awesome (Exemplo: sucesso = fa fa-check-circle /
+                informacao = fa fa-info-circle / erro = fa fa-times-circle / alerta = fa fa-warning)</li>
+            <li>titulo: Título da mensagem</li>
+            <li>mensagem: Conteúdo da mensagem</li>
+            <li>redirecionar: Endereço para onde ocorrerá o redirecionamento ou null</li>
+            <li>funcaoAposFechar: função JavaScript para executar após fechar a notificação</li>
+            <li>funcaoAposFecharParametro: parâmetro da função JavaScript para executar após fechar
+                a notificação</li>
+        </ol>
+        <b>Sintaxe</b>
+        <p>
+            <code>
+                mostrarMensagem(tipo, icone, titulo, mensagem, enderecoParaRedirecionamento, funcaoCallBack,funcaoCallBackParametro);
+            </code>
+        </p>
+        <b>Exemplos</b>
+        <ul>
+            <li><code>mostrarMensagem('sucesso', 'fa fa-check-circle', "Sucesso", "Exemplo de alerta de
+                sucesso.", null);</code></li>
+            <li><code>mostrarMensagem('erro', 'fa fa-times-circle', "Erro", "Exemplo de alerta de erro.",
+                null);</code></li>
+            <li><code>mostrarMensagem('informacao', 'fa fa-info-circle', "Informação", "Exemplo de alerta
+                de informação.", null);</code></li>
+            <li><code>mostrarMensagem('alerta', 'fa fa-warning', "Alerta", "Exemplo de alerta de alerta.",
+                null);</code></li>
+            <li><code>mostrarMensagem('default', '', "Padrão", "Exemplo de alerta padrão.", null);</code></li>
+        </ul>
+        <br />
+        @Html.CPTMActionLink("Testar", "btnMensagemPadrao", acaoSubmit: false, tipo: ActionLinkTipo.Customizado)
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Mensagens Predefinidas
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <h4>
+                            Sucesso</h4>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <b>Sintaxe</b>
+                        <p>
+                            <code>mostrarMensagemSucesso(titulo, mensagem, enderecoParaRedirecionamento, funcaoCallBack,
+                            funcaoCallBackParametro);</code></p>
+                        <b>Exemplo</b>
+                        <p>
+                            <code>mostrarMensagemSucesso("Sucesso", "Exemplo de alerta de sucesso.", null, null, null);</code></p>
+                    </div>
+                    <div class="form-group col-md-2">
+                        @Html.CPTMActionLink("Testar", "btnMensagemSucesso", acaoSubmit: false, tipo: ActionLinkTipo.Customizado, iconeEsquerdo: Icones.Check_Circulo_1)
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <h4>
+                            Erro</h4>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <b>Sintaxe</b>
+                        <p>
+                            <code>mostrarMensagemErro(titulo, mensagem, enderecoParaRedirecionamento, funcaoCallBack,
+                            funcaoCallBackParametro);</code></p>
+                        <b>Exemplo</b>
+                        <p>
+                            <code>mostrarMensagemErro("Erro", "Exemplo de alerta de erro.", null, null, null);</code></p>
+                    </div>
+                    <div class="form-group col-md-2">
+                        @Html.CPTMActionLink("Testar", "btnMensagemErro", acaoSubmit: false, tipo: ActionLinkTipo.Customizado, iconeEsquerdo: Icones.Fechar_Circulo_1)
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <h4>
+                            Informação</h4>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <b>Sintaxe</b>
+                        <p>
+                            <code>mostrarMensagemInformacao(titulo, mensagem, enderecoParaRedirecionamento, funcaoCallBack,
+                            funcaoCallBackParametro);</code></p>
+                        <b>Exemplo</b>
+                        <p>
+                            <code>mostrarMensagemInformacao("Informação", "Exemplo de alerta de informacao.", null,
+                            null, null);</code></p>
+                    </div>
+                    <div class="form-group col-md-2">
+                        @Html.CPTMActionLink("Testar", "btnMensagemInformacao", acaoSubmit: false, tipo: ActionLinkTipo.Customizado, iconeEsquerdo: Icones.Informacao_Circulo)
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <h4>
+                            Alerta</h4>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <b>Sintaxe</b>
+                        <p>
+                            <code>mostrarMensagemAlerta(titulo, mensagem, enderecoParaRedirecionamento, funcaoCallBack,
+                            funcaoCallBackParametro);</code></p>
+                        <b>Exemplo</b>
+                        <p>
+                            <code>mostrarMensagemAlerta("Alerta", "Exemplo de alerta de alerta.", null, null, null);</code></p>
+                    </div>
+                    <div class="form-group col-md-2">
+                        @Html.CPTMActionLink("Testar", "btnMensagemAlerta", acaoSubmit: false, tipo: ActionLinkTipo.Customizado, iconeEsquerdo: Icones.Exclamacao_Circulo)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Java Script - JQuery *@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#btnMensagemSucesso').click(function () {
+            mostrarMensagemSucesso('Sucesso', 'Exemplo de alerta de sucesso.', null);
+        });
+
+        $('#btnMensagemErro').click(function () {
+            mostrarMensagemErro('Erro', 'Exemplo de alerta de erro.', null);
+        });
+
+        $('#btnMensagemInformacao').click(function () {
+            mostrarMensagemInformacao('Informação', 'Exemplo de alerta de informação.', null);
+        });
+
+        $('#btnMensagemAlerta').click(function () {
+            mostrarMensagemAlerta('Alerta', 'Exemplo de alerta de alerta.', null);
+        });
+
+        $('#btnMensagemPadrao').click(function () {
+            mostrarMensagem('default', '', 'Padrão', 'Exemplo de alerta padrão.', null);
+        });
+
+    });
+            
+</script>
+@*Java Script - JQuery *@
