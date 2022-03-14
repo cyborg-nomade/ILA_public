@@ -31,7 +31,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 new Case()
                 {
-                    Nome = "Caso1"
+                    Nome = "Caso1",
                 },
                 new Case()
                 {
