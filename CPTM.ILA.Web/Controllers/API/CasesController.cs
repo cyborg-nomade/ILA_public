@@ -32,14 +32,20 @@ namespace CPTM.ILA.Web.Controllers.API
                 new Case()
                 {
                     Nome = "Caso1",
+                    FinalidadeTratamento = new FinalidadeTratamento()
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento }
                 },
                 new Case()
                 {
-                    Nome = "Caso2"
+                    Nome = "Caso2",
+                    FinalidadeTratamento = new FinalidadeTratamento()
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento }
                 },
                 new Case()
                 {
-                    Nome = "Caso3"
+                    Nome = "Caso3",
+                    FinalidadeTratamento = new FinalidadeTratamento()
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento }
                 },
             };
 
@@ -64,15 +70,21 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 new Case()
                 {
-                    Nome = "Caso1"
+                    Nome = "Caso1",
+                    FinalidadeTratamento = new FinalidadeTratamento()
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento }
                 },
                 new Case()
                 {
-                    Nome = "Caso2"
+                    Nome = "Caso2",
+                    FinalidadeTratamento = new FinalidadeTratamento()
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento }
                 },
                 new Case()
                 {
-                    Nome = "Caso3"
+                    Nome = "Caso3",
+                    FinalidadeTratamento = new FinalidadeTratamento()
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento }
                 },
             };
 

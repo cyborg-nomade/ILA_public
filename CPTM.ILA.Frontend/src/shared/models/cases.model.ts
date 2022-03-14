@@ -179,7 +179,7 @@ export interface BaseCaseItemObject {
   dataCriacao: string;
   dataAtualizacao: string;
   finalidadeTratamento: {
-    hipoteseTratamento: hipotesesTratamento;
+    hipoteseTratamento: { value: hipotesesTratamento };
     descricaoFinalidade: string;
   };
   dadosPessoaisSensiveis: boolean;
@@ -206,13 +206,15 @@ export interface CaseItemObjectReduced {
 export const reduceCaseObjectToList = (
   c: CaseItemObject
 ): CaseItemObjectReduced => {
+  console.log(c);
+
   const reducedCase: CaseItemObjectReduced = {
     nome: c.nome,
     ref: c.ref,
     area: c.area,
     dataCriacao: c.dataCriacao,
     dataAtualizacao: c.dataAtualizacao,
-    hipoteseTratamento: c.finalidadeTratamento.hipoteseTratamento,
+    hipoteseTratamento: c.finalidadeTratamento.hipoteseTratamento.value,
     descricaoFinalidade: c.finalidadeTratamento.descricaoFinalidade,
     dadosPessoaisSensiveis: c.dadosPessoaisSensiveis ? "SIM" : "NÃO",
     id: c.id,
@@ -241,7 +243,7 @@ export interface BaseFullCaseObject extends BaseCaseItemObject {
   abrangenciaGeografica: string;
   fonteDados: string;
   finalidadeTratamento: {
-    hipoteseTratamento: hipotesesTratamento;
+    hipoteseTratamento: { value: hipotesesTratamento };
     descricaoFinalidade: string;
     previsaoLegal: string;
     resultadosTitular: string;
@@ -466,7 +468,7 @@ export const emptyFullCaseObject = (): FullCaseObject => ({
   abrangenciaGeografica: "",
   fonteDados: "",
   finalidadeTratamento: {
-    hipoteseTratamento: hipotesesTratamento.consentimento,
+    hipoteseTratamento: { value: hipotesesTratamento.consentimento },
     descricaoFinalidade: "",
     previsaoLegal: "",
     resultadosTitular: "",
@@ -611,7 +613,7 @@ export const emptyBaseFullCaseObject = (): BaseFullCaseObject => ({
   abrangenciaGeografica: "",
   fonteDados: "",
   finalidadeTratamento: {
-    hipoteseTratamento: hipotesesTratamento.consentimento,
+    hipoteseTratamento: { value: hipotesesTratamento.consentimento },
     descricaoFinalidade: "",
     previsaoLegal: "",
     resultadosTitular: "",

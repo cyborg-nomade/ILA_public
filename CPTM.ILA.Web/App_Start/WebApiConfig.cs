@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using Newtonsoft.Json;
 using Microsoft.Owin.Security.OAuth;
+using Newtonsoft.Json.Serialization;
 
 namespace CPTM.ILA.Web
 {
@@ -17,7 +18,9 @@ namespace CPTM.ILA.Web
             // Web API configuration and services
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
-            var corsAttr = new EnableCorsAttribute("http://localhost:3000", "Origin,X-Requested-With,Content-Type,Accept,Authorization", "*") { SupportsCredentials = true };
+            var corsAttr =
+                new EnableCorsAttribute("http://localhost:3000",
+                    "Origin,X-Requested-With,Content-Type,Accept,Authorization", "*") { SupportsCredentials = true };
             config.EnableCors(corsAttr);
 
             // Web API routes
@@ -33,6 +36,8 @@ namespace CPTM.ILA.Web
             //);
 
             // JSON Formatter
+            var json = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
+            json.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             config.Formatters.Add(new BrowserJsonFormatter());
         }
     }
@@ -43,6 +48,8 @@ namespace CPTM.ILA.Web
         {
             this.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
             this.SerializerSettings.Formatting = Formatting.Indented;
+            this.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            this.UseDataContractJsonSerializer = false;
         }
 
         public override void SetDefaultContentHeaders(Type type, HttpContentHeaders headers,
