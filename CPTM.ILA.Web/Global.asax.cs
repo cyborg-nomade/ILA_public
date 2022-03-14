@@ -31,9 +31,16 @@ namespace CPTM.ILA.Web
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            if (Request.Headers.AllKeys.Contains("Origin") && Request.HttpMethod == "OPTIONS")
+            if (Context.Request.HttpMethod == "OPTIONS")
             {
-                Response.Flush();
+                if (Context.Request.Headers["Origin"] != null)
+                    Context.Response.AddHeader("Access-Control-Allow-Origin", Context.Request.Headers["Origin"]);
+
+                Context.Response.AddHeader("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Accept,Authorization");
+                Context.Response.AddHeader("Access-Control-Allow-Methods", "*");
+                Context.Response.AddHeader("Access-Control-Allow-Credentials", "true");
+
+                Response.End();
             }
         }
 

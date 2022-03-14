@@ -16,8 +16,8 @@ namespace CPTM.ILA.Web.Controllers.API
     [RoutePrefix("api/users")]
     public class UsersController : ApiController
     {
-        // POST api/<controller>/login
         [Route("login")]
+        [AllowAnonymous]
         [HttpPost]
         public HttpResponseMessage Login(User user)
         {

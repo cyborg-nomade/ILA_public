@@ -23,6 +23,7 @@ const UserCasesList = () => {
         undefined,
         undefined,
         {
+          "Content-Type": "application/json",
           Authorization: "Bearer " + token,
         }
       );
