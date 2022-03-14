@@ -18,6 +18,7 @@ import MainHeader from "./shared/components/nav/MainHeader";
 // import ApprovePage from "./cases/pages/ApprovePage";
 // import AllCasesPage from "./cases/pages/AllCasesPage";
 import "./App.css";
+import Register from "./users/pages/Register";
 
 const AllCasesList = React.lazy(() => import("./cases/pages/AllCasesList"));
 const ApproveCaseList = React.lazy(
@@ -41,6 +42,7 @@ const App = () => {
     routes = (
       <React.Fragment>
         <Route path="/" element={<Login />} />
+        <Route path="/request-access" element={<Register />} />
         <Route path="*" element={<Navigate to="/" />} />
       </React.Fragment>
     );

@@ -16,10 +16,6 @@ import { useHttpClient } from "./../../shared/hooks/http-hook";
 
 const schema = yup.object().shape({
   username: yup.string().required(),
-  password: yup
-    .string()
-    .required()
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/),
 });
 
 const initialValues: BaseUser = {
@@ -27,42 +23,30 @@ const initialValues: BaseUser = {
   password: "",
 };
 
-const Login = () => {
+const Register = (props: any) => {
   const authContext = useContext(AuthContext);
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   let navigate = useNavigate();
 
-  const submitLoginHandler = async (user: BaseUser) => {
+  const submitRegisterHandler = async (request: any) => {
     try {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/users/login`,
+        `${process.env.REACT_APP_CONNSTR}/requests/`,
         "POST",
-        JSON.stringify(user),
+        JSON.stringify(request),
         {
           "Content-Type": "application/json",
         }
       );
-
-      const receivedUser: User = responseData.user;
-      console.log(receivedUser);
-
-      authContext.login(
-        receivedUser.id,
-        receivedUser.username,
-        receivedUser.isComite,
-        responseData.token
-      );
-
-      navigate(`/${receivedUser.id}/cases`);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const registerFormHandler = () => {
-    navigate(`/request-access`);
+  const backToLoginHandler = () => {
+    navigate("/");
   };
 
   if (isLoading) {
@@ -79,7 +63,7 @@ const Login = () => {
     <React.Fragment>
       <Formik
         validationSchema={schema}
-        onSubmit={submitLoginHandler}
+        onSubmit={submitRegisterHandler}
         initialValues={initialValues}
       >
         {({
@@ -94,11 +78,13 @@ const Login = () => {
         }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <Card className="mx-auto" style={{ width: "28rem" }}>
-              <Card.Title className="pt-3 px-3">Login</Card.Title>
+              <Card.Title className="pt-3 px-3">
+                Solicitação de Acesso
+              </Card.Title>
               <Card.Body>
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik01">
-                    <Form.Label>Usuário</Form.Label>
+                    <Form.Label>Usuário AD</Form.Label>
                     <Form.Control
                       type="text"
                       name="username"
@@ -112,39 +98,29 @@ const Login = () => {
                       Esse campo é obrigatório
                     </Form.Control.Feedback>
                   </Form.Group>
-                </Row>
-                <Row className="mb-3">
-                  <Form.Group as={Col} controlId="validationFormik02">
-                    <Form.Label>Senha</Form.Label>
-                    <Form.Control
-                      type="password"
-                      name="password"
-                      value={values.password}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      isValid={touched.password && !errors.password}
-                      isInvalid={!!errors.password}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      A senha deve ter pelo menos 8 caracteres, um caracter
-                      especial, uma letra maiúscula e um número
-                    </Form.Control.Feedback>
+                  <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Label>Justificativa de acesso</Form.Label>
+                    <Form.Control as="textarea" rows={5} />
+                  </Form.Group>
+                  <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Label>E-mail com autorização do superior</Form.Label>
+                    <Form.Control type="file" />
                   </Form.Group>
                 </Row>
                 <Button
                   type="submit"
                   className="float-end mt-3"
+                  variant="success"
                   disabled={!(isValid && dirty)}
                 >
-                  Login
+                  Solicitar
                 </Button>
                 <Button
                   type="button"
                   className="float-start mt-3"
-                  variant="success"
-                  onClick={registerFormHandler}
+                  onClick={backToLoginHandler}
                 >
-                  Solicitar Acesso
+                  Fazer Login
                 </Button>
               </Card.Body>
             </Card>
@@ -165,4 +141,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

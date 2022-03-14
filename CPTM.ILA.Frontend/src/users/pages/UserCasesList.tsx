@@ -28,6 +28,8 @@ const UserCasesList = () => {
         }
       );
 
+      console.log(responseData.cases);
+
       const loadedCases: CaseItemObject[] = responseData.cases;
       setCases(loadedCases);
     };
