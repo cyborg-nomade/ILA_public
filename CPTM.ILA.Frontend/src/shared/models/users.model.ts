@@ -4,7 +4,6 @@ export interface BaseUser {
 }
 
 export interface User extends BaseUser {
-  userCode: string;
   isComite: boolean;
   id: string;
 }
