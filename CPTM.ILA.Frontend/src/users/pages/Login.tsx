@@ -134,6 +134,13 @@ const Login = () => {
                 >
                   Login
                 </Button>
+                <Button
+                  type="button"
+                  className="float-start mt-3"
+                  variant="success"
+                >
+                  Solicitar Acesso
+                </Button>
               </Card.Body>
             </Card>
           </Form>
