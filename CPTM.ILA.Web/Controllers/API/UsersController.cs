@@ -21,7 +21,6 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public HttpResponseMessage Login(User user)
         {
-
             if (Seguranca.Autenticar(user.Username, user.Password))
             {
                 var userAd = Seguranca.ObterUsuario(user.Username);
@@ -35,23 +34,21 @@ namespace CPTM.ILA.Web.Controllers.API
                 //Create a List of Claims, Keep claims name short    
                 var permClaims = new List<Claim>
                 {
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid()
+                        .ToString()),
                     new Claim("valid", "1"),
                     new Claim("userid", userAd.ObjectGUID),
                     new Claim("name", userAd.Nome)
                 };
 
                 //Create Security Token object by giving required parameters    
-                var securityToken = new JwtSecurityToken(issuer, 
-                    issuer,   
-                    permClaims,
-                    expires: DateTime.Now.AddHours(1),
+                var securityToken = new JwtSecurityToken(issuer, issuer, permClaims, expires: DateTime.Now.AddHours(1),
                     signingCredentials: credentials);
                 var jwtToken = new JwtSecurityTokenHandler().WriteToken(securityToken);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new
                 {
-                    user = userAd,
+                    user = new { id = userAd.ObjectGUID, username = userAd.Nome, isComite = false },
                     token = jwtToken,
                     message = "Usuário logado"
                 });
