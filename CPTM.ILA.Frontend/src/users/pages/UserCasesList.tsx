@@ -23,9 +23,12 @@ const UserCasesList = () => {
         undefined,
         undefined,
         {
+          "Content-Type": "application/json",
           Authorization: "Bearer " + token,
         }
       );
+
+      console.log(responseData.cases);
 
       const loadedCases: CaseItemObject[] = responseData.cases;
       setCases(loadedCases);
