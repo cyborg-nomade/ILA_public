@@ -74,8 +74,8 @@ namespace CPTM.ILA.Web.Models
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
         public Group Criador { get; set; }
-        public bool IsAprovado { get; set; }
-        public bool IsDadosPessoaisSensiveis { get; set; }
+        public bool Aprovado { get; set; }
+        public bool DadosPessoaisSensiveis { get; set; }
         public FinalidadeTratamento FinalidadeTratamento { get; set; }
     }
 }
