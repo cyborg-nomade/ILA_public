@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace WebApplication1.Areas.HelpPage.ModelDescriptions
+namespace CPTM.ILA.Web.Areas.HelpPage.ModelDescriptions
 {
     internal static class ModelNameHelper
     {
@@ -26,8 +26,10 @@ namespace WebApplication1.Areas.HelpPage.ModelDescriptions
 
                 // Trim the generic parameter counts from the name
                 genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`'));
-                string[] argumentTypeNames = genericArguments.Select(t => GetModelName(t)).ToArray();
-                modelName = String.Format(CultureInfo.InvariantCulture, "{0}Of{1}", genericTypeName, String.Join("And", argumentTypeNames));
+                string[] argumentTypeNames = genericArguments.Select(t => GetModelName(t))
+                    .ToArray();
+                modelName = String.Format(CultureInfo.InvariantCulture, "{0}Of{1}", genericTypeName,
+                    String.Join("And", argumentTypeNames));
             }
 
             return modelName;

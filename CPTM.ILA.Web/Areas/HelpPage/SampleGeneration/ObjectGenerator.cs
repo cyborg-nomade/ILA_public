@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace WebApplication1.Areas.HelpPage
+namespace CPTM.ILA.Web.Areas.HelpPage.SampleGeneration
 {
     /// <summary>
     /// This class will create an object of a given type and populate it with sample data.
@@ -35,7 +35,8 @@ namespace WebApplication1.Areas.HelpPage
             return GenerateObject(type, new Dictionary<Type, object>());
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Here we just want to return null if anything goes wrong.")]
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes",
+            Justification = "Here we just want to return null if anything goes wrong.")]
         private object GenerateObject(Type type, Dictionary<Type, object> createdObjectReferences)
         {
             try
@@ -65,9 +66,7 @@ namespace WebApplication1.Areas.HelpPage
                     return GenerateDictionary(type, DefaultCollectionSize, createdObjectReferences);
                 }
 
-                if (type == typeof(IList) ||
-                    type == typeof(IEnumerable) ||
-                    type == typeof(ICollection))
+                if (type == typeof(IList) || type == typeof(IEnumerable) || type == typeof(ICollection))
                 {
                     return GenerateCollection(typeof(ArrayList), DefaultCollectionSize, createdObjectReferences);
                 }
@@ -101,7 +100,8 @@ namespace WebApplication1.Areas.HelpPage
             return null;
         }
 
-        private static object GenerateGenericType(Type type, int collectionSize, Dictionary<Type, object> createdObjectReferences)
+        private static object GenerateGenericType(Type type, int collectionSize,
+            Dictionary<Type, object> createdObjectReferences)
         {
             Type genericTypeDefinition = type.GetGenericTypeDefinition();
             if (genericTypeDefinition == typeof(Nullable<>))
@@ -150,7 +150,8 @@ namespace WebApplication1.Areas.HelpPage
                     return GenerateDictionary(dictionaryType, collectionSize, createdObjectReferences);
                 }
 
-                Type closedDictionaryType = typeof(IDictionary<,>).MakeGenericType(genericArguments[0], genericArguments[1]);
+                Type closedDictionaryType =
+                    typeof(IDictionary<,>).MakeGenericType(genericArguments[0], genericArguments[1]);
                 if (closedDictionaryType.IsAssignableFrom(type))
                 {
                     return GenerateDictionary(type, collectionSize, createdObjectReferences);
@@ -176,10 +177,12 @@ namespace WebApplication1.Areas.HelpPage
                 parameterValues[i] = objectGenerator.GenerateObject(genericArgs[i], createdObjectReferences);
                 failedToCreateTuple &= parameterValues[i] == null;
             }
+
             if (failedToCreateTuple)
             {
                 return null;
             }
+
             object result = Activator.CreateInstance(type, parameterValues);
             return result;
         }
@@ -187,16 +190,17 @@ namespace WebApplication1.Areas.HelpPage
         private static bool IsTuple(Type genericTypeDefinition)
         {
             return genericTypeDefinition == typeof(Tuple<>) ||
-                genericTypeDefinition == typeof(Tuple<,>) ||
-                genericTypeDefinition == typeof(Tuple<,,>) ||
-                genericTypeDefinition == typeof(Tuple<,,,>) ||
-                genericTypeDefinition == typeof(Tuple<,,,,>) ||
-                genericTypeDefinition == typeof(Tuple<,,,,,>) ||
-                genericTypeDefinition == typeof(Tuple<,,,,,,>) ||
-                genericTypeDefinition == typeof(Tuple<,,,,,,,>);
+                   genericTypeDefinition == typeof(Tuple<,>) ||
+                   genericTypeDefinition == typeof(Tuple<,,>) ||
+                   genericTypeDefinition == typeof(Tuple<,,,>) ||
+                   genericTypeDefinition == typeof(Tuple<,,,,>) ||
+                   genericTypeDefinition == typeof(Tuple<,,,,,>) ||
+                   genericTypeDefinition == typeof(Tuple<,,,,,,>) ||
+                   genericTypeDefinition == typeof(Tuple<,,,,,,,>);
         }
 
-        private static object GenerateKeyValuePair(Type keyValuePairType, Dictionary<Type, object> createdObjectReferences)
+        private static object GenerateKeyValuePair(Type keyValuePairType,
+            Dictionary<Type, object> createdObjectReferences)
         {
             Type[] genericArgs = keyValuePairType.GetGenericArguments();
             Type typeK = genericArgs[0];
@@ -209,6 +213,7 @@ namespace WebApplication1.Areas.HelpPage
                 // Failed to create key and values
                 return null;
             }
+
             object result = Activator.CreateInstance(keyValuePairType, keyObject, valueObject);
             return result;
         }
@@ -234,7 +239,8 @@ namespace WebApplication1.Areas.HelpPage
             return result;
         }
 
-        private static object GenerateDictionary(Type dictionaryType, int size, Dictionary<Type, object> createdObjectReferences)
+        private static object GenerateDictionary(Type dictionaryType, int size,
+            Dictionary<Type, object> createdObjectReferences)
         {
             Type typeK = typeof(object);
             Type typeV = typeof(object);
@@ -276,10 +282,12 @@ namespace WebApplication1.Areas.HelpPage
             {
                 return possibleValues.GetValue(0);
             }
+
             return null;
         }
 
-        private static object GenerateQueryable(Type queryableType, int size, Dictionary<Type, object> createdObjectReferences)
+        private static object GenerateQueryable(Type queryableType, int size,
+            Dictionary<Type, object> createdObjectReferences)
         {
             bool isGeneric = queryableType.IsGenericType;
             object list;
@@ -292,10 +300,12 @@ namespace WebApplication1.Areas.HelpPage
             {
                 list = GenerateArray(typeof(object[]), size, createdObjectReferences);
             }
+
             if (list == null)
             {
                 return null;
             }
+
             if (isGeneric)
             {
                 Type argumentType = typeof(IEnumerable<>).MakeGenericType(queryableType.GetGenericArguments());
@@ -306,11 +316,10 @@ namespace WebApplication1.Areas.HelpPage
             return Queryable.AsQueryable((IEnumerable)list);
         }
 
-        private static object GenerateCollection(Type collectionType, int size, Dictionary<Type, object> createdObjectReferences)
+        private static object GenerateCollection(Type collectionType, int size,
+            Dictionary<Type, object> createdObjectReferences)
         {
-            Type type = collectionType.IsGenericType ?
-                collectionType.GetGenericArguments()[0] :
-                typeof(object);
+            Type type = collectionType.IsGenericType ? collectionType.GetGenericArguments()[0] : typeof(object);
             object result = Activator.CreateInstance(collectionType);
             MethodInfo addMethod = collectionType.GetMethod("Add");
             bool areAllElementsNull = true;
@@ -362,6 +371,7 @@ namespace WebApplication1.Areas.HelpPage
 
                 result = defaultCtor.Invoke(new object[0]);
             }
+
             createdObjectReferences.Add(type, result);
             SetPublicProperties(type, result, createdObjectReferences);
             SetPublicFields(type, result, createdObjectReferences);
@@ -376,7 +386,8 @@ namespace WebApplication1.Areas.HelpPage
             {
                 if (property.CanWrite)
                 {
-                    object propertyValue = objectGenerator.GenerateObject(property.PropertyType, createdObjectReferences);
+                    object propertyValue =
+                        objectGenerator.GenerateObject(property.PropertyType, createdObjectReferences);
                     property.SetValue(obj, propertyValue, null);
                 }
             }
@@ -398,7 +409,8 @@ namespace WebApplication1.Areas.HelpPage
             private long _index = 0;
             private static readonly Dictionary<Type, Func<long, object>> DefaultGenerators = InitializeGenerators();
 
-            [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "These are simple type factories and cannot be split up.")]
+            [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity",
+                Justification = "These are simple type factories and cannot be split up.")]
             private static Dictionary<Type, Func<long, object>> InitializeGenerators()
             {
                 return new Dictionary<Type, Func<long, object>>
@@ -418,25 +430,22 @@ namespace WebApplication1.Areas.HelpPage
                     { typeof(Object), index => new object() },
                     { typeof(SByte), index => (SByte)64 },
                     { typeof(Single), index => (Single)(index + 0.1) },
-                    { 
-                        typeof(String), index =>
-                        {
-                            return String.Format(CultureInfo.CurrentCulture, "sample string {0}", index);
-                        }
+                    {
+                        typeof(String),
+                        index => { return String.Format(CultureInfo.CurrentCulture, "sample string {0}", index); }
                     },
-                    { 
-                        typeof(TimeSpan), index =>
-                        {
-                            return TimeSpan.FromTicks(1234567);
-                        }
+                    {
+                        typeof(TimeSpan), index => { return TimeSpan.FromTicks(1234567); }
                     },
                     { typeof(UInt16), index => (UInt16)(index % UInt16.MaxValue) },
                     { typeof(UInt32), index => (UInt32)(index % UInt32.MaxValue) },
                     { typeof(UInt64), index => (UInt64)index },
-                    { 
-                        typeof(Uri), index =>
+                    {
+                        typeof(Uri),
+                        index =>
                         {
-                            return new Uri(String.Format(CultureInfo.CurrentCulture, "http://webapihelppage{0}.com", index));
+                            return new Uri(String.Format(CultureInfo.CurrentCulture, "http://webapihelppage{0}.com",
+                                index));
                         }
                     },
                 };

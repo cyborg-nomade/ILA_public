@@ -1,6 +1,6 @@
 using System;
 
-namespace WebApplication1.Areas.HelpPage
+namespace CPTM.ILA.Web.Areas.HelpPage.SampleGeneration
 {
     /// <summary>
     /// This represents an image sample on the help page. There's a display template named ImageSample associated with this class.
@@ -17,6 +17,7 @@ namespace WebApplication1.Areas.HelpPage
             {
                 throw new ArgumentNullException("src");
             }
+
             Src = src;
         }
 
