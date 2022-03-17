@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CPTM.ILA.Web.Models
+namespace CPTM.ILA.Web.Models.AccessControl
 {
     public class Group
     {

@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Xml.XPath;
-using WebApplication1.Areas.HelpPage.ModelDescriptions;
+using CPTM.ILA.Web.Areas.HelpPage.ModelDescriptions;
 
-namespace WebApplication1.Areas.HelpPage
+namespace CPTM.ILA.Web.Areas.HelpPage
 {
     /// <summary>
     /// A custom <see cref="IDocumentationProvider"/> that reads the API documentation from an XML documentation file.
@@ -31,6 +31,7 @@ namespace WebApplication1.Areas.HelpPage
             {
                 throw new ArgumentNullException("documentPath");
             }
+
             XPathDocument xpath = new XPathDocument(documentPath);
             _documentNavigator = xpath.CreateNavigator();
         }
@@ -49,14 +50,17 @@ namespace WebApplication1.Areas.HelpPage
 
         public virtual string GetDocumentation(HttpParameterDescriptor parameterDescriptor)
         {
-            ReflectedHttpParameterDescriptor reflectedParameterDescriptor = parameterDescriptor as ReflectedHttpParameterDescriptor;
+            ReflectedHttpParameterDescriptor reflectedParameterDescriptor =
+                parameterDescriptor as ReflectedHttpParameterDescriptor;
             if (reflectedParameterDescriptor != null)
             {
                 XPathNavigator methodNode = GetMethodNode(reflectedParameterDescriptor.ActionDescriptor);
                 if (methodNode != null)
                 {
                     string parameterName = reflectedParameterDescriptor.ParameterInfo.Name;
-                    XPathNavigator parameterNode = methodNode.SelectSingleNode(String.Format(CultureInfo.InvariantCulture, ParameterExpression, parameterName));
+                    XPathNavigator parameterNode =
+                        methodNode.SelectSingleNode(String.Format(CultureInfo.InvariantCulture, ParameterExpression,
+                            parameterName));
                     if (parameterNode != null)
                     {
                         return parameterNode.Value.Trim();
@@ -75,7 +79,8 @@ namespace WebApplication1.Areas.HelpPage
 
         public string GetDocumentation(MemberInfo member)
         {
-            string memberName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", GetTypeName(member.DeclaringType), member.Name);
+            string memberName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}",
+                GetTypeName(member.DeclaringType), member.Name);
             string expression = member.MemberType == MemberTypes.Field ? FieldExpression : PropertyExpression;
             string selectExpression = String.Format(CultureInfo.InvariantCulture, expression, memberName);
             XPathNavigator propertyNode = _documentNavigator.SelectSingleNode(selectExpression);
@@ -93,7 +98,8 @@ namespace WebApplication1.Areas.HelpPage
             ReflectedHttpActionDescriptor reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
             if (reflectedActionDescriptor != null)
             {
-                string selectExpression = String.Format(CultureInfo.InvariantCulture, MethodExpression, GetMemberName(reflectedActionDescriptor.MethodInfo));
+                string selectExpression = String.Format(CultureInfo.InvariantCulture, MethodExpression,
+                    GetMemberName(reflectedActionDescriptor.MethodInfo));
                 return _documentNavigator.SelectSingleNode(selectExpression);
             }
 
@@ -102,11 +108,13 @@ namespace WebApplication1.Areas.HelpPage
 
         private static string GetMemberName(MethodInfo method)
         {
-            string name = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", GetTypeName(method.DeclaringType), method.Name);
+            string name = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", GetTypeName(method.DeclaringType),
+                method.Name);
             ParameterInfo[] parameters = method.GetParameters();
             if (parameters.Length != 0)
             {
-                string[] parameterTypeNames = parameters.Select(param => GetTypeName(param.ParameterType)).ToArray();
+                string[] parameterTypeNames = parameters.Select(param => GetTypeName(param.ParameterType))
+                    .ToArray();
                 name += String.Format(CultureInfo.InvariantCulture, "({0})", String.Join(",", parameterTypeNames));
             }
 
@@ -146,9 +154,12 @@ namespace WebApplication1.Areas.HelpPage
 
                 // Trim the generic parameter counts from the name
                 genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`'));
-                string[] argumentTypeNames = genericArguments.Select(t => GetTypeName(t)).ToArray();
-                name = String.Format(CultureInfo.InvariantCulture, "{0}{{{1}}}", genericTypeName, String.Join(",", argumentTypeNames));
+                string[] argumentTypeNames = genericArguments.Select(t => GetTypeName(t))
+                    .ToArray();
+                name = String.Format(CultureInfo.InvariantCulture, "{0}{{{1}}}", genericTypeName,
+                    String.Join(",", argumentTypeNames));
             }
+
             if (type.IsNested)
             {
                 // Changing the nested type name from OuterType+InnerType to OuterType.InnerType to match the XML documentation syntax.

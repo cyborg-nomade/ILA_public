@@ -1,10 +1,10 @@
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
-using WebApplication1.Areas.HelpPage.ModelDescriptions;
-using WebApplication1.Areas.HelpPage.Models;
+using CPTM.ILA.Web.Areas.HelpPage.ModelDescriptions;
+using CPTM.ILA.Web.Areas.HelpPage.Models;
 
-namespace WebApplication1.Areas.HelpPage.Controllers
+namespace CPTM.ILA.Web.Areas.HelpPage.Controllers
 {
     /// <summary>
     /// The controller that will handle requests for the help page.
@@ -13,8 +13,7 @@ namespace WebApplication1.Areas.HelpPage.Controllers
     {
         private const string ErrorViewName = "Error";
 
-        public HelpController()
-            : this(GlobalConfiguration.Configuration)
+        public HelpController() : this(GlobalConfiguration.Configuration)
         {
         }
 
@@ -28,7 +27,8 @@ namespace WebApplication1.Areas.HelpPage.Controllers
         public ActionResult Index()
         {
             ViewBag.DocumentationProvider = Configuration.Services.GetDocumentationProvider();
-            return View(Configuration.Services.GetApiExplorer().ApiDescriptions);
+            return View(Configuration.Services.GetApiExplorer()
+                .ApiDescriptions);
         }
 
         public ActionResult Api(string apiId)
