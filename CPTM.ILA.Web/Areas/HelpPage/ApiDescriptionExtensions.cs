@@ -3,7 +3,7 @@ using System.Text;
 using System.Web;
 using System.Web.Http.Description;
 
-namespace WebApplication1.Areas.HelpPage
+namespace CPTM.ILA.Web.Areas.HelpPage
 {
     public static class ApiDescriptionExtensions
     {
@@ -21,18 +21,20 @@ namespace WebApplication1.Areas.HelpPage
             if (urlParts.Length > 1)
             {
                 string query = urlParts[1];
-                string[] queryKeys = HttpUtility.ParseQueryString(query).AllKeys;
+                string[] queryKeys = HttpUtility.ParseQueryString(query)
+                    .AllKeys;
                 queryKeyString = String.Join("_", queryKeys);
             }
 
             StringBuilder friendlyPath = new StringBuilder();
-            friendlyPath.AppendFormat("{0}-{1}",
-                description.HttpMethod.Method,
-                localPath.Replace("/", "-").Replace("{", String.Empty).Replace("}", String.Empty));
+            friendlyPath.AppendFormat("{0}-{1}", description.HttpMethod.Method, localPath.Replace("/", "-")
+                .Replace("{", String.Empty)
+                .Replace("}", String.Empty));
             if (queryKeyString != null)
             {
                 friendlyPath.AppendFormat("_{0}", queryKeyString.Replace('.', '-'));
             }
+
             return friendlyPath.ToString();
         }
     }

@@ -1,6 +1,6 @@
 using System;
 
-namespace WebApplication1.Areas.HelpPage
+namespace CPTM.ILA.Web.Areas.HelpPage.SampleGeneration
 {
     /// <summary>
     /// This represents an invalid sample on the help page. There's a display template named InvalidSample associated with this class.
@@ -13,6 +13,7 @@ namespace WebApplication1.Areas.HelpPage
             {
                 throw new ArgumentNullException("errorMessage");
             }
+
             ErrorMessage = errorMessage;
         }
 

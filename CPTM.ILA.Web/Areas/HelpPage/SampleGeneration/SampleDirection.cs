@@ -1,4 +1,4 @@
-namespace WebApplication1.Areas.HelpPage
+namespace CPTM.ILA.Web.Areas.HelpPage.SampleGeneration
 {
     /// <summary>
     /// Indicates whether the sample is used for request or response
