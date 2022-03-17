@@ -2,21 +2,15 @@
 // package to your project.
 ////#define Handle_PageResultOfT
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net.Http.Headers;
-using System.Reflection;
-using System.Web;
 using System.Web.Http;
+using CPTM.ILA.Web.Areas.HelpPage.SampleGeneration;
 #if Handle_PageResultOfT
 using System.Web.Http.OData;
 #endif
 
-namespace WebApplication1.Areas.HelpPage
+namespace CPTM.ILA.Web.Areas.HelpPage.App_Start
 {
     /// <summary>
     /// Use this class to customize the Help Page.
@@ -28,8 +22,7 @@ namespace WebApplication1.Areas.HelpPage
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
             MessageId = "WebApplication1.Areas.HelpPage.TextSample.#ctor(System.String)",
             Justification = "End users may choose to merge this string with existing localized resources.")]
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly",
-            MessageId = "bsonspec",
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "bsonspec",
             Justification = "Part of a URI.")]
         public static void Register(HttpConfiguration config)
         {
@@ -55,8 +48,7 @@ namespace WebApplication1.Areas.HelpPage
             // Extend the following to use a preset object directly as the sample for all actions that support a media
             // type, regardless of the body parameter or return type. The lines below avoid display of binary content.
             // The BsonMediaTypeFormatter (if available) is not used to serialize the TextSample object.
-            config.SetSampleForMediaType(
-                new TextSample("Binary JSON content. See http://bsonspec.org for details."),
+            config.SetSampleForMediaType(new TextSample("Binary JSON content. See http://bsonspec.org for details."),
                 new MediaTypeHeaderValue("application/bson"));
 
             //// Uncomment the following to use "[0]=foo&[1]=bar" directly as the sample for all actions that support form URL encoded format

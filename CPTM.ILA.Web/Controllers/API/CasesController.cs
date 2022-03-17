@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using CPTM.ILA.Web.Models;
 using System.Security.Claims;
+using CPTM.ILA.Web.Models.CaseHelpers;
 
 
 namespace CPTM.ILA.Web.Controllers.API
@@ -19,8 +20,7 @@ namespace CPTM.ILA.Web.Controllers.API
         public HttpResponseMessage Get()
         {
             var name = "";
-            var identity = User.Identity as ClaimsIdentity;
-            if (identity != null)
+            if (User.Identity is ClaimsIdentity identity)
             {
                 var claims = identity.Claims;
                 name = claims.FirstOrDefault(p => p.Type == "name")

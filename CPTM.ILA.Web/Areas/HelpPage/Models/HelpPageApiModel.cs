@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Web.Http.Description;
-using WebApplication1.Areas.HelpPage.ModelDescriptions;
+using CPTM.ILA.Web.Areas.HelpPage.ModelDescriptions;
 
-namespace WebApplication1.Areas.HelpPage.Models
+namespace CPTM.ILA.Web.Areas.HelpPage.Models
 {
     /// <summary>
     /// The model that represents an API displayed on the help page.
@@ -47,10 +47,7 @@ namespace WebApplication1.Areas.HelpPage.Models
         /// </summary>
         public IList<ParameterDescription> RequestBodyParameters
         {
-            get
-            {
-                return GetParameterDescriptions(RequestModelDescription);
-            }
+            get { return GetParameterDescriptions(RequestModelDescription); }
         }
 
         /// <summary>
@@ -63,10 +60,7 @@ namespace WebApplication1.Areas.HelpPage.Models
         /// </summary>
         public IList<ParameterDescription> ResourceProperties
         {
-            get
-            {
-                return GetParameterDescriptions(ResourceDescription);
-            }
+            get { return GetParameterDescriptions(ResourceDescription); }
         }
 
         /// <summary>
@@ -95,7 +89,8 @@ namespace WebApplication1.Areas.HelpPage.Models
             CollectionModelDescription collectionModelDescription = modelDescription as CollectionModelDescription;
             if (collectionModelDescription != null)
             {
-                complexTypeModelDescription = collectionModelDescription.ElementDescription as ComplexTypeModelDescription;
+                complexTypeModelDescription =
+                    collectionModelDescription.ElementDescription as ComplexTypeModelDescription;
                 if (complexTypeModelDescription != null)
                 {
                     return complexTypeModelDescription.Properties;

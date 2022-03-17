@@ -1,81 +1,57 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using CPTM.ILA.Web.Models.AccessControl;
+using CPTM.ILA.Web.Models.CaseHelpers;
 
 namespace CPTM.ILA.Web.Models
 {
-    public class HipotesesTratamento
-    {
-        public HipotesesTratamento(string value)
-        {
-            Value = value;
-        }
-
-        public string Value { get; private set; }
-
-        public static HipotesesTratamento Consentimento => new HipotesesTratamento("Consentimento do titular");
-
-        public static HipotesesTratamento ObrigacaoLegal =>
-            new HipotesesTratamento("Cumprimento de obrigação legal ou regulatória pelo controlador");
-
-        public static HipotesesTratamento PoliticasPublicas =>
-            new HipotesesTratamento("Execução de políticas públicas");
-
-        public static HipotesesTratamento EstudoPesquisa =>
-            new HipotesesTratamento("Alguma espécie de estudo realizado por órgão de pesquisa");
-
-        public static HipotesesTratamento ExecucaoContratoTitular => new HipotesesTratamento(
-            "Execução de contrato ou de procedimentos preliminares relacionados a contrato do qual seja parte o titular, a pedido do titular dos dados");
-
-        public static HipotesesTratamento ExercicioDireitos =>
-            new HipotesesTratamento("Exercício regular de direitos em processo judicial, administrativo ou arbitral");
-
-        public static HipotesesTratamento ProtecaoVidaTitular =>
-            new HipotesesTratamento("Proteção da vida ou da incolumidade física do titular ou de terceiro");
-
-        public static HipotesesTratamento TutelaSaude => new HipotesesTratamento("Tutela da saúde");
-
-        public static HipotesesTratamento InteressesLegitimosControlador =>
-            new HipotesesTratamento("Atender aos interesses legítimos do controlador ou de terceiro");
-
-        public static HipotesesTratamento ProtecaoCredito => new HipotesesTratamento("Proteção do crédito");
-
-        public static HipotesesTratamento PrevencaoFraude =>
-            new HipotesesTratamento("Garantia da prevenção à fraude e à segurança do titular");
-    }
-
-    public class FontesRetenção
-    {
-        public FontesRetenção(string value)
-        {
-            Value = value;
-        }
-
-        public string Value { get; private set; }
-
-        public static FontesRetenção Na => new FontesRetenção("Não se aplica");
-        public static FontesRetenção DocPapel => new FontesRetenção("Documento em Papel");
-        public static FontesRetenção MidiaEletronica => new FontesRetenção("Mídias Eletrônicas");
-
-        public static FontesRetenção DocPapelMidiasEletronica =>
-            new FontesRetenção("Documento em Papel e Mídias Eletrônicas");
-    }
-
-    public class FinalidadeTratamento
-    {
-        public HipotesesTratamento HipoteseTratamento { get; set; }
-        public string DescricaoFinalidade { get; set; }
-    }
-
     public class Case
     {
         public int Id { get; set; }
         public string Nome { get; set; }
-        public string Ref { get; set; }
         public string Area { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
         public Group Criador { get; set; }
         public bool Aprovado { get; set; }
+
         public bool DadosPessoaisSensiveis { get; set; }
+        public AgenteTratamento Controlador { get; set; }
+        public AgenteTratamento Encarregado { get; set; }
+        public AgenteTratamento ExtensaoEncarregado { get; set; }
+        public AgenteTratamento AreaTratamentoDados { get; set; }
+        public AgenteTratamento Operador { get; set; }
+        public FasesCicloTratamento FasesCicloTratamento { get; set; }
+        public string DescricaoFluxoTratamento { get; set; }
+        public string AbrangenciaGeografica { get; set; }
+        public string FonteDados { get; set; }
         public FinalidadeTratamento FinalidadeTratamento { get; set; }
+        public CategoriaDadosPessoais CategoriaDadosPessoais { get; set; }
+        public CategoriaDadosPessoaisSensiveis CategoriaDadosPessoaisSensiveis { get; set; }
+        public string FrequenciaTratamento { get; set; }
+        public string QuantidadeDadosTratados { get; set; }
+        public CategoriasTitulares CategoriasTitulares { get; set; }
+        public ICollection<ItemCompartilhamentoDados> CompartilhamentoDadosPessoais { get; set; }
+        public ICollection<ItemMedidaSegurancaPrivacidade> MedidasSegurancaPrivacidade { get; set; }
+        public ICollection<ItemTransferenciaInternacional> TransferenciaInternacional { get; set; }
+        public ICollection<ItemContratoTi> ContratoServicosTiTratamentoDados { get; set; }
+        public ICollection<ItemRiscoPrivacidade> RiscosPrivacidade { get; set; }
+        public ICollection<ItemObservacoesProcesso> ObservacoesProcesso { get; set; }
+
+        public CaseListItem ReduceToListItem(Case fullCase)
+        {
+            return new CaseListItem()
+            {
+                Area = fullCase.Area,
+                DadosPessoaisSensiveis = fullCase.DadosPessoaisSensiveis ? "SIM" : "NÃO",
+                DataAtualizacao = fullCase.DataAtualizacao.ToString("d", CultureInfo.GetCultureInfo("pt-BR")),
+                DataCriacao = fullCase.DataAtualizacao.ToString("d", CultureInfo.GetCultureInfo("pt-BR")),
+                DescricaoFinalidade = fullCase.FinalidadeTratamento.DescricaoFinalidade,
+                HipotesesTratamento = fullCase.FinalidadeTratamento.HipoteseTratamento,
+                Id = fullCase.Id,
+                Nome = fullCase.Nome,
+            };
+        }
     }
 }
