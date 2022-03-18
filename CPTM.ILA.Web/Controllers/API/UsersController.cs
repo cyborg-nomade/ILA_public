@@ -20,7 +20,7 @@ namespace CPTM.ILA.Web.Controllers.API
         [Route("login")]
         [AllowAnonymous]
         [HttpPost]
-        public HttpResponseMessage Login(User user)
+        public HttpResponseMessage Login(AuthUser user)
         {
             if (Seguranca.Autenticar(user.Username, user.Password))
             {
