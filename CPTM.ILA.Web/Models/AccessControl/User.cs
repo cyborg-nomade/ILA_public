@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CPTM.ILA.Web.Models.AccessControl
 {
+    [Table("ILA_USERS")]
     public class User
     {
         public int Id { get; set; }
