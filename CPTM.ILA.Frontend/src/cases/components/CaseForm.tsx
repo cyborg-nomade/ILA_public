@@ -23,12 +23,10 @@ import {
   emptyItemObservacoesProcesso,
   emptyItemRiscoPrivacidade,
   emptyItemTransferenciaInternacional,
-  BaseFullCaseObject,
-  verbosTratamento,
+  BaseCase,
 } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import TagPicker from "../../shared/components/UI/TagPicker";
 import Section6FormRow from "./form-items/Section6FormRow";
 import Section7FormRow from "./form-items/Section7FormRow";
 import Section10FormRow from "./form-items/Section10FormRow";
@@ -39,7 +37,7 @@ import Section14FormRow from "./form-items/Section14FormRow";
 import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
 
-type onSubmitFn = (item: BaseFullCaseObject) => void;
+type onSubmitFn = (item: BaseCase) => void;
 
 // const schema = yup.object().shape({
 //   nome: yup.string().required(),
@@ -600,7 +598,7 @@ type onSubmitFn = (item: BaseFullCaseObject) => void;
 // });
 
 const CaseForm = (props: {
-  item: BaseFullCaseObject;
+  item: BaseCase;
   new?: boolean;
   edit?: boolean;
   approve?: boolean;
@@ -730,7 +728,7 @@ const CaseForm = (props: {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Row>
-                  <Row className="mb-3">
+                  {/* <Row className="mb-3">
                     <Form.Group as={Col} controlId="validationFormik02">
                       <Form.Label>ID</Form.Label>
                       <Form.Control
@@ -755,7 +753,7 @@ const CaseForm = (props: {
                         Esse campo é obrigatório
                       </Form.Control.Feedback>
                     </Form.Group>
-                  </Row>
+                  </Row> */}
                   <Row className="mb-3">
                     <Form.Group as={Col} controlId="validationFormik03">
                       <Form.Label>Data de Criação do Inventário</Form.Label>
@@ -1214,27 +1212,6 @@ const CaseForm = (props: {
                         checked={values.fasesCicloTratamento.eliminacao}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                      />
-                    </Col>
-                  </Row>
-                  <Row className="mb-3">
-                    <Col>
-                      <Form.Label>Verbos de Tratamento</Form.Label>
-                      <br />
-                      <Form.Text className="text-muted">
-                        {Object.values(verbosTratamento).map(
-                          (verbo) => `${verbo}, `
-                        )}
-                      </Form.Text>
-                    </Col>
-                    <Col lg={8}>
-                      <TagPicker
-                        disabled={!isEditing}
-                        name="fasesCicloTratamento.verbos"
-                        onChange={(tags) =>
-                          setFieldValue("fasesCicloTratamento.verbos", tags)
-                        }
-                        value={values.fasesCicloTratamento.verbos}
                       />
                     </Col>
                   </Row>

@@ -10,7 +10,7 @@ import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
-import { BaseUser, User } from "./../../shared/models/users.model";
+import { BaseUser } from "./../../shared/models/users.model";
 import { AuthContext } from "./../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
 

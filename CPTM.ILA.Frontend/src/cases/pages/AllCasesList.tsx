@@ -3,13 +3,13 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { CaseItemObject } from "../../shared/models/cases.model";
+import { CaseListItem } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
 import CasesList from "../components/CasesList";
 
 const AllCasesList = () => {
-  const [cases, setCases] = useState<CaseItemObject[]>([]);
+  const [cases, setCases] = useState<CaseListItem[]>([]);
 
   const { token } = useContext(AuthContext);
 
@@ -24,7 +24,7 @@ const AllCasesList = () => {
         undefined,
         { Authorization: "Bearer " + token }
       );
-      const loadedCases: CaseItemObject[] = responseData.cases;
+      const loadedCases: CaseListItem[] = responseData.cases;
       setCases(loadedCases);
     };
 
@@ -43,8 +43,6 @@ const AllCasesList = () => {
     );
   }
 
-  const approvedCases = cases.filter((item) => item.aprovado);
-
   return (
     <React.Fragment>
       <h1>Página Inicial - Todos os Itens Aprovados</h1>
@@ -57,7 +55,7 @@ const AllCasesList = () => {
           {error}
         </Alert>
       )}
-      <CasesList items={approvedCases} />
+      <CasesList items={cases} />
     </React.Fragment>
   );
 };

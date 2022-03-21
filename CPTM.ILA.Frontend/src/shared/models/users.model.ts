@@ -6,4 +6,5 @@ export interface BaseUser {
 export interface User extends BaseUser {
   isComite: boolean;
   id: string;
+  originGroup: string;
 }

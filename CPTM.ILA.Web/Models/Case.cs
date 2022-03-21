@@ -15,7 +15,8 @@ namespace CPTM.ILA.Web.Models
         public string Area { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public Group Criador { get; set; }
+        public Group GrupoCriador { get; set; }
+        public User UsuarioCriador { get; set; }
         public bool Aprovado { get; set; }
         public bool DadosPessoaisSensiveis { get; set; }
 
