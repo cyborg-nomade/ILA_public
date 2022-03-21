@@ -14,3 +14,5 @@ export interface BaseAccessRequest {
 export interface AccessRequest extends BaseAccessRequest {
   id: number;
 }
+
+export type headersAccessRequestsList = keyof AccessRequest;

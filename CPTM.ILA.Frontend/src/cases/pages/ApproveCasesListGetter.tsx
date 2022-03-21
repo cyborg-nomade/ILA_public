@@ -5,10 +5,10 @@ import Row from "react-bootstrap/Row";
 
 import { CaseListItem } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
-import { useHttpClient } from "./../../shared/hooks/http-hook";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 import CasesList from "../components/CasesList";
 
-const AllCasesList = () => {
+const ApproveCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
 
   const { token } = useContext(AuthContext);
@@ -45,7 +45,7 @@ const AllCasesList = () => {
 
   return (
     <React.Fragment>
-      <h1>Página Inicial - Todos os Itens Aprovados</h1>
+      <h1>Aprovações Pendentes</h1>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}
@@ -60,4 +60,4 @@ const AllCasesList = () => {
   );
 };
 
-export default AllCasesList;
+export default ApproveCasesListGetter;
