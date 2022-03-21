@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import {
-  FullCaseObject,
+  Case,
   tipoGarantiaTranferenciaInternacional,
 } from "../../../shared/models/cases.model";
 
@@ -16,7 +16,7 @@ const Section13FormRow = (props: {
   className: string;
 }) => {
   const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
-    useFormikContext<FullCaseObject>();
+    useFormikContext<Case>();
 
   const [nomeOrganizacao, setNomeOrganizacao] = useState(
     getIn(values, `${props.name}.nomeOrganizacao`)

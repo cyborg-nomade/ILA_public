@@ -13,19 +13,18 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import {
-  CaseItemObject,
-  headersCaseItemObjectReduced,
-  reduceCaseObjectToList,
+  CaseListItem,
+  headersCaseListItem,
 } from "../../shared/models/cases.model";
 
 const headers: {
   title: string;
   isFilterable: boolean;
   isSortable: boolean;
-  prop: headersCaseItemObjectReduced;
+  prop: headersCaseListItem;
 }[] = [
   { title: "Nome", prop: "nome", isFilterable: true, isSortable: true },
-  { title: "ID", prop: "ref", isFilterable: true, isSortable: true },
+  { title: "ID", prop: "id", isFilterable: true, isSortable: true },
   { title: "Área", prop: "area", isFilterable: true, isSortable: true },
   {
     title: "Data de Criação do Inventário",
@@ -59,7 +58,7 @@ const headers: {
   },
 ];
 
-const CasesList = (props: { items: CaseItemObject[] }) => {
+const CasesList = (props: { items: CaseListItem[] }) => {
   let navigate = useNavigate();
 
   if (props.items.length === 0) {
@@ -74,17 +73,13 @@ const CasesList = (props: { items: CaseItemObject[] }) => {
     );
   }
 
-  const bodyItems = props.items.map((c) => {
-    return reduceCaseObjectToList(c);
-  });
-
-  const handleRowClick = (row: CaseItemObject) => {
+  const handleRowClick = (row: CaseListItem) => {
     navigate(`${row.id}`);
   };
 
   return (
     <DatatableWrapper
-      body={bodyItems}
+      body={props.items}
       headers={headers}
       paginationOptionsProps={{
         initialState: {

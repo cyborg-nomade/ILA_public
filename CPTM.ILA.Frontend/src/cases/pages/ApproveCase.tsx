@@ -4,18 +4,13 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import {
-  emptyFullCaseObject,
-  BaseFullCaseObject,
-} from "../../shared/models/cases.model";
+import { emptyCase, BaseCase } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
 
 const ApproveCase = () => {
-  const [fullCase, setFullCase] = useState<BaseFullCaseObject>(
-    emptyFullCaseObject()
-  );
+  const [fullCase, setFullCase] = useState<BaseCase>(emptyCase());
 
   const { token } = useContext(AuthContext);
 
@@ -56,7 +51,7 @@ const ApproveCase = () => {
     );
   }
 
-  const submitFormHandler = async (item: BaseFullCaseObject) => {
+  const submitFormHandler = async (item: BaseCase) => {
     item.aprovado = true;
 
     try {

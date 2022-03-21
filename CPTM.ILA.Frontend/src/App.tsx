@@ -7,16 +7,6 @@ import Spinner from "react-bootstrap/Spinner";
 import { AuthContext } from "./shared/context/auth-context";
 import { useAuth } from "./shared/hooks/auth-hook";
 import MainHeader from "./shared/components/nav/MainHeader";
-// import AllCasesList from "./cases/pages/AllCasesList";
-// import ApproveCaseList from "./cases/pages/ApproveCaseList";
-// import EditCase from "./cases/pages/EditCase";
-// import NewCase from "./cases/pages/NewCase";
-// import Login from "./users/pages/Login";
-// import UserCasesList from "./users/pages/UserCasesList";
-// import UserPage from "./users/pages/UserPage";
-// import ApproveCase from "./cases/pages/ApproveCase";
-// import ApprovePage from "./cases/pages/ApprovePage";
-// import AllCasesPage from "./cases/pages/AllCasesPage";
 import "./App.css";
 import Register from "./users/pages/Register";
 

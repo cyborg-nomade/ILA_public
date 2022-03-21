@@ -3,13 +3,13 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { CaseItemObject } from "../../shared/models/cases.model";
+import { CaseListItem } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
 import CasesList from "../../cases/components/CasesList";
 
 const UserCasesList = () => {
-  const [cases, setCases] = useState<CaseItemObject[]>([]);
+  const [cases, setCases] = useState<CaseListItem[]>([]);
 
   const { userId: uid, token, username } = useContext(AuthContext);
 
@@ -30,7 +30,7 @@ const UserCasesList = () => {
 
       console.log(responseData.cases);
 
-      const loadedCases: CaseItemObject[] = responseData.cases;
+      const loadedCases: CaseListItem[] = responseData.cases;
       setCases(loadedCases);
     };
 
