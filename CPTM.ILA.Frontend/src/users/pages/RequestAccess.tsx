@@ -13,9 +13,9 @@ import Spinner from "react-bootstrap/Spinner";
 import {
   BaseAccessRequest,
   tipoSolicitacaoAcesso,
-} from "./../../shared/models/access-request.model";
-import { AuthContext } from "./../../shared/context/auth-context";
-import { useHttpClient } from "./../../shared/hooks/http-hook";
+} from "../../shared/models/access-request.model";
+import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 
 // const schema = yup.object().shape({
 //   username: yup.string().required(),
@@ -28,7 +28,7 @@ const initialValues: BaseAccessRequest = {
   tipoSolicitacaoAcesso: tipoSolicitacaoAcesso.AcessoAoSistema,
 };
 
-const Register = () => {
+const RequestAccess = () => {
   const [message, setMessage] = useState("");
 
   const authContext = useContext(AuthContext);
@@ -200,4 +200,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RequestAccess;

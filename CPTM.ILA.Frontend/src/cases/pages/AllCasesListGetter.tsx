@@ -1,43 +1,37 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
 import { CaseListItem } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
-import { useHttpClient } from "./../../shared/hooks/http-hook";
-import CasesList from "../../cases/components/CasesList";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import CasesList from "../components/CasesList";
 
-const UserCasesList = () => {
+const AllCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
 
-  const { userId: uid, token, username } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
 
   useEffect(() => {
-    const getUserCases = async () => {
+    const getAllCases = async () => {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/user/${uid}`,
+        `${process.env.REACT_APP_CONNSTR}/cases/`,
         undefined,
         undefined,
-        {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        }
+        { Authorization: "Bearer " + token }
       );
-
-      console.log(responseData.cases);
-
       const loadedCases: CaseListItem[] = responseData.cases;
       setCases(loadedCases);
     };
 
-    getUserCases().catch((error) => {
+    getAllCases().catch((error) => {
       console.log(error);
     });
-  }, [uid, sendRequest, token]);
+  }, [sendRequest, token]);
 
   if (isLoading) {
     return (
@@ -51,8 +45,7 @@ const UserCasesList = () => {
 
   return (
     <React.Fragment>
-      <h1>Olá, {username}</h1>
-      <h1>Página Inicial - Todos os seus itens</h1>
+      <h1>Página Inicial - Todos os Itens Aprovados</h1>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}
@@ -67,4 +60,4 @@ const UserCasesList = () => {
   );
 };
 
-export default UserCasesList;
+export default AllCasesListGetter;
