@@ -10,30 +10,35 @@ import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
-import { BaseUser } from "./../../shared/models/users.model";
+import {
+  BaseAccessRequest,
+  tipoSolicitacaoAcesso,
+} from "./../../shared/models/access-request.model";
 import { AuthContext } from "./../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
 
-const schema = yup.object().shape({
-  username: yup.string().required(),
-});
+// const schema = yup.object().shape({
+//   username: yup.string().required(),
+// });
 
-const initialValues: BaseUser = {
-  username: "",
-  password: "",
+const initialValues: BaseAccessRequest = {
+  usernameSolicitante: "",
+  usernameSuperior: "",
+  justificativa: "",
+  tipoSolicitacaoAcesso: tipoSolicitacaoAcesso.AcessoAoSistema,
 };
 
-const Register = (props: any) => {
+const Register = () => {
   const authContext = useContext(AuthContext);
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   let navigate = useNavigate();
 
-  const submitRegisterHandler = async (request: any) => {
+  const submitRegisterHandler = async (request: BaseAccessRequest) => {
     try {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/requests/`,
+        `${process.env.REACT_APP_CONNSTR}/access-requests/initial`,
         "POST",
         JSON.stringify(request),
         {
@@ -62,7 +67,7 @@ const Register = (props: any) => {
   return (
     <React.Fragment>
       <Formik
-        validationSchema={schema}
+        // validationSchema={schema}
         onSubmit={submitRegisterHandler}
         initialValues={initialValues}
       >
@@ -87,25 +92,57 @@ const Register = (props: any) => {
                     <Form.Label>Usuário AD</Form.Label>
                     <Form.Control
                       type="text"
-                      name="username"
-                      value={values.username}
+                      name="usernameSolicitante"
+                      value={values.usernameSolicitante}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      isValid={touched.username && !errors.username}
-                      isInvalid={!!errors.username}
+                      isValid={
+                        touched.usernameSolicitante &&
+                        !errors.usernameSolicitante
+                      }
+                      isInvalid={!!errors.usernameSolicitante}
                     />
                     <Form.Control.Feedback type="invalid">
                       Esse campo é obrigatório
                     </Form.Control.Feedback>
                   </Form.Group>
-                  <Form.Group controlId="formFile" className="mb-3">
-                    <Form.Label>Justificativa de acesso</Form.Label>
-                    <Form.Control as="textarea" rows={5} />
+                  <Form.Group as={Col} controlId="validationFormik02">
+                    <Form.Label>Usuário AD do Superior</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="usernameSuperior"
+                      value={values.usernameSuperior}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      isValid={
+                        touched.usernameSuperior && !errors.usernameSuperior
+                      }
+                      isInvalid={!!errors.usernameSuperior}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Esse campo é obrigatório
+                    </Form.Control.Feedback>
                   </Form.Group>
-                  <Form.Group controlId="formFile" className="mb-3">
+                  <Form.Group as={Col} controlId="validationFormik03">
+                    <Form.Label>Justificativa de acesso</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={5}
+                      name="justificativa"
+                      value={values.justificativa}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      isValid={touched.justificativa && !errors.justificativa}
+                      isInvalid={!!errors.justificativa}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Esse campo é obrigatório
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  {/* <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label>E-mail com autorização do superior</Form.Label>
                     <Form.Control type="file" />
-                  </Form.Group>
+                  </Form.Group> */}
                 </Row>
                 <Button
                   type="submit"

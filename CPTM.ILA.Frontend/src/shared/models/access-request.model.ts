@@ -1,4 +1,4 @@
-enum tipoSolicitacaoAcesso {
+export enum tipoSolicitacaoAcesso {
   AcessoAoSistema,
   AcessoAGrupos,
   AcessoComite,
