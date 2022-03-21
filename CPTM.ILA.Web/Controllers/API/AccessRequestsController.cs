@@ -17,6 +17,9 @@ namespace CPTM.ILA.Web.Controllers.API
     {
         private IlaContext _context;
 
+        /// <summary>
+        /// Controlador da APÍ para Requisições de Acesso
+        /// </summary>
         public AccessRequestsController()
         {
             _context = new IlaContext();
@@ -117,7 +120,10 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpGet]
         public HttpResponseMessage GetInitialAccessRequests()
         {
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = "This worked" });
+            var initialRequests = _context.AccessRequests
+                .Where(ar => ar.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoAoSistema)
+                .ToList();
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = "This worked", initialRequests });
         }
 
         /// <summary>

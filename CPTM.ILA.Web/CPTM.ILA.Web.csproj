@@ -306,13 +306,9 @@
     <Compile Include="Controllers\API\CommentsController.cs" />
     <Compile Include="Controllers\API\UsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Migrations\202203181451426_InitialModel.cs" />
-    <Compile Include="Migrations\202203181451426_InitialModel.designer.cs">
-      <DependentUpon>202203181451426_InitialModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202203181453204_FullModel.cs" />
-    <Compile Include="Migrations\202203181453204_FullModel.designer.cs">
-      <DependentUpon>202203181453204_FullModel.cs</DependentUpon>
+    <Compile Include="Migrations\202203211420101_FullModel.cs" />
+    <Compile Include="Migrations\202203211420101_FullModel.designer.cs">
+      <DependentUpon>202203211420101_FullModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
@@ -462,11 +458,8 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202203181451426_InitialModel.resx">
-      <DependentUpon>202203181451426_InitialModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203181453204_FullModel.resx">
-      <DependentUpon>202203181453204_FullModel.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202203211420101_FullModel.resx">
+      <DependentUpon>202203211420101_FullModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
