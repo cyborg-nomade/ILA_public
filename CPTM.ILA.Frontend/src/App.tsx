@@ -22,6 +22,15 @@ const UserPage = React.lazy(() => import("./users/pages/UserPage"));
 const ApproveCase = React.lazy(() => import("./cases/pages/ApproveCase"));
 const ApprovePage = React.lazy(() => import("./cases/pages/ApprovePage"));
 const AllCasesPage = React.lazy(() => import("./cases/pages/AllCasesPage"));
+const AccessRequestPage = React.lazy(
+  () => import("./access-requests/pages/AccessRequestPage")
+);
+const AccessRequestList = React.lazy(
+  () => import("./access-requests/pages/AccessRequestList")
+);
+const ApproveAccessRequest = React.lazy(
+  () => import("./access-requests/pages/ApproveAccessRequest")
+);
 
 const App = () => {
   const { token, login, logout, userId, username, isComite } = useAuth();
@@ -58,6 +67,13 @@ const App = () => {
         <Route path="/comite/cases/approve" element={<ApprovePage />}>
           <Route index element={<ApproveCaseList />} />
           <Route path=":cid" element={<ApproveCase />} />
+        </Route>
+        <Route
+          path="/comite/access-requests/approve"
+          element={<AccessRequestPage />}
+        >
+          <Route index element={<AccessRequestList />} />
+          <Route path=":arid" element={<ApproveAccessRequest />} />
         </Route>
         <Route path="/" element={<Navigate replace to="../comite/cases" />} />
         <Route path="*" element={<Navigate replace to="../comite/cases" />} />
