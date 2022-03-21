@@ -40,12 +40,12 @@
                         CategoriaDadosPessoais_Id = c.Decimal(precision: 9, scale: 0),
                         CategoriasTitulares_Id = c.Decimal(precision: 9, scale: 0),
                         Controlador_Id = c.Decimal(precision: 9, scale: 0),
-                        Criador_Id = c.Decimal(precision: 9, scale: 0),
-                        User_Id = c.Decimal(precision: 9, scale: 0),
                         Encarregado_Id = c.Decimal(precision: 9, scale: 0),
                         ExtensaoEncarregado_Id = c.Decimal(precision: 9, scale: 0),
                         FasesCicloTratamento_Id = c.Decimal(precision: 9, scale: 0),
                         FinalidadeTratamento_Id = c.Decimal(precision: 9, scale: 0),
+                        GrupoCriador_Id = c.Decimal(precision: 9, scale: 0),
+                        UsuarioCriador_Id = c.Decimal(precision: 9, scale: 0),
                         Operador_Id = c.Decimal(precision: 9, scale: 0),
                     })
                 .PrimaryKey(t => t.Id)
@@ -54,24 +54,24 @@
                 .ForeignKey("ILA.ILA_CATEGORIA_DADOS_PESSOAIS", t => t.CategoriaDadosPessoais_Id)
                 .ForeignKey("ILA.ILA_CATEGORIA_TITULARES", t => t.CategoriasTitulares_Id)
                 .ForeignKey("ILA.ILA_AGENTE_TRATAMENTO", t => t.Controlador_Id)
-                .ForeignKey("ILA.ILA_GROUPS", t => t.Criador_Id)
-                .ForeignKey("ILA.ILA_USERS", t => t.User_Id)
                 .ForeignKey("ILA.ILA_AGENTE_TRATAMENTO", t => t.Encarregado_Id)
                 .ForeignKey("ILA.ILA_AGENTE_TRATAMENTO", t => t.ExtensaoEncarregado_Id)
                 .ForeignKey("ILA.ILA_FASES_CICLO_TRATAMENTO", t => t.FasesCicloTratamento_Id)
                 .ForeignKey("ILA.ILA_FINALIDADE_TRATAMENTO", t => t.FinalidadeTratamento_Id)
+                .ForeignKey("ILA.ILA_GROUPS", t => t.GrupoCriador_Id)
+                .ForeignKey("ILA.ILA_USERS", t => t.UsuarioCriador_Id)
                 .ForeignKey("ILA.ILA_AGENTE_TRATAMENTO", t => t.Operador_Id)
                 .Index(t => t.AreaTratamentoDados_Id)
                 .Index(t => t.CatDadosPessoaisSensiveis_Id)
                 .Index(t => t.CategoriaDadosPessoais_Id)
                 .Index(t => t.CategoriasTitulares_Id)
                 .Index(t => t.Controlador_Id)
-                .Index(t => t.Criador_Id)
-                .Index(t => t.User_Id)
                 .Index(t => t.Encarregado_Id)
                 .Index(t => t.ExtensaoEncarregado_Id)
                 .Index(t => t.FasesCicloTratamento_Id)
                 .Index(t => t.FinalidadeTratamento_Id)
+                .Index(t => t.GrupoCriador_Id)
+                .Index(t => t.UsuarioCriador_Id)
                 .Index(t => t.Operador_Id);
             
             CreateTable(
@@ -527,25 +527,6 @@
                 .Index(t => t.Case_Id);
             
             CreateTable(
-                "ILA.ILA_GROUPS",
-                c => new
-                    {
-                        Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
-                        Name = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "ILA.ILA_USERS",
-                c => new
-                    {
-                        Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
-                        Username = c.String(),
-                        IsComite = c.Decimal(nullable: false, precision: 1, scale: 0),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
                 "ILA.ILA_FASES_CICLO_TRATAMENTO",
                 c => new
                     {
@@ -570,6 +551,34 @@
                         BeneficiosEsperados = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "ILA.ILA_GROUPS",
+                c => new
+                    {
+                        Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
+                        Nome = c.String(),
+                        User_Id = c.Decimal(precision: 9, scale: 0),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("ILA.ILA_USERS", t => t.User_Id)
+                .Index(t => t.User_Id);
+            
+            CreateTable(
+                "ILA.ILA_USERS",
+                c => new
+                    {
+                        Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
+                        Username = c.String(),
+                        IsComite = c.Decimal(nullable: false, precision: 1, scale: 0),
+                        OriginGroup_Id = c.Decimal(precision: 9, scale: 0),
+                        Group_Id = c.Decimal(precision: 9, scale: 0),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("ILA.ILA_GROUPS", t => t.OriginGroup_Id)
+                .ForeignKey("ILA.ILA_GROUPS", t => t.Group_Id)
+                .Index(t => t.OriginGroup_Id)
+                .Index(t => t.Group_Id);
             
             CreateTable(
                 "ILA.ILA_ITEM_MEDIDA_SEG_PRIV",
@@ -648,17 +657,28 @@
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
-                "ILA.UserGroup",
+                "ILA.ILA_CONFIGURACAO",
                 c => new
                     {
-                        User_Id = c.Decimal(nullable: false, precision: 9, scale: 0),
-                        Group_Id = c.Decimal(nullable: false, precision: 9, scale: 0),
+                        Parametro = c.String(nullable: false, maxLength: 250, unicode: false),
+                        TxDescricao = c.String(maxLength: 4000, unicode: false),
+                        Valor = c.String(maxLength: 4000, unicode: false),
+                        IdCodusuarioCadastro = c.Decimal(nullable: false, precision: 9, scale: 0),
+                        DtCadastro = c.DateTime(nullable: false),
+                        IdCodusuarioAlteracao = c.Decimal(precision: 9, scale: 0),
+                        DtAlteracao = c.DateTime(),
                     })
-                .PrimaryKey(t => new { t.User_Id, t.Group_Id })
-                .ForeignKey("ILA.ILA_USERS", t => t.User_Id, cascadeDelete: true)
-                .ForeignKey("ILA.ILA_GROUPS", t => t.Group_Id, cascadeDelete: true)
-                .Index(t => t.User_Id)
-                .Index(t => t.Group_Id);
+                .PrimaryKey(t => t.Parametro);
+            
+            CreateTable(
+                "ILA.ILA_USUARIO_PREFERENCIA",
+                c => new
+                    {
+                        IdCodusuario = c.Decimal(nullable: false, precision: 9, scale: 0),
+                        TxCategoria = c.String(nullable: false, maxLength: 100, unicode: false),
+                        TxValor = c.String(unicode: false),
+                    })
+                .PrimaryKey(t => new { t.IdCodusuario, t.TxCategoria });
             
         }
         
@@ -671,14 +691,15 @@
             DropForeignKey("ILA.ILA_CASES", "Operador_Id", "ILA.ILA_AGENTE_TRATAMENTO");
             DropForeignKey("ILA.ILA_ITEM_OBS_PROCESSO", "Case_Id", "ILA.ILA_CASES");
             DropForeignKey("ILA.ILA_ITEM_MEDIDA_SEG_PRIV", "Case_Id", "ILA.ILA_CASES");
+            DropForeignKey("ILA.ILA_USERS", "Group_Id", "ILA.ILA_GROUPS");
+            DropForeignKey("ILA.ILA_USERS", "OriginGroup_Id", "ILA.ILA_GROUPS");
+            DropForeignKey("ILA.ILA_GROUPS", "User_Id", "ILA.ILA_USERS");
+            DropForeignKey("ILA.ILA_CASES", "UsuarioCriador_Id", "ILA.ILA_USERS");
+            DropForeignKey("ILA.ILA_CASES", "GrupoCriador_Id", "ILA.ILA_GROUPS");
             DropForeignKey("ILA.ILA_CASES", "FinalidadeTratamento_Id", "ILA.ILA_FINALIDADE_TRATAMENTO");
             DropForeignKey("ILA.ILA_CASES", "FasesCicloTratamento_Id", "ILA.ILA_FASES_CICLO_TRATAMENTO");
             DropForeignKey("ILA.ILA_CASES", "ExtensaoEncarregado_Id", "ILA.ILA_AGENTE_TRATAMENTO");
             DropForeignKey("ILA.ILA_CASES", "Encarregado_Id", "ILA.ILA_AGENTE_TRATAMENTO");
-            DropForeignKey("ILA.UserGroup", "Group_Id", "ILA.ILA_GROUPS");
-            DropForeignKey("ILA.UserGroup", "User_Id", "ILA.ILA_USERS");
-            DropForeignKey("ILA.ILA_CASES", "User_Id", "ILA.ILA_USERS");
-            DropForeignKey("ILA.ILA_CASES", "Criador_Id", "ILA.ILA_GROUPS");
             DropForeignKey("ILA.ILA_CASES", "Controlador_Id", "ILA.ILA_AGENTE_TRATAMENTO");
             DropForeignKey("ILA.ILA_ITEM_CONTRATO_TI", "Case_Id", "ILA.ILA_CASES");
             DropForeignKey("ILA.ILA_ITEM_COMPARTILH_DADOS", "Case_Id", "ILA.ILA_CASES");
@@ -768,14 +789,15 @@
             DropForeignKey("ILA.ILA_CAT_DADOS_PESSOAIS_SENS", "ConviccaoReligiosa_Id", "ILA.ILA_ITEM_CAT_DADOS_PESSOAIS");
             DropForeignKey("ILA.ILA_CAT_DADOS_PESSOAIS_SENS", "Biometricos_Id", "ILA.ILA_ITEM_CAT_DADOS_PESSOAIS");
             DropForeignKey("ILA.ILA_CASES", "AreaTratamentoDados_Id", "ILA.ILA_AGENTE_TRATAMENTO");
-            DropIndex("ILA.UserGroup", new[] { "Group_Id" });
-            DropIndex("ILA.UserGroup", new[] { "User_Id" });
             DropIndex("ILA.ILA_COMMENTS", new[] { "Thread_Id" });
             DropIndex("ILA.ILA_COMMENTS", new[] { "Author_Id" });
             DropIndex("ILA.ILA_ITEM_TRANSF_INTERNACIONAL", new[] { "Case_Id" });
             DropIndex("ILA.ILA_ITEM_RISCO_PRIVACIDADE", new[] { "Case_Id" });
             DropIndex("ILA.ILA_ITEM_OBS_PROCESSO", new[] { "Case_Id" });
             DropIndex("ILA.ILA_ITEM_MEDIDA_SEG_PRIV", new[] { "Case_Id" });
+            DropIndex("ILA.ILA_USERS", new[] { "Group_Id" });
+            DropIndex("ILA.ILA_USERS", new[] { "OriginGroup_Id" });
+            DropIndex("ILA.ILA_GROUPS", new[] { "User_Id" });
             DropIndex("ILA.ILA_ITEM_CONTRATO_TI", new[] { "Case_Id" });
             DropIndex("ILA.ILA_ITEM_COMPARTILH_DADOS", new[] { "Case_Id" });
             DropIndex("ILA.ILA_ITEM_CAT_TITULARES", new[] { "CategoriasTitulares_Id2" });
@@ -861,28 +883,29 @@
             DropIndex("ILA.ILA_CAT_DADOS_PESSOAIS_SENS", new[] { "ConviccaoReligiosa_Id" });
             DropIndex("ILA.ILA_CAT_DADOS_PESSOAIS_SENS", new[] { "Biometricos_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "Operador_Id" });
+            DropIndex("ILA.ILA_CASES", new[] { "UsuarioCriador_Id" });
+            DropIndex("ILA.ILA_CASES", new[] { "GrupoCriador_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "FinalidadeTratamento_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "FasesCicloTratamento_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "ExtensaoEncarregado_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "Encarregado_Id" });
-            DropIndex("ILA.ILA_CASES", new[] { "User_Id" });
-            DropIndex("ILA.ILA_CASES", new[] { "Criador_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "Controlador_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "CategoriasTitulares_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "CategoriaDadosPessoais_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "CatDadosPessoaisSensiveis_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "AreaTratamentoDados_Id" });
-            DropTable("ILA.UserGroup");
+            DropTable("ILA.ILA_USUARIO_PREFERENCIA");
+            DropTable("ILA.ILA_CONFIGURACAO");
             DropTable("ILA.ILA_THREADS");
             DropTable("ILA.ILA_COMMENTS");
             DropTable("ILA.ILA_ITEM_TRANSF_INTERNACIONAL");
             DropTable("ILA.ILA_ITEM_RISCO_PRIVACIDADE");
             DropTable("ILA.ILA_ITEM_OBS_PROCESSO");
             DropTable("ILA.ILA_ITEM_MEDIDA_SEG_PRIV");
-            DropTable("ILA.ILA_FINALIDADE_TRATAMENTO");
-            DropTable("ILA.ILA_FASES_CICLO_TRATAMENTO");
             DropTable("ILA.ILA_USERS");
             DropTable("ILA.ILA_GROUPS");
+            DropTable("ILA.ILA_FINALIDADE_TRATAMENTO");
+            DropTable("ILA.ILA_FASES_CICLO_TRATAMENTO");
             DropTable("ILA.ILA_ITEM_CONTRATO_TI");
             DropTable("ILA.ILA_ITEM_COMPARTILH_DADOS");
             DropTable("ILA.ILA_ITEM_CAT_TITULARES");

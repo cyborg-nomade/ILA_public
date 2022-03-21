@@ -44,8 +44,8 @@
             <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
             <param name="sample">The sample request.</param>
             <param name="mediaType">The media type.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
         </member>
         <member name="M:CPTM.ILA.Web.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleRequest(System.Web.Http.HttpConfiguration,System.Object,System.Net.Http.Headers.MediaTypeHeaderValue,System.String,System.String,System.String[])">
             <summary>
@@ -54,8 +54,8 @@
             <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
             <param name="sample">The sample request.</param>
             <param name="mediaType">The media type.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
             <param name="parameterNames">The parameter names.</param>
         </member>
         <member name="M:CPTM.ILA.Web.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleResponse(System.Web.Http.HttpConfiguration,System.Object,System.Net.Http.Headers.MediaTypeHeaderValue,System.String,System.String)">
@@ -65,8 +65,8 @@
             <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
             <param name="sample">The sample response.</param>
             <param name="mediaType">The media type.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
         </member>
         <member name="M:CPTM.ILA.Web.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleResponse(System.Web.Http.HttpConfiguration,System.Object,System.Net.Http.Headers.MediaTypeHeaderValue,System.String,System.String,System.String[])">
             <summary>
@@ -75,8 +75,8 @@
             <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
             <param name="sample">The sample response.</param>
             <param name="mediaType">The media type.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
             <param name="parameterNames">The parameter names.</param>
         </member>
         <member name="M:CPTM.ILA.Web.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleForMediaType(System.Web.Http.HttpConfiguration,System.Object,System.Net.Http.Headers.MediaTypeHeaderValue)">
@@ -103,8 +103,8 @@
             </summary>
             <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
             <param name="type">The type.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
         </member>
         <member name="M:CPTM.ILA.Web.Areas.HelpPage.HelpPageConfigurationExtensions.SetActualRequestType(System.Web.Http.HttpConfiguration,System.Type,System.String,System.String,System.String[])">
             <summary>
@@ -113,8 +113,8 @@
             </summary>
             <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
             <param name="type">The type.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
             <param name="parameterNames">The parameter names.</param>
         </member>
         <member name="M:CPTM.ILA.Web.Areas.HelpPage.HelpPageConfigurationExtensions.SetActualResponseType(System.Web.Http.HttpConfiguration,System.Type,System.String,System.String)">
@@ -124,8 +124,8 @@
             </summary>
             <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
             <param name="type">The type.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
         </member>
         <member name="M:CPTM.ILA.Web.Areas.HelpPage.HelpPageConfigurationExtensions.SetActualResponseType(System.Web.Http.HttpConfiguration,System.Type,System.String,System.String,System.String[])">
             <summary>
@@ -134,8 +134,8 @@
             </summary>
             <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
             <param name="type">The type.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
             <param name="parameterNames">The parameter names.</param>
         </member>
         <member name="M:CPTM.ILA.Web.Areas.HelpPage.HelpPageConfigurationExtensions.GetHelpPageSampleGenerator(System.Web.Http.HttpConfiguration)">
@@ -305,8 +305,8 @@
             <summary>
             Search for samples that are provided directly through <see cref="P:CPTM.ILA.Web.Areas.HelpPage.SampleGeneration.HelpPageSampleGenerator.ActionSamples"/>.
             </summary>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
             <param name="parameterNames">The parameter names.</param>
             <param name="type">The CLR type.</param>
             <param name="formatter">The formatter.</param>
@@ -336,8 +336,8 @@
             Resolves the type of the action parameter or return value when <see cref="T:System.Net.Http.HttpRequestMessage"/> or <see cref="T:System.Net.Http.HttpResponseMessage"/> is used.
             </summary>
             <param name="api">The <see cref="T:System.Web.Http.Description.ApiDescription"/>.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
             <param name="parameterNames">The parameter names.</param>
             <param name="sampleDirection">The value indicating whether the sample is for a request or a response.</param>
             <param name="formatters">The formatters.</param>
@@ -375,8 +375,8 @@
             Creates a new <see cref="T:CPTM.ILA.Web.Areas.HelpPage.SampleGeneration.HelpPageSampleKey"/> based on <see cref="P:CPTM.ILA.Web.Areas.HelpPage.SampleGeneration.HelpPageSampleKey.SampleDirection"/>, controller name, action name and parameter names.
             </summary>
             <param name="sampleDirection">The <see cref="P:CPTM.ILA.Web.Areas.HelpPage.SampleGeneration.HelpPageSampleKey.SampleDirection"/>.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
             <param name="parameterNames">The parameter names.</param>
         </member>
         <member name="M:CPTM.ILA.Web.Areas.HelpPage.SampleGeneration.HelpPageSampleKey.#ctor(System.Net.Http.Headers.MediaTypeHeaderValue,CPTM.ILA.Web.Areas.HelpPage.SampleGeneration.SampleDirection,System.String,System.String,System.Collections.Generic.IEnumerable{System.String})">
@@ -385,8 +385,8 @@
             </summary>
             <param name="mediaType">The media type.</param>
             <param name="sampleDirection">The <see cref="P:CPTM.ILA.Web.Areas.HelpPage.SampleGeneration.HelpPageSampleKey.SampleDirection"/>.</param>
-            <param name="controllerName">Name of the controller.</param>
-            <param name="actionName">Name of the action.</param>
+            <param name="controllerName">Nome of the controller.</param>
+            <param name="actionName">Nome of the action.</param>
             <param name="parameterNames">The parameter names.</param>
         </member>
         <member name="P:CPTM.ILA.Web.Areas.HelpPage.SampleGeneration.HelpPageSampleKey.ControllerName">
@@ -484,6 +484,11 @@
         <member name="T:CPTM.ILA.Web.Controllers.API.AccessRequestsController">
             <summary>
             Controlador para Requisições de Acesso ao sistema ILA.
+            </summary>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.#ctor">
+            <summary>
+            Controlador da APÍ para Requisições de Acesso
             </summary>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.RequestInitialAccess(CPTM.ILA.Web.Models.AccessControl.AccessRequest)">

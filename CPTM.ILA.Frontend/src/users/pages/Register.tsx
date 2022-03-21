@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -29,22 +29,26 @@ const initialValues: BaseAccessRequest = {
 };
 
 const Register = () => {
+  const [message, setMessage] = useState("");
+
   const authContext = useContext(AuthContext);
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   let navigate = useNavigate();
 
-  const submitRegisterHandler = async (request: BaseAccessRequest) => {
+  const submitRegisterHandler = async (accessRequest: BaseAccessRequest) => {
     try {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/access-requests/initial`,
         "POST",
-        JSON.stringify(request),
+        JSON.stringify(accessRequest),
         {
           "Content-Type": "application/json",
         }
       );
+
+      setMessage(responseData.message);
     } catch (error) {
       console.log(error);
     }
@@ -52,6 +56,10 @@ const Register = () => {
 
   const backToLoginHandler = () => {
     navigate("/");
+  };
+
+  const clearMessage = () => {
+    setMessage("");
   };
 
   if (isLoading) {
@@ -106,6 +114,8 @@ const Register = () => {
                       Esse campo é obrigatório
                     </Form.Control.Feedback>
                   </Form.Group>
+                </Row>
+                <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik02">
                     <Form.Label>Usuário AD do Superior</Form.Label>
                     <Form.Control
@@ -123,6 +133,8 @@ const Register = () => {
                       Esse campo é obrigatório
                     </Form.Control.Feedback>
                   </Form.Group>
+                </Row>
+                <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik03">
                     <Form.Label>Justificativa de acesso</Form.Label>
                     <Form.Control
@@ -171,6 +183,16 @@ const Register = () => {
         >
           <Alert variant="danger" onClose={clearError} dismissible>
             {error}
+          </Alert>
+        </Row>
+      )}
+      {message && (
+        <Row
+          className="justify-content-center mx-auto"
+          style={{ width: "28rem" }}
+        >
+          <Alert variant="success" onClose={clearMessage} dismissible>
+            {message}
           </Alert>
         </Row>
       )}
