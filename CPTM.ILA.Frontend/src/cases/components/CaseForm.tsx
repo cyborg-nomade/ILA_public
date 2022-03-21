@@ -24,6 +24,7 @@ import {
   emptyItemRiscoPrivacidade,
   emptyItemTransferenciaInternacional,
   BaseCase,
+  Case,
 } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
@@ -598,7 +599,7 @@ type onSubmitFn = (item: BaseCase) => void;
 // });
 
 const CaseForm = (props: {
-  item: BaseCase;
+  item: BaseCase | Case;
   new?: boolean;
   edit?: boolean;
   approve?: boolean;
