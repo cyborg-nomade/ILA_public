@@ -49,7 +49,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 return Request.CreateResponse(HttpStatusCode.OK, new
                 {
-                    user = new { id = userAd.ObjectGUID, username = userAd.Nome, isComite = false },
+                    user = new { id = userAd.ObjectGUID, username = userAd.Nome, isComite = true },
                     token = jwtToken,
                     message = "Usuário logado"
                 });

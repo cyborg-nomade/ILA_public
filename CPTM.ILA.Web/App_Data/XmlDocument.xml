@@ -532,21 +532,7 @@
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.ApproveInitialAccessRequest(System.Int32,System.Boolean)">
             <summary>
-            Realiza a aprovação/reprovação de uma solicitação de acesso inicial. Apenas para membros do Comitê LGPD.
-            Recebe o Id da solicitação (INT) na url e um flag Aprovado (BOOL) no corpo da requisição.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.ApproveGroupAccessRequest(System.Int32,System.Boolean)">
-            <summary>
-            Realiza a aprovação/reprovação de uma solicitação de acesso a grupos. Apenas para membros do Comitê LGPD.
-            Recebe o Id da solicitação (INT) na url e um flag Aprovado (BOOL) no corpo da requisição.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.ApproveComiteAccessRequest(System.Int32,System.Boolean)">
-            <summary>
-            Realiza a aprovação/reprovação de uma solicitação de acesso ao comite. Apenas para membros do Comitê LGPD.
+            Realiza a aprovação/reprovação de uma solicitação de acesso. Apenas para membros do Comitê LGPD.
             Recebe o Id da solicitação (INT) na url e um flag Aprovado (BOOL) no corpo da requisição.
             </summary>
             <returns></returns>

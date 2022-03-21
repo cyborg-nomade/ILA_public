@@ -16,3 +16,12 @@ export interface AccessRequest extends BaseAccessRequest {
 }
 
 export type headersAccessRequestsList = keyof AccessRequest;
+
+export const emptyAccessRequest = (): BaseAccessRequest | AccessRequest => {
+  return {
+    usernameSolicitante: "",
+    usernameSuperior: "",
+    justificativa: "",
+    tipoSolicitacaoAcesso: tipoSolicitacaoAcesso.AcessoAoSistema,
+  };
+};

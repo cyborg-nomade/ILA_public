@@ -42,15 +42,9 @@ const headers: {
     isFilterable: true,
     isSortable: true,
   },
-  {
-    title: "Tipo de Solicitação de Acesso",
-    prop: "tipoSolicitacaoAcesso",
-    isFilterable: true,
-    isSortable: true,
-  },
 ];
 
-const CasesList = (props: { items: AccessRequest[] }) => {
+const AccessRequestsList = (props: { items: AccessRequest[] }) => {
   let navigate = useNavigate();
 
   if (props.items.length === 0) {
@@ -120,4 +114,4 @@ const CasesList = (props: { items: AccessRequest[] }) => {
   );
 };
 
-export default CasesList;
+export default AccessRequestsList;

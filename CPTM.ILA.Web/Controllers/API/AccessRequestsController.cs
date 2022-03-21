@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using CPTM.ILA.Web.Models;
 using CPTM.ILA.Web.Models.AccessControl;
+using CPTM.ActiveDirectory;
 
 namespace CPTM.ILA.Web.Controllers.API
 {
@@ -23,6 +24,22 @@ namespace CPTM.ILA.Web.Controllers.API
         public AccessRequestsController()
         {
             _context = new IlaContext();
+        }
+
+        [Route("{id}")]
+        [Authorize]
+        [HttpGet]
+        public HttpResponseMessage GetAccessRequest(int id)
+        {
+            var accessRequest = _context.AccessRequests.SingleOrDefault(ar => ar.Id == id);
+
+            if (accessRequest == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound,
+                    new { message = "Requisição de Acesso não encontrada" });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = "This worked", accessRequest });
         }
 
         /// <summary>
@@ -45,6 +62,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.BadRequest,
                     new { message = "Objeto enviado não corresponde ao tipo AccessRequest" });
             }
+
 
             _context.AccessRequests.Add(accessRequest);
             _context.SaveChanges();
@@ -135,7 +153,10 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpGet]
         public HttpResponseMessage GetGroupAccessRequests()
         {
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = "This worked" });
+            var groupRequests = _context.AccessRequests
+                .Where(ar => ar.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoAGrupos)
+                .ToList();
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = "This worked", groupRequests });
         }
 
         /// <summary>
@@ -147,49 +168,45 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpGet]
         public HttpResponseMessage GetComiteAccessRequests()
         {
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = "This worked" });
+            var comiteRequests = _context.AccessRequests
+                .Where(ar => ar.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoComite)
+                .ToList();
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = "This worked", comiteRequests });
         }
 
         /// <summary>
-        /// Realiza a aprovação/reprovação de uma solicitação de acesso inicial. Apenas para membros do Comitê LGPD.
+        /// Realiza a aprovação/reprovação de uma solicitação de acesso. Apenas para membros do Comitê LGPD.
         /// Recebe o Id da solicitação (INT) na url e um flag Aprovado (BOOL) no corpo da requisição.
         /// </summary>
         /// <returns></returns>
-        [Route("initial/approve/{id}")]
+        [Route("approve/{id}")]
         [Authorize]
         [HttpPost]
         public HttpResponseMessage ApproveInitialAccessRequest(int id, [FromBody] bool aprovado)
         {
-            if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id));
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = "This worked" });
-        }
+            if (id <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido" });
+            }
 
-        /// <summary>
-        /// Realiza a aprovação/reprovação de uma solicitação de acesso a grupos. Apenas para membros do Comitê LGPD.
-        /// Recebe o Id da solicitação (INT) na url e um flag Aprovado (BOOL) no corpo da requisição.
-        /// </summary>
-        /// <returns></returns>
-        [Route("groups/approve/{id}")]
-        [Authorize]
-        [HttpPost]
-        public HttpResponseMessage ApproveGroupAccessRequest(int id, [FromBody] bool aprovado)
-        {
-            if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id));
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = "This worked" });
-        }
+            var accessRequest = _context.AccessRequests.SingleOrDefault(ar => ar.Id == id);
 
-        /// <summary>
-        /// Realiza a aprovação/reprovação de uma solicitação de acesso ao comite. Apenas para membros do Comitê LGPD.
-        /// Recebe o Id da solicitação (INT) na url e um flag Aprovado (BOOL) no corpo da requisição.
-        /// </summary>
-        /// <returns></returns>
-        [Route("comite/approve/{id}")]
-        [Authorize]
-        [HttpPost]
-        public HttpResponseMessage ApproveComiteAccessRequest(int id, [FromBody] bool aprovado)
-        {
-            if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id));
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = "This worked" });
+            if (accessRequest == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound,
+                    new { message = "Requisição de Acesso não encontrada" });
+            }
+
+            if (!aprovado)
+            {
+                //_context.AccessRequests.Remove(accessRequest);
+                //_context.SaveChanges();
+                Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Requisição de Acesso excluída com sucesso", accessRequest });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK,
+                new { message = "Requisição de Acesso aprovada", accessRequest });
         }
     }
 }

@@ -33,8 +33,8 @@ const RequestAccess = React.lazy(() => import("./users/pages/RequestAccess"));
 const AllAccessRequestsPage = React.lazy(
   () => import("./access-requests/pages/AllAccessRequestsPage")
 );
-const AllAccessRequestListGetter = React.lazy(
-  () => import("./access-requests/pages/AllAccessRequestListGetter")
+const AcessRequestsListsCombiner = React.lazy(
+  () => import("./access-requests/pages/AcessRequestsListsCombiner")
 );
 const ApproveAccessRequestGetter = React.lazy(
   () => import("./access-requests/pages/ApproveAccessRequestGetter")
@@ -80,7 +80,7 @@ const App = () => {
           path="/comite/access-requests/approve"
           element={<AllAccessRequestsPage />}
         >
-          <Route index element={<AllAccessRequestListGetter />} />
+          <Route index element={<AcessRequestsListsCombiner />} />
           <Route path=":arid" element={<ApproveAccessRequestGetter />} />
         </Route>
         <Route path="/" element={<Navigate replace to="../comite/cases" />} />
@@ -102,7 +102,7 @@ const App = () => {
       }}
     >
       <MainHeader />
-      <Container className="mt-5">
+      <Container className="mt-5" fluid>
         <Suspense
           fallback={
             <Row className="justify-content-center">
