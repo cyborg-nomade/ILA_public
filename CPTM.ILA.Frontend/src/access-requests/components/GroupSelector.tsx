@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import Card from "react-bootstrap/Card";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
+import { AuthContext } from "../../shared/context/auth-context";
 
-const groups = ["GGDC", "HFPD", "XPTY", "ZYPD"];
+export const groups = ["GGDC", "HFPD", "XPTY", "ZYPD"];
 
 const GroupSelector = () => {
+  const { changeGroup } = useContext(AuthContext);
+
   return (
     <React.Fragment>
       <Card>
@@ -18,7 +20,12 @@ const GroupSelector = () => {
           <Card.Text className="align-content-center text-center">
             <ButtonGroup vertical className="d-block">
               {groups.map((g) => (
-                <Button variant="outline-secondary">{g}</Button>
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => changeGroup(g)}
+                >
+                  {g}
+                </Button>
               ))}
             </ButtonGroup>
           </Card.Text>

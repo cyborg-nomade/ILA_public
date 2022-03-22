@@ -41,7 +41,16 @@ const ApproveAccessRequestGetter = React.lazy(
 );
 
 const App = () => {
-  const { token, login, logout, userId, username, isComite } = useAuth();
+  const {
+    token,
+    login,
+    logout,
+    userId,
+    username,
+    isComite,
+    currentGroup,
+    changeGroup,
+  } = useAuth();
 
   let routes;
 
@@ -99,6 +108,8 @@ const App = () => {
         userId,
         token,
         username,
+        currentGroup,
+        changeGroup,
       }}
     >
       <MainHeader />
