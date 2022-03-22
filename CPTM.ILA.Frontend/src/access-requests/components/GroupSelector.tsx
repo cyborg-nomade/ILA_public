@@ -1,21 +1,29 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+
+const groups = ["GGDC", "HFPD", "XPTY", "ZYPD"];
 
 const GroupSelector = () => {
   return (
     <React.Fragment>
-      <Card style={{ width: "18rem" }}>
+      <Card>
         <Card.Body>
-          <Card.Title>Card Title</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">
-            Card Subtitle
-          </Card.Subtitle>
-          <Card.Text>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
+          <Card.Title className="mb-3 text-center">
+            Selecione o grupo desejado
+          </Card.Title>
+          <hr></hr>
+          <Card.Text className="align-content-center text-center">
+            <ButtonGroup vertical className="d-block">
+              {groups.map((g) => (
+                <Button variant="outline-secondary">{g}</Button>
+              ))}
+            </ButtonGroup>
           </Card.Text>
-          <Card.Link href="#">Card Link</Card.Link>
-          <Card.Link href="#">Another Link</Card.Link>
+          <hr></hr>
+          <Button variant="success">Solicitar Acesso a Novo Group</Button>
         </Card.Body>
       </Card>
     </React.Fragment>
