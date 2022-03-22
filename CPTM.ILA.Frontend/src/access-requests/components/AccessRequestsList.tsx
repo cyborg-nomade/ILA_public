@@ -86,12 +86,13 @@ const AccessRequestsList = (props: { items: AccessRequest[] }) => {
           xs={12}
           sm={6}
           lg={4}
-          className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
+          className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0 my-auto"
         >
           <PaginationOpts labels={{ beforeSelect: "Linhas por página" }} />
         </Col>
         <Col
           xs={12}
+          md={2}
           sm={6}
           lg={4}
           className="d-flex flex-col justify-content-end align-items-end"
