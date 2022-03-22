@@ -47,7 +47,7 @@ namespace CPTM.ILA.Web.Models
         public ICollection<ItemRiscoPrivacidade> RiscosPrivacidade { get; set; }
         public ICollection<ItemObservacoesProcesso> ObservacoesProcesso { get; set; }
 
-        public CaseListItem ReduceToListItem(Case fullCase)
+        public static CaseListItem ReduceToListItem(Case fullCase)
         {
             return new CaseListItem()
             {
@@ -59,6 +59,7 @@ namespace CPTM.ILA.Web.Models
                 HipotesesTratamento = fullCase.FinalidadeTratamento.HipoteseTratamento,
                 Id = fullCase.Id,
                 Nome = fullCase.Nome,
+                GrupoCriador = fullCase.GrupoCriador.Nome
             };
         }
     }

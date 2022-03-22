@@ -11,7 +11,7 @@ import CasesList from "../components/CasesList";
 const AllCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
 
-  const { token } = useContext(AuthContext);
+  const { token, currentGroup } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
@@ -25,13 +25,20 @@ const AllCasesListGetter = () => {
         { Authorization: "Bearer " + token }
       );
       const loadedCases: CaseListItem[] = responseData.cases;
-      setCases(loadedCases);
+      console.log(currentGroup);
+      console.log(loadedCases);
+
+      const filteredCases = loadedCases.filter(
+        (c) => c.grupoCriador === currentGroup
+      );
+
+      setCases(filteredCases);
     };
 
     getAllCases().catch((error) => {
       console.log(error);
     });
-  }, [sendRequest, token]);
+  }, [sendRequest, token, currentGroup]);
 
   if (isLoading) {
     return (

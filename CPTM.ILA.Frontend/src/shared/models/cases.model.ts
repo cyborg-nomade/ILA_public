@@ -13,6 +13,7 @@ export interface BaseCaseListItem {
   hipoteseTratamento: { value: hipotesesTratamento };
   descricaoFinalidade: string;
   dadosPessoaisSensiveis: string;
+  grupoCriador: string;
 }
 
 export interface CaseListItem extends BaseCaseListItem {

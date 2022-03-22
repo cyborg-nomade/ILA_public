@@ -7,6 +7,7 @@ interface storageObject {
   uid: string;
   username: string;
   isComite: boolean;
+  currentGroup: string;
   expirationDate: string;
 }
 
@@ -16,6 +17,7 @@ export const useAuth = () => {
   const [userId, setUserId] = useState("");
   const [username, setUsername] = useState("");
   const [tokenExpirationDate, setTokenExpirationDate] = useState<Date>();
+  const [currentGroup, setCurrentGroup] = useState("");
 
   const login = useCallback(
     (
@@ -23,12 +25,14 @@ export const useAuth = () => {
       username: string,
       ic: boolean,
       token: string,
+      currentGroup: string,
       expirationDate?: Date
     ) => {
       setToken(token);
       setUserId(uid);
       setIsComite(ic);
       setUsername(username);
+      setCurrentGroup(currentGroup);
       const expDate =
         expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
       setTokenExpirationDate(expDate);
@@ -38,6 +42,7 @@ export const useAuth = () => {
         uid,
         username,
         isComite: ic,
+        currentGroup,
         expirationDate: expDate.toISOString(),
       };
 
@@ -51,8 +56,13 @@ export const useAuth = () => {
     setIsComite(false);
     setUserId("");
     setUsername("");
+    setCurrentGroup("");
     localStorage.removeItem("userData");
   }, []);
+
+  const changeGroup = (g: string) => {
+    setCurrentGroup(g);
+  };
 
   //handle token expiration & auto-logout
   useEffect(() => {
@@ -86,10 +96,20 @@ export const useAuth = () => {
         userDataObject.username,
         userDataObject.isComite,
         userDataObject.token,
+        userDataObject.currentGroup,
         storedExpirationDate
       );
     }
   }, [login]);
 
-  return { token, login, logout, userId, username, isComite };
+  return {
+    token,
+    login,
+    logout,
+    userId,
+    username,
+    isComite,
+    currentGroup,
+    changeGroup,
+  };
 };
