@@ -4,18 +4,13 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import {
-  BaseFullCaseObject,
-  emptyBaseFullCaseObject,
-} from "../../shared/models/cases.model";
+import { BaseCase, emptyBaseCase } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
 
 const EditCase = () => {
-  const [fullCase, setFullCase] = useState<BaseFullCaseObject>(
-    emptyBaseFullCaseObject()
-  );
+  const [fullCase, setFullCase] = useState<BaseCase>(emptyBaseCase());
 
   const { userId: uid, token } = useContext(AuthContext);
 
@@ -52,9 +47,9 @@ const EditCase = () => {
     );
   }
 
-  const submitFormHandler = async (item: BaseFullCaseObject) => {
+  const submitFormHandler = async (item: BaseCase) => {
     item.area = item.extensaoEncarregado.area || "";
-    item.criador = uid;
+    item.usuarioCriador = uid;
     for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
       if (value.descricao !== "Não se aplica") {
         item.dadosPessoaisSensiveis = true;

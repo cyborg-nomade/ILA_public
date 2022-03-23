@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { FullCaseObject } from "../../../shared/models/cases.model";
+import { Case } from "../../../shared/models/cases.model";
 
 const Section14FormRow = (props: {
   disabled: boolean;
@@ -13,7 +13,7 @@ const Section14FormRow = (props: {
   className: string;
 }) => {
   const { values, touched, errors, handleBlur, setFieldValue } =
-    useFormikContext<FullCaseObject>();
+    useFormikContext<Case>();
 
   const [numeroContrato, setNumeroContrato] = useState(
     getIn(values, `${props.name}.numeroContrato`)

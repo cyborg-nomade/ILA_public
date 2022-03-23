@@ -7,10 +7,7 @@ import Col from "react-bootstrap/Col";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-import {
-  FullCaseObject,
-  hipotesesTratamento,
-} from "../../../shared/models/cases.model";
+import { Case, hipotesesTratamento } from "../../../shared/models/cases.model";
 
 const Section6FormRow = (props: {
   tooltip: JSX.Element;
@@ -21,7 +18,7 @@ const Section6FormRow = (props: {
   invalid: string;
 }) => {
   const { values, touched, errors, setFieldValue, handleChange, handleBlur } =
-    useFormikContext<FullCaseObject>();
+    useFormikContext<Case>();
 
   const [propNameState, setPropNameState] = useState(getIn(values, props.name));
 

@@ -11,6 +11,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using CPTM.ILA.Web.Models.AccessControl;
+using CPTM.CasisLibrary.MVC;
+using CPTM.Comum;
+using CPTM.Comum.Web;
+using CPTM.GNU.Library;
 
 namespace CPTM.ILA.Web.Controllers.API
 {
@@ -20,7 +24,7 @@ namespace CPTM.ILA.Web.Controllers.API
         [Route("login")]
         [AllowAnonymous]
         [HttpPost]
-        public HttpResponseMessage Login(User user)
+        public HttpResponseMessage Login(AuthUser user)
         {
             if (Seguranca.Autenticar(user.Username, user.Password))
             {
@@ -49,7 +53,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 return Request.CreateResponse(HttpStatusCode.OK, new
                 {
-                    user = new { id = userAd.ObjectGUID, username = userAd.Nome, isComite = false },
+                    user = new { id = userAd.ObjectGUID, username = userAd.Nome, isComite = true },
                     token = jwtToken,
                     message = "Usuário logado"
                 });

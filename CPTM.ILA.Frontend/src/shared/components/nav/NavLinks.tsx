@@ -16,12 +16,17 @@ const NavLinks = () => {
       )}
       {authContext.isLoggedIn && !authContext.isComite && (
         <Nav.Link as={NavLink} to={`${authContext.userId}/cases/new`}>
-          Novo
+          Formulário
         </Nav.Link>
       )}
       {authContext.isLoggedIn && authContext.isComite && (
         <Nav.Link as={NavLink} to={`comite/cases/approve`}>
-          Aprovações Pendentes
+          Aprovar Registros
+        </Nav.Link>
+      )}
+      {authContext.isLoggedIn && authContext.isComite && (
+        <Nav.Link as={NavLink} to={`/comite/access-requests/approve`}>
+          Aprovar Requisições de Acesso
         </Nav.Link>
       )}
       {authContext.isLoggedIn && (

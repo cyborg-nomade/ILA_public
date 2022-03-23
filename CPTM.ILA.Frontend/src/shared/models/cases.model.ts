@@ -1,24 +1,154 @@
-export enum verbosTratamento {
-  coleta = "coleta",
-  producao = "producao",
-  recepcao = "recepcao",
-  classificacao = "classificacao",
-  utilizacao = "utilizacao",
-  acesso = "acesso",
-  reproducao = "reproducao",
-  transmissao = "transmissao",
-  distribuicao = "distribuicao",
-  processamento = "processamento",
-  arquivamento = "arquivamento",
-  armazenamento = "armazenamento",
-  eliminacao = "eliminacao",
-  avaliacao = "avaliacao",
-  controle = "controle",
-  modificacao = "modificacao",
-  comunicacao = "comunicacao",
-  transferencia = "transferencia",
-  difusao = "difusao",
-  extracao = "extracao",
+interface AgenteTratamento {
+  nome: string;
+  area?: string;
+  telefone?: string;
+  email?: string;
+}
+
+export interface BaseCaseListItem {
+  nome: string;
+  area: string;
+  dataCriacao: string;
+  dataAtualizacao: string;
+  hipoteseTratamento: { value: hipotesesTratamento };
+  descricaoFinalidade: string;
+  dadosPessoaisSensiveis: string;
+  grupoCriador: string;
+}
+
+export interface CaseListItem extends BaseCaseListItem {
+  id: string;
+}
+
+export type headersCaseListItem = keyof CaseListItem;
+
+export interface CategoriaDadosPessoais {
+  identificacao: {
+    idPessoal?: itemCategoriaDadosPessoais;
+    idGov?: itemCategoriaDadosPessoais;
+    idEletronica?: itemCategoriaDadosPessoais;
+    locEletronica?: itemCategoriaDadosPessoais;
+  };
+  financeiros: {
+    idFin?: itemCategoriaDadosPessoais;
+    recursosFin?: itemCategoriaDadosPessoais;
+    dividasDespesas?: itemCategoriaDadosPessoais;
+    solvencia?: itemCategoriaDadosPessoais;
+    emprestimosHipotecaCredito?: itemCategoriaDadosPessoais;
+    assistenciaFin?: itemCategoriaDadosPessoais;
+    apoliceSeguro?: itemCategoriaDadosPessoais;
+    planoPensao?: itemCategoriaDadosPessoais;
+    transacaoFin?: itemCategoriaDadosPessoais;
+    compensacao?: itemCategoriaDadosPessoais;
+    atividadeProfissional?: itemCategoriaDadosPessoais;
+    acordosAjustes?: itemCategoriaDadosPessoais;
+    autorizacoesConsentimentos?: itemCategoriaDadosPessoais;
+  };
+  caracteristicas: {
+    detalhesPessoais?: itemCategoriaDadosPessoais;
+    detalhesMilitares?: itemCategoriaDadosPessoais;
+    situacaoImigracao?: itemCategoriaDadosPessoais;
+    descricaoFisica?: itemCategoriaDadosPessoais;
+  };
+  habitos: {
+    habitos?: itemCategoriaDadosPessoais;
+    estiloVida?: itemCategoriaDadosPessoais;
+    viagensDeslocamento?: itemCategoriaDadosPessoais;
+    contatosSociais?: itemCategoriaDadosPessoais;
+    posses?: itemCategoriaDadosPessoais;
+    denunciasIncidentesAcidentes?: itemCategoriaDadosPessoais;
+    distincoes?: itemCategoriaDadosPessoais;
+    usoMidia?: itemCategoriaDadosPessoais;
+  };
+  caracteristicasPsicologicas: {
+    descricaoPsi?: itemCategoriaDadosPessoais;
+  };
+  composicaoFamiliar: {
+    casamentoCoabitacao?: itemCategoriaDadosPessoais;
+    historicoConjugal?: itemCategoriaDadosPessoais;
+    membrosFamilia?: itemCategoriaDadosPessoais;
+  };
+  interessesLazer: {
+    atividadesInteressesLaz?: itemCategoriaDadosPessoais;
+  };
+  associacoes: {
+    outrasAssociacoesNaoSensiveis?: itemCategoriaDadosPessoais;
+  };
+  processoJudAdmCrim: {
+    suspeitas?: itemCategoriaDadosPessoais;
+    condenacoesSentencas?: itemCategoriaDadosPessoais;
+    acoesJud?: itemCategoriaDadosPessoais;
+    penalidadesAdm?: itemCategoriaDadosPessoais;
+  };
+  habitosConsumo: {
+    dadosBensServicos?: itemCategoriaDadosPessoais;
+  };
+  residenciais: {
+    dadosResidencia?: itemCategoriaDadosPessoais;
+  };
+  educacaoTreinamento: {
+    academicosEscolares?: itemCategoriaDadosPessoais;
+    registroFinanceiro?: itemCategoriaDadosPessoais;
+    qualificacaoExperienciaProf?: itemCategoriaDadosPessoais;
+  };
+  profissaoEmprego: {
+    empregoAtual?: itemCategoriaDadosPessoais;
+    recrutamento?: itemCategoriaDadosPessoais;
+    rescisao?: itemCategoriaDadosPessoais;
+    carreira?: itemCategoriaDadosPessoais;
+    absenteismoDisciplina?: itemCategoriaDadosPessoais;
+    avaliacaoDesempenho?: itemCategoriaDadosPessoais;
+  };
+  regVideoImgVoz: {
+    videoImagem?: itemCategoriaDadosPessoais;
+    imagemVigilancia?: itemCategoriaDadosPessoais;
+    voz?: itemCategoriaDadosPessoais;
+  };
+  outros: {
+    outros?: itemCategoriaDadosPessoais[];
+  };
+}
+
+export interface CategoriaDadosPessoaisSensiveis {
+  origemRacialEtnica?: itemCategoriaDadosPessoais;
+  conviccaoReligiosa?: itemCategoriaDadosPessoais;
+  opiniaoPolitica?: itemCategoriaDadosPessoais;
+  filiacaoSindicato?: itemCategoriaDadosPessoais;
+  filiacaoOrgReligiosa?: itemCategoriaDadosPessoais;
+  filiacaoCrencaFilosofica?: itemCategoriaDadosPessoais;
+  filiacaoPreferenciaPolitica?: itemCategoriaDadosPessoais;
+  saudeVidaSexual?: itemCategoriaDadosPessoais;
+  geneticos?: itemCategoriaDadosPessoais;
+  biometricos?: itemCategoriaDadosPessoais;
+}
+
+export interface CategoriaTitulares {
+  categorias: itemCategoriaTitulares[];
+  criancasAdolescentes: itemCategoriaTitulares[];
+  outrosGruposVulneraveis: itemCategoriaTitulares[];
+}
+
+export interface FasesCicloTratamento {
+  coleta: boolean;
+  retencao: boolean;
+  processamento: boolean;
+  compartilhamento: boolean;
+  eliminacao: boolean;
+}
+
+export interface FinalidadeTratamento {
+  hipoteseTratamento: { value: hipotesesTratamento };
+  descricaoFinalidade: string;
+  previsaoLegal: string;
+  resultadosTitular: string;
+  beneficiosEsperados: string;
+}
+
+export enum fontesRetencao {
+  na = "Não se aplica",
+  docPapel = "Documento em Papel",
+  midiaEletronica = "Mídias Eletrônicas",
+  docPapelMidiasEletronica = "Documento em Papel e Mídias Eletrônicas",
 }
 
 export enum hipotesesTratamento {
@@ -35,14 +165,53 @@ export enum hipotesesTratamento {
   prevencaoFraude = "Garantia da prevenção à fraude e à segurança do titular",
 }
 
-export enum fontesRetencao {
-  na = "Não se aplica",
-  docPapel = "Documento em Papel",
-  midiaEletronica = "Mídias Eletrônicas",
-  docPapelMidiasEletronica = "Documento em Papel e Mídias Eletrônicas",
+export interface itemCategoriaDadosPessoais {
+  descricao: string;
+  tempoRetencao: string;
+  fonteRetencao: { value: fontesRetencao };
+  caminhoRedeSistema: string;
 }
 
-export enum categoriaTitulares {
+interface itemCategoriaTitulares {
+  tipoCategoria: { value: tipoCategoriaTitulares };
+  descricao: string;
+}
+
+interface itemCompartilhamentoDados {
+  nomeInstituicao: string;
+  dadosCompartilhados: string;
+  finalidadeCompartilhamento: string;
+}
+
+interface itemContratoTI {
+  numeroContrato: string;
+  numeroProcessoContratacao: string;
+  objetoContrato: string;
+  emailGestorContrato: string;
+}
+
+interface itemMedidasSegurancaPrivacidade {
+  tipo: { value: tipoMedidaSegurancaPrivacidade };
+  descricaoControles: string;
+}
+
+interface itemObservacoesProcesso {
+  descricaoObs: string;
+}
+
+interface itemRiscoPrivacidade {
+  tipoRisco: { value: tipoRiscoPrivacidade };
+  observacoes: string;
+}
+
+interface itemTransferenciaInternacional {
+  nomeOrganizacao: string;
+  pais: string;
+  dadosTransferidos: string;
+  tipoGarantia: { value: tipoGarantiaTranferenciaInternacional };
+}
+
+export enum tipoCategoriaTitulares {
   beneficiarios = "Beneficiários",
   clientes = "Clientes",
   contribuintes = "Contribuintes",
@@ -55,6 +224,25 @@ export enum categoriaTitulares {
   pessoas = "Pessoas",
   servidores = "Servidores",
   outros = "Outros (Especificar)",
+}
+
+export enum tipoGarantiaTranferenciaInternacional {
+  acordoCooperacaoInt = "Acordo de cooperação internacional",
+  certificacao = "Certificação regularmente emitida",
+  clausulasContratuaisEspecificas = "Cláusulas contratuais específicas para determinada transferência",
+  clausulasContratuaisPadrao = "Cláusulas-padrão contratuais",
+  codigoConduta = "Código de conduta regularmente emitido",
+  cooperacaoJuridicaInt = "Cooperação jurídica internacional entre órgãos públicos de inteligência, de investigação e de persecução, de acordo com os instrumentos de direito internacional",
+  cumprimentObrigacaoLegalRegulatorioa = "Cumprimento de obrigação legal ou regulatória pelo controlador",
+  execucaoContratoTitular = "Execução de contrato ou de procedimentos preliminares relacionados a contrato do qual seja parte o titular",
+  execucaoPoliticaPublica = "Execução de política pública ou atribuição legal do serviço público",
+  exercicioDireitos = "Exercício regular de direitos em processo judicial, administrativo ou arbitral",
+  consentimentoEspecificoTitular = "Fornecimento de consentimento específico pelo titular dos dados pessoais",
+  normasCorporativasGlobais = "Normas corporativas globais",
+  nivelAdequadoProtecaoPais = "País que fornece um nível adequado de proteção",
+  protecaoVidaTitular = "Proteção da vida ou da incolumidade física do titular ou de terceiro",
+  selo = "Selo regularmente emitido",
+  autorizadaANPD = "Transferência autorizada pela ANPD",
 }
 
 export enum tipoMedidaSegurancaPrivacidade {
@@ -83,25 +271,6 @@ export enum tipoMedidaSegurancaPrivacidade {
   respostaIncidente = "Resposta a Incidente",
 }
 
-export enum tipoGarantiaTranferenciaInternacional {
-  acordoCooperacaoInt = "Acordo de cooperação internacional",
-  certificacao = "Certificação regularmente emitida",
-  clausulasContratuaisEspecificas = "Cláusulas contratuais específicas para determinada transferência",
-  clausulasContratuaisPadrao = "Cláusulas-padrão contratuais",
-  codigoConduta = "Código de conduta regularmente emitido",
-  cooperacaoJuridicaInt = "Cooperação jurídica internacional entre órgãos públicos de inteligência, de investigação e de persecução, de acordo com os instrumentos de direito internacional",
-  cumprimentObrigacaoLegalRegulatorioa = "Cumprimento de obrigação legal ou regulatória pelo controlador",
-  execucaoContratoTitular = "Execução de contrato ou de procedimentos preliminares relacionados a contrato do qual seja parte o titular",
-  execucaoPoliticaPublica = "Execução de política pública ou atribuição legal do serviço público",
-  exercicioDireitos = "Exercício regular de direitos em processo judicial, administrativo ou arbitral",
-  consentimentoEspecificoTitular = "Fornecimento de consentimento específico pelo titular dos dados pessoais",
-  normasCorporativasGlobais = "Normas corporativas globais",
-  nivelAdequadoProtecaoPais = "País que fornece um nível adequado de proteção",
-  protecaoVidaTitular = "Proteção da vida ou da incolumidade física do titular ou de terceiro",
-  selo = "Selo regularmente emitido",
-  autorizadaANPD = "Transferência autorizada pela ANPD",
-}
-
 export enum tipoRiscoPrivacidade {
   acessoNaoAutorizado = "Acesso não autorizado",
   modificacaoNaoAutorizada = "Modificação não autorizada",
@@ -119,241 +288,30 @@ export enum tipoRiscoPrivacidade {
   reidentificacaoPsudonimizados = "Reidentificação de dados pseudonimizados",
 }
 
-interface AgenteTratamento {
+export interface BaseCase {
   nome: string;
-  area?: string;
-  telefone?: string;
-  email?: string;
-}
-
-export interface itemCategoriaDadosPessoais {
-  descricao: string;
-  tempoRetencao: string;
-  fonteRetencao: fontesRetencao;
-  caminhoRedeSistema: string;
-}
-
-interface itemCategoriaTitulares {
-  tipoCategoria: categoriaTitulares;
-  descricao: string;
-}
-
-interface itemCompartilhamentoDados {
-  nomeInstituicao: string;
-  dadosCompartilhados: string;
-  finalidadeCompartilhamento: string;
-}
-
-interface itemMedidasSegurancaPrivacidade {
-  tipo: tipoMedidaSegurancaPrivacidade;
-  descricaoControles: string;
-}
-
-interface itemTransferenciaInternacional {
-  nomeOrganizacao: string;
-  pais: string;
-  dadosTransferidos: string;
-  tipoGarantia: tipoGarantiaTranferenciaInternacional;
-}
-
-interface itemContratoTI {
-  numeroContrato: string;
-  numeroProcessoContratacao: string;
-  objetoContrato: string;
-  emailGestorContrato: string;
-}
-
-interface itemRiscoPrivacidade {
-  tipoRisco: tipoRiscoPrivacidade;
-  observacoes: string;
-}
-
-interface itemObservacoesProcesso {
-  descricaoObs: string;
-}
-
-export interface BaseCaseItemObject {
-  nome: string;
-  ref: string;
   area: string;
   dataCriacao: string;
   dataAtualizacao: string;
-  finalidadeTratamento: {
-    hipoteseTratamento: { value: hipotesesTratamento };
-    descricaoFinalidade: string;
-  };
-  dadosPessoaisSensiveis: boolean;
-  criador: string;
+  grupoCriador: string;
+  usuarioCriador: string;
   aprovado: boolean;
-}
-
-export interface CaseItemObject extends BaseCaseItemObject {
-  id: string;
-}
-
-export interface CaseItemObjectReduced {
-  id: string;
-  nome: string;
-  ref: string;
-  area: string;
-  dataCriacao: string;
-  dataAtualizacao: string;
-  hipoteseTratamento: hipotesesTratamento;
-  descricaoFinalidade: string;
-  dadosPessoaisSensiveis: string;
-}
-
-export const reduceCaseObjectToList = (
-  c: CaseItemObject
-): CaseItemObjectReduced => {
-  console.log(c);
-
-  const reducedCase: CaseItemObjectReduced = {
-    nome: c.nome,
-    ref: c.ref,
-    area: c.area,
-    dataCriacao: c.dataCriacao,
-    dataAtualizacao: c.dataAtualizacao,
-    hipoteseTratamento: c.finalidadeTratamento.hipoteseTratamento.value,
-    descricaoFinalidade: c.finalidadeTratamento.descricaoFinalidade,
-    dadosPessoaisSensiveis: c.dadosPessoaisSensiveis ? "SIM" : "NÃO",
-    id: c.id,
-  };
-
-  return reducedCase;
-};
-
-export type headersCaseItemObjectReduced = keyof CaseItemObjectReduced;
-
-export interface BaseFullCaseObject extends BaseCaseItemObject {
+  dadosPessoaisSensiveis: boolean;
   controlador: AgenteTratamento;
   encarregado: AgenteTratamento;
   extensaoEncarregado: AgenteTratamento;
   areaTratamentoDados: AgenteTratamento;
   operador: AgenteTratamento;
-  fasesCicloTratamento: {
-    coleta: boolean;
-    retencao: boolean;
-    processamento: boolean;
-    compartilhamento: boolean;
-    eliminacao: boolean;
-    verbos: verbosTratamento[];
-  };
+  fasesCicloTratamento: FasesCicloTratamento;
   descricaoFluxoTratamento: string;
   abrangenciaGeografica: string;
   fonteDados: string;
-  finalidadeTratamento: {
-    hipoteseTratamento: { value: hipotesesTratamento };
-    descricaoFinalidade: string;
-    previsaoLegal: string;
-    resultadosTitular: string;
-    beneficiosEsperados: string;
-  };
-  categoriaDadosPessoais: {
-    identificacao: {
-      idPessoal?: itemCategoriaDadosPessoais;
-      idGov?: itemCategoriaDadosPessoais;
-      idEletronica?: itemCategoriaDadosPessoais;
-      locEletronica?: itemCategoriaDadosPessoais;
-    };
-    financeiros: {
-      idFin?: itemCategoriaDadosPessoais;
-      recursosFin?: itemCategoriaDadosPessoais;
-      dividasDespesas?: itemCategoriaDadosPessoais;
-      solvencia?: itemCategoriaDadosPessoais;
-      emprestimosHipotecaCredito?: itemCategoriaDadosPessoais;
-      assistenciaFin?: itemCategoriaDadosPessoais;
-      apoliceSeguro?: itemCategoriaDadosPessoais;
-      planoPensao?: itemCategoriaDadosPessoais;
-      transacaoFin?: itemCategoriaDadosPessoais;
-      compensacao?: itemCategoriaDadosPessoais;
-      atividadeProfissional?: itemCategoriaDadosPessoais;
-      acordosAjustes?: itemCategoriaDadosPessoais;
-      autorizacoesConsentimentos?: itemCategoriaDadosPessoais;
-    };
-    caracteristicas: {
-      detalhesPessoais?: itemCategoriaDadosPessoais;
-      detalhesMilitares?: itemCategoriaDadosPessoais;
-      situacaoImigracao?: itemCategoriaDadosPessoais;
-      descricaoFisica?: itemCategoriaDadosPessoais;
-    };
-    habitos: {
-      habitos?: itemCategoriaDadosPessoais;
-      estiloVida?: itemCategoriaDadosPessoais;
-      viagensDeslocamento?: itemCategoriaDadosPessoais;
-      contatosSociais?: itemCategoriaDadosPessoais;
-      posses?: itemCategoriaDadosPessoais;
-      denunciasIncidentesAcidentes?: itemCategoriaDadosPessoais;
-      distincoes?: itemCategoriaDadosPessoais;
-      usoMidia?: itemCategoriaDadosPessoais;
-    };
-    caracteristicasPsicologicas: {
-      descricaoPsi?: itemCategoriaDadosPessoais;
-    };
-    composicaoFamiliar: {
-      casamentoCoabitacao?: itemCategoriaDadosPessoais;
-      historicoConjugal?: itemCategoriaDadosPessoais;
-      membrosFamilia?: itemCategoriaDadosPessoais;
-    };
-    interessesLazer: {
-      atividadesInteressesLaz?: itemCategoriaDadosPessoais;
-    };
-    associacoes: {
-      outrasAssociacoesNaoSensiveis?: itemCategoriaDadosPessoais;
-    };
-    processoJudAdmCrim: {
-      suspeitas?: itemCategoriaDadosPessoais;
-      condenacoesSentencas?: itemCategoriaDadosPessoais;
-      acoesJud?: itemCategoriaDadosPessoais;
-      penalidadesAdm?: itemCategoriaDadosPessoais;
-    };
-    habitosConsumo: {
-      dadosBensServicos?: itemCategoriaDadosPessoais;
-    };
-    residenciais: {
-      dadosResidencia?: itemCategoriaDadosPessoais;
-    };
-    educacaoTreinamento: {
-      academicosEscolares?: itemCategoriaDadosPessoais;
-      registroFinanceiro?: itemCategoriaDadosPessoais;
-      qualificacaoExperienciaProf?: itemCategoriaDadosPessoais;
-    };
-    profissaoEmprego: {
-      empregoAtual?: itemCategoriaDadosPessoais;
-      recrutamento?: itemCategoriaDadosPessoais;
-      rescisao?: itemCategoriaDadosPessoais;
-      carreira?: itemCategoriaDadosPessoais;
-      absenteismoDisciplina?: itemCategoriaDadosPessoais;
-      avaliacaoDesempenho?: itemCategoriaDadosPessoais;
-    };
-    regVideoImgVoz: {
-      videoImagem?: itemCategoriaDadosPessoais;
-      imagemVigilancia?: itemCategoriaDadosPessoais;
-      voz?: itemCategoriaDadosPessoais;
-    };
-    outros: {
-      outros?: itemCategoriaDadosPessoais[];
-    };
-  };
-  categoriaDadosPessoaisSensiveis: {
-    origemRacialEtnica?: itemCategoriaDadosPessoais;
-    conviccaoReligiosa?: itemCategoriaDadosPessoais;
-    opiniaoPolitica?: itemCategoriaDadosPessoais;
-    filiacaoSindicato?: itemCategoriaDadosPessoais;
-    filiacaoOrganizacaoReligiosa?: itemCategoriaDadosPessoais;
-    filiacaoCrencaFilosofica?: itemCategoriaDadosPessoais;
-    filiacaoPreferenciaPolitica?: itemCategoriaDadosPessoais;
-    saudeVidaSexual?: itemCategoriaDadosPessoais;
-    geneticos?: itemCategoriaDadosPessoais;
-    biometricos?: itemCategoriaDadosPessoais;
-  };
+  finalidadeTratamento: FinalidadeTratamento;
+  categoriaDadosPessoais: CategoriaDadosPessoais;
+  categoriaDadosPessoaisSensiveis: CategoriaDadosPessoaisSensiveis;
   frequenciaTratamento: string;
   quantidadeDadosTratados: string;
-  categoriasTitulares: {
-    categorias: itemCategoriaTitulares[];
-    criancasAdolescentes: itemCategoriaTitulares[];
-    outrosGruposVulneraveis: itemCategoriaTitulares[];
-  };
+  categoriasTitulares: CategoriaTitulares;
   compartilhamentoDadosPessoais: itemCompartilhamentoDados[];
   medidasSegurancaPrivacidade: itemMedidasSegurancaPrivacidade[];
   transferenciaInternacional: itemTransferenciaInternacional[];
@@ -362,28 +320,9 @@ export interface BaseFullCaseObject extends BaseCaseItemObject {
   observacoesProcesso: itemObservacoesProcesso[];
 }
 
-export interface FullCaseObject extends BaseFullCaseObject {
-  id: string;
+export interface Case extends BaseCase {
+  id: number;
 }
-
-export const reduceCaseObject = (c: FullCaseObject): CaseItemObject => {
-  const { hipoteseTratamento, descricaoFinalidade } = c.finalidadeTratamento;
-
-  const reducedCase: CaseItemObject = {
-    nome: c.nome,
-    ref: c.ref,
-    area: c.area,
-    dataCriacao: c.dataCriacao,
-    dataAtualizacao: c.dataAtualizacao,
-    finalidadeTratamento: { hipoteseTratamento, descricaoFinalidade },
-    dadosPessoaisSensiveis: c.dadosPessoaisSensiveis,
-    criador: c.criador,
-    aprovado: c.aprovado,
-    id: c.id,
-  };
-
-  return reducedCase;
-};
 
 export const emptyAgenteTratamento = (): AgenteTratamento => ({
   nome: "",
@@ -396,12 +335,12 @@ export const emptyItemCategoriaDadosPessoais =
   (): itemCategoriaDadosPessoais => ({
     descricao: "Não se aplica",
     tempoRetencao: "",
-    fonteRetencao: fontesRetencao.na,
+    fonteRetencao: { value: fontesRetencao.na },
     caminhoRedeSistema: "",
   });
 
 export const emptyItemCategoriaTitulares = (): itemCategoriaTitulares => ({
-  tipoCategoria: categoriaTitulares.pessoas,
+  tipoCategoria: { value: tipoCategoriaTitulares.pessoas },
   descricao: "",
 });
 
@@ -413,7 +352,7 @@ export const emptyItemCompatilhamentoDados = (): itemCompartilhamentoDados => ({
 
 export const emptyItemMedidaSegurancaPrivacidade =
   (): itemMedidasSegurancaPrivacidade => ({
-    tipo: tipoMedidaSegurancaPrivacidade.consentimentoEscolha,
+    tipo: { value: tipoMedidaSegurancaPrivacidade.consentimentoEscolha },
     descricaoControles: "",
   });
 
@@ -422,8 +361,10 @@ export const emptyItemTransferenciaInternacional =
     nomeOrganizacao: "",
     pais: "",
     dadosTransferidos: "",
-    tipoGarantia:
-      tipoGarantiaTranferenciaInternacional.consentimentoEspecificoTitular,
+    tipoGarantia: {
+      value:
+        tipoGarantiaTranferenciaInternacional.consentimentoEspecificoTitular,
+    },
   });
 
 export const emptyItemContratoTI = (): itemContratoTI => ({
@@ -434,7 +375,7 @@ export const emptyItemContratoTI = (): itemContratoTI => ({
 });
 
 export const emptyItemRiscoPrivacidade = (): itemRiscoPrivacidade => ({
-  tipoRisco: tipoRiscoPrivacidade.tratamentoSemConsentimento,
+  tipoRisco: { value: tipoRiscoPrivacidade.tratamentoSemConsentimento },
   observacoes: "",
 });
 
@@ -442,13 +383,13 @@ export const emptyItemObservacoesProcesso = (): itemObservacoesProcesso => ({
   descricaoObs: "",
 });
 
-export const emptyFullCaseObject = (): FullCaseObject => ({
-  id: "",
+export const emptyCase = (): Case => ({
+  id: 0,
   nome: "",
-  ref: "",
   area: "",
   aprovado: false,
-  criador: "",
+  grupoCriador: "",
+  usuarioCriador: "",
   dataCriacao: new Date().toDateString(),
   dataAtualizacao: new Date().toDateString(),
   controlador: emptyAgenteTratamento(),
@@ -462,7 +403,6 @@ export const emptyFullCaseObject = (): FullCaseObject => ({
     processamento: false,
     compartilhamento: false,
     eliminacao: false,
-    verbos: [],
   },
   descricaoFluxoTratamento: "",
   abrangenciaGeografica: "",
@@ -566,7 +506,7 @@ export const emptyFullCaseObject = (): FullCaseObject => ({
     conviccaoReligiosa: emptyItemCategoriaDadosPessoais(),
     opiniaoPolitica: emptyItemCategoriaDadosPessoais(),
     filiacaoSindicato: emptyItemCategoriaDadosPessoais(),
-    filiacaoOrganizacaoReligiosa: emptyItemCategoriaDadosPessoais(),
+    filiacaoOrgReligiosa: emptyItemCategoriaDadosPessoais(),
     filiacaoCrencaFilosofica: emptyItemCategoriaDadosPessoais(),
     filiacaoPreferenciaPolitica: emptyItemCategoriaDadosPessoais(),
     saudeVidaSexual: emptyItemCategoriaDadosPessoais(),
@@ -588,12 +528,12 @@ export const emptyFullCaseObject = (): FullCaseObject => ({
   observacoesProcesso: [],
 });
 
-export const emptyBaseFullCaseObject = (): BaseFullCaseObject => ({
+export const emptyBaseCase = (): BaseCase => ({
   nome: "",
-  ref: "",
   area: "",
   aprovado: false,
-  criador: "",
+  grupoCriador: "",
+  usuarioCriador: "",
   dataCriacao: new Date().toDateString(),
   dataAtualizacao: new Date().toDateString(),
   controlador: emptyAgenteTratamento(),
@@ -607,7 +547,6 @@ export const emptyBaseFullCaseObject = (): BaseFullCaseObject => ({
     processamento: false,
     compartilhamento: false,
     eliminacao: false,
-    verbos: [],
   },
   descricaoFluxoTratamento: "",
   abrangenciaGeografica: "",
@@ -711,7 +650,7 @@ export const emptyBaseFullCaseObject = (): BaseFullCaseObject => ({
     conviccaoReligiosa: emptyItemCategoriaDadosPessoais(),
     opiniaoPolitica: emptyItemCategoriaDadosPessoais(),
     filiacaoSindicato: emptyItemCategoriaDadosPessoais(),
-    filiacaoOrganizacaoReligiosa: emptyItemCategoriaDadosPessoais(),
+    filiacaoOrgReligiosa: emptyItemCategoriaDadosPessoais(),
     filiacaoCrencaFilosofica: emptyItemCategoriaDadosPessoais(),
     filiacaoPreferenciaPolitica: emptyItemCategoriaDadosPessoais(),
     saudeVidaSexual: emptyItemCategoriaDadosPessoais(),

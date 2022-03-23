@@ -3,13 +3,13 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { CaseItemObject } from "../../shared/models/cases.model";
+import { AccessRequest } from "../../shared/models/access-request.model";
 import { AuthContext } from "../../shared/context/auth-context";
-import { useHttpClient } from "./../../shared/hooks/http-hook";
-import CasesList from "../components/CasesList";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import AccessRequestsList from "./AccessRequestsList";
 
-const AllCasesList = () => {
-  const [cases, setCases] = useState<CaseItemObject[]>([]);
+const ComiteAccessRequestsListGetter = () => {
+  const [accessRequests, setAccessRequests] = useState<AccessRequest[]>([]);
 
   const { token } = useContext(AuthContext);
 
@@ -17,18 +17,18 @@ const AllCasesList = () => {
     useHttpClient();
 
   useEffect(() => {
-    const getAllCases = async () => {
+    const getComiteAccessRequests = async () => {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/`,
+        `${process.env.REACT_APP_CONNSTR}/access-requests/comite`,
         undefined,
         undefined,
         { Authorization: "Bearer " + token }
       );
-      const loadedCases: CaseItemObject[] = responseData.cases;
-      setCases(loadedCases);
+      const loadedAccessRequests: AccessRequest[] = responseData.comiteRequests;
+      setAccessRequests(loadedAccessRequests);
     };
 
-    getAllCases().catch((error) => {
+    getComiteAccessRequests().catch((error) => {
       console.log(error);
     });
   }, [sendRequest, token]);
@@ -43,11 +43,9 @@ const AllCasesList = () => {
     );
   }
 
-  const approvedCases = cases.filter((item) => item.aprovado);
-
   return (
     <React.Fragment>
-      <h1>Página Inicial - Todos os Itens Aprovados</h1>
+      <h2>Requisições de Acesso ao Painel do Comitê LGPD</h2>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}
@@ -57,9 +55,9 @@ const AllCasesList = () => {
           {error}
         </Alert>
       )}
-      <CasesList items={approvedCases} />
+      <AccessRequestsList items={accessRequests} />
     </React.Fragment>
   );
 };
 
-export default AllCasesList;
+export default ComiteAccessRequestsListGetter;
