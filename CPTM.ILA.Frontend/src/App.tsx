@@ -39,6 +39,9 @@ const AcessRequestsListsCombiner = React.lazy(
 const ApproveAccessRequestGetter = React.lazy(
   () => import("./access-requests/pages/ApproveAccessRequestGetter")
 );
+const RequestGroupAccess = React.lazy(
+  () => import("./access-requests/pages/RequestGroupAccess")
+);
 
 const App = () => {
   const {
@@ -92,6 +95,7 @@ const App = () => {
           <Route index element={<AcessRequestsListsCombiner />} />
           <Route path=":arid" element={<ApproveAccessRequestGetter />} />
         </Route>
+        <Route path="/request-group-access" element={<RequestGroupAccess />} />
         <Route path="/" element={<Navigate replace to="../comite/cases" />} />
         <Route path="*" element={<Navigate replace to="../comite/cases" />} />
       </React.Fragment>

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import * as yup from "yup";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
@@ -9,11 +8,7 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import AccessRequestForm from "../../access-requests/components/AccessRequestForm";
 import { emptyAccessRequest } from "./../../shared/models/access-request.model";
 
-// const schema = yup.object().shape({
-//   username: yup.string().required(),
-// });
-
-const RequestAccess = () => {
+const RequestGroupAccess = () => {
   const [message, setMessage] = useState("");
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -21,7 +16,7 @@ const RequestAccess = () => {
   const submitRegisterHandler = async (accessRequest: BaseAccessRequest) => {
     try {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/access-requests/initial`,
+        `${process.env.REACT_APP_CONNSTR}/access-requests/groups`,
         "POST",
         JSON.stringify(accessRequest),
         {
@@ -53,7 +48,7 @@ const RequestAccess = () => {
     <React.Fragment>
       <AccessRequestForm
         item={emptyAccessRequest()}
-        register={true}
+        groups={true}
         onSubmit={submitRegisterHandler}
       />
       {error && (
@@ -80,4 +75,4 @@ const RequestAccess = () => {
   );
 };
 
-export default RequestAccess;
+export default RequestGroupAccess;

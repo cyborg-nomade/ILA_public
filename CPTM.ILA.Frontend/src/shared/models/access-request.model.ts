@@ -9,6 +9,7 @@ export interface BaseAccessRequest {
   justificativa: string;
   usernameSuperior: string;
   tipoSolicitacaoAcesso: tipoSolicitacaoAcesso;
+  grupos: string[];
 }
 
 export interface AccessRequest extends BaseAccessRequest {
@@ -23,5 +24,6 @@ export const emptyAccessRequest = (): BaseAccessRequest | AccessRequest => {
     usernameSuperior: "",
     justificativa: "",
     tipoSolicitacaoAcesso: tipoSolicitacaoAcesso.AcessoAoSistema,
+    grupos: [],
   };
 };

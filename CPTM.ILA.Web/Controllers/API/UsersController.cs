@@ -11,6 +11,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using CPTM.ILA.Web.Models.AccessControl;
+using CPTM.CasisLibrary.MVC;
+using CPTM.Comum;
+using CPTM.Comum.Web;
+using CPTM.GNU.Library;
 
 namespace CPTM.ILA.Web.Controllers.API
 {
