@@ -6,8 +6,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import {
-  categoriaTitulares,
-  FullCaseObject,
+  tipoCategoriaTitulares,
+  Case,
 } from "../../../shared/models/cases.model";
 
 const Section10FormRow = (props: {
@@ -17,7 +17,7 @@ const Section10FormRow = (props: {
   className: string;
 }) => {
   const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
-    useFormikContext<FullCaseObject>();
+    useFormikContext<Case>();
 
   const [descricao, setDescricao] = useState(
     getIn(values, `${props.name}.descricao`)
@@ -49,7 +49,7 @@ const Section10FormRow = (props: {
           }
           isInvalid={!!getIn(errors, `${props.name}.tipoCategoria`)}
         >
-          {Object.values(categoriaTitulares).map((ctg) => (
+          {Object.values(tipoCategoriaTitulares).map((ctg) => (
             <option value={ctg} key={ctg}>
               {ctg}
             </option>

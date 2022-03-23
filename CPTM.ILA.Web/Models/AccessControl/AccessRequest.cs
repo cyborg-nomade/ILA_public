@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 
 namespace CPTM.ILA.Web.Models.AccessControl
 {
+    [Table("ILA_ACCESS_REQUESTS")]
     public class AccessRequest
     {
         public int Id { get; set; }

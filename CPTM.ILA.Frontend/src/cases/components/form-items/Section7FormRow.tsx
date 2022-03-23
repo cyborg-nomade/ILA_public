@@ -7,10 +7,7 @@ import Col from "react-bootstrap/Col";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-import {
-  fontesRetencao,
-  FullCaseObject,
-} from "../../../shared/models/cases.model";
+import { fontesRetencao, Case } from "../../../shared/models/cases.model";
 
 const Section7FormRow = (props: {
   tooltip: JSX.Element;
@@ -20,7 +17,7 @@ const Section7FormRow = (props: {
   className: string;
 }) => {
   const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
-    useFormikContext<FullCaseObject>();
+    useFormikContext<Case>();
 
   const [descricao, setDescricao] = useState(
     getIn(values, `${props.name}.descricao`)

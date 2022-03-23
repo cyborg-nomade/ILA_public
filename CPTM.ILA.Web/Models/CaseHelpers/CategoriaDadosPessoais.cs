@@ -1,9 +1,12 @@
-﻿using CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais;
 
 namespace CPTM.ILA.Web.Models.CaseHelpers
 {
+    [Table("ILA_CATEGORIA_DADOS_PESSOAIS")]
     public class CategoriaDadosPessoais
     {
+        public int Id { get; set; }
         public Identificacao Identificacao { get; set; }
         public Financeiros Financeiros { get; set; }
         public Caracteristicas Caracteristicas { get; set; }

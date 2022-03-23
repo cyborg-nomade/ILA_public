@@ -13,6 +13,7 @@ import Spinner from "react-bootstrap/Spinner";
 import { BaseUser, User } from "./../../shared/models/users.model";
 import { AuthContext } from "./../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
+import { groups } from "../../access-requests/components/GroupSelector";
 
 const schema = yup.object().shape({
   username: yup.string().required(),
@@ -52,7 +53,8 @@ const Login = () => {
         receivedUser.id,
         receivedUser.username,
         receivedUser.isComite,
-        responseData.token
+        responseData.token,
+        groups[1]
       );
 
       navigate(`/${receivedUser.id}/cases`);

@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using CPTM.ILA.Web.Models;
 using System.Security.Claims;
+using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.CaseHelpers;
 
 
@@ -33,23 +34,42 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     Nome = "Caso1",
                     FinalidadeTratamento = new FinalidadeTratamento()
-                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento }
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento },
+                    GrupoCriador = new Group() { Nome = "GGDC" }
                 },
                 new Case()
                 {
                     Nome = "Caso2",
                     FinalidadeTratamento = new FinalidadeTratamento()
-                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento }
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento },
+                    GrupoCriador = new Group() { Nome = "HFPD" }
                 },
                 new Case()
                 {
                     Nome = "Caso3",
                     FinalidadeTratamento = new FinalidadeTratamento()
-                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento }
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento },
+                    GrupoCriador = new Group() { Nome = "XPTY" }
+                },
+                new Case()
+                {
+                    Nome = "Caso4",
+                    FinalidadeTratamento = new FinalidadeTratamento()
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento },
+                    GrupoCriador = new Group() { Nome = "ZYPD" }
+                },
+                new Case()
+                {
+                    Nome = "Caso5",
+                    FinalidadeTratamento = new FinalidadeTratamento()
+                        { DescricaoFinalidade = "oi", HipoteseTratamento = HipotesesTratamento.Consentimento },
+                    GrupoCriador = new Group() { Nome = "ZYPD" }
                 },
             };
 
-            return Request.CreateResponse(HttpStatusCode.OK, new { cases, name });
+            var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems, name });
         }
 
         [Route("user/{uid}")]
