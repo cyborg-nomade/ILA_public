@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
 {
@@ -7,6 +8,6 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     {
         public int Id { get; set; }
 
-        public ItemCategoriaDadosPessoais OutrasAssNaoSensiveis { get; set; }
+        public ICollection<ItemCategoriaDadosPessoais> OutrasAssNaoSensiveis { get; set; }
     }
 }

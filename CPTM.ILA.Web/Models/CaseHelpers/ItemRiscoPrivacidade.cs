@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using CPTM.ILA.Web.Models.CaseHelpers.Enums;
 
 namespace CPTM.ILA.Web.Models.CaseHelpers
 {

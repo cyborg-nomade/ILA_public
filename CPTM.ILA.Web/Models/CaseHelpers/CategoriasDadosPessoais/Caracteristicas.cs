@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
 {
@@ -6,9 +7,9 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class Caracteristicas
     {
         public int Id { get; set; }
-        public ItemCategoriaDadosPessoais DetalhesPessoais { get; set; }
-        public ItemCategoriaDadosPessoais DetalhesMilitares { get; set; }
-        public ItemCategoriaDadosPessoais SituacaoImigracao { get; set; }
-        public ItemCategoriaDadosPessoais DescricaoFisica { get; set; }
+        public ICollection<ItemCategoriaDadosPessoais> DetalhesPessoais { get; set; }
+        public ICollection<ItemCategoriaDadosPessoais> DetalhesMilitares { get; set; }
+        public ICollection<ItemCategoriaDadosPessoais> SituacaoImigracao { get; set; }
+        public ICollection<ItemCategoriaDadosPessoais> DescricaoFisica { get; set; }
     }
 }
