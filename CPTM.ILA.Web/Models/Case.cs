@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.CaseHelpers;
+using CPTM.ILA.Web.Models.CaseHelpers.Enums;
 
 namespace CPTM.ILA.Web.Models
 {
@@ -11,7 +13,7 @@ namespace CPTM.ILA.Web.Models
     public class Case
     {
         public int Id { get; set; }
-        public string Nome { get; set; }
+        [MaxLength(250)] public string Nome { get; set; }
         public string Area { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
@@ -28,15 +30,16 @@ namespace CPTM.ILA.Web.Models
 
         public FasesCicloTratamento FasesCicloTratamento { get; set; }
         public string DescricaoFluxoTratamento { get; set; }
-        public string AbrangenciaGeografica { get; set; }
+        public TipoAbrangenciaGeografica AbrangenciaGeografica { get; set; }
         public string FonteDados { get; set; }
         public FinalidadeTratamento FinalidadeTratamento { get; set; }
 
         public CategoriaDadosPessoais CategoriaDadosPessoais { get; set; }
         public CategoriaDadosPessoaisSensiveis CatDadosPessoaisSensiveis { get; set; }
 
-        public string FrequenciaTratamento { get; set; }
-        public string QuantidadeDadosTratados { get; set; }
+        public TipoFrequenciaTratamento FrequenciaTratamento { get; set; }
+        public int QuantidadeDadosTratados { get; set; }
+        public int QuantidadeDadosSensiveisTratados { get; set; }
 
         public CategoriasTitulares CategoriasTitulares { get; set; }
 
