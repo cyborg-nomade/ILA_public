@@ -179,6 +179,16 @@ namespace CPTM.ILA.Web.Controllers.API
             return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso removido com sucesso!" });
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _context.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
         public bool CaseExists(int id)
         {
             return _context.Cases.Count(c => c.Id == id) > 0;
