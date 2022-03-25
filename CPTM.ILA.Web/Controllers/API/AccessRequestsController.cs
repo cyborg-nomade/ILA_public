@@ -16,14 +16,14 @@ namespace CPTM.ILA.Web.Controllers.API
     [RoutePrefix("api/access-requests")]
     public class AccessRequestsController : ApiController
     {
-        private IlaContext _context;
+        private ILAContext _context;
 
         /// <summary>
         /// Controlador da APÍ para Requisições de Acesso
         /// </summary>
         public AccessRequestsController()
         {
-            _context = new IlaContext();
+            _context = new ILAContext();
         }
 
         [Route("{id}")]

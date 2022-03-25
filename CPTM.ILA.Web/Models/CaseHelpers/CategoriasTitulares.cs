@@ -9,8 +9,8 @@ namespace CPTM.ILA.Web.Models.CaseHelpers
         public int Id { get; set; }
         public ICollection<ItemCategoriaTitulares> Categorias { get; set; }
 
-        public ICollection<ItemCategoriaTitulares> CriancasAdolescentes { get; set; }
+        public ItemCategoriaTitularesExtra CriancasAdolescentes { get; set; }
 
-        public ICollection<ItemCategoriaTitulares> OutrosGruposVulneraveis { get; set; }
+        public ItemCategoriaTitularesExtra OutrosGruposVulneraveis { get; set; }
     }
 }

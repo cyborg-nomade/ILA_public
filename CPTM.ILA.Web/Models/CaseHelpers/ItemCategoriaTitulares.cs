@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using CPTM.ILA.Web.Models.CaseHelpers.Enums;
 
 namespace CPTM.ILA.Web.Models.CaseHelpers
 {
@@ -7,6 +9,6 @@ namespace CPTM.ILA.Web.Models.CaseHelpers
     {
         public int Id { get; set; }
         public TipoCategoriaTitulares TipoCategoria { get; set; }
-        public string Descricao { get; set; }
+        [MaxLength(250)] public string Descricao { get; set; }
     }
 }

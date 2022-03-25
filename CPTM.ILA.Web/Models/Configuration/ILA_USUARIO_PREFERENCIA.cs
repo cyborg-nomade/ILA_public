@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CPTM.ILA.Web.Models.Configuration
 {
     [Table("ILA.ILA_USUARIO_PREFERENCIA")]
-    public partial class IlaUsuarioPreferencia
+    public partial class ILA_USUARIO_PREFERENCIA
     {
         [Key]
         [Column(Order = 0)]

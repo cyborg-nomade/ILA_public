@@ -7,13 +7,13 @@ namespace CPTM.ILA.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class FullModel : IMigrationMetadata
+    public sealed partial class ExistingModel : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(FullModel));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ExistingModel));
         
         string IMigrationMetadata.Id
         {
-            get { return "202203211420101_FullModel"; }
+            get { return "202203251141040_ExistingModel"; }
         }
         
         string IMigrationMetadata.Source
