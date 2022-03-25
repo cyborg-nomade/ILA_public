@@ -304,27 +304,26 @@
     <Compile Include="Controllers\API\AccessRequestsController.cs" />
     <Compile Include="Controllers\API\CasesController.cs" />
     <Compile Include="Controllers\API\CommentsController.cs" />
+    <Compile Include="Controllers\API\ThreadsCommentsController.cs" />
     <Compile Include="Controllers\API\UsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Migrations\202203211420101_FullModel.cs" />
-    <Compile Include="Migrations\202203211420101_FullModel.designer.cs">
-      <DependentUpon>202203211420101_FullModel.cs</DependentUpon>
+    <Compile Include="DTOs\CaseChange.cs" />
+    <Compile Include="Migrations\202203251141040_ExistingModel.cs" />
+    <Compile Include="Migrations\202203251141040_ExistingModel.designer.cs">
+      <DependentUpon>202203251141040_ExistingModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203251158409_FullModel.cs" />
+    <Compile Include="Migrations\202203251158409_FullModel.designer.cs">
+      <DependentUpon>202203251158409_FullModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
     <Compile Include="Models\AccessControl\AuthUser.cs" />
-    <Compile Include="Models\AccessControl\CPUEstruturaOrganizacional.cs" />
-    <Compile Include="Models\AccessControl\ILA_VW_CARGO.cs" />
-    <Compile Include="Models\AccessControl\ILA_VW_CASIS_GRUPO.cs" />
-    <Compile Include="Models\AccessControl\ILA_VW_CASIS_GRUPO_USUARIO.cs" />
-    <Compile Include="Models\AccessControl\ILA_VW_ESTRUTURA_ORG.cs" />
-    <Compile Include="Models\AccessControl\ILA_VW_FUNCAO.cs" />
-    <Compile Include="Models\AccessControl\ILA_VW_USUARIO.cs" />
     <Compile Include="Models\CaseHelpers\AgenteTratamento.cs" />
     <Compile Include="Models\Case.cs" />
-    <Compile Include="Models\CaseHelpers\CaseListItem.cs" />
+    <Compile Include="DTOs\CaseListItem.cs" />
     <Compile Include="Models\CaseHelpers\CategoriaDadosPessoais.cs" />
-    <Compile Include="Models\CaseHelpers\CategoriaDadosPessoaisSensiveis.cs" />
+    <Compile Include="Models\CaseHelpers\CatDadosPessoaisSensiveis.cs" />
     <Compile Include="Models\CaseHelpers\CategoriasDadosPessoais\Associacoes.cs" />
     <Compile Include="Models\CaseHelpers\CategoriasDadosPessoais\Caracteristicas.cs" />
     <Compile Include="Models\CaseHelpers\CategoriasDadosPessoais\CaracteristicasPsicologicas.cs" />
@@ -340,9 +339,23 @@
     <Compile Include="Models\CaseHelpers\CategoriasDadosPessoais\ProfissaoEmprego.cs" />
     <Compile Include="Models\CaseHelpers\CategoriasDadosPessoais\RegVideoImgVoz.cs" />
     <Compile Include="Models\CaseHelpers\CategoriasDadosPessoais\Residenciais.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\Pais.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\TipoTempoRetencao.cs" />
     <Compile Include="Models\CaseHelpers\CategoriasTitulares.cs" />
-    <Compile Include="Models\CaseHelpers\ItemIdentity.cs" />
-    <Compile Include="Models\CaseHelpers\TipoCategoriaTitulares.cs" />
+    <Compile Include="Models\CaseHelpers\ItemCategoriaTitularesExtra.cs" />
+    <Compile Include="Models\ChangeLogging\ChangeLog.cs" />
+    <Compile Include="Models\ILAContext.cs" />
+    <Compile Include="Models\Configuration\ILA_CONFIGURACAO.cs" />
+    <Compile Include="Models\Configuration\ILA_USUARIO_PREFERENCIA.cs" />
+    <Compile Include="Models\AccessControl\VIEWS\ILA_VW_CARGO.cs" />
+    <Compile Include="Models\AccessControl\VIEWS\ILA_VW_CASIS_GRUPO.cs" />
+    <Compile Include="Models\AccessControl\VIEWS\ILA_VW_CASIS_GRUPO_USUARIO.cs" />
+    <Compile Include="Models\AccessControl\VIEWS\ILA_VW_ESTRUTURA_ORG.cs" />
+    <Compile Include="Models\AccessControl\VIEWS\ILA_VW_FUNCAO.cs" />
+    <Compile Include="Models\AccessControl\VIEWS\ILA_VW_USUARIO.cs" />
+    <Compile Include="Models\AccessControl\VIEWS\ILA_VW_USUARIO_FOTO.cs" />
+    <Compile Include="Models\Messaging\ItemIdentity.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\TipoCategoriaTitulares.cs" />
     <Compile Include="Models\CaseHelpers\FasesCicloTratamento.cs" />
     <Compile Include="Models\CaseHelpers\ItemCategoriaTitulares.cs" />
     <Compile Include="Models\CaseHelpers\ItemCompartilhamentoDados.cs" />
@@ -351,20 +364,21 @@
     <Compile Include="Models\CaseHelpers\ItemObservacoesProcesso.cs" />
     <Compile Include="Models\CaseHelpers\ItemRiscoPrivacidade.cs" />
     <Compile Include="Models\CaseHelpers\ItemTransferenciaInternacional.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\TipoCompartilhamentoDados.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\TipoFinalidadeCompartilhamento.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\TipoFrequenciaTratamento.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\TipoNivelCompartilhamento.cs" />
     <Compile Include="Models\Messaging\Comment.cs" />
     <Compile Include="Models\CaseHelpers\FinalidadeTratamento.cs" />
-    <Compile Include="Models\CaseHelpers\FontesRetenção.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\TipoFontesRetenção.cs" />
     <Compile Include="Models\AccessControl\Group.cs" />
-    <Compile Include="Models\CaseHelpers\HipotesesTratamento.cs" />
-    <Compile Include="Models\ILAContext.cs" />
-    <Compile Include="Models\Configuration\ILA_CONFIGURACAO.cs" />
-    <Compile Include="Models\Configuration\ILA_USUARIO_PREFERENCIA.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\HipotesesTratamento.cs" />
     <Compile Include="Models\CaseHelpers\ItemCategoriaDadosPessoais.cs" />
-    <Compile Include="Models\CaseHelpers\TipoGarantiaTransferenciaInternacional.cs" />
-    <Compile Include="Models\CaseHelpers\TipoMedidaSegurancaPrivacidade.cs" />
-    <Compile Include="Models\CaseHelpers\TipoRiscoPrivacidade.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\TipoMedidaSegurancaPrivacidade.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\TipoRiscoPrivacidade.cs" />
     <Compile Include="Models\AccessControl\User.cs" />
     <Compile Include="Models\Messaging\Thread.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\TipoAbrangenciaGeografica.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Util\DbUtil.cs" />
@@ -466,8 +480,11 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202203211420101_FullModel.resx">
-      <DependentUpon>202203211420101_FullModel.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202203251141040_ExistingModel.resx">
+      <DependentUpon>202203251141040_ExistingModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203251158409_FullModel.resx">
+      <DependentUpon>202203251158409_FullModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

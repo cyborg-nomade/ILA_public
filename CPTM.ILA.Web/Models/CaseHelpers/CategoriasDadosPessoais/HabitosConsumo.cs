@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
 {
@@ -6,6 +7,6 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class HabitosConsumo
     {
         public int Id { get; set; }
-        public ItemCategoriaDadosPessoais DadosBensServicos { get; set; }
+        public ICollection<ItemCategoriaDadosPessoais> DadosBensServicos { get; set; }
     }
 }

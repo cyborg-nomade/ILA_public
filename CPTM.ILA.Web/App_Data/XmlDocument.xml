@@ -481,62 +481,6 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="T:CPTM.ILA.Web.Controllers.API.AccessRequestsController">
-            <summary>
-            Controlador para Requisições de Acesso ao sistema ILA.
-            </summary>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.#ctor">
-            <summary>
-            Controlador da APÍ para Requisições de Acesso
-            </summary>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.RequestInitialAccess(CPTM.ILA.Web.Models.AccessControl.AccessRequest)">
-            <summary>
-            Endpoint para envio de solicitações de acesso inicial (usuário comum) ao sistema ILA
-            </summary>
-            <param name="accessRequest"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.RequestAccessToGroups(CPTM.ILA.Web.Models.AccessControl.AccessRequest)">
-            <summary>
-            Endpoint para envio de solicitações de acesso aos casos de uso de dados pessoais de grupos diferentes do departamento de lotação do usuário logado.
-            </summary>
-            <param name="accessRequest"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.RequestComiteAccess(CPTM.ILA.Web.Models.AccessControl.AccessRequest)">
-            <summary>
-            Endpoint para envio de solicitações de acesso no nível do Comitê LGPD. Apenas para usuários logados.
-            </summary>
-            <param name="accessRequest"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.GetInitialAccessRequests">
-            <summary>
-            Retorna todos as solicitações de acesso inicial. Apenas para membros do Comitê LGPD.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.GetGroupAccessRequests">
-            <summary>
-            Retorna todos as solicitações de acesso a grupos. Apenas para membros do Comitê LGPD.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.GetComiteAccessRequests">
-            <summary>
-            Retorna todos as solicitações de acesso a grupos. Apenas para membros do Comitê LGPD.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.ApproveInitialAccessRequest(System.Int32,System.Boolean)">
-            <summary>
-            Realiza a aprovação/reprovação de uma solicitação de acesso. Apenas para membros do Comitê LGPD.
-            Recebe o Id da solicitação (INT) na url e um flag Aprovado (BOOL) no corpo da requisição.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:CPTM.ILA.Web.SqlServerTypes.Utilities">
             <summary>
             Utility methods related to CLR Types for SQL Server 

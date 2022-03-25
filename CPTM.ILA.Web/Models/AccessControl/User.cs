@@ -9,6 +9,7 @@ namespace CPTM.ILA.Web.Models.AccessControl
         public int Id { get; set; }
         public string Username { get; set; }
         public bool IsComite { get; set; }
+        public bool IsDPO { get; set; }
         public ICollection<Case> Cases { get; set; }
         public Group OriginGroup { get; set; }
         public ICollection<Group> Groups { get; set; }
