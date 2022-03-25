@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CPTM.ILA.Web.Models.CaseHelpers
 {
     [Table("ILA_CAT_DADOS_PESSOAIS_SENS")]
-    public class CategoriaDadosPessoaisSensiveis
+    public class CatDadosPessoaisSensiveis
     {
         public int Id { get; set; }
         public ICollection<ItemCategoriaDadosPessoais> OrigemRacialEtnica { get; set; }

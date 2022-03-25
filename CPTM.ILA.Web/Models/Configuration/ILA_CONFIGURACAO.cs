@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CPTM.ILA.Web.Models.Configuration
 {
     [Table("ILA.ILA_CONFIGURACAO")]
-    public partial class IlaConfiguracao
+    public partial class ILA_CONFIGURACAO
     {
         [Key] [StringLength(250)] public string Parametro { get; set; }
 

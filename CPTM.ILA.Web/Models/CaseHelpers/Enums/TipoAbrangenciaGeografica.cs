@@ -1,4 +1,4 @@
-﻿namespace CPTM.ILA.Web.Models
+﻿namespace CPTM.ILA.Web.Models.CaseHelpers.Enums
 {
     public class TipoAbrangenciaGeografica
     {
