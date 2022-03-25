@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -7,9 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using CPTM.ILA.Web.Models;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.CaseHelpers;
 
 
@@ -18,7 +15,7 @@ namespace CPTM.ILA.Web.Controllers.API
     [RoutePrefix("api/cases")]
     public class CasesController : ApiController
     {
-        private ILAContext _context;
+        private readonly ILAContext _context;
 
         public CasesController()
         {
@@ -121,6 +118,7 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> Edit(int cid, [FromBody] CaseChange caseChange)
         {
+            if (cid <= 0) return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
             if (!ModelState.IsValid)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest,
@@ -166,6 +164,7 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(int cid)
         {
+            if (cid <= 0) return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
             var caseToDelete = await _context.Cases.FindAsync(cid);
             if (caseToDelete == null)
             {
