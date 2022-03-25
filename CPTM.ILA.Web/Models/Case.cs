@@ -35,11 +35,11 @@ namespace CPTM.ILA.Web.Models
         public FinalidadeTratamento FinalidadeTratamento { get; set; }
 
         public CategoriaDadosPessoais CategoriaDadosPessoais { get; set; }
-        public CategoriaDadosPessoaisSensiveis CatDadosPessoaisSensiveis { get; set; }
+        public CatDadosPessoaisSensiveis CatDadosPessoaisSensiveis { get; set; }
 
         public TipoFrequenciaTratamento FrequenciaTratamento { get; set; }
-        public int QuantidadeDadosTratados { get; set; }
-        public int QuantidadeDadosSensiveisTratados { get; set; }
+        public int QtdeDadosTratados { get; set; }
+        public int QtdeDadosSensiveisTratados { get; set; }
 
         public CategoriasTitulares CategoriasTitulares { get; set; }
 
@@ -82,6 +82,17 @@ namespace CPTM.ILA.Web.Models
                 DescricaoFinalidade =
                     "Atendimento de finalidade pública, na persecução do interesse público, com o objetivo de executar as competências legais ou cumprir as atribuições legais do serviço público."
             };
+            return this;
+        }
+
+        public Case RectifyCase()
+        {
+            this.FillStandardValues();
+            foreach (var item in this.CompartilhamentoDadosPessoais)
+            {
+                item.Rectify();
+            }
+
             return this;
         }
     }

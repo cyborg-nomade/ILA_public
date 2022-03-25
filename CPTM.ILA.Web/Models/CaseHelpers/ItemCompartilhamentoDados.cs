@@ -9,10 +9,10 @@ namespace CPTM.ILA.Web.Models.CaseHelpers
     {
         public int Id { get; set; }
         public string NomeInstituicao { get; set; }
-        public TipoCompartilhamentoDados TipoCompartilhamentoDados { get; set; }
+        public TipoCompartilhamentoDados TipoCompDados { get; set; }
         public TipoNivelCompartilhamento NivelCompartilhamento { get; set; }
         [MaxLength(250)] public string DescricaoDadosCompartilhados { get; set; }
-        public TipoFinalidadeCompartilhamento FinalidadeCompartilhamento { get; set; }
+        public TipoFinalidadeCompartilhamento FinalidadeComp { get; set; }
         [MaxLength(250)] public string DescricaoFinalidadeComp { get; set; }
 
         public ItemCompartilhamentoDados Rectify()
@@ -22,14 +22,14 @@ namespace CPTM.ILA.Web.Models.CaseHelpers
                 this.DescricaoDadosCompartilhados = null;
             }
 
-            if (this.TipoCompartilhamentoDados == TipoCompartilhamentoDados.Privado())
+            if (this.TipoCompDados == TipoCompartilhamentoDados.Privado())
             {
                 this.DescricaoFinalidadeComp = null;
             }
 
-            if (this.TipoCompartilhamentoDados == TipoCompartilhamentoDados.Publico())
+            if (this.TipoCompDados == TipoCompartilhamentoDados.Publico())
             {
-                this.FinalidadeCompartilhamento = new TipoFinalidadeCompartilhamento(null);
+                this.FinalidadeComp = new TipoFinalidadeCompartilhamento(null);
             }
 
             return this;

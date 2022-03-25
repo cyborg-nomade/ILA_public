@@ -1,11 +1,8 @@
-namespace CPTM.ILA.Web.Models.AccessControl
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace CPTM.ILA.Web.Models.AccessControl.VIEWS
+{
     [Table("ILA.ILA_VW_CASIS_GRUPO_USUARIO")]
     public partial class ILA_VW_CASIS_GRUPO_USUARIO
     {
