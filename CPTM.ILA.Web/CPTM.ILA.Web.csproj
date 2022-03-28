@@ -303,11 +303,12 @@
     <Compile Include="Comum\Enumerador.cs" />
     <Compile Include="Controllers\API\AccessRequestsController.cs" />
     <Compile Include="Controllers\API\CasesController.cs" />
-    <Compile Include="Controllers\API\CommentsController.cs" />
+    <Compile Include="Controllers\API\GroupsController.cs" />
     <Compile Include="Controllers\API\ThreadsCommentsController.cs" />
     <Compile Include="Controllers\API\UsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DTOs\CaseChange.cs" />
+    <Compile Include="DTOs\CommentDTO.cs" />
     <Compile Include="Migrations\202203251141040_ExistingModel.cs" />
     <Compile Include="Migrations\202203251141040_ExistingModel.designer.cs">
       <DependentUpon>202203251141040_ExistingModel.cs</DependentUpon>
@@ -318,7 +319,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
-    <Compile Include="Models\AccessControl\AuthUser.cs" />
+    <Compile Include="DTOs\AuthUser.cs" />
     <Compile Include="Models\CaseHelpers\AgenteTratamento.cs" />
     <Compile Include="Models\Case.cs" />
     <Compile Include="DTOs\CaseListItem.cs" />
@@ -381,11 +382,13 @@
     <Compile Include="Models\CaseHelpers\Enums\TipoAbrangenciaGeografica.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Util\TokenClaimNames.cs" />
     <Compile Include="Util\DbUtil.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\TokenUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\Elmah.txt" />

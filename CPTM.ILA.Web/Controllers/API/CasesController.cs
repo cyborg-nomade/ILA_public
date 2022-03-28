@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Web.Http;
 using CPTM.ILA.Web.Models;
 using System.Threading.Tasks;
+using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.CaseHelpers;
+using CPTM.ILA.Web.Util;
 
 
 namespace CPTM.ILA.Web.Controllers.API
@@ -27,6 +31,16 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpGet]
         public async Task<HttpResponseMessage> Get()
         {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!claims.IsDpo && !claims.IsDeveloper)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
             try
             {
                 var cases = await _context.Cases.ToListAsync();
@@ -39,7 +53,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
             }
         }
 
@@ -48,6 +62,16 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpGet]
         public async Task<HttpResponseMessage> GetByGroup(int gid)
         {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (claims.GroupId != gid && !claims.IsDeveloper && !claims.IsDpo)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
             if (gid <= 0) Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
             try
             {
@@ -62,7 +86,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
             }
         }
 
@@ -80,13 +104,30 @@ namespace CPTM.ILA.Web.Controllers.API
                     return Request.CreateResponse(HttpStatusCode.BadRequest,
                         new { message = "Caso não encontrado. Verifique o id" });
 
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                        .SelectMany(u => u.Groups)
+                        .ToListAsync();
+
+                    var caseGroup = uniqueCase.GrupoCriador;
+
+                    if (!userGroups.Contains(caseGroup) && !claims.IsDeveloper && !claims.IsDpo)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
                 return Request.CreateResponse(HttpStatusCode.OK, new { uniqueCase });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
             }
         }
 
@@ -95,10 +136,26 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> Post([FromBody] CaseChange caseChange)
         {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+                var caseGroup = caseChange.Case.GrupoCriador;
+
+
+                if (!userGroups.Contains(caseGroup) && !claims.IsDeveloper || claims.IsDpo)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest,
-                    new { message = "Dados enviados são inválidos" });
+                    new { message = "Objeto enviado não corresponde ao tipo CaseChange" });
             }
 
             var caseToSave = caseChange.Case;
@@ -118,6 +175,22 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> Edit(int cid, [FromBody] CaseChange caseChange)
         {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+                var caseGroup = caseChange.Case.GrupoCriador;
+
+
+                if (!userGroups.Contains(caseGroup) && !claims.IsDeveloper || claims.IsComite)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
             if (cid <= 0) return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
             if (!ModelState.IsValid)
             {
@@ -128,7 +201,7 @@ namespace CPTM.ILA.Web.Controllers.API
             if (cid != caseChange.Case.Id)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest,
-                    new { message = "Dados enviados são inválidos" });
+                    new { message = "Objeto enviado não corresponde ao tipo CaseChange" });
             }
 
             var caseToSave = caseChange.Case;
@@ -136,6 +209,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             caseToSave.RectifyCase();
 
+            _context.ChangeLogs.Add(newChangeLog);
             _context.Entry(caseToSave)
                 .State = EntityState.Modified;
 
@@ -150,10 +224,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     return Request.CreateResponse(HttpStatusCode.NotFound,
                         new { message = "Caso não encontrado. Verifique o id" });
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso registrado com sucesso!" });
@@ -172,10 +244,49 @@ namespace CPTM.ILA.Web.Controllers.API
                     new { message = "Caso não encontrado. Verifique o id" });
             }
 
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+                var caseGroup = caseToDelete.GrupoCriador;
+
+                if (!userGroups.Contains(caseGroup) && !claims.IsDeveloper || claims.IsComite)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
             _context.Cases.Remove(caseToDelete);
             await _context.SaveChangesAsync();
 
             return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso removido com sucesso!" });
+        }
+
+        [Route("approve/{cid:int}")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> Approve(int cid)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+                var caseGroup = caseChange.Case.GrupoCriador;
+
+
+                if (!userGroups.Contains(caseGroup) && (!claims.IsComite || !claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
         }
 
         protected override void Dispose(bool disposing)
@@ -188,7 +299,7 @@ namespace CPTM.ILA.Web.Controllers.API
             base.Dispose(disposing);
         }
 
-        public bool CaseExists(int id)
+        private bool CaseExists(int id)
         {
             return _context.Cases.Count(c => c.Id == id) > 0;
         }
