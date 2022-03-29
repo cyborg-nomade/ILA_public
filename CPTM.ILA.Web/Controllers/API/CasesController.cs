@@ -92,6 +92,44 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        [Route("group/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalByGroup()
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!claims.IsDeveloper && !claims.IsDpo)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var totals = await _context.Cases.GroupBy(c => c.GrupoCriador)
+                    .Select(c => new GroupTotals()
+                    {
+                        GroupId = c.First()
+                            .GrupoCriador.Id,
+                        GroupName = c.First()
+                            .GrupoCriador.Nome,
+                        QuantityInGroup = c.Count()
+                    })
+                    .ToListAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
         [Route("{cid:int}")]
         [Authorize]
         [HttpGet]
