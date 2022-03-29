@@ -97,7 +97,7 @@ namespace CPTM.ILA.Web.Controllers.API
             if (tid <= 0) return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
             try
             {
-                var thread = await _context.Threads.SingleOrDefaultAsync(t => t.Id == tid);
+                var thread = await _context.Threads.FindAsync(tid);
 
                 if (thread == null)
                     return Request.CreateResponse(HttpStatusCode.BadRequest,
@@ -140,7 +140,7 @@ namespace CPTM.ILA.Web.Controllers.API
         {
             try
             {
-                var thread = await _context.Threads.SingleOrDefaultAsync(t => t.Id == tid);
+                var thread = await _context.Threads.FindAsync(tid);
 
                 if (thread == null)
                     return Request.CreateResponse(HttpStatusCode.BadRequest,
@@ -223,8 +223,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             var thread = new Thread
             {
-                AuthorGroup = await _context.Groups.Where(g => g.Id == groupId)
-                    .SingleOrDefaultAsync(),
+                AuthorGroup = await _context.Groups.FindAsync(groupId),
                 AuthorStatus = ThreadStatus.Pendente,
                 ComiteStatus = ThreadStatus.Novo,
                 Comments = new List<Comment>() { comment }
@@ -259,7 +258,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     new { message = "Dados enviados são inválidos" });
             }
 
-            var thread = await _context.Threads.SingleOrDefaultAsync(t => t.Id == tid);
+            var thread = await _context.Threads.FindAsync(tid);
 
             if (thread == null)
             {

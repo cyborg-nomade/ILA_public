@@ -27,7 +27,7 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.Enums
 
         public static bool IsPais(string nomePais)
         {
-            return Pais.ListaDePaises()
+            return ListaDePaises()
                 .Contains(nomePais);
         }
     }

@@ -309,15 +309,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DTOs\CaseChange.cs" />
     <Compile Include="DTOs\CommentDTO.cs" />
-    <Compile Include="Migrations\202203251141040_ExistingModel.cs" />
-    <Compile Include="Migrations\202203251141040_ExistingModel.designer.cs">
-      <DependentUpon>202203251141040_ExistingModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202203251158409_FullModel.cs" />
-    <Compile Include="Migrations\202203251158409_FullModel.designer.cs">
-      <DependentUpon>202203251158409_FullModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
     <Compile Include="DTOs\AuthUser.cs" />
     <Compile Include="Models\CaseHelpers\AgenteTratamento.cs" />
@@ -355,6 +346,7 @@
     <Compile Include="Models\AccessControl\VIEWS\ILA_VW_FUNCAO.cs" />
     <Compile Include="Models\AccessControl\VIEWS\ILA_VW_USUARIO.cs" />
     <Compile Include="Models\AccessControl\VIEWS\ILA_VW_USUARIO_FOTO.cs" />
+    <Compile Include="Models\AccessControl\VIEWS\ILA_VW_CATPROD_PRODUTO.cs" />
     <Compile Include="Models\Messaging\ItemIdentity.cs" />
     <Compile Include="Models\CaseHelpers\Enums\TipoCategoriaTitulares.cs" />
     <Compile Include="Models\CaseHelpers\FasesCicloTratamento.cs" />
@@ -438,6 +430,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_LayoutModal.cshtml" />
@@ -481,14 +474,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\202203251141040_ExistingModel.resx">
-      <DependentUpon>202203251141040_ExistingModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203251158409_FullModel.resx">
-      <DependentUpon>202203251158409_FullModel.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

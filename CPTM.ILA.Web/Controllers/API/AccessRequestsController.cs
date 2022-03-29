@@ -49,7 +49,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var accessRequest = await _context.AccessRequests.SingleOrDefaultAsync(ar => ar.Id == arid);
+                var accessRequest = await _context.AccessRequests.FindAsync(arid);
 
                 if (accessRequest == null)
                 {

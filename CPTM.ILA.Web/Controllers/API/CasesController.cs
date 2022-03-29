@@ -10,7 +10,8 @@ using System.Web.Http;
 using CPTM.ILA.Web.Models;
 using System.Threading.Tasks;
 using CPTM.ILA.Web.DTOs;
-using CPTM.ILA.Web.Models.CaseHelpers;
+using CPTM.ILA.Web.Models.ChangeLogging;
+using CPTM.ILA.Web.Models.Messaging;
 using CPTM.ILA.Web.Util;
 
 
@@ -98,7 +99,7 @@ namespace CPTM.ILA.Web.Controllers.API
             if (cid <= 0) return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
             try
             {
-                var uniqueCase = await _context.Cases.SingleOrDefaultAsync(c => c.Id == cid);
+                var uniqueCase = await _context.Cases.FindAsync(cid);
 
                 if (uniqueCase == null)
                     return Request.CreateResponse(HttpStatusCode.BadRequest,
@@ -268,23 +269,81 @@ namespace CPTM.ILA.Web.Controllers.API
         [Route("approve/{cid:int}")]
         [Authorize]
         [HttpPost]
-        public async Task<HttpResponseMessage> Approve(int cid)
+        public async Task<HttpResponseMessage> Approve(int cid, [FromBody] bool aprovado)
         {
+            if (cid <= 0) return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
+
+            var caseToApprove = await _context.Cases.FindAsync(cid);
+
+            if (caseToApprove == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound,
+                    new { message = "Caso não encontrado. Verifique o Id" });
+            }
+
+            var userId = 0;
+
             if (User.Identity is ClaimsIdentity identity)
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
+                userId = claims.UserId;
+
                 var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                     .SelectMany(u => u.Groups)
                     .ToListAsync();
-                var caseGroup = caseChange.Case.GrupoCriador;
+                var caseGroup = caseToApprove.GrupoCriador;
 
 
-                if (!userGroups.Contains(caseGroup) && (!claims.IsComite || !claims.IsDeveloper))
+                if (!userGroups.Contains(caseGroup) && (!claims.IsDpo || !claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
             }
+
+            var changeLog = new ChangeLog()
+            {
+                Case = caseToApprove,
+                ChangeDate = DateTime.Now,
+                User = await _context.Users.FindAsync(userId),
+            };
+
+
+            if (!aprovado)
+            {
+                caseToApprove.EncaminhadoAprovacao = false;
+                caseToApprove.Aprovado = false;
+
+                changeLog.Items = new List<ItemIdentity>()
+                {
+                    new ItemIdentity()
+                    {
+                        Identifier = "0.0", Name = "Reprovação"
+                    }
+                };
+
+                _context.ChangeLogs.Add(changeLog);
+                _context.Entry(caseToApprove)
+                    .State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso reprovado com sucesso!" });
+            }
+
+            caseToApprove.Aprovado = true;
+
+            changeLog.Items = new List<ItemIdentity>()
+            {
+                new ItemIdentity()
+                {
+                    Identifier = "0.1", Name = "Aprovado"
+                }
+            };
+
+            _context.ChangeLogs.Add(changeLog);
+            _context.Entry(caseToApprove)
+                .State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
             return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
         }

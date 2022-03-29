@@ -21,6 +21,7 @@ namespace CPTM.ILA.Web.Models
         public Group GrupoCriador { get; set; }
         public User UsuarioCriador { get; set; }
         public bool Aprovado { get; set; }
+        public bool EncaminhadoAprovacao { get; set; }
         public bool DadosPessoaisSensiveis { get; set; }
 
         public AgenteTratamento Controlador { get; set; }
@@ -69,16 +70,16 @@ namespace CPTM.ILA.Web.Models
 
         public Case FillStandardValues()
         {
-            this.Controlador = new AgenteTratamento()
+            Controlador = new AgenteTratamento()
             {
                 Area = "CPTM"
             };
-            this.Encarregado = new AgenteTratamento()
+            Encarregado = new AgenteTratamento()
             {
                 Nome = "Olivia Shibata Nishiyama", Area = "Encarregado de Dados (DPO)",
                 Telefone = "+ 55 11 3117 – 7001", Email = "encarregado.dados@cptm.sp.gov.br"
             };
-            this.FinalidadeTratamento = new FinalidadeTratamento()
+            FinalidadeTratamento = new FinalidadeTratamento()
             {
                 DescricaoFinalidade =
                     "Atendimento de finalidade pública, na persecução do interesse público, com o objetivo de executar as competências legais ou cumprir as atribuições legais do serviço público."
@@ -88,12 +89,18 @@ namespace CPTM.ILA.Web.Models
 
         public Case RectifyCase()
         {
-            this.FillStandardValues();
-            foreach (var item in this.CompartilhamentoDadosPessoais)
+            FillStandardValues();
+            foreach (var item in CompartilhamentoDadosPessoais)
             {
                 item.Rectify();
             }
 
+            return this;
+        }
+
+        public Case ApproveCase()
+        {
+            Aprovado = true;
             return this;
         }
     }
