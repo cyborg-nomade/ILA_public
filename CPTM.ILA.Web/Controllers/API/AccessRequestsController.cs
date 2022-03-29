@@ -216,17 +216,18 @@ namespace CPTM.ILA.Web.Controllers.API
                 OriginGroup = newGroup,
                 IsComite = false,
                 IsDPO = false,
+                Groups = new List<Group>() { newGroup }
             };
 
             switch (accessRequest.TipoSolicitacaoAcesso)
             {
                 case TipoSolicitacaoAcesso.AcessoAGrupos:
-                    newUser.Groups = accessRequest.Groups;
-                    foreach (var group in newUser.Groups)
+                    foreach (var accessRequestGroup in accessRequest.Groups)
                     {
-                        if (!GroupExists(group.Id))
+                        newUser.Groups.Add(accessRequestGroup);
+                        if (!GroupExists(accessRequestGroup.Id))
                         {
-                            _context.Groups.Add(group);
+                            _context.Groups.Add(accessRequestGroup);
                         }
                     }
 
@@ -237,6 +238,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     break;
                 }
                 case TipoSolicitacaoAcesso.AcessoAoSistema:
+                    break;
                 default:
                     Console.WriteLine($@"TipoSolicitacaoAcesso está fora do range no AR ${accessRequest.Id}");
                     return Request.CreateResponse(HttpStatusCode.InternalServerError,
