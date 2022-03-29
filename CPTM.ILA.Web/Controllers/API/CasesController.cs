@@ -68,7 +68,13 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (claims.GroupId != gid && !claims.IsDeveloper && !claims.IsDpo)
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+
+                var searchedGroup = await _context.Groups.FindAsync(gid);
+
+                if (!userGroups.Contains(searchedGroup) && (!claims.IsDeveloper || !claims.IsDpo))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -92,10 +98,150 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        [Route("group/{gid:int}/status/{aprovado:bool}/{encaminhadoAprovacao:bool}")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetByGroupByStatus(int gid, bool aprovado, bool encaminhadoAprovacao)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+
+                var searchedGroup = await _context.Groups.FindAsync(gid);
+
+                if (!userGroups.Contains(searchedGroup) && (!claims.IsDeveloper || !claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            if (gid <= 0) Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+            try
+            {
+                var cases = await _context.Cases.Where(c =>
+                        c.GrupoCriador.Id == gid &&
+                        c.Aprovado == aprovado &&
+                        c.EncaminhadoAprovacao == encaminhadoAprovacao)
+                    .ToListAsync();
+
+                var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        [Route("group/{gid:int}/status/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsByGroupByStatus(int gid)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+
+                var searchedGroup = await _context.Groups.FindAsync(gid);
+
+                if (!userGroups.Contains(searchedGroup) && (!claims.IsDeveloper || !claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var totals = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
+                    .GroupBy(c => new
+                    {
+                        c.Aprovado,
+                        c.EncaminhadoAprovacao
+                    })
+                    .Select(c => new StatusTotals()
+                    {
+                        Nome = c.First()
+                            .Aprovado
+                            ? "Concluído"
+                            : (c.First()
+                                .EncaminhadoAprovacao
+                                ? "Pendente Aprovação"
+                                : "Em Preenchimento"),
+                        Aprovado = c.First()
+                            .Aprovado,
+                        EncaminhadoAprovacao = c.First()
+                            .EncaminhadoAprovacao,
+                        QuantidadeByStatus = c.Count(),
+                    })
+                    .ToListAsync();
+
+                var totalQuantity = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
+                    .CountAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+
         [Route("group/totals")]
         [Authorize]
         [HttpGet]
         public async Task<HttpResponseMessage> GetTotalByGroup()
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if ((!claims.IsComite || !claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var totals = await _context.Cases.GroupBy(c => c.GrupoCriador)
+                    .Select(c => new GroupTotals()
+                    {
+                        GroupId = c.First()
+                            .GrupoCriador.Id,
+                        GroupName = c.First()
+                            .GrupoCriador.Nome,
+                        QuantityInGroup = c.Count()
+                    })
+                    .ToListAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        [Route("extensao-encarregado/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalByExtensaoEncarregado()
         {
             if (User.Identity is ClaimsIdentity identity)
             {

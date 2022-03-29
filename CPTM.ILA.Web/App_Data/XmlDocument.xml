@@ -481,6 +481,36 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="T:CPTM.ILA.Web.Controllers.API.AccessRequestsController">
+            <summary>
+            Controlador para Requisições de Acesso ao sistema ILA.
+            </summary>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.#ctor">
+            <summary>
+            Controlador da APÍ para Requisições de Acesso
+            </summary>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.GetByType(CPTM.ILA.Web.Models.AccessControl.TipoSolicitacaoAcesso)">
+            <summary>
+            Retorna todos as solicitações de acesso. Apenas para membros do Comitê LGPD.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.RequestAccess(CPTM.ILA.Web.Models.AccessControl.TipoSolicitacaoAcesso,CPTM.ILA.Web.Models.AccessControl.AccessRequest)">
+            <summary>
+            Endpoint para registro de solicitações de acesso ao sistema ILA
+            </summary>
+            <param name="accessRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.Approve(System.Int32,System.Boolean)">
+            <summary>
+            Realiza a aprovação/reprovação de uma solicitação de acesso. Apenas para membros do Comitê LGPD.
+            Recebe o Id da solicitação (INT) na url e um flag Aprovado (BOOL) no corpo da requisição.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:CPTM.ILA.Web.SqlServerTypes.Utilities">
             <summary>
             Utility methods related to CLR Types for SQL Server 
