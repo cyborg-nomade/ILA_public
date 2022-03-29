@@ -14,6 +14,7 @@ using CPTM.ILA.Web.Models.ChangeLogging;
 using CPTM.ILA.Web.Models.Messaging;
 using CPTM.ILA.Web.Util;
 using CPTM.GNU.Library;
+using CPTM.ILA.Web.Models.AccessControl;
 
 
 namespace CPTM.ILA.Web.Controllers.API
@@ -97,6 +98,55 @@ namespace CPTM.ILA.Web.Controllers.API
                     new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
             }
         }
+
+        [Route("group/comite-member/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsByComiteMemberGroups()
+        {
+            var userGroups = new List<Group>();
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+
+
+                if ((!claims.IsComite || !claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var totals = await _context.Cases.Where(c => userGroups.Contains(c.GrupoCriador))
+                    .GroupBy(c => c.GrupoCriador)
+                    .Select(c => new GroupTotals()
+                    {
+                        GroupId = c.First()
+                            .GrupoCriador.Id,
+                        GroupName = c.First()
+                            .GrupoCriador.Nome,
+                        QuantityInGroup = c.Count()
+                    })
+                    .ToListAsync();
+
+                var totalQuantity = await _context.Cases.Where(c => userGroups.Contains(c.GrupoCriador))
+                    .CountAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
 
         [Route("group/{gid:int}/status/{aprovado:bool}/{encaminhadoAprovacao:bool}")]
         [Authorize]
@@ -190,83 +240,6 @@ namespace CPTM.ILA.Web.Controllers.API
                     .CountAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
-            }
-        }
-
-
-        [Route("group/totals")]
-        [Authorize]
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetTotalByGroup()
-        {
-            if (User.Identity is ClaimsIdentity identity)
-            {
-                var claims = TokenUtil.GetTokenClaims(identity);
-
-                if ((!claims.IsComite || !claims.IsDeveloper))
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
-                }
-            }
-
-            try
-            {
-                var totals = await _context.Cases.GroupBy(c => c.GrupoCriador)
-                    .Select(c => new GroupTotals()
-                    {
-                        GroupId = c.First()
-                            .GrupoCriador.Id,
-                        GroupName = c.First()
-                            .GrupoCriador.Nome,
-                        QuantityInGroup = c.Count()
-                    })
-                    .ToListAsync();
-
-                return Request.CreateResponse(HttpStatusCode.OK, new { totals });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
-            }
-        }
-
-        [Route("extensao-encarregado/totals")]
-        [Authorize]
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetTotalByExtensaoEncarregado()
-        {
-            if (User.Identity is ClaimsIdentity identity)
-            {
-                var claims = TokenUtil.GetTokenClaims(identity);
-
-                if (!claims.IsDeveloper && !claims.IsDpo)
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
-                }
-            }
-
-            try
-            {
-                var totals = await _context.Cases.GroupBy(c => c.GrupoCriador)
-                    .Select(c => new GroupTotals()
-                    {
-                        GroupId = c.First()
-                            .GrupoCriador.Id,
-                        GroupName = c.First()
-                            .GrupoCriador.Nome,
-                        QuantityInGroup = c.Count()
-                    })
-                    .ToListAsync();
-
-                return Request.CreateResponse(HttpStatusCode.OK, new { totals });
             }
             catch (Exception e)
             {
