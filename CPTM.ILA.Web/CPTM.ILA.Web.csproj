@@ -306,6 +306,7 @@
     <Compile Include="Controllers\API\GroupsController.cs" />
     <Compile Include="Controllers\API\ThreadsCommentsController.cs" />
     <Compile Include="Controllers\API\UsersController.cs" />
+    <Compile Include="Controllers\API\UtilitiesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DTOs\CaseChange.cs" />
     <Compile Include="DTOs\CommentDTO.cs" />
