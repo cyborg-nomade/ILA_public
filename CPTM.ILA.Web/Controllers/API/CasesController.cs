@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Web.Http;
 using CPTM.ILA.Web.Models;
 using System.Threading.Tasks;
+using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.ChangeLogging;
 using CPTM.ILA.Web.Models.Messaging;
@@ -248,6 +249,100 @@ namespace CPTM.ILA.Web.Controllers.API
                     new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
             }
         }
+
+        [Route("extensao-encarregado/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsByExtensaoEncarregado()
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!claims.IsDeveloper || !claims.IsDpo)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var comiteMembers = await _context.Users.Where(u => u.IsComite)
+                    .ToListAsync();
+
+                var totals = new List<ExtensaoEncarregadoTotals>();
+                var totalQuantity = 0;
+
+                foreach (var comiteMember in comiteMembers)
+                {
+                    var pendingCases = await _context.Cases
+                        .Where(c => comiteMember.Groups.Contains(c.GrupoCriador) && !c.Aprovado)
+                        .ToListAsync();
+
+                    totals.Add(new ExtensaoEncarregadoTotals()
+                    {
+                        ExtensaoId = comiteMember.Id,
+                        ExtensaoNome = Seguranca.ObterUsuario(comiteMember.Username)
+                            .Nome,
+                        QuantityByExtensao = pendingCases.Count
+                    });
+
+                    totalQuantity += pendingCases.Count;
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        [Route("extensao-encarregado/{uid:int}")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetByExtensaoEncarregado(int uid)
+        {
+            if (uid <= 0)
+                Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválido." });
+
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!claims.IsDeveloper || !claims.IsDpo)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var comiteMember = await _context.Users.FindAsync(uid);
+                if (comiteMember == null)
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new
+                    {
+                        message = "Usuário não encontrado."
+                    });
+
+                var pendingCases = await _context.Cases
+                    .Where(c => comiteMember.Groups.Contains(c.GrupoCriador) && !c.Aprovado)
+                    .ToListAsync();
+
+                var caseListItems = pendingCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { caseListItems });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
 
         [Route("{cid:int}")]
         [Authorize]
