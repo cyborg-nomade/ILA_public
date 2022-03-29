@@ -310,7 +310,9 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DTOs\CaseChange.cs" />
     <Compile Include="DTOs\CommentDTO.cs" />
+    <Compile Include="DTOs\ExtensaoEncarregadoTotals.cs" />
     <Compile Include="DTOs\GroupTotals.cs" />
+    <Compile Include="DTOs\StatusTotals.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
     <Compile Include="DTOs\AuthUser.cs" />
     <Compile Include="Models\CaseHelpers\AgenteTratamento.cs" />
