@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.CaseHelpers;
 using CPTM.ILA.Web.Models.CaseHelpers.Enums;
+using CPTM.GNU.Library;
 
 namespace CPTM.ILA.Web.Models
 {
@@ -95,12 +97,44 @@ namespace CPTM.ILA.Web.Models
                 item.Rectify();
             }
 
+            if (FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.ObrigacaoLegal)
+            {
+                FinalidadeTratamento.PrevisaoLegal = null;
+            }
+
             return this;
         }
 
         public Case ApproveCase()
         {
             Aprovado = true;
+            return this;
+        }
+
+        public Case ReproveCase()
+        {
+            Aprovado = false;
+            EncaminhadoAprovacao = false;
+            return this;
+        }
+
+        public Case SendCaseToApproval()
+        {
+            EncaminhadoAprovacao = true;
+
+            if (FinalidadeTratamento.HipoteseTratamento == HipotesesTratamento.Consentimento ||
+                FinalidadeTratamento.HipoteseTratamento == HipotesesTratamento.InteressesLegitimosControlador)
+            {
+                var userAd = Seguranca.ObterUsuario(UsuarioCriador.Username);
+                var assunto = $"Processo LGPD {Nome} - ID {Id}";
+                var mensagem =
+                    $@"O processo {Nome} acabou de ser enviado para aprovação pelo Comitê LGPD, e sua Hipótese de Tratamento foi declarada como {FinalidadeTratamento.HipoteseTratamento}";
+                var erro = "Algo deu errado no envio do e-mail. Contate o suporte técnico";
+                //send email
+                Email.Enviar("ILA", userAd.Nome, userAd.Email, new List<string>() { "uriel.fiori@cptm.sp.gov.br" },
+                    assunto, mensagem, DateTime.Now, 1, ref erro);
+            }
+
             return this;
         }
     }
