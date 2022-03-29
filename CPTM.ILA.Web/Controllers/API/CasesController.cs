@@ -348,6 +348,66 @@ namespace CPTM.ILA.Web.Controllers.API
             return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
         }
 
+        [Route("request-approval/{cid:int}")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> RequestApproval(int cid)
+        {
+            if (cid <= 0) return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
+
+            var caseToRequestApproval = await _context.Cases.FindAsync(cid);
+
+            if (caseToRequestApproval == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound,
+                    new { message = "Caso não encontrado. Verifique o Id" });
+            }
+
+            var userId = 0;
+
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                userId = claims.UserId;
+
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+                var caseGroup = caseToRequestApproval.GrupoCriador;
+
+
+                if (!userGroups.Contains(caseGroup) && !claims.IsDeveloper || claims.IsComite)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            var changeLog = new ChangeLog()
+            {
+                Case = caseToRequestApproval,
+                ChangeDate = DateTime.Now,
+                User = await _context.Users.FindAsync(userId),
+            };
+
+            caseToRequestApproval.EncaminhadoAprovacao = true;
+
+            changeLog.Items = new List<ItemIdentity>()
+            {
+                new ItemIdentity()
+                {
+                    Identifier = "0.0.1", Name = "Encaminhado para aprovação"
+                }
+            };
+
+            _context.ChangeLogs.Add(changeLog);
+            _context.Entry(caseToRequestApproval)
+                .State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
