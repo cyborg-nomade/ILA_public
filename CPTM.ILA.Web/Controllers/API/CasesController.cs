@@ -13,6 +13,7 @@ using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.ChangeLogging;
 using CPTM.ILA.Web.Models.Messaging;
 using CPTM.ILA.Web.Util;
+using CPTM.GNU.Library;
 
 
 namespace CPTM.ILA.Web.Controllers.API
@@ -311,8 +312,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             if (!aprovado)
             {
-                caseToApprove.EncaminhadoAprovacao = false;
-                caseToApprove.Aprovado = false;
+                caseToApprove.ReproveCase();
 
                 changeLog.Items = new List<ItemIdentity>()
                 {
@@ -330,7 +330,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso reprovado com sucesso!" });
             }
 
-            caseToApprove.Aprovado = true;
+            caseToApprove.ApproveCase();
 
             changeLog.Items = new List<ItemIdentity>()
             {
@@ -383,20 +383,19 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
             }
 
+            caseToRequestApproval.SendCaseToApproval();
+
             var changeLog = new ChangeLog()
             {
                 Case = caseToRequestApproval,
                 ChangeDate = DateTime.Now,
                 User = await _context.Users.FindAsync(userId),
-            };
-
-            caseToRequestApproval.EncaminhadoAprovacao = true;
-
-            changeLog.Items = new List<ItemIdentity>()
-            {
-                new ItemIdentity()
+                Items = new List<ItemIdentity>()
                 {
-                    Identifier = "0.0.1", Name = "Encaminhado para aprovação"
+                    new ItemIdentity()
+                    {
+                        Identifier = "0.0.1", Name = "Encaminhado para aprovação"
+                    }
                 }
             };
 
