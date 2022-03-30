@@ -63,6 +63,22 @@ namespace CPTM.ILA.Web.Controllers.API
 
             var isDeveloper = user.Username == "urielf";
 
+            if (userInDb.GroupAccessExpirationDate <= DateTime.Now)
+            {
+                userInDb.Groups = new List<Group>() { userInDb.OriginGroup };
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+
             var jwtToken = TokenUtil.CreateToken(userInDb, userAd, isDeveloper);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
