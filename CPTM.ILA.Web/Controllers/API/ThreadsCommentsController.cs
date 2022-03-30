@@ -11,6 +11,7 @@ using CPTM.ILA.Web.Models;
 using System.Threading.Tasks;
 using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
+using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.CaseHelpers;
 using CPTM.ILA.Web.Models.Messaging;
 using CPTM.ILA.Web.Util;
@@ -66,7 +67,13 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (claims.GroupId != gid && !claims.IsDeveloper && !claims.IsDpo)
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+
+                var searchedGroup = await _context.Groups.FindAsync(gid);
+
+                if (!userGroups.Contains(searchedGroup) && !claims.IsDeveloper && !claims.IsDpo)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -77,6 +84,179 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var threads = await _context.Threads.Where(t => t.AuthorGroup.Id == gid)
+                    .ToListAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { threads });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        [Route("group/{gid:int}/status/{sid:int}/")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetByGroupByStatus(int gid, ThreadStatus sid)
+        {
+            if (gid <= 0) Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+
+            var isComite = false;
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                isComite = claims.IsComite;
+
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+                var searchedGroup = await _context.Groups.FindAsync(gid);
+
+                if (!userGroups.Contains(searchedGroup) && !claims.IsDeveloper)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var threads = await _context.Threads
+                    .Where(t => isComite ? t.ComiteStatus == sid : t.AuthorStatus == sid)
+                    .ToListAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { threads });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        [Route("group/{gid:int}/status/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsByGroupByStatus(int gid)
+        {
+            var isComite = false;
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                isComite = claims.IsComite;
+
+                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+                var searchedGroup = await _context.Groups.FindAsync(gid);
+
+                if (!userGroups.Contains(searchedGroup) && !claims.IsDeveloper)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+
+            if (gid <= 0) Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+            try
+            {
+                var threads = await _context.Threads.Where(t => t.AuthorGroup.Id == gid)
+                    .GroupBy(t => isComite ? t.ComiteStatus : t.AuthorStatus)
+                    .Select(g => new ThreadStatusTotals()
+                    {
+                        QuantityInStatus = g.Count(),
+                        Status = isComite
+                            ? g.First()
+                                .ComiteStatus
+                            : g.First()
+                                .AuthorStatus,
+                    })
+                    .ToListAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { threads });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        [Route("extensao-encarregado/{uid:int}/status/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsByExtensaoEncarregadoByStatus(int uid)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!claims.IsDpo && !claims.IsDeveloper)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            if (uid <= 0)
+                Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválida." });
+
+            try
+            {
+                var userGroups = await _context.Users.Where(u => u.Id == uid)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+
+                var threads = await _context.Threads.Where(t => userGroups.Contains(t.AuthorGroup))
+                    .GroupBy(t => t.ComiteStatus)
+                    .Select(g => new ThreadStatusTotals()
+                    {
+                        QuantityInStatus = g.Count(),
+                        Status = g.First()
+                            .ComiteStatus,
+                    })
+                    .ToListAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { threads });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        [Route("extensao-encarregado/{uid:int}/status/{sid:int}")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetByExtensaoEncarregadoByStatus(int uid, ThreadStatus sid)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!claims.IsDpo && !claims.IsDeveloper)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            if (uid <= 0)
+                Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválida." });
+
+            try
+            {
+                var userGroups = await _context.Users.Where(u => u.Id == uid)
+                    .SelectMany(u => u.Groups)
+                    .ToListAsync();
+
+                var threads = await _context.Threads
+                    .Where(t => userGroups.Contains(t.AuthorGroup) && t.ComiteStatus == sid)
                     .ToListAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { threads });
