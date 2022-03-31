@@ -26,6 +26,8 @@ namespace CPTM.ILA.Web.Models
         public virtual DbSet<ILA_VW_FUNCAO> ILA_VW_FUNCAO { get; set; }
         public virtual DbSet<ILA_VW_USUARIO_FOTO> ILA_VW_USUARIO_FOTO { get; set; }
         public virtual DbSet<ILA_VW_USUARIO> ILA_VW_USUARIO { get; set; }
+        public virtual DbSet<ILA_VW_CATPROD_PRODUTO> ILA_VW_CATPROD_PRODUTO { get; set; }
+
 
         public virtual DbSet<Case> Cases { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -276,6 +278,10 @@ namespace CPTM.ILA.Web.Models
 
             modelBuilder.Entity<ILA_VW_USUARIO>()
                 .Property(e => e.TX_TIPO_CHEFE)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ILA_VW_CATPROD_PRODUTO>()
+                .Property(e => e.TX_NOME)
                 .IsUnicode(false);
         }
     }

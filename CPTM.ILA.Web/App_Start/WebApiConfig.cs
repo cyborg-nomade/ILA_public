@@ -45,10 +45,10 @@ namespace CPTM.ILA.Web
     {
         public BrowserJsonFormatter()
         {
-            this.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
-            this.SerializerSettings.Formatting = Formatting.Indented;
-            this.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            this.UseDataContractJsonSerializer = false;
+            SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
+            SerializerSettings.Formatting = Formatting.Indented;
+            SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            UseDataContractJsonSerializer = false;
         }
 
         public override void SetDefaultContentHeaders(Type type, HttpContentHeaders headers,

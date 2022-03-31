@@ -1,4 +1,6 @@
-﻿namespace CPTM.ILA.Web.Models.CaseHelpers
+﻿using CPTM.ILA.Web.Models.CaseHelpers.Enums;
+
+namespace CPTM.ILA.Web.DTOs
 {
     public class CaseListItem
     {
