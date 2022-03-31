@@ -5,6 +5,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -22,6 +24,10 @@ namespace CPTM.ILA.Web.Controllers.API
     public class AccessRequestsController : ApiController
     {
         private readonly ILAContext _context;
+        private string _itsmUrl = "https://panelas-app2:8443/api/";
+        private string _apiLogin = "INTEGRACAO_CPTM_LGPD";
+        private string _apiPass = "INTEGRACAO_CPTM_LGPD";
+
 
         /// <inheritdoc />
         public AccessRequestsController()
@@ -175,6 +181,14 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
+                var chamadoAberto = await AbrirChamadoItsm(accessRequest.UsernameSolicitante, tipo.ToString());
+
+                if (!chamadoAberto)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK,
+                        new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
+                }
+
                 _context.AccessRequests.Add(accessRequest);
                 await _context.SaveChangesAsync();
 
@@ -406,6 +420,42 @@ namespace CPTM.ILA.Web.Controllers.API
         private bool GroupExists(int id)
         {
             return _context.Groups.Count(g => g.Id == id) > 0;
+        }
+
+        private async Task<bool> AbrirChamadoItsm(string username, string descricaoIncidente)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_itsmUrl);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var loginRes = await client.PostAsJsonAsync(_itsmUrl + "jwt/login",
+                    new { username = _apiLogin, password = _apiPass });
+
+                if (!loginRes.IsSuccessStatusCode)
+                {
+                    return false;
+                }
+
+                var jwt = loginRes.Content.ReadAsStringAsync()
+                    .Result;
+
+                client.DefaultRequestHeaders.Add("Authorization", $"AR-JWT {jwt}");
+
+                var chamadoRes = await client.PostAsJsonAsync(_itsmUrl + "", new
+                {
+                    values = new
+                    {
+                        PDP_chrLoginUsuario = username.ToUpper(),
+                        PDP_chrTemplateDeIncidente = "INC AUT LGPD SERVICO",
+                        PDP_ddlFormatoDeAbertura = "UNICO",
+                        PDP_chrDescricao = descricaoIncidente
+                    }
+                });
+
+                return chamadoRes.IsSuccessStatusCode;
+            }
         }
     }
 }
