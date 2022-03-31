@@ -9,9 +9,18 @@ using CPTM.ILA.Web.Models.CaseHelpers.Enums;
 
 namespace CPTM.ILA.Web.Controllers.API
 {
+    /// <summary>
+    /// Controlador para utilidades diversas.
+    /// </summary>
     [RoutePrefix("api/utilities")]
     public class UtilitiesController : ApiController
     {
+        /// <summary>
+        /// Retorna a lista completa de países do mundo, em português.
+        /// </summary>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "countries" contendo uma lista dos nomes dos países do mundo.
+        /// </returns>
         [Route("countries")]
         [Authorize]
         [HttpGet]
