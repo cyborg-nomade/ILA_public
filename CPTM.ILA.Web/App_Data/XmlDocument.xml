@@ -487,28 +487,323 @@
             </summary>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.Get(System.Int32)">
             <summary>
-            Controlador da APÍ para Requisições de Acesso
+            Retorna todas as solicitações de acesso de um determinado tipo. Endpoint disponibilizado apenas para o DPO.
             </summary>
+            <param name="arid">Id da Requisição de Acesso</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "accessRequest" onde se encontram os dados da Requisição de Acesso.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.GetByType(CPTM.ILA.Web.Models.AccessControl.TipoSolicitacaoAcesso)">
             <summary>
-            Retorna todos as solicitações de acesso. Apenas para membros do Comitê LGPD.
+            Retorna todos as solicitações de acesso de um determinado tipo. Endpoint disponibilizado apenas para membros do Comitê LGPD.
             </summary>
-            <returns></returns>
+            <param name="tipo">Int representando o tipo de Requisição de Acesso</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "accessRequests" onde se encontram os dados das Requisição de Acesso do tipo solicitado
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.RequestAccess(CPTM.ILA.Web.Models.AccessControl.TipoSolicitacaoAcesso,CPTM.ILA.Web.Models.AccessControl.AccessRequest)">
             <summary>
-            Endpoint para registro de solicitações de acesso ao sistema ILA
+            Registra solicitações de acesso ao sistema ILA. Disponibilidade do endpoint depende do tipo de solicitação:
+            1- Solicitações iniciais de acesso => aberta a todos os usuários com login no AD
+            2- Demais solicitações => aberta a todos os usuários com acesso ao ILA
             </summary>
-            <param name="accessRequest"></param>
-            <returns></returns>
+            <param name="tipo">Int representando o tipo de Requisição de Acesso</param>
+            <param name="accessRequest">Objeto vindo do corpo da requisição HTTP, representando a Requisição de Acesso. Deve corresponder ao tipo AccessRequest</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "message" confirmando o registro da Requisição de Acesso, ou indicando o erro ocorrido
+            </returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.Approve(System.Int32,System.Boolean)">
             <summary>
-            Realiza a aprovação/reprovação de uma solicitação de acesso. Apenas para membros do Comitê LGPD.
-            Recebe o Id da solicitação (INT) na url e um flag Aprovado (BOOL) no corpo da requisição.
+            Realiza a aprovação/reprovação de solicitações de acesso ao sistema ILA. Disponibilidade do endpoint depende do tipo de aprovação:
+            1- Solicitações de acesso ao Comitê LGPD => aprovação aberta apenas para o DPO
+            2- Demais aprovações => aberta apenas aos membros do Comitê LGPD
             </summary>
+            <param name="arid">Id da Requisição de Acesso a ser aprovada/reprovada</param>
+            <param name="aprovado">Bool vindo do corpo da requisição HTTP, indicando se a Requisição de Acesso foi aprovada ou reprovada.</param>
+            <returns>
+            Caso aprovada, cria o usuário, com o seu departamento no AD como grupo inicial, e o salva na base de dados do sistema.
+            Caso reprovada, remove a requisição de usuário.
+            Em ambos os casos, retorna o status da transação e um objeto JSON com uma chave "message" confirmando a operação realizada, ou informando o erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.ChangeDpo(System.String)">
+            <summary>
+            Realiza a troca do usuário que é o DPO. Endpoint disponibilizado apenas para o desenvolvedor
+            </summary>
+            <param name="newDpoUsername">Username do novo DPO, recebido no corpo da requisição HTTP</param>
+            <returns>Status da transação e um objeto JSON com uma chave "message" confirmando a operação realizada, ou o erro ocorrido.</returns>
+        </member>
+        <member name="T:CPTM.ILA.Web.Controllers.API.CasesController">
+            <summary>
+            Controlador para Cases de Uso de Dados Pessoais na CPTM. Principal fonte de dados do ILA.
+            </summary>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Get">
+            <summary>
+            Retorna todos os Casos de Uso. Endpoint disponibilizado apenas para o DPO
+            </summary>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso, em formato reduzido (CaseListItem)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByGroup(System.Int32)">
+            <summary>
+            Retorna todos os Casos de Uso de um grupo de acesso. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+            </summary>
+            <param name="gid">Id do grupo de acesso</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByComiteMemberGroups">
+            <summary>
+            Retorna os totais de Casos de Uso por grupo de um membro do Comitê LGPD.
+            Endpoint disponibilizado para os membros do Comitê LGPD, com cada membro tendo acesso apenas a seus grupos.
+            </summary>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto GroupTotals).
+            Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByGroupByStatus(System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Retorna todos os Casos de Uso de um grupo de acesso que estejam em um certo status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+            </summary>
+            <param name="gid">Id do grupo</param>
+            <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
+            <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByGroupByStatus(System.Int32)">
+            <summary>
+            Retorna os totais dos Casos de Uso de um grupo de acesso por status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+            </summary>
+            <param name="gid">Id do grupo</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos status (objeto StatusTotals).
+            Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByExtensaoEncarregado(System.Int32)">
+            <summary>
+            Retorna todos os Casos de Uso dos grupos de acesso de um membro especificado do Comitê LGPD (Extensão Encarregado).
+            Endpoint disponibilizado apenas para o DPO.
+            </summary>
+            <param name="uid">Id do membro do comitê</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByExtensaoEncarregado">
+            <summary>
+            Retorna os totais de Casos de Uso por membro do Comitê LGPD (Extensão Encarregado).
+            Endpoint disponibilizado apenas para o DPO.
+            </summary>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto ExtensaoEncarregadoTotals).
+            Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Get(System.Int32)">
+            <summary>
+            Retorna um Caso de Uso de Dados Pessoais específico.
+            Endpoint disponibilizado para o DPO e membros do grupo de acesso criador do Caso de Uso
+            </summary>
+            <param name="cid">Id do caso de uso</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "uniqueCase" que contém os dados do Caso de Uso (objeto Case).
+            Em caso de erro, retorna um objeto JSON com uma chave "message" contendo a descrição do erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Post(CPTM.ILA.Web.DTOs.CaseChange)">
+            <summary>
+            Registra um Caso de Uso de dados pessoais, junto com um log de alteração.
+            Endpoint disponibilizado para membros do grupo criador. Não autorizado para membros do Comitê LGPD.
+            </summary>
+            <param name="caseChange">Objeto vindo do corpo da requisição HTTP, representando o Caso de Uso e o log de alteração. Deve corresponder ao tipo CaseChange</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Edit(System.Int32,CPTM.ILA.Web.DTOs.CaseChange)">
+            <summary>
+            Registra um Caso de Uso de dados pessoais, junto com um log de alteração.
+            Endpoint disponibilizado para membros do grupo criador. Não autorizado para membros do Comitê LGPD.
+            </summary>
+            <param name="cid">Id do caso de uso a ser alterado</param>
+            <param name="caseChange">Objeto vindo do corpo da requisição HTTP, representando o Caso de Uso e o log de alteração. Deve corresponder ao tipo CaseChange</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Delete(System.Int32)">
+            <summary>
+            Remove um Caso de Uso de dados pessoais.
+            Endpoint disponibilizado para membros do grupo criador. Não autorizado para membros do Comitê LGPD.
+            </summary>
+            <param name="cid">Id do caso de uso</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Approve(System.Int32,System.Boolean)">
+            <summary>
+            Realiza a aprovação ou reprovação de um Caso de Uso.
+            Endpoint disponibilizado para o DPO e para membros do Comitê LGPD com acesso ao grupo criador.
+            </summary>
+            <param name="cid">Id do caso de uso</param>
+            <param name="aprovado">Objeto vindo do corpo da requisição HTTP, indicando se o caso foi aprovado ou não</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.RequestApproval(System.Int32)">
+            <summary>
+            Realiza a requisição de aprovação para um Caso de Uso.
+            Endpoint disponibilizado para membros do grupo criador. Não autorizado para membros do Comitê LGPD.
+            </summary>
+            <param name="cid">Id do caso de uso</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Dispose(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="T:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController">
+            <summary>
+            Controlador para threads e comentários dentro do sistema ILA. 
+            </summary>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.Get">
+            <summary>
+            Retorna todas as threads registradas no ILA. Endpoint disponibilizado apenas para o DPO
+            </summary>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "threads" onde se encontram os dados das Threads (objeto Thread)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.GetByGroup(System.Int32)">
+            <summary>
+            Retorna todas as threads registradas no ILA por um grupo específico.
+            Endpoint disponibilizado para o DPO e para membros do grupo autor.
+            </summary>
+            <param name="gid">Id do grupo autor</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "threads" onde se encontram os dados das Threads (objeto Thread)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.GetByGroupByStatus(System.Int32,CPTM.ILA.Web.Models.Messaging.ThreadStatus)">
+            <summary>
+            Retorna todas as threads registradas no ILA por um grupo específico, que se encontram em um certo status.
+            Endpoint disponibilizado apenas para membros do grupo autor.
+            </summary>
+            <param name="gid">Id do grupo autor</param>
+            <param name="sid">Int representando o status (enum ThreadStatus)</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "threads" onde se encontram os dados das Threads (objeto Thread)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.GetTotalsByGroupByStatus(System.Int32)">
+            <summary>
+            Retorna os totais de Threads de um grupo de acesso por status.
+            Endpoint disponibilizado apenas membros do grupo especificado.
+            </summary>
+            <param name="gid">Id do grupo autor</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Threads, com identificadores dos status (objeto ThreadStatusTotals).
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.GetByExtensaoEncarregadoByStatus(System.Int32,CPTM.ILA.Web.Models.Messaging.ThreadStatus)">
+            <summary>
+            Retorna todas as threads registradas no ILA pelos grupos de um membro do Comitê LGPD (Extensao Encarregado), que se encontram em um certo status.
+            Endpoint disponibilizado apenas para o DPO.
+            </summary>
+            <param name="uid">Id do usuário referente ao membro do comitê</param>
+            <param name="sid">Int representando o status (enum ThreadStatus)</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "threads" onde se encontram os dados das Threads (objeto Thread)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.GetTotalsByExtensaoEncarregadoByStatus(System.Int32)">
+            <summary>
+            Retorna os totais de Threads dos grupos de um membro do Comitê LGPD por status.
+            Endpoint disponibilizado apenas para o DPO.
+            </summary>
+            <param name="uid">Id do usuário referente ao membro do comitê</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Threads, com identificadores dos status (objeto ThreadStatusTotals).
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.Get(System.Int32)">
+            <summary>
+            Retorna uma Thread específica.
+            Endpoint disponibilizado para o DPO e membros do grupo autor.
+            </summary>
+            <param name="tid">Id da thread</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "thread" onde se encontram os dados da Thread (objeto Thread)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.GetCommentsinThread(System.Int32)">
+            <summary>
+            Retorna todos os comentários em uma Thread específica.
+            Endpoint disponibilizado para o DPO e membros do grupo autor da Thread.
+            </summary>
+            <param name="tid">Id da thread</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "comments" onde se encontram os dados dos comentários (objeto CommentDTO)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.Post(CPTM.ILA.Web.DTOs.CommentDTO)">
+            <summary>
+            Registra um novo comentário, iniciando uma Thread.
+            Endpoint disponibilizado apenas para usuários que não fazem parte do Comitê LGPD.
+            </summary>
+            <param name="commentDto">Objeto vindo do corpo da requisição HTTP, representando o comentário. Deve corresponder ao tipo CommentDTO</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "message" confirmando o registro do comentário, ou indicando o erro ocorrido
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.ReplyToThread(System.Int32,CPTM.ILA.Web.DTOs.CommentDTO)">
+            <summary>
+            Registra um novo comentário, adicionando-o a uma Thread existente.
+            Endpoint disponibilizado para o DPO e membros do grupo autor.
+            </summary>
+            <param name="tid">Id da thread</param>
+            <param name="commentDto"></param>
             <returns></returns>
         </member>
         <member name="T:CPTM.ILA.Web.SqlServerTypes.Utilities">
