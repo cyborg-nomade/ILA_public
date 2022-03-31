@@ -14,16 +14,28 @@ using CPTM.ILA.Web.Util;
 
 namespace CPTM.ILA.Web.Controllers.API
 {
+    /// <summary>
+    /// Controlador para grupos de acesso do sistema ILA.
+    /// </summary>
     [RoutePrefix("api/groups")]
     public class GroupsController : ApiController
     {
         private readonly ILAContext _context;
 
+        /// <inheritdoc />
         public GroupsController()
         {
             _context = new ILAContext();
         }
 
+        /// <summary>
+        /// Retorna departamentos, gerências e diretorias da estrutura organizacional da CPTM, a fim de servirem como grupos de acesso ao ILA.
+        /// Endpoint disponibilizado para todos os usuários do ILA.
+        /// </summary>
+        /// <returns>
+        /// Status da transação e um objeto JSON com chaves "diretorias", "gerencias" e "dptos", contendo listas de strings com os nomes das áreas da CPTM.
+        /// Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
+        /// </returns>
         [Route("")]
         [Authorize]
         [HttpPost]
