@@ -1,4 +1,4 @@
-﻿namespace CPTM.ILA.Web.Models.AccessControl
+﻿namespace CPTM.ILA.Web.DTOs
 {
     public class AuthUser
     {

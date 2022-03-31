@@ -15,33 +15,33 @@ namespace CPTM.ILA.Web.Models.Messaging
 
         public Thread AddComment(Comment comment)
         {
-            this.Comments.Add(comment);
+            Comments.Add(comment);
             return this;
         }
 
         public Thread AddComiteReply()
         {
-            this.AuthorStatus = ThreadStatus.Novo;
-            this.ComiteStatus = ThreadStatus.Respondido;
+            AuthorStatus = ThreadStatus.Novo;
+            ComiteStatus = ThreadStatus.Respondido;
             return this;
         }
 
         public Thread AddAuthorReply()
         {
-            this.AuthorStatus = ThreadStatus.Respondido;
-            this.ComiteStatus = ThreadStatus.Novo;
+            AuthorStatus = ThreadStatus.Respondido;
+            ComiteStatus = ThreadStatus.Novo;
             return this;
         }
 
         public Thread ReadReplyComite()
         {
-            this.ComiteStatus = ThreadStatus.Pendente;
+            ComiteStatus = ThreadStatus.Pendente;
             return this;
         }
 
         public Thread ReadReplyAuthor()
         {
-            this.AuthorStatus = ThreadStatus.Pendente;
+            AuthorStatus = ThreadStatus.Pendente;
             return this;
         }
     }

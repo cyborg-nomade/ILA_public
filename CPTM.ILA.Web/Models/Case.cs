@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using CPTM.ActiveDirectory;
+using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.CaseHelpers;
 using CPTM.ILA.Web.Models.CaseHelpers.Enums;
+using CPTM.GNU.Library;
 
 namespace CPTM.ILA.Web.Models
 {
@@ -20,6 +23,7 @@ namespace CPTM.ILA.Web.Models
         public Group GrupoCriador { get; set; }
         public User UsuarioCriador { get; set; }
         public bool Aprovado { get; set; }
+        public bool EncaminhadoAprovacao { get; set; }
         public bool DadosPessoaisSensiveis { get; set; }
 
         public AgenteTratamento Controlador { get; set; }
@@ -68,16 +72,16 @@ namespace CPTM.ILA.Web.Models
 
         public Case FillStandardValues()
         {
-            this.Controlador = new AgenteTratamento()
+            Controlador = new AgenteTratamento()
             {
                 Area = "CPTM"
             };
-            this.Encarregado = new AgenteTratamento()
+            Encarregado = new AgenteTratamento()
             {
                 Nome = "Olivia Shibata Nishiyama", Area = "Encarregado de Dados (DPO)",
                 Telefone = "+ 55 11 3117 – 7001", Email = "encarregado.dados@cptm.sp.gov.br"
             };
-            this.FinalidadeTratamento = new FinalidadeTratamento()
+            FinalidadeTratamento = new FinalidadeTratamento()
             {
                 DescricaoFinalidade =
                     "Atendimento de finalidade pública, na persecução do interesse público, com o objetivo de executar as competências legais ou cumprir as atribuições legais do serviço público."
@@ -87,11 +91,53 @@ namespace CPTM.ILA.Web.Models
 
         public Case RectifyCase()
         {
-            this.FillStandardValues();
-            foreach (var item in this.CompartilhamentoDadosPessoais)
+            FillStandardValues();
+            foreach (var item in CompartilhamentoDadosPessoais)
             {
                 item.Rectify();
             }
+
+            foreach (var itemTransferenciaInternacional in TransferenciaInternacional)
+            {
+                itemTransferenciaInternacional.Rectify();
+            }
+
+            if (FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.ObrigacaoLegal)
+            {
+                FinalidadeTratamento.PrevisaoLegal = null;
+            }
+
+            return this;
+        }
+
+        public Case ApproveCase()
+        {
+            Aprovado = true;
+            return this;
+        }
+
+        public Case ReproveCase()
+        {
+            Aprovado = false;
+            EncaminhadoAprovacao = false;
+            return this;
+        }
+
+        public Case SendCaseToApproval()
+        {
+            EncaminhadoAprovacao = true;
+
+            if (FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.Consentimento &&
+                FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.InteressesLegitimosControlador)
+                return this;
+            var userAd = Seguranca.ObterUsuario(UsuarioCriador.Username);
+            var assunto = $"Processo LGPD {Nome} - ID {Id}";
+            var mensagem =
+                $@"O processo {Nome} acabou de ser enviado para aprovação pelo Comitê LGPD, e sua Hipótese de Tratamento foi declarada como {FinalidadeTratamento.HipoteseTratamento}";
+            var erro = "Algo deu errado no envio do e-mail. Contate o suporte técnico";
+            //send email
+            Email.Enviar("ILA", userAd.Nome, userAd.Email, new List<string>() { "uriel.fiori@cptm.sp.gov.br" }, assunto,
+                mensagem, DateTime.Now, 1, ref erro);
 
             return this;
         }
