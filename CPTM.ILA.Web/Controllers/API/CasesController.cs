@@ -50,7 +50,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (!claims.IsDpo && !claims.IsDeveloper)
+                if (!(claims.IsDpo || claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -97,7 +97,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                     var searchedGroup = await _context.Groups.FindAsync(gid);
 
-                    if (!userGroups.Contains(searchedGroup) && (!claims.IsDeveloper || !claims.IsDpo))
+                    if (!(userGroups.Contains(searchedGroup) || claims.IsDpo || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -148,7 +148,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
 
-                    if (!claims.IsComite || !claims.IsDeveloper)
+                    if (!(claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -209,7 +209,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                     var searchedGroup = await _context.Groups.FindAsync(gid);
 
-                    if (!userGroups.Contains(searchedGroup) && (!claims.IsDeveloper || !claims.IsDpo))
+                    if (!(userGroups.Contains(searchedGroup) || claims.IsDpo || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -264,7 +264,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                     var searchedGroup = await _context.Groups.FindAsync(gid);
 
-                    if (!userGroups.Contains(searchedGroup) && (!claims.IsDeveloper || !claims.IsDpo))
+                    if (!(userGroups.Contains(searchedGroup) || claims.IsDpo || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -326,7 +326,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (!claims.IsDeveloper || !claims.IsDpo)
+                if (!(claims.IsDpo || claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -380,7 +380,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (!claims.IsDeveloper || !claims.IsDpo)
+                if (!(claims.IsDpo || claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -423,7 +423,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
 
         /// <summary>
-        /// Retorna um Caso de Uso de Dados Pessoais específico. Endpoint disponibilizado para o DPO e membros do grupo de acesso criador do Caso de Uso
+        /// Retorna um Caso de Uso de Dados Pessoais específico.
+        /// Endpoint disponibilizado para o DPO e membros do grupo de acesso criador do Caso de Uso
         /// </summary>
         /// <param name="cid">Id do caso de uso</param>
         /// <returns>
@@ -459,7 +460,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                     var caseGroup = uniqueCase.GrupoCriador;
 
-                    if (!userGroups.Contains(caseGroup) && !claims.IsDeveloper && !claims.IsDpo)
+                    if (!(userGroups.Contains(caseGroup) || claims.IsDpo || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -477,7 +478,8 @@ namespace CPTM.ILA.Web.Controllers.API
         }
 
         /// <summary>
-        /// Registra um Caso de Uso de dados pessoais, junto com um log de alteração. Endpoint disponibilizado para o DPO e para membros do grupo criador.
+        /// Registra um Caso de Uso de dados pessoais, junto com um log de alteração.
+        /// Endpoint disponibilizado para membros do grupo criador. Não autorizado para membros do Comitê LGPD.
         /// </summary>
         /// <param name="caseChange">Objeto vindo do corpo da requisição HTTP, representando o Caso de Uso e o log de alteração. Deve corresponder ao tipo CaseChange</param>
         /// <returns>
@@ -499,7 +501,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         .ToListAsync();
                     var caseGroup = caseChange.Case.GrupoCriador;
 
-                    if (!userGroups.Contains(caseGroup) && !claims.IsDeveloper || claims.IsComite)
+                    if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -532,7 +534,8 @@ namespace CPTM.ILA.Web.Controllers.API
         }
 
         /// <summary>
-        /// Registra um Caso de Uso de dados pessoais, junto com um log de alteração. Endpoint disponibilizado para o DPO e para membros do grupo criador.
+        /// Registra um Caso de Uso de dados pessoais, junto com um log de alteração.
+        /// Endpoint disponibilizado para membros do grupo criador. Não autorizado para membros do Comitê LGPD.
         /// </summary>
         /// <param name="cid">Id do caso de uso a ser alterado</param>
         /// <param name="caseChange">Objeto vindo do corpo da requisição HTTP, representando o Caso de Uso e o log de alteração. Deve corresponder ao tipo CaseChange</param>
@@ -556,7 +559,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var caseGroup = caseChange.Case.GrupoCriador;
 
 
-                    if (!userGroups.Contains(caseGroup) && !claims.IsDeveloper || claims.IsComite)
+                    if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -608,7 +611,8 @@ namespace CPTM.ILA.Web.Controllers.API
         }
 
         /// <summary>
-        /// Remove um Caso de Uso de dados pessoais. Endpoint disponibilizado para o DPO e para membros do grupo criador.
+        /// Remove um Caso de Uso de dados pessoais.
+        /// Endpoint disponibilizado para membros do grupo criador. Não autorizado para membros do Comitê LGPD.
         /// </summary>
         /// <param name="cid">Id do caso de uso</param>
         /// <returns>
@@ -645,7 +649,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                     userDeleting = await _context.Users.FindAsync(claims.UserId);
 
-                    if (!userGroups.Contains(caseGroup) && !claims.IsDeveloper || claims.IsComite)
+                    if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -681,58 +685,90 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Realiza a aprovação ou reprovação de um Caso de Uso.
+        /// Endpoint disponibilizado para o DPO e para membros do Comitê LGPD com acesso ao grupo criador.
+        /// </summary>
+        /// <param name="cid">Id do caso de uso</param>
+        /// <param name="aprovado">Objeto vindo do corpo da requisição HTTP, indicando se o caso foi aprovado ou não</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+        /// </returns>
         [Route("approve/{cid:int}")]
         [Authorize]
         [HttpPost]
         public async Task<HttpResponseMessage> Approve(int cid, [FromBody] bool aprovado)
         {
-            if (cid <= 0) return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
-
-            var caseToApprove = await _context.Cases.FindAsync(cid);
-
-            if (caseToApprove == null)
+            if (cid <= 0)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound,
-                    new { message = "Caso não encontrado. Verifique o Id" });
+                return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
             }
 
-            var userId = 0;
-
-            if (User.Identity is ClaimsIdentity identity)
+            try
             {
-                var claims = TokenUtil.GetTokenClaims(identity);
+                var caseToApprove = await _context.Cases.FindAsync(cid);
 
-                userId = claims.UserId;
-
-                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                    .SelectMany(u => u.Groups)
-                    .ToListAsync();
-                var caseGroup = caseToApprove.GrupoCriador;
-
-
-                if (!userGroups.Contains(caseGroup) && (!claims.IsDpo || !claims.IsDeveloper))
+                if (caseToApprove == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
-            }
 
-            var changeLog = new ChangeLog()
-            {
-                Case = caseToApprove,
-                ChangeDate = DateTime.Now,
-                User = await _context.Users.FindAsync(userId),
-            };
+                var userId = 0;
+
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    userId = claims.UserId;
+
+                    var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                        .SelectMany(u => u.Groups)
+                        .ToListAsync();
+                    var caseGroup = caseToApprove.GrupoCriador;
 
 
-            if (!aprovado)
-            {
-                caseToApprove.ReproveCase();
+                    if (!(claims.IsComite && userGroups.Contains(caseGroup) || claims.IsDpo || claims.IsDeveloper))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+                var changeLog = new ChangeLog()
+                {
+                    Case = caseToApprove,
+                    ChangeDate = DateTime.Now,
+                    User = await _context.Users.FindAsync(userId),
+                };
+
+
+                if (!aprovado)
+                {
+                    caseToApprove.ReproveCase();
+
+                    changeLog.Items = new List<ItemIdentity>()
+                    {
+                        new ItemIdentity()
+                        {
+                            Identifier = "0.0", Name = "Reprovação"
+                        }
+                    };
+
+                    _context.ChangeLogs.Add(changeLog);
+                    _context.Entry(caseToApprove)
+                        .State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso reprovado com sucesso!" });
+                }
+
+                caseToApprove.ApproveCase();
 
                 changeLog.Items = new List<ItemIdentity>()
                 {
                     new ItemIdentity()
                     {
-                        Identifier = "0.0", Name = "Reprovação"
+                        Identifier = "0.1", Name = "Aprovado"
                     }
                 };
 
@@ -741,86 +777,95 @@ namespace CPTM.ILA.Web.Controllers.API
                     .State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso reprovado com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
             }
-
-            caseToApprove.ApproveCase();
-
-            changeLog.Items = new List<ItemIdentity>()
+            catch (Exception e)
             {
-                new ItemIdentity()
-                {
-                    Identifier = "0.1", Name = "Aprovado"
-                }
-            };
-
-            _context.ChangeLogs.Add(changeLog);
-            _context.Entry(caseToApprove)
-                .State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
         }
 
+        /// <summary>
+        /// Realiza a requisição de aprovação para um Caso de Uso.
+        /// Endpoint disponibilizado para membros do grupo criador. Não autorizado para membros do Comitê LGPD.
+        /// </summary>
+        /// <param name="cid">Id do caso de uso</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+        /// </returns>
         [Route("request-approval/{cid:int}")]
         [Authorize]
         [HttpPost]
         public async Task<HttpResponseMessage> RequestApproval(int cid)
         {
-            if (cid <= 0) return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
-
-            var caseToRequestApproval = await _context.Cases.FindAsync(cid);
-
-            if (caseToRequestApproval == null)
+            if (cid <= 0)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound,
-                    new { message = "Caso não encontrado. Verifique o Id" });
+                return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
             }
 
-            var userId = 0;
-
-            if (User.Identity is ClaimsIdentity identity)
+            try
             {
-                var claims = TokenUtil.GetTokenClaims(identity);
+                var caseToRequestApproval = await _context.Cases.FindAsync(cid);
 
-                userId = claims.UserId;
-
-                var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                    .SelectMany(u => u.Groups)
-                    .ToListAsync();
-                var caseGroup = caseToRequestApproval.GrupoCriador;
-
-
-                if (!userGroups.Contains(caseGroup) && !claims.IsDeveloper || claims.IsComite)
+                if (caseToRequestApproval == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
-            }
 
-            caseToRequestApproval.SendCaseToApproval();
+                var userId = 0;
 
-            var changeLog = new ChangeLog()
-            {
-                Case = caseToRequestApproval,
-                ChangeDate = DateTime.Now,
-                User = await _context.Users.FindAsync(userId),
-                Items = new List<ItemIdentity>()
+                if (User.Identity is ClaimsIdentity identity)
                 {
-                    new ItemIdentity()
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    userId = claims.UserId;
+
+                    var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                        .SelectMany(u => u.Groups)
+                        .ToListAsync();
+                    var caseGroup = caseToRequestApproval.GrupoCriador;
+
+                    if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
                     {
-                        Identifier = "0.0.1", Name = "Encaminhado para aprovação"
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
                     }
                 }
-            };
 
-            _context.ChangeLogs.Add(changeLog);
-            _context.Entry(caseToRequestApproval)
-                .State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+                caseToRequestApproval.SendCaseToApproval();
 
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
+                var changeLog = new ChangeLog()
+                {
+                    Case = caseToRequestApproval,
+                    ChangeDate = DateTime.Now,
+                    User = await _context.Users.FindAsync(userId),
+                    Items = new List<ItemIdentity>()
+                    {
+                        new ItemIdentity()
+                        {
+                            Identifier = "0.0.1", Name = "Encaminhado para aprovação"
+                        }
+                    }
+                };
+
+                _context.ChangeLogs.Add(changeLog);
+                _context.Entry(caseToRequestApproval)
+                    .State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -829,11 +874,6 @@ namespace CPTM.ILA.Web.Controllers.API
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool CaseExists(int id)
-        {
-            return _context.Cases.Count(c => c.Id == id) > 0;
         }
     }
 }
