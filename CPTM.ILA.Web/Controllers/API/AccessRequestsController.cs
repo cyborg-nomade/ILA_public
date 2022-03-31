@@ -46,7 +46,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (!claims.IsDeveloper && !claims.IsDpo)
+                if (!(claims.IsDpo || claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -96,12 +96,12 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (tipo == TipoSolicitacaoAcesso.AcessoComite && (!claims.IsDpo || !claims.IsDeveloper))
+                if (tipo == TipoSolicitacaoAcesso.AcessoComite && !(claims.IsDpo || claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
 
-                if (!claims.IsComite)
+                if (!(claims.IsComite))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -347,7 +347,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (oldDpo != null)
                 {
-                    var existOldDpo = Seguranca.ExisteUsuario(oldDpo?.Username);
+                    var existOldDpo = Seguranca.ExisteUsuario(oldDpo.Username);
 
                     if (existOldDpo)
                     {
@@ -386,6 +386,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 userInDb.IsDPO = true;
+                userInDb.IsComite = true;
 
                 _context.Entry(userInDb)
                     .State = EntityState.Modified;
