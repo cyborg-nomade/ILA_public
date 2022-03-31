@@ -243,7 +243,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// </summary>
         /// <param name="gid">Id do grupo</param>
         /// <returns>
-        /// Status da transação e um objeto JSON com uma chave "toals" onde se encontram os totais de Casos de Uso, com identificadores dos status (objeto StatusTotals).
+        /// Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos status (objeto StatusTotals).
         /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
