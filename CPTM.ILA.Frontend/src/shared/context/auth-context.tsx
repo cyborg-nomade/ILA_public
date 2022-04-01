@@ -1,18 +1,25 @@
 import { createContext } from "react";
+import { AgenteTratamento, emptyAgenteTratamento } from "../models/cases.model";
 
 export const AuthContext = createContext({
-  isComite: false,
   userId: "",
-  isLoggedIn: false,
-  token: "",
   username: "",
+  isComite: false,
+  isDpo: false,
+  isDeveloper: false,
+  token: "",
   currentGroup: "",
+  areaTratamentoDados: emptyAgenteTratamento(),
+  isLoggedIn: false,
   login: (
     uid: string,
     username: string,
     isComite: boolean,
+    isDpo: boolean,
+    isDeveloper: boolean,
     token: string,
-    currentGroup: string
+    currentGroup: string,
+    areaTratamentoDados: AgenteTratamento
   ) => {},
   logout: () => {},
   changeGroup: (g: string) => {},

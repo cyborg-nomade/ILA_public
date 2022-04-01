@@ -75,6 +75,35 @@ namespace CPTM.ILA.Web.Controllers.API
                 };
 
                 var userInDb = await _context.Users.SingleOrDefaultAsync(u => u.Username == user.Username);
+                var isDeveloper = user.Username == "urielf";
+
+                if (isDeveloper && userInDb == null)
+                {
+                    var userOriginGroup =
+                        await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento);
+
+                    if (userOriginGroup == null)
+                    {
+                        userOriginGroup = new Group()
+                        {
+                            Nome = userAd.Departamento,
+                        };
+
+                        _context.Groups.Add(userOriginGroup);
+                    }
+
+                    var newUser = new User()
+                    {
+                        Username = userAd.Login,
+                        OriginGroup = userOriginGroup,
+                        IsComite = false,
+                        IsDPO = false,
+                        IsSystem = false,
+                        Groups = new List<Group>() { userOriginGroup }
+                    };
+
+                    _context.Users.Add(newUser);
+                }
 
                 if (userInDb == null)
                 {
@@ -82,13 +111,10 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Seu usuário ainda não tem acesso a este sistema. Solicite acesso." });
                 }
 
-                var isDeveloper = user.Username == "urielf";
-
                 if (userInDb.GroupAccessExpirationDate <= DateTime.Now)
                 {
                     userInDb.Groups = new List<Group>() { userInDb.OriginGroup };
                 }
-
 
                 await _context.SaveChangesAsync();
 
@@ -98,6 +124,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     user = userInDb,
                     areaTratamentoDados,
+                    isDeveloper,
                     token = jwtToken,
                     message = "Usuário logado"
                 });

@@ -422,21 +422,26 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var userAd = Seguranca.ObterUsuario(accessRequest.UsernameSolicitante);
 
-                var newGroup = new Group()
-                {
-                    Nome = userAd.Departamento,
-                };
+                var userOriginGroup = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento);
 
-                _context.Groups.Add(newGroup);
+                if (userOriginGroup == null)
+                {
+                    userOriginGroup = new Group()
+                    {
+                        Nome = userAd.Departamento,
+                    };
+
+                    _context.Groups.Add(userOriginGroup);
+                }
 
                 var newUser = new User()
                 {
                     Username = userAd.Login,
-                    OriginGroup = newGroup,
+                    OriginGroup = userOriginGroup,
                     IsComite = false,
                     IsDPO = false,
                     IsSystem = false,
-                    Groups = new List<Group>() { newGroup }
+                    Groups = new List<Group>() { userOriginGroup }
                 };
 
                 switch (accessRequest.TipoSolicitacaoAcesso)
