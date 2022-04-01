@@ -45,13 +45,16 @@ const RequestGroupAccess = React.lazy(
 
 const App = () => {
   const {
-    token,
-    login,
-    logout,
     userId,
     username,
     isComite,
+    isDpo,
+    isDeveloper,
+    token,
     currentGroup,
+    areaTratamentoDados,
+    login,
+    logout,
     changeGroup,
   } = useAuth();
 
@@ -105,14 +108,17 @@ const App = () => {
   return (
     <AuthContext.Provider
       value={{
+        userId,
+        username,
+        isComite,
+        isDpo,
+        isDeveloper,
+        token,
+        currentGroup,
+        areaTratamentoDados,
         isLoggedIn: !!token,
         login,
         logout,
-        isComite,
-        userId,
-        token,
-        username,
-        currentGroup,
         changeGroup,
       }}
     >

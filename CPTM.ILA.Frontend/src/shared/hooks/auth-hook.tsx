@@ -1,49 +1,69 @@
 import { useCallback, useEffect, useState } from "react";
+import {
+  AgenteTratamento,
+  emptyAgenteTratamento,
+} from "./../models/cases.model";
 
 let logoutTimer: NodeJS.Timeout;
 
 interface storageObject {
-  token: string;
   uid: string;
   username: string;
   isComite: boolean;
+  isDpo: boolean;
+  isDeveloper: boolean;
+  token: string;
+  tokenExpirationDate: string;
   currentGroup: string;
-  expirationDate: string;
+  areaTratamentoDados: AgenteTratamento;
 }
 
 export const useAuth = () => {
-  const [token, setToken] = useState("");
-  const [isComite, setIsComite] = useState(false);
   const [userId, setUserId] = useState("");
   const [username, setUsername] = useState("");
+  const [isComite, setIsComite] = useState(false);
+  const [isDpo, setIsDpo] = useState(false);
+  const [isDeveloper, setIsDeveloper] = useState(false);
+  const [token, setToken] = useState("");
   const [tokenExpirationDate, setTokenExpirationDate] = useState<Date>();
   const [currentGroup, setCurrentGroup] = useState("");
+  const [areaTratamentoDados, setAreaTratamentoDados] =
+    useState<AgenteTratamento>(emptyAgenteTratamento());
 
   const login = useCallback(
     (
       uid: string,
       username: string,
-      ic: boolean,
+      isComite: boolean,
+      isDpo: boolean,
+      isDeveloper: boolean,
       token: string,
       currentGroup: string,
-      expirationDate?: Date
+      areaTratamentoDados: AgenteTratamento,
+      tokenExpirationDate?: Date
     ) => {
-      setToken(token);
       setUserId(uid);
-      setIsComite(ic);
       setUsername(username);
+      setToken(token);
+      setIsComite(isComite);
+      setIsDpo(isDpo);
+      setIsDeveloper(isDeveloper);
       setCurrentGroup(currentGroup);
+      setAreaTratamentoDados(areaTratamentoDados);
       const expDate =
-        expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
+        tokenExpirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
       setTokenExpirationDate(expDate);
 
       const userToStore: storageObject = {
-        token,
         uid,
         username,
-        isComite: ic,
+        isComite,
+        isDpo,
+        isDeveloper,
         currentGroup,
-        expirationDate: expDate.toISOString(),
+        areaTratamentoDados,
+        token,
+        tokenExpirationDate: expDate.toISOString(),
       };
 
       localStorage.setItem("userData", JSON.stringify(userToStore));
@@ -53,10 +73,13 @@ export const useAuth = () => {
 
   const logout = useCallback(() => {
     setToken("");
-    setIsComite(false);
     setUserId("");
     setUsername("");
+    setIsComite(false);
+    setIsDpo(false);
+    setIsDeveloper(false);
     setCurrentGroup("");
+    setAreaTratamentoDados(emptyAgenteTratamento());
     localStorage.removeItem("userData");
   }, []);
 
@@ -83,7 +106,7 @@ export const useAuth = () => {
       ? JSON.parse(userData)
       : null;
     const storedExpirationDate = userDataObject
-      ? new Date(userDataObject.expirationDate)
+      ? new Date(userDataObject.tokenExpirationDate)
       : undefined;
     if (
       userDataObject &&
@@ -95,21 +118,27 @@ export const useAuth = () => {
         userDataObject.uid,
         userDataObject.username,
         userDataObject.isComite,
+        userDataObject.isDpo,
+        userDataObject.isDeveloper,
         userDataObject.token,
         userDataObject.currentGroup,
+        userDataObject.areaTratamentoDados,
         storedExpirationDate
       );
     }
   }, [login]);
 
   return {
-    token,
-    login,
-    logout,
     userId,
     username,
     isComite,
+    isDpo,
+    isDeveloper,
+    token,
     currentGroup,
+    areaTratamentoDados,
+    login,
+    logout,
     changeGroup,
   };
 };

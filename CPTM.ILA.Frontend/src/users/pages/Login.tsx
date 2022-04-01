@@ -10,10 +10,12 @@ import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
-import { BaseUser, User } from "./../../shared/models/users.model";
+import { User } from "./../../shared/models/users.model";
+import { AuthUser } from "../../shared/models/DTOs/auth-user.model";
 import { AuthContext } from "./../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
 import { groups } from "../../access-requests/components/GroupSelector";
+import { AgenteTratamento } from "./../../shared/models/cases.model";
 
 const schema = yup.object().shape({
   username: yup.string().required(),
@@ -23,7 +25,7 @@ const schema = yup.object().shape({
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/),
 });
 
-const initialValues: BaseUser = {
+const initialValues: AuthUser = {
   username: "",
   password: "",
 };
@@ -35,7 +37,7 @@ const Login = () => {
 
   let navigate = useNavigate();
 
-  const submitLoginHandler = async (user: BaseUser) => {
+  const submitLoginHandler = async (user: AuthUser) => {
     try {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/users/login`,
@@ -47,14 +49,20 @@ const Login = () => {
       );
 
       const receivedUser: User = responseData.user;
+      const receivedAreaTratamentoDados: AgenteTratamento =
+        responseData.areaTratamentoDados;
+      const isDeveloper = responseData.isDeveloper;
       console.log(receivedUser);
 
       authContext.login(
         receivedUser.id,
         receivedUser.username,
         receivedUser.isComite,
+        receivedUser.isDpo,
+        isDeveloper,
         responseData.token,
-        groups[1]
+        receivedUser.originGroup,
+        receivedAreaTratamentoDados
       );
 
       navigate(`/${receivedUser.id}/cases`);

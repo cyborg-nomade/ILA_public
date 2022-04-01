@@ -1,4 +1,4 @@
-interface AgenteTratamento {
+export interface AgenteTratamento {
   nome: string;
   area?: string;
   telefone?: string;
