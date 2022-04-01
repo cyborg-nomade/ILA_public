@@ -104,12 +104,12 @@ const AccessRequestForm = (props: {
                     <Form.Label>Groupo a ser acessado</Form.Label>
                     <Form.Select
                       disabled={props.approve}
-                      name={"grupos"}
-                      value={values.grupos}
+                      name={"groups"}
+                      value={values.groups}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      isValid={touched.grupos && !errors.grupos}
-                      isInvalid={!!errors.grupos}
+                      isValid={touched.groups && !errors.groups}
+                      isInvalid={!!errors.groups}
                     >
                       {Object.values(groups).map((g) => (
                         <option value={g} key={g}>
