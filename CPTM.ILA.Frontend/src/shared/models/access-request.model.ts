@@ -9,11 +9,12 @@ export interface BaseAccessRequest {
   justificativa: string;
   usernameSuperior: string;
   tipoSolicitacaoAcesso: tipoSolicitacaoAcesso;
-  grupos: string[];
+  groups: string[];
 }
 
 export interface AccessRequest extends BaseAccessRequest {
   id: number;
+  emailSuperiorPath: string;
 }
 
 export type headersAccessRequestsList = keyof AccessRequest;
@@ -24,6 +25,6 @@ export const emptyAccessRequest = (): BaseAccessRequest | AccessRequest => {
     usernameSuperior: "",
     justificativa: "",
     tipoSolicitacaoAcesso: tipoSolicitacaoAcesso.AcessoAoSistema,
-    grupos: [],
+    groups: [],
   };
 };

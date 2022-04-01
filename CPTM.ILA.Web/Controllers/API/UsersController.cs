@@ -137,5 +137,78 @@ namespace CPTM.ILA.Web.Controllers.API
                     new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
             }
         }
+
+        /// <summary>
+        /// Retorna os grupos de um usuário.
+        /// Endpoint não disponibilizado publicamente.
+        /// </summary>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "groups" contendo o conjunto de grupos de acesso do usuário especificado (objetos Group)
+        /// Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
+        /// </returns>
+        [Route("user-groups/{username:string}")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetUserGroups(string username)
+        {
+            try
+            {
+                var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == username);
+                var groups = user.Groups;
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { groups });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        /// <summary>
+        /// Remove um Usuário.
+        /// Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <param name="uid">Id da usuário</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do comentário, ou indicando o erro ocorrido
+        /// </returns>
+        [Route("{uid:int}")]
+        [Authorize]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> Delete(int uid)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var userToDelete = await _context.Users.FindAsync(uid);
+                if (userToDelete == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound,
+                        new { message = "Usuário não encontrado. Verifique o id" });
+                }
+
+                _context.Users.Remove(userToDelete);
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Usuário removido com sucesso!" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
     }
 }

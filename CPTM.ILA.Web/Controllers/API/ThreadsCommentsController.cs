@@ -411,7 +411,7 @@ namespace CPTM.ILA.Web.Controllers.API
         [Route("comments/{tid:int}")]
         [Authorize]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetCommentsinThread(int tid)
+        public async Task<HttpResponseMessage> GetCommentsInThread(int tid)
         {
             if (tid <= 0)
             {
@@ -617,6 +617,74 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 return Request.CreateResponse(HttpStatusCode.OK,
                     new { message = "Comentário registrado com sucesso!" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        /// <summary>
+        /// Registra a leitura de uma Thread existente.
+        /// Endpoint disponibilizado para o DPO e membros do grupo autor.
+        /// </summary>
+        /// <param name="tid">Id da thread</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro da leitura, ou indicando o erro ocorrido
+        /// </returns>
+        [Route("reply/{tid:int}")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> ReadThread(int tid)
+        {
+            if (tid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+            }
+
+            try
+            {
+                var thread = await _context.Threads.FindAsync(tid);
+
+                if (thread == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+
+                var isComite = false;
+
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    isComite = claims.IsComite;
+
+                    var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                        .SelectMany(u => u.Groups)
+                        .ToListAsync();
+                    var threadGroup = thread.AuthorGroup;
+
+                    if (!(userGroups.Contains(threadGroup) || claims.IsDpo || claims.IsDeveloper))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+                if (isComite)
+                {
+                    thread.ReadReplyComite();
+                }
+                else
+                {
+                    thread.ReadReplyAuthor();
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Leitura registrada com sucesso!" });
             }
             catch (Exception e)
             {
