@@ -308,6 +308,7 @@
     <Compile Include="Controllers\API\UsersController.cs" />
     <Compile Include="Controllers\API\UtilitiesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="DTOs\AccessRequestDTO.cs" />
     <Compile Include="DTOs\CaseChange.cs" />
     <Compile Include="DTOs\CommentDTO.cs" />
     <Compile Include="DTOs\ExtensaoEncarregadoTotals.cs" />
@@ -321,6 +322,10 @@
     <Compile Include="Migrations\202203312008172_FullModel.cs" />
     <Compile Include="Migrations\202203312008172_FullModel.designer.cs">
       <DependentUpon>202203312008172_FullModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203312202592_AddARFilePath.cs" />
+    <Compile Include="Migrations\202203312202592_AddARFilePath.designer.cs">
+      <DependentUpon>202203312202592_AddARFilePath.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
@@ -443,7 +448,7 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\emails-aprovacao\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_LayoutModal.cshtml" />
@@ -494,6 +499,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203312008172_FullModel.resx">
       <DependentUpon>202203312008172_FullModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203312202592_AddARFilePath.resx">
+      <DependentUpon>202203312202592_AddARFilePath.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
