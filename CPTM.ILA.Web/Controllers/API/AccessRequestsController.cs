@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -9,10 +10,12 @@ using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using CPTM.ILA.Web.Models;
 using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ActiveDirectory;
+using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Util;
 
 namespace CPTM.ILA.Web.Controllers.API
@@ -24,9 +27,9 @@ namespace CPTM.ILA.Web.Controllers.API
     public class AccessRequestsController : ApiController
     {
         private readonly ILAContext _context;
-        private string _itsmUrl = "https://panelas-app2:8443/api/";
-        private string _apiLogin = "INTEGRACAO_CPTM_LGPD";
-        private string _apiPass = "INTEGRACAO_CPTM_LGPD";
+        private const string ItsmUrl = "https://panelas-app2:8443/api/";
+        private const string ApiLogin = "INTEGRACAO_CPTM_LGPD";
+        private const string ApiPass = "INTEGRACAO_CPTM_LGPD";
 
 
         /// <inheritdoc />
@@ -36,7 +39,7 @@ namespace CPTM.ILA.Web.Controllers.API
         }
 
         /// <summary>
-        /// Retorna todas as solicitações de acesso de um determinado tipo. Endpoint disponibilizado apenas para o DPO.
+        /// Retorna todas uma solicitações de acesso específica. Endpoint disponibilizado para o DPO e membros do Comitê LGPD.
         /// </summary>
         /// <param name="arid">Id da Requisição de Acesso</param>
         /// <returns>
@@ -48,17 +51,10 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpGet]
         public async Task<HttpResponseMessage> Get(int arid)
         {
-            if (User.Identity is ClaimsIdentity identity)
+            if (arid <= 0)
             {
-                var claims = TokenUtil.GetTokenClaims(identity);
-
-                if (!(claims.IsDpo || claims.IsDeveloper))
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
-                }
+                return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
             }
-
-            if (arid <= 0) return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
 
             try
             {
@@ -66,11 +62,104 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (accessRequest == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound,
-                        new { message = "Requisição de Acesso não encontrada" });
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
 
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    if (accessRequest.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoComite &&
+                        !(claims.IsDpo || claims.IsDeveloper))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+
+                    if (!(claims.IsComite))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+
                 return Request.CreateResponse(HttpStatusCode.OK, new { accessRequest });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        /// <summary>
+        /// Retorna o arquivo de email de aprovação enviado para uma determinada Requisição de Acesso.
+        /// Endpoint disponibilizado para o DPO e membros do Comitê LGPD.
+        /// </summary>
+        /// <param name="arid">Id da Requisição de Acesso</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "message" confirmando o sucesso, ou especificando o erro ocorrido.
+        /// No conteúdo da resposta, retorna o byteStream correspondente ao arquivo.
+        /// </returns>
+        [Route("get-file/{arid:int}")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetArFile(int arid)
+        {
+            if (arid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+            }
+
+            try
+            {
+                var accessRequest = await _context.AccessRequests.FindAsync(arid);
+
+                if (accessRequest == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    if (accessRequest.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoComite &&
+                        !(claims.IsDpo || claims.IsDeveloper))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+
+                    if (!(claims.IsComite))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+                var filePath = accessRequest.EmailSuperiorPath;
+                if (filePath == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound,
+                        new { message = "Nenhum arquivo salvo para essa AR." });
+                }
+
+                var fileData = File.ReadAllBytes(filePath);
+
+                var response = Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Arquivo recuperado com sucesso!" });
+                response.Content = new ByteArrayContent(fileData);
+                response.Content.Headers.ContentLength = fileData.LongLength;
+                response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                {
+                    FileName = Path.GetFileName(filePath)
+                };
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+                return response;
             }
             catch (Exception e)
             {
@@ -137,14 +226,14 @@ namespace CPTM.ILA.Web.Controllers.API
         /// 2- Demais solicitações => aberta a todos os usuários com acesso ao ILA
         /// </summary>
         /// <param name="tipo">Int representando o tipo de Requisição de Acesso</param>
-        /// <param name="accessRequest">Objeto vindo do corpo da requisição HTTP, representando a Requisição de Acesso. Deve corresponder ao tipo AccessRequest</param>
+        /// <param name="accessRequestDto">Objeto vindo do corpo da requisição HTTP, representando a Requisição de Acesso. Deve corresponder ao tipo AccessRequest</param>
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro da Requisição de Acesso, ou indicando o erro ocorrido
         /// </returns>
         [Route("require/{tipo:int}")]
         [HttpPost]
         public async Task<HttpResponseMessage> RequestAccess(TipoSolicitacaoAcesso tipo,
-            [FromBody] AccessRequest accessRequest)
+            [FromBody] AccessRequestDTO accessRequestDto)
         {
             if (!Enum.IsDefined(typeof(TipoSolicitacaoAcesso), tipo))
             {
@@ -164,14 +253,14 @@ namespace CPTM.ILA.Web.Controllers.API
                 });
             }
 
-            if (accessRequest.TipoSolicitacaoAcesso != tipo)
+            if (accessRequestDto.TipoSolicitacaoAcesso != tipo)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest,
                     new { message = "Solicitação de tipo incorreto." });
             }
 
-            if (!Seguranca.ExisteUsuario(accessRequest.UsernameSolicitante) ||
-                !Seguranca.ExisteUsuario(accessRequest.UsernameSuperior))
+            if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSolicitante) ||
+                !Seguranca.ExisteUsuario(accessRequestDto.UsernameSuperior))
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, new
                 {
@@ -181,7 +270,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var chamadoAberto = await AbrirChamadoItsm(accessRequest.UsernameSolicitante, tipo.ToString());
+                var chamadoAberto = await AbrirChamadoItsm(accessRequestDto.UsernameSolicitante, tipo.ToString());
 
                 if (!chamadoAberto)
                 {
@@ -189,11 +278,20 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
                 }
 
+                var accessRequest = new AccessRequest()
+                {
+                    UsernameSolicitante = accessRequestDto.UsernameSolicitante,
+                    UsernameSuperior = accessRequestDto.UsernameSuperior,
+                    Justificativa = accessRequestDto.Justificativa,
+                    TipoSolicitacaoAcesso = accessRequestDto.TipoSolicitacaoAcesso,
+                    Groups = accessRequestDto.Groups
+                };
+
                 _context.AccessRequests.Add(accessRequest);
                 await _context.SaveChangesAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Solicitação de acesso registrada com sucesso!" });
+                    new { message = "Solicitação de acesso registrada com sucesso!", accessRequest });
             }
             catch (Exception e)
             {
@@ -203,6 +301,70 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Salva o e-mail de aprovação de uma Requisição de Acesso. Disponibilidade do endpoint depende do tipo de solicitação:
+        /// 1- Solicitações iniciais de acesso => aberta a todos os usuários com login no AD
+        /// 2- Demais solicitações => aberta a todos os usuários com acesso ao ILA
+        /// </summary>
+        /// <param name="tipo">Int representando o tipo de Requisição de Acesso</param>
+        /// <param name="arid">Id da Requisição de acesso</param>
+        /// <returns>Status da transação e um objeto JSON com uma chave "message" confirmando o registro da Requisição de Acesso, ou indicando o erro ocorrido</returns>
+        [Route("require/{tipo:int}/save-file/{arid:int}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> SaveArFile(TipoSolicitacaoAcesso tipo, int arid)
+        {
+            if (!Enum.IsDefined(typeof(TipoSolicitacaoAcesso), tipo))
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+            }
+
+            if (!User.Identity.IsAuthenticated && tipo != TipoSolicitacaoAcesso.AcessoAoSistema)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+            }
+
+            if (arid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de AR inválido." });
+            }
+
+            if (HttpContext.Current.Request.Files.Count == 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest,
+                    new { message = "Requisição não contém arquivos" });
+            }
+
+            var postedFile = HttpContext.Current.Request.Files[0];
+            var fileName = Path.GetFileName(postedFile?.FileName);
+            var root = HttpContext.Current.Server.MapPath("~/App_Data/emails-aprovacao");
+            var filePath = root + @"\" + fileName;
+            postedFile?.SaveAs(filePath);
+
+            try
+            {
+                var accessRequest = await _context.AccessRequests.FindAsync(arid);
+
+                if (accessRequest == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound,
+                        new { message = "Requisição de Acesso não encontrada" });
+                }
+
+                accessRequest.EmailSuperiorPath = filePath;
+                _context.Entry(accessRequest)
+                    .State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Arquivo salvo com sucesso" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
 
         /// <summary>
         /// Realiza a aprovação/reprovação de solicitações de acesso ao sistema ILA. Disponibilidade do endpoint depende do tipo de aprovação:
@@ -426,12 +588,12 @@ namespace CPTM.ILA.Web.Controllers.API
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(_itsmUrl);
+                client.BaseAddress = new Uri(ItsmUrl);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var loginRes = await client.PostAsJsonAsync(_itsmUrl + "jwt/login",
-                    new { username = _apiLogin, password = _apiPass });
+                var loginRes = await client.PostAsJsonAsync(ItsmUrl + "jwt/login",
+                    new { username = ApiLogin, password = ApiPass });
 
                 if (!loginRes.IsSuccessStatusCode)
                 {
@@ -443,7 +605,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 client.DefaultRequestHeaders.Add("Authorization", $"AR-JWT {jwt}");
 
-                var chamadoRes = await client.PostAsJsonAsync(_itsmUrl + "", new
+                var chamadoRes = await client.PostAsJsonAsync(ItsmUrl + "", new
                 {
                     values = new
                     {
