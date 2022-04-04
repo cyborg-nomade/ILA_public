@@ -173,7 +173,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "groups" contendo o conjunto de grupos de acesso do usuário especificado (objetos Group)
         /// Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
         /// </returns>
-        [Route("user-groups/{username:string}")]
+        [Route("user-groups/{username}")]
         [Authorize]
         [HttpGet]
         public async Task<HttpResponseMessage> GetUserGroups(string username)

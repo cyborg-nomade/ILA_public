@@ -272,30 +272,33 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var chamadoAberto = await AbrirChamadoItsm(accessRequestDto.UsernameSolicitante, tipo.ToString());
+                //var chamadoAberto = await AbrirChamadoItsm(accessRequestDto.UsernameSolicitante, tipo.ToString());
 
-                if (!chamadoAberto)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK,
-                        new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
-                }
+                //if (!chamadoAberto)
+                //{
+                //    return Request.CreateResponse(HttpStatusCode.OK,
+                //        new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
+                //}
 
                 var arGroups = new List<Group>();
 
-                foreach (var groupName in accessRequestDto.GroupNames)
+                if (tipo == TipoSolicitacaoAcesso.AcessoAGrupos)
                 {
-                    var group = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == groupName);
-                    if (group == null)
+                    foreach (var groupName in accessRequestDto.GroupNames)
                     {
-                        var newGroup = new Group()
+                        var group = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == groupName);
+                        if (group == null)
                         {
-                            Nome = groupName
-                        };
-                        _context.Groups.Add(newGroup);
-                        group = newGroup;
-                    }
+                            var newGroup = new Group()
+                            {
+                                Nome = groupName
+                            };
+                            _context.Groups.Add(newGroup);
+                            group = newGroup;
+                        }
 
-                    arGroups.Add(group);
+                        arGroups.Add(group);
+                    }
                 }
 
                 var accessRequest = new AccessRequest()
@@ -311,7 +314,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 await _context.SaveChangesAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Solicitação de acesso registrada com sucesso!" });
+                    new { message = "Solicitação de acesso registrada com sucesso!", accessRequest });
             }
             catch (Exception e)
             {
