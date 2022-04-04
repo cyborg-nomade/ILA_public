@@ -1,13 +1,12 @@
 import { User } from "../access-control/users.model";
-
-export interface Thread {
-  id: number;
-  comments: Comment[];
-}
+import { ItemIdentity } from "./item-identity.model";
+import { Thread } from "./thread.model";
 
 export interface BaseComment {
   text: string;
   author: User;
+  dataCriacao: Date;
+  refItem: ItemIdentity;
 }
 
 export interface Comment extends BaseComment {
