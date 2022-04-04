@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
+using System.Linq;
+using CPTM.ILA.Web.DTOs;
 
 namespace CPTM.ILA.Web.Models.AccessControl
 {
@@ -14,6 +16,17 @@ namespace CPTM.ILA.Web.Models.AccessControl
         public string EmailSuperiorPath { get; set; }
         public ICollection<Group> Groups { get; set; }
         public TipoSolicitacaoAcesso TipoSolicitacaoAcesso { get; set; }
+
+        public static AccessRequestDTO ReduceToDto(AccessRequest accessRequest) =>
+            new AccessRequestDTO()
+            {
+                UsernameSuperior = accessRequest.UsernameSuperior,
+                UsernameSolicitante = accessRequest.UsernameSolicitante,
+                Justificativa = accessRequest.Justificativa,
+                TipoSolicitacaoAcesso = accessRequest.TipoSolicitacaoAcesso,
+                GroupNames = accessRequest.Groups.Select(accessRequestGroup => accessRequestGroup.Nome)
+                    .ToList()
+            };
     }
 
     public enum TipoSolicitacaoAcesso

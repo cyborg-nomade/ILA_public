@@ -54,9 +54,8 @@ namespace CPTM.ILA.Web.Models
         public ICollection<ItemRiscoPrivacidade> RiscosPrivacidade { get; set; }
         public ICollection<ItemObservacoesProcesso> ObservacoesProcesso { get; set; }
 
-        public static CaseListItem ReduceToListItem(Case fullCase)
-        {
-            return new CaseListItem()
+        public static CaseListItem ReduceToListItem(Case fullCase) =>
+            new CaseListItem()
             {
                 Area = fullCase.Area,
                 DadosPessoaisSensiveis = fullCase.DadosPessoaisSensiveis ? "SIM" : "NÃO",
@@ -68,7 +67,6 @@ namespace CPTM.ILA.Web.Models
                 Nome = fullCase.Nome,
                 GrupoCriador = fullCase.GrupoCriador.Nome
             };
-        }
 
         public Case FillStandardValues()
         {

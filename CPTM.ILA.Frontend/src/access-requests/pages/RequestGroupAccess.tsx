@@ -3,17 +3,19 @@ import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
-import { BaseAccessRequest } from "../../shared/models/access-control/access-request.model";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import AccessRequestForm from "../../access-requests/components/AccessRequestForm";
-import { emptyAccessRequest } from "../../shared/models/access-control/access-request.model";
+import {
+  AccessRequestDTO,
+  emptyAccessRequestDTO,
+} from "./../../shared/models/DTOs/access-request-dto.model";
 
 const RequestGroupAccess = () => {
   const [message, setMessage] = useState("");
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-  const submitRegisterHandler = async (accessRequest: BaseAccessRequest) => {
+  const submitRegisterHandler = async (accessRequest: AccessRequestDTO) => {
     try {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/access-requests/groups`,
@@ -47,7 +49,7 @@ const RequestGroupAccess = () => {
   return (
     <React.Fragment>
       <AccessRequestForm
-        item={emptyAccessRequest()}
+        item={emptyAccessRequestDTO()}
         groups={true}
         onSubmit={submitRegisterHandler}
       />

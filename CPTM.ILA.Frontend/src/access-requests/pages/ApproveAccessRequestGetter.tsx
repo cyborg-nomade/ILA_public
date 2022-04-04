@@ -4,20 +4,18 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { emptyCase, BaseCase } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import AccessRequestForm from "./../components/AccessRequestForm";
 import {
-  AccessRequest,
-  BaseAccessRequest,
-  emptyAccessRequest,
-} from "../../shared/models/access-control/access-request.model";
+  AccessRequestDTO,
+  emptyAccessRequestDTO,
+} from "./../../shared/models/DTOs/access-request-dto.model";
 
 const ApproveAccessRequestGetter = () => {
-  const [accessRequest, setAccessRequest] = useState<
-    BaseAccessRequest | AccessRequest
-  >(emptyAccessRequest);
+  const [accessRequest, setAccessRequest] = useState<AccessRequestDTO>(
+    emptyAccessRequestDTO()
+  );
 
   const { token } = useContext(AuthContext);
 
@@ -59,7 +57,7 @@ const ApproveAccessRequestGetter = () => {
     );
   }
 
-  const approveHandler = async (item: BaseAccessRequest | AccessRequest) => {
+  const approveHandler = async (item: AccessRequestDTO) => {
     try {
       await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/access-requests/approve/${arid}`,
@@ -78,7 +76,7 @@ const ApproveAccessRequestGetter = () => {
     }
   };
 
-  const rejectHandler = async (item: BaseAccessRequest | AccessRequest) => {
+  const rejectHandler = async (item: AccessRequestDTO) => {
     try {
       await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/access-requests/approve/${arid}`,

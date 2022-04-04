@@ -8,14 +8,13 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
-import { BaseAccessRequest } from "../../shared/models/access-control/access-request.model";
-import { AccessRequest } from "../../shared/models/access-control/access-request.model";
 import { groups } from "./GroupSelector";
+import { AccessRequestDTO } from "./../../shared/models/DTOs/access-request-dto.model";
 
-type onSubmitFn = (item: BaseAccessRequest | AccessRequest) => void;
+type onSubmitFn = (item: AccessRequestDTO) => void;
 
 const AccessRequestForm = (props: {
-  item: BaseAccessRequest | AccessRequest;
+  item: AccessRequestDTO;
   register?: boolean;
   approve?: boolean;
   groups?: boolean;
@@ -105,11 +104,11 @@ const AccessRequestForm = (props: {
                     <Form.Select
                       disabled={props.approve}
                       name={"groups"}
-                      value={values.groups}
+                      value={values.groupNames}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      isValid={touched.groups && !errors.groups}
-                      isInvalid={!!errors.groups}
+                      isValid={touched.groupNames && !errors.groupNames}
+                      isInvalid={!!errors.groupNames}
                     >
                       {Object.values(groups).map((g) => (
                         <option value={g} key={g}>
