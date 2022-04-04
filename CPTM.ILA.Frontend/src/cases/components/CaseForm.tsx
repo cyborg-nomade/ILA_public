@@ -23,9 +23,7 @@ import {
   emptyItemObservacoesProcesso,
   emptyItemRiscoPrivacidade,
   emptyItemTransferenciaInternacional,
-  BaseCase,
-  Case,
-} from "../../shared/models/cases.model";
+} from "../../shared/models/case-helpers/case-helpers.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import Section6FormRow from "./form-items/Section6FormRow";
@@ -37,6 +35,7 @@ import Section13FormRow from "./form-items/Section13FormRow";
 import Section14FormRow from "./form-items/Section14FormRow";
 import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
+import { BaseCase, Case } from "../../shared/models/cases.model";
 
 type onSubmitFn = (item: BaseCase) => void;
 
@@ -1275,7 +1274,7 @@ const CaseForm = (props: {
                         disabled={!isEditing}
                         type="text"
                         name="abrangenciaGeografica"
-                        value={values.abrangenciaGeografica}
+                        value={values.abrangenciaGeografica.value}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         isValid={
@@ -2363,10 +2362,11 @@ const CaseForm = (props: {
                           name="categoriaDadosPessoais.outros.outros"
                           render={(arrayHelpers) => (
                             <React.Fragment>
-                              {values.categoriaDadosPessoais.outros.outros &&
-                              values.categoriaDadosPessoais.outros.outros
+                              {values.categoriaDadosPessoais.outros
+                                .outrosItems &&
+                              values.categoriaDadosPessoais.outros.outrosItems
                                 .length > 0 ? (
-                                values.categoriaDadosPessoais.outros.outros.map(
+                                values.categoriaDadosPessoais.outros.outrosItems.map(
                                   (item, index) => (
                                     <React.Fragment key={index}>
                                       <Section7FormRow
@@ -2610,14 +2610,13 @@ const CaseForm = (props: {
                         disabled={!isEditing}
                         type="text"
                         name="quantidadeDadosTratados"
-                        value={values.quantidadeDadosTratados}
+                        value={values.qtdeDadosTratados}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         isValid={
-                          touched.quantidadeDadosTratados &&
-                          !errors.quantidadeDadosTratados
+                          touched.qtdeDadosTratados && !errors.qtdeDadosTratados
                         }
-                        isInvalid={!!errors.quantidadeDadosTratados}
+                        isInvalid={!!errors.qtdeDadosTratados}
                       />
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
@@ -2724,7 +2723,7 @@ const CaseForm = (props: {
                           <Form.Label as={Col}>Tipo de Categoria</Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                         </Row>
-                        <FieldArray
+                        {/* <FieldArray
                           name="categoriasTitulares.criancasAdolescentes"
                           render={(arrayHelpers) => (
                             <React.Fragment>
@@ -2798,7 +2797,7 @@ const CaseForm = (props: {
                               )}
                             </React.Fragment>
                           )}
-                        />
+                        /> */}
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="92">
@@ -2811,7 +2810,7 @@ const CaseForm = (props: {
                           <Form.Label as={Col}>Tipo de Categoria</Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                         </Row>
-                        <FieldArray
+                        {/* <FieldArray
                           name="categoriasTitulares.outrosGruposVulneraveis"
                           render={(arrayHelpers) => (
                             <React.Fragment>
@@ -2885,7 +2884,7 @@ const CaseForm = (props: {
                               )}
                             </React.Fragment>
                           )}
-                        />
+                        /> */}
                       </Accordion.Body>
                     </Accordion.Item>
                   </Accordion>

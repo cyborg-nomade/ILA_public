@@ -3,10 +3,10 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { CaseListItem } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CasesList from "../../cases/components/CasesList";
+import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 
 const UserCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);

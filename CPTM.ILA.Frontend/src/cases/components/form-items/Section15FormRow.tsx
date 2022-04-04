@@ -5,7 +5,8 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { Case, tipoRiscoPrivacidade } from "../../../shared/models/cases.model";
+import { Case } from "../../../shared/models/cases.model";
+import { tipoRiscoPrivacidade } from "../../../shared/models/case-helpers/enums.model";
 
 const Section15FormRow = (props: {
   label: string;

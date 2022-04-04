@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   AgenteTratamento,
   emptyAgenteTratamento,
-} from "./../models/cases.model";
+} from "../models/case-helpers/case-helpers.model";
 
 let logoutTimer: NodeJS.Timeout;
 

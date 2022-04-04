@@ -14,7 +14,7 @@
         public static TipoCategoriaTitulares Clientes => new TipoCategoriaTitulares("Clientes");
 
         public static TipoCategoriaTitulares EmpregadosTerceirizados =>
-            new TipoCategoriaTitulares("EmpregadosTerceirizados");
+            new TipoCategoriaTitulares("Empregados Terceirizados");
 
         public static TipoCategoriaTitulares Outros => new TipoCategoriaTitulares("Outros");
     }
