@@ -7,7 +7,8 @@ import Col from "react-bootstrap/Col";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-import { Case, hipotesesTratamento } from "../../../shared/models/cases.model";
+import { Case } from "../../../shared/models/cases.model";
+import { hipotesesTratamento } from "../../../shared/models/case-helpers/enums.model";
 
 const Section6FormRow = (props: {
   tooltip: JSX.Element;

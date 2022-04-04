@@ -11,11 +11,10 @@ import Table from "react-bootstrap/Table";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
 import {
   CaseListItem,
   headersCaseListItem,
-} from "../../shared/models/cases.model";
+} from "../../shared/models/DTOs/case-list-item.model";
 
 const headers: {
   title: string;

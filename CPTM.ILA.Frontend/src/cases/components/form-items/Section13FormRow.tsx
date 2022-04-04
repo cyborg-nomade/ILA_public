@@ -5,10 +5,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import {
-  Case,
-  tipoGarantiaTranferenciaInternacional,
-} from "../../../shared/models/cases.model";
+import { Case } from "../../../shared/models/cases.model";
 
 const Section13FormRow = (props: {
   disabled: boolean;
@@ -130,3 +127,8 @@ const Section13FormRow = (props: {
 };
 
 export default Section13FormRow;
+function tipoGarantiaTranferenciaInternacional(
+  tipoGarantiaTranferenciaInternacional: any
+) {
+  throw new Error("Function not implemented.");
+}

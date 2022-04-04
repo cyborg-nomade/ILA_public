@@ -5,10 +5,8 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import {
-  tipoCategoriaTitulares,
-  Case,
-} from "../../../shared/models/cases.model";
+import { Case } from "../../../shared/models/cases.model";
+import { tipoCategoriaTitulares } from "../../../shared/models/case-helpers/enums.model";
 
 const Section10FormRow = (props: {
   label: string;

@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-import { fontesRetencao, Case } from "../../../shared/models/cases.model";
+import { Case } from "../../../shared/models/cases.model";
 
 const Section7FormRow = (props: {
   tooltip: JSX.Element;
@@ -144,3 +144,6 @@ const Section7FormRow = (props: {
 };
 
 export default Section7FormRow;
+function fontesRetencao(fontesRetencao: any) {
+  throw new Error("Function not implemented.");
+}

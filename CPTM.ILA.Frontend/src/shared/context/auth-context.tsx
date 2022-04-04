@@ -1,5 +1,8 @@
 import { createContext } from "react";
-import { AgenteTratamento, emptyAgenteTratamento } from "../models/cases.model";
+import {
+  AgenteTratamento,
+  emptyAgenteTratamento,
+} from "../models/case-helpers/case-helpers.model";
 
 export const AuthContext = createContext({
   userId: "",
