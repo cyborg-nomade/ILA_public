@@ -15,7 +15,7 @@ import Col from "react-bootstrap/Col";
 import {
   AccessRequest,
   headersAccessRequestsList,
-} from "../../shared/models/access-request.model";
+} from "../../shared/models/access-control/access-request.model";
 
 const headers: {
   title: string;

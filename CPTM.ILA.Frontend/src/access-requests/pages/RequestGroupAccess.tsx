@@ -3,10 +3,10 @@ import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
-import { BaseAccessRequest } from "../../shared/models/access-request.model";
+import { BaseAccessRequest } from "../../shared/models/access-control/access-request.model";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import AccessRequestForm from "../../access-requests/components/AccessRequestForm";
-import { emptyAccessRequest } from "./../../shared/models/access-request.model";
+import { emptyAccessRequest } from "../../shared/models/access-control/access-request.model";
 
 const RequestGroupAccess = () => {
   const [message, setMessage] = useState("");

@@ -1,4 +1,4 @@
-import { Case } from "./cases.model";
+import { Case } from "../cases.model";
 import { Group } from "./group.model";
 
 export interface BaseUser {
