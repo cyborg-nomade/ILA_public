@@ -1,12 +1,8 @@
 import { Case } from "../cases.model";
+import { AuthUser } from "../DTOs/auth-user";
 import { Group } from "./group.model";
 
-export interface BaseUser {
-  username: string;
-  password: string;
-}
-
-export interface User extends BaseUser {
+export interface User extends AuthUser {
   id: string;
   isComite: boolean;
   isDpo: boolean;
