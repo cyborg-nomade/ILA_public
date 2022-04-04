@@ -491,12 +491,23 @@
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.Get(System.Int32)">
             <summary>
-            Retorna todas as solicitações de acesso de um determinado tipo. Endpoint disponibilizado apenas para o DPO.
+            Retorna todas uma solicitações de acesso específica. Endpoint disponibilizado para o DPO e membros do Comitê LGPD.
             </summary>
             <param name="arid">Id da Requisição de Acesso</param>
             <returns>
             Status da transação e um objeto JSON com uma chave "accessRequest" onde se encontram os dados da Requisição de Acesso.
             Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.GetArFile(System.Int32)">
+            <summary>
+            Retorna o arquivo de email de aprovação enviado para uma determinada Requisição de Acesso.
+            Endpoint disponibilizado para o DPO e membros do Comitê LGPD.
+            </summary>
+            <param name="arid">Id da Requisição de Acesso</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "message" confirmando o sucesso, ou especificando o erro ocorrido.
+            No conteúdo da resposta, retorna o byteStream correspondente ao arquivo.
             </returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.GetByType(CPTM.ILA.Web.Models.AccessControl.TipoSolicitacaoAcesso)">
@@ -520,6 +531,16 @@
             <returns>
             Status da transação e um objeto JSON com uma chave "message" confirmando o registro da Requisição de Acesso, ou indicando o erro ocorrido
             </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.SaveArFile(CPTM.ILA.Web.Models.AccessControl.TipoSolicitacaoAcesso,System.Int32)">
+            <summary>
+            Salva o e-mail de aprovação de uma Requisição de Acesso. Disponibilidade do endpoint depende do tipo de solicitação:
+            1- Solicitações iniciais de acesso => aberta a todos os usuários com login no AD
+            2- Demais solicitações => aberta a todos os usuários com acesso ao ILA
+            </summary>
+            <param name="tipo">Int representando o tipo de Requisição de Acesso</param>
+            <param name="arid">Id da Requisição de acesso</param>
+            <returns>Status da transação e um objeto JSON com uma chave "message" confirmando o registro da Requisição de Acesso, ou indicando o erro ocorrido</returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.Approve(System.Int32,System.Boolean)">
             <summary>
@@ -794,7 +815,7 @@
             Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
             </returns>
         </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.GetCommentsinThread(System.Int32)">
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.GetCommentsInThread(System.Int32)">
             <summary>
             Retorna todos os comentários em uma Thread específica.
             Endpoint disponibilizado para o DPO e membros do grupo autor da Thread.
@@ -824,6 +845,16 @@
             <param name="commentDto">Objeto vindo do corpo da requisição HTTP, representando o comentário. Deve corresponder ao tipo CommentDTO</param>
             <returns>
             Status da transação e um objeto JSON com uma chave "message" confirmando o registro do comentário, ou indicando o erro ocorrido
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.ReadThread(System.Int32)">
+            <summary>
+            Registra a leitura de uma Thread existente.
+            Endpoint disponibilizado para o DPO e membros do grupo autor.
+            </summary>
+            <param name="tid">Id da thread</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "message" confirmando o registro da leitura, ou indicando o erro ocorrido
             </returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.Delete(System.Int32)">
@@ -869,6 +900,26 @@
             <returns>
             Status da transação e um objeto JSON com uma chave "comiteMembers" contendo os dados dos membros do Comitê LGPD (objetos User)
             Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.GetUserGroups(System.String)">
+            <summary>
+            Retorna os grupos de um usuário.
+            Endpoint não disponibilizado publicamente.
+            </summary>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "groups" contendo o conjunto de grupos de acesso do usuário especificado (objetos Group)
+            Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.Delete(System.Int32)">
+            <summary>
+            Remove um Usuário.
+            Endpoint disponibilizado apenas para o DPO.
+            </summary>
+            <param name="uid">Id da usuário</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "message" confirmando o registro do comentário, ou indicando o erro ocorrido
             </returns>
         </member>
         <member name="T:CPTM.ILA.Web.Controllers.API.UtilitiesController">

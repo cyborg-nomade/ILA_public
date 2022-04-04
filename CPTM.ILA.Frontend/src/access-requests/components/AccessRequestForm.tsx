@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
+import * as yup from "yup";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -12,6 +13,13 @@ import { groups } from "./GroupSelector";
 import { AccessRequestDTO } from "./../../shared/models/DTOs/access-request-dto.model";
 
 type onSubmitFn = (item: AccessRequestDTO) => void;
+
+const schema = yup.object().shape({
+  usernameSolicitante: yup.string().required(),
+  usernameSuperior: yup.string().required(),
+  justificativa: yup.string().required(),
+  emailFile: yup.mixed().required(),
+});
 
 const AccessRequestForm = (props: {
   item: AccessRequestDTO;
@@ -31,7 +39,7 @@ const AccessRequestForm = (props: {
 
   return (
     <Formik
-      // validationSchema={schema}
+      validationSchema={schema}
       enableReinitialize={true}
       onSubmit={props.onSubmit}
       initialValues={props.item}
@@ -40,6 +48,7 @@ const AccessRequestForm = (props: {
         handleSubmit,
         handleChange,
         handleBlur,
+        setFieldValue,
         values,
         touched,
         isValid,
@@ -48,55 +57,56 @@ const AccessRequestForm = (props: {
       }) => (
         <Form noValidate onSubmit={handleSubmit}>
           <Card className="mx-auto" style={{ width: "28rem" }}>
-            <Card.Title className="pt-3 px-3">Solicitação de Acesso</Card.Title>
+            <Card.Title className="pt-3 px-3">
+              Solicitação de Acesso{" "}
+              {props.register || props.approve ? "true" : "falsex"}{" "}
+            </Card.Title>
             <Card.Body>
-              {props.register ||
-                (props.approve && (
-                  <Row className="mb-3">
-                    <Form.Group as={Col} controlId="validationFormik01">
-                      <Form.Label>Usuário AD</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="usernameSolicitante"
-                        value={values.usernameSolicitante}
-                        disabled={props.approve}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          touched.usernameSolicitante &&
-                          !errors.usernameSolicitante
-                        }
-                        isInvalid={!!errors.usernameSolicitante}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Row>
-                ))}
-              {props.register ||
-                (props.approve && (
-                  <Row className="mb-3">
-                    <Form.Group as={Col} controlId="validationFormik02">
-                      <Form.Label>Usuário AD do Superior</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="usernameSuperior"
-                        value={values.usernameSuperior}
-                        disabled={props.approve}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          touched.usernameSuperior && !errors.usernameSuperior
-                        }
-                        isInvalid={!!errors.usernameSuperior}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Row>
-                ))}
+              {(props.register || props.approve) && (
+                <Row className="mb-3">
+                  <Form.Group as={Col} controlId="validationFormik01">
+                    <Form.Label>Usuário AD do Solicitante</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="usernameSolicitante"
+                      value={values.usernameSolicitante}
+                      disabled={props.approve}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      isValid={
+                        touched.usernameSolicitante &&
+                        !errors.usernameSolicitante
+                      }
+                      isInvalid={!!errors.usernameSolicitante}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Esse campo é obrigatório
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Row>
+              )}
+              {(props.register || props.approve) && (
+                <Row className="mb-3">
+                  <Form.Group as={Col} controlId="validationFormik02">
+                    <Form.Label>Usuário AD do Superior</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="usernameSuperior"
+                      value={values.usernameSuperior}
+                      disabled={props.approve}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      isValid={
+                        touched.usernameSuperior && !errors.usernameSuperior
+                      }
+                      isInvalid={!!errors.usernameSuperior}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Esse campo é obrigatório
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Row>
+              )}
               {props.groups && (
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik03">
@@ -144,7 +154,16 @@ const AccessRequestForm = (props: {
               <Row className="mb-3">
                 <Form.Group controlId="formFile" className="mb-3">
                   <Form.Label>E-mail com autorização do superior</Form.Label>
-                  <Form.Control type="file" />
+                  <Form.Control
+                    type="file"
+                    name="emailFile"
+                    onChange={(event) => {
+                      const target = event.currentTarget as HTMLInputElement;
+                      const files = target.files as FileList;
+
+                      setFieldValue("emailFile", files[0]);
+                    }}
+                  />
                 </Form.Group>
               </Row>
               {props.register && (

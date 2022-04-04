@@ -11,6 +11,10 @@ import {
   AccessRequestDTO,
   emptyAccessRequestDTO,
 } from "./../../shared/models/DTOs/access-request-dto.model";
+import {
+  AccessRequest,
+  tipoSolicitacaoAcesso,
+} from "../../shared/models/access-control/access-request.model";
 
 // const schema = yup.object().shape({
 //   username: yup.string().required(),
@@ -23,16 +27,31 @@ const RequestAccess = () => {
 
   const submitRegisterHandler = async (accessRequest: AccessRequestDTO) => {
     try {
+      accessRequest.tipoSolicitacaoAcesso =
+        tipoSolicitacaoAcesso.AcessoAoSistema;
+      console.log(accessRequest.emailFile);
+
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/access-requests/initial`,
+        `${process.env.REACT_APP_CONNSTR}/access-requests/require/${tipoSolicitacaoAcesso.AcessoAoSistema}`,
         "POST",
         JSON.stringify(accessRequest),
         {
           "Content-Type": "application/json",
         }
       );
+      console.log(responseData.message);
 
-      setMessage(responseData.message);
+      const savedAR: AccessRequest = responseData.accessRequest;
+      const emailFormData = new FormData();
+      emailFormData.append("emailFile", accessRequest.emailFile);
+
+      const responseDataEmailFile = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/access-requests/require/${tipoSolicitacaoAcesso.AcessoAoSistema}/save-file/${savedAR.id}`,
+        "POST",
+        emailFormData
+      );
+
+      setMessage(responseDataEmailFile.message);
     } catch (error) {
       console.log(error);
     }
