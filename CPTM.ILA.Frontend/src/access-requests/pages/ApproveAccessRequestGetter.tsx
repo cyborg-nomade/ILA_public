@@ -12,7 +12,7 @@ import {
   AccessRequest,
   BaseAccessRequest,
   emptyAccessRequest,
-} from "./../../shared/models/access-request.model";
+} from "../../shared/models/access-control/access-request.model";
 
 const ApproveAccessRequestGetter = () => {
   const [accessRequest, setAccessRequest] = useState<

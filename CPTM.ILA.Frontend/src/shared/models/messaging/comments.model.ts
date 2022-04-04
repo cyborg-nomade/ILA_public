@@ -1,4 +1,4 @@
-import { User } from "./users.model";
+import { User } from "../access-control/users.model";
 
 export interface Thread {
   id: number;

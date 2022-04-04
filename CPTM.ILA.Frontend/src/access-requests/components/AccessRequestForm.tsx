@@ -8,8 +8,8 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
-import { BaseAccessRequest } from "../../shared/models/access-request.model";
-import { AccessRequest } from "../../shared/models/access-request.model";
+import { BaseAccessRequest } from "../../shared/models/access-control/access-request.model";
+import { AccessRequest } from "../../shared/models/access-control/access-request.model";
 import { groups } from "./GroupSelector";
 
 type onSubmitFn = (item: BaseAccessRequest | AccessRequest) => void;

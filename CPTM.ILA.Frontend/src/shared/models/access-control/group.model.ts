@@ -1,5 +1,5 @@
 import { User } from "./users.model";
-import { Case } from "./cases.model";
+import { Case } from "../cases.model";
 
 export interface BaseGroup {
   nome: string;
