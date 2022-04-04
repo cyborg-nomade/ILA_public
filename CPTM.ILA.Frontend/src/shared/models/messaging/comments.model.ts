@@ -1,15 +1,7 @@
-import { User } from "../access-control/users.model";
-import { ItemIdentity } from "./item-identity.model";
+import { CommentDTO } from "../DTOs/comment-dto";
 import { Thread } from "./thread.model";
 
-export interface BaseComment {
-  text: string;
-  author: User;
-  dataCriacao: Date;
-  refItem: ItemIdentity;
-}
-
-export interface Comment extends BaseComment {
+export interface Comment extends CommentDTO {
   id: number;
   thread: Thread;
 }
