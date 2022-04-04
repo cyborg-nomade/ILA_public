@@ -1,3 +1,5 @@
+import { Group } from "./group.model";
+
 export enum tipoSolicitacaoAcesso {
   AcessoAoSistema,
   AcessoAGrupos,
@@ -6,10 +8,10 @@ export enum tipoSolicitacaoAcesso {
 
 export interface BaseAccessRequest {
   usernameSolicitante: string;
-  justificativa: string;
   usernameSuperior: string;
+  justificativa: string;
+  groups: Group[];
   tipoSolicitacaoAcesso: tipoSolicitacaoAcesso;
-  groups: string[];
 }
 
 export interface AccessRequest extends BaseAccessRequest {

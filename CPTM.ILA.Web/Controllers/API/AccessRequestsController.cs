@@ -207,9 +207,11 @@ namespace CPTM.ILA.Web.Controllers.API
                 var accessRequests = await _context.AccessRequests.Where(ar => ar.TipoSolicitacaoAcesso == tipo)
                     .ToListAsync();
 
+                var arDtos = accessRequests.ConvertAll<AccessRequestDTO>(AccessRequest.ReduceToDto);
+
                 return Request.CreateResponse(HttpStatusCode.OK, new
                 {
-                    requests = accessRequests
+                    requests = arDtos
                 });
             }
             catch (Exception e)
@@ -278,20 +280,38 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
                 }
 
+                var arGroups = new List<Group>();
+
+                foreach (var groupName in accessRequestDto.GroupNames)
+                {
+                    var group = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == groupName);
+                    if (group == null)
+                    {
+                        var newGroup = new Group()
+                        {
+                            Nome = groupName
+                        };
+                        _context.Groups.Add(newGroup);
+                        group = newGroup;
+                    }
+
+                    arGroups.Add(group);
+                }
+
                 var accessRequest = new AccessRequest()
                 {
                     UsernameSolicitante = accessRequestDto.UsernameSolicitante,
                     UsernameSuperior = accessRequestDto.UsernameSuperior,
                     Justificativa = accessRequestDto.Justificativa,
                     TipoSolicitacaoAcesso = accessRequestDto.TipoSolicitacaoAcesso,
-                    Groups = accessRequestDto.Groups
+                    Groups = arGroups
                 };
 
                 _context.AccessRequests.Add(accessRequest);
                 await _context.SaveChangesAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Solicitação de acesso registrada com sucesso!", accessRequest });
+                    new { message = "Solicitação de acesso registrada com sucesso!" });
             }
             catch (Exception e)
             {
