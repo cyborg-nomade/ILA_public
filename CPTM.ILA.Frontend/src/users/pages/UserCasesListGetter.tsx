@@ -11,7 +11,12 @@ import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 const UserCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
 
-  const { userId: uid, token, username } = useContext(AuthContext);
+  const {
+    userId: uid,
+    token,
+    username,
+    areaTratamentoDados,
+  } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
@@ -51,7 +56,7 @@ const UserCasesListGetter = () => {
 
   return (
     <React.Fragment>
-      <h1>Olá, {username}</h1>
+      <h1>Olá, {areaTratamentoDados.nome}</h1>
       <h1>Página Inicial - Todos os seus itens</h1>
       {error && (
         <Alert

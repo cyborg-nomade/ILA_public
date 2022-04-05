@@ -56,7 +56,7 @@ namespace CPTM.ILA.Web.Util
 
         public static string CreateToken(User userInDb, UsuarioAD userAd, bool isDeveloper)
         {
-            const string key = "DESILA";
+            const string key = "DESILA_TOKEN_DEV";
             const string issuer = "http://localhost/ILA";
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));

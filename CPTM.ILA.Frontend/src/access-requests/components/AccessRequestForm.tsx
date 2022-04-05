@@ -9,11 +9,9 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
-import { groups } from "./GroupSelector";
 import { AccessRequestDTO } from "./../../shared/models/DTOs/access-request-dto.model";
 import { tipoSolicitacaoAcesso } from "../../shared/models/access-control/access-request.model";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import Select from "react-select";
 import {
   Assign,
   ObjectShape,

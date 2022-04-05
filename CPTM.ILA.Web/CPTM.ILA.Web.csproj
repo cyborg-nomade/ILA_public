@@ -327,6 +327,10 @@
     <Compile Include="Migrations\202203312202592_AddARFilePath.designer.cs">
       <DependentUpon>202203312202592_AddARFilePath.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204051654441_RemoveUserFromGroups.cs" />
+    <Compile Include="Migrations\202204051654441_RemoveUserFromGroups.designer.cs">
+      <DependentUpon>202204051654441_RemoveUserFromGroups.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
     <Compile Include="DTOs\AuthUser.cs" />
@@ -502,6 +506,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203312202592_AddARFilePath.resx">
       <DependentUpon>202203312202592_AddARFilePath.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204051654441_RemoveUserFromGroups.resx">
+      <DependentUpon>202204051654441_RemoveUserFromGroups.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

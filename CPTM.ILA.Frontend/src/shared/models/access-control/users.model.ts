@@ -9,7 +9,7 @@ export interface User extends AuthUser {
   isSystem: boolean;
   isDeveloper: boolean;
   cases: Case[];
-  originGroup: string;
+  originGroup: Group;
   groups: Group[];
   groupAccessExpirationDate: Date;
 }
