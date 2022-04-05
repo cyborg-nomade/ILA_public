@@ -280,16 +280,16 @@ namespace CPTM.ILA.Web.Controllers.API
                     })
                     .Select(c => new StatusTotals()
                     {
-                        Nome = c.First()
+                        Nome = c.FirstOrDefault()
                             .Aprovado
                             ? "Concluído"
-                            : (c.First()
+                            : (c.FirstOrDefault()
                                 .EncaminhadoAprovacao
                                 ? "Pendente Aprovação"
                                 : "Em Preenchimento"),
-                        Aprovado = c.First()
+                        Aprovado = c.FirstOrDefault()
                             .Aprovado,
-                        EncaminhadoAprovacao = c.First()
+                        EncaminhadoAprovacao = c.FirstOrDefault()
                             .EncaminhadoAprovacao,
                         QuantidadeByStatus = c.Count(),
                     })
