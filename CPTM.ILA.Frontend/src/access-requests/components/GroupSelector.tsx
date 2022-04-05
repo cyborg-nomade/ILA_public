@@ -22,18 +22,20 @@ const GroupSelector = () => {
             Selecione o grupo desejado
           </Card.Title>
           <hr></hr>
-          <Card.Text className="align-content-center text-center">
-            <ButtonGroup vertical className="d-block">
-              {userGroups.map((g) => (
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => changeGroup(g)}
-                >
-                  {g.nome}
-                </Button>
-              ))}
-            </ButtonGroup>
-          </Card.Text>
+          <ButtonGroup
+            vertical
+            className="d-block align-content-center text-center"
+          >
+            {userGroups.map((g) => (
+              <Button
+                key={g.id}
+                variant="outline-secondary"
+                onClick={() => changeGroup(g)}
+              >
+                {g.nome}
+              </Button>
+            ))}
+          </ButtonGroup>
           <hr></hr>
           <Button variant="success" onClick={requestGroupAccessHandler}>
             Solicitar Acesso a Novo Grupo

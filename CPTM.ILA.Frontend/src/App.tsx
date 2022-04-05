@@ -72,13 +72,14 @@ const App = () => {
   } else if (token && !isComite) {
     routes = (
       <React.Fragment>
-        <Route path="/:uid/cases" element={<UserPage />}>
-          <Route index element={<UserCasesListGetter />} />
-          <Route path="new" element={<NewCase />} />
-          <Route path=":cid" element={<EditCase />} />
+        <Route path="/:uid" element={<UserPage />}>
+          <Route path="cases" element={<UserCasesListGetter />}>
+            <Route path="new" element={<NewCase />} />
+            <Route path=":cid" element={<EditCase />} />
+          </Route>
         </Route>
-        <Route path="/" element={<Navigate to={`../${userId}/cases`} />} />
-        <Route path="/*" element={<Navigate to={`../${userId}/cases`} />} />
+        <Route path="/" element={<Navigate to={`../${userId}/`} />} />
+        <Route path="/*" element={<Navigate to={`../${userId}/`} />} />
       </React.Fragment>
     );
   } else {
