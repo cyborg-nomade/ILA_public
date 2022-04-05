@@ -15,7 +15,12 @@ const NavLinks = () => {
         </Nav.Link>
       )}
       {authContext.isLoggedIn && !authContext.isComite && (
-        <Nav.Link as={NavLink} to={`${authContext.userId}/cases/new`}>
+        <Nav.Link as={NavLink} to={`${authContext.userId}/cases/`}>
+          Meus Processos
+        </Nav.Link>
+      )}
+      {authContext.isLoggedIn && !authContext.isComite && (
+        <Nav.Link as={NavLink} to={`${authContext.userId}/cases/register/`}>
           Formulário
         </Nav.Link>
       )}
