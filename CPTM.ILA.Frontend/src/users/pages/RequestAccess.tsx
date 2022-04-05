@@ -27,12 +27,13 @@ const RequestAccess = () => {
 
   const submitRegisterHandler = async (accessRequest: AccessRequestDTO) => {
     try {
-      accessRequest.tipoSolicitacaoAcesso =
-        tipoSolicitacaoAcesso.AcessoAoSistema;
-      console.log(accessRequest.emailFile);
+      accessRequest.groupNames = accessRequest.groupNames.map(
+        (g: any) => g.value
+      );
+      console.log(accessRequest);
 
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/access-requests/require/${tipoSolicitacaoAcesso.AcessoAoSistema}`,
+        `${process.env.REACT_APP_CONNSTR}/access-requests/require/${accessRequest.tipoSolicitacaoAcesso}`,
         "POST",
         JSON.stringify(accessRequest),
         {
@@ -42,16 +43,23 @@ const RequestAccess = () => {
       console.log(responseData.message);
 
       const savedAR: AccessRequest = responseData.accessRequest;
-      const emailFormData = new FormData();
-      emailFormData.append("emailFile", accessRequest.emailFile);
+      if (
+        accessRequest.tipoSolicitacaoAcesso ===
+        tipoSolicitacaoAcesso.AcessoAoSistema
+      ) {
+        const emailFormData = new FormData();
+        emailFormData.append("emailFile", accessRequest.emailFile);
 
-      const responseDataEmailFile = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/access-requests/require/${tipoSolicitacaoAcesso.AcessoAoSistema}/save-file/${savedAR.id}`,
-        "POST",
-        emailFormData
-      );
+        const responseDataEmailFile = await sendRequest(
+          `${process.env.REACT_APP_CONNSTR}/access-requests/require/${tipoSolicitacaoAcesso.AcessoAoSistema}/save-file/${savedAR.id}`,
+          "POST",
+          emailFormData
+        );
 
-      setMessage(responseDataEmailFile.message);
+        console.log(responseDataEmailFile.message);
+      }
+
+      setMessage(responseData.message);
     } catch (error) {
       console.log(error);
     }
