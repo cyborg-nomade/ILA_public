@@ -20,6 +20,7 @@ using CPTM.GNU.Library;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.CaseHelpers;
 using CPTM.ILA.Web.Util;
+using Microsoft.Ajax.Utilities;
 
 namespace CPTM.ILA.Web.Controllers.API
 {
@@ -54,7 +55,7 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> Login(AuthUser user)
         {
-            if (!Seguranca.Autenticar(user.Username, user.Password))
+            if (user.Username.IsNullOrWhiteSpace() || !Seguranca.Autenticar(user.Username, user.Password))
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, new
                 {
@@ -74,35 +75,43 @@ namespace CPTM.ILA.Web.Controllers.API
                     Telefone = userAd.TelefoneComercial
                 };
 
-                var userInDb = await _context.Users.SingleOrDefaultAsync(u => u.Username == user.Username);
-                var isDeveloper = user.Username == "urielf";
+                var usersInDb = await _context.Users.Include(u => u.Groups)
+                    .Include(u => u.OriginGroup)
+                    .ToListAsync();
+                var userInDb = usersInDb.SingleOrDefault(u => u.Username == user.Username);
+                var isDeveloper = user.Username.ToLower() == "urielf";
 
                 if (isDeveloper && userInDb == null)
                 {
-                    var userOriginGroup =
-                        await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento);
-
-                    if (userOriginGroup == null)
-                    {
-                        userOriginGroup = new Group()
-                        {
-                            Nome = userAd.Departamento,
-                        };
-
-                        _context.Groups.Add(userOriginGroup);
-                    }
-
-                    var newUser = new User()
+                    userInDb = new User()
                     {
                         Username = userAd.Login,
-                        OriginGroup = userOriginGroup,
                         IsComite = false,
                         IsDPO = false,
-                        IsSystem = false,
-                        Groups = new List<Group>() { userOriginGroup }
+                        IsSystem = true,
+                        GroupAccessExpirationDate = DateTime.MaxValue
                     };
 
-                    _context.Users.Add(newUser);
+                    _context.Users.Add(userInDb);
+                    await _context.SaveChangesAsync();
+
+
+                    var groupsInDb = await _context.Groups.ToListAsync();
+                    var userOriginGroup = groupsInDb.SingleOrDefault(g => g.Nome == userAd.Departamento) ??
+                                          new Group()
+                                          {
+                                              Nome = userAd.Departamento,
+                                          };
+
+                    _context.Groups.Add(userOriginGroup);
+                    await _context.SaveChangesAsync();
+
+
+                    userInDb.OriginGroup = userOriginGroup;
+                    userInDb.Groups = new List<Group>() { userOriginGroup };
+                    _context.Entry(userInDb)
+                        .State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
                 }
 
                 if (userInDb == null)
@@ -116,6 +125,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     userInDb.Groups = new List<Group>() { userInDb.OriginGroup };
                 }
 
+                _context.Entry(userInDb)
+                    .State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
                 var jwtToken = TokenUtil.CreateToken(userInDb, userAd, isDeveloper);
@@ -133,7 +144,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 

@@ -14,7 +14,6 @@ import { User } from "./../../shared/models/access-control/users.model";
 import { AuthUser } from "../../shared/models/DTOs/auth-user.model";
 import { AuthContext } from "./../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
-import { groups } from "../../access-requests/components/GroupSelector";
 import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
 
 const schema = yup.object().shape({
@@ -62,6 +61,7 @@ const Login = () => {
         isDeveloper,
         responseData.token,
         receivedUser.originGroup,
+        receivedUser.groups,
         receivedAreaTratamentoDados
       );
 

@@ -29,7 +29,7 @@ const AllCasesListGetter = () => {
       console.log(loadedCases);
 
       const filteredCases = loadedCases.filter(
-        (c) => c.grupoCriador === currentGroup
+        (c) => c.grupoCriador === currentGroup.nome
       );
 
       setCases(filteredCases);

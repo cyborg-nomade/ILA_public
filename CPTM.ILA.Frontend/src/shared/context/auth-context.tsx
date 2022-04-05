@@ -1,4 +1,6 @@
 import { createContext } from "react";
+import { Group } from "../models/access-control/group.model";
+import { emptyGroup } from "./../models/access-control/group.model";
 import {
   AgenteTratamento,
   emptyAgenteTratamento,
@@ -11,7 +13,8 @@ export const AuthContext = createContext({
   isDpo: false,
   isDeveloper: false,
   token: "",
-  currentGroup: "",
+  currentGroup: emptyGroup(),
+  userGroups: [] as Group[],
   areaTratamentoDados: emptyAgenteTratamento(),
   isLoggedIn: false,
   login: (
@@ -21,9 +24,10 @@ export const AuthContext = createContext({
     isDpo: boolean,
     isDeveloper: boolean,
     token: string,
-    currentGroup: string,
+    currentGroup: Group,
+    userGroups: Group[],
     areaTratamentoDados: AgenteTratamento
   ) => {},
   logout: () => {},
-  changeGroup: (g: string) => {},
+  changeGroup: (g: Group) => {},
 });

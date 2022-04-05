@@ -5,10 +5,8 @@ import Button from "react-bootstrap/Button";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useNavigate } from "react-router-dom";
 
-export const groups = ["GGDC", "HFPD", "XPTY", "ZYPD"];
-
 const GroupSelector = () => {
-  const { changeGroup } = useContext(AuthContext);
+  const { changeGroup, userGroups } = useContext(AuthContext);
 
   let navigate = useNavigate();
 
@@ -26,12 +24,12 @@ const GroupSelector = () => {
           <hr></hr>
           <Card.Text className="align-content-center text-center">
             <ButtonGroup vertical className="d-block">
-              {groups.map((g) => (
+              {userGroups.map((g) => (
                 <Button
                   variant="outline-secondary"
                   onClick={() => changeGroup(g)}
                 >
-                  {g}
+                  {g.nome}
                 </Button>
               ))}
             </ButtonGroup>

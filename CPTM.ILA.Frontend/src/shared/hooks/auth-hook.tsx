@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
+import { Group } from "../models/access-control/group.model";
+import { emptyGroup } from "./../models/access-control/group.model";
 import {
   AgenteTratamento,
   emptyAgenteTratamento,
@@ -14,7 +16,8 @@ interface storageObject {
   isDeveloper: boolean;
   token: string;
   tokenExpirationDate: string;
-  currentGroup: string;
+  currentGroup: Group;
+  userGroups: Group[];
   areaTratamentoDados: AgenteTratamento;
 }
 
@@ -26,7 +29,8 @@ export const useAuth = () => {
   const [isDeveloper, setIsDeveloper] = useState(false);
   const [token, setToken] = useState("");
   const [tokenExpirationDate, setTokenExpirationDate] = useState<Date>();
-  const [currentGroup, setCurrentGroup] = useState("");
+  const [currentGroup, setCurrentGroup] = useState<Group>(emptyGroup());
+  const [userGroups, setUserGroups] = useState<Group[]>([]);
   const [areaTratamentoDados, setAreaTratamentoDados] =
     useState<AgenteTratamento>(emptyAgenteTratamento());
 
@@ -38,7 +42,8 @@ export const useAuth = () => {
       isDpo: boolean,
       isDeveloper: boolean,
       token: string,
-      currentGroup: string,
+      currentGroup: Group,
+      userGroups: Group[],
       areaTratamentoDados: AgenteTratamento,
       tokenExpirationDate?: Date
     ) => {
@@ -49,6 +54,7 @@ export const useAuth = () => {
       setIsDpo(isDpo);
       setIsDeveloper(isDeveloper);
       setCurrentGroup(currentGroup);
+      setUserGroups(userGroups);
       setAreaTratamentoDados(areaTratamentoDados);
       const expDate =
         tokenExpirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
@@ -61,6 +67,7 @@ export const useAuth = () => {
         isDpo,
         isDeveloper,
         currentGroup,
+        userGroups,
         areaTratamentoDados,
         token,
         tokenExpirationDate: expDate.toISOString(),
@@ -78,12 +85,13 @@ export const useAuth = () => {
     setIsComite(false);
     setIsDpo(false);
     setIsDeveloper(false);
-    setCurrentGroup("");
+    setCurrentGroup(emptyGroup());
+    setUserGroups([]);
     setAreaTratamentoDados(emptyAgenteTratamento());
     localStorage.removeItem("userData");
   }, []);
 
-  const changeGroup = (g: string) => {
+  const changeGroup = (g: Group) => {
     setCurrentGroup(g);
   };
 
@@ -122,6 +130,7 @@ export const useAuth = () => {
         userDataObject.isDeveloper,
         userDataObject.token,
         userDataObject.currentGroup,
+        userDataObject.userGroups,
         userDataObject.areaTratamentoDados,
         storedExpirationDate
       );
@@ -136,6 +145,7 @@ export const useAuth = () => {
     isDeveloper,
     token,
     currentGroup,
+    userGroups,
     areaTratamentoDados,
     login,
     logout,
