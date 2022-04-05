@@ -222,9 +222,9 @@ namespace CPTM.ILA.Web.Controllers.API
                     {
                         QuantityInStatus = g.Count(),
                         Status = isComite
-                            ? g.First()
+                            ? g.FirstOrDefault()
                                 .ComiteStatus
-                            : g.First()
+                            : g.FirstOrDefault()
                                 .AuthorStatus,
                     })
                     .ToListAsync();
@@ -235,7 +235,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
