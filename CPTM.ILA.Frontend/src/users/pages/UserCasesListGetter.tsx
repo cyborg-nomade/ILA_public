@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
+import { Outlet } from "react-router-dom";
 
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
@@ -68,6 +69,7 @@ const UserCasesListGetter = () => {
         </Alert>
       )}
       <CasesList items={cases} />
+      <Outlet />
     </React.Fragment>
   );
 };

@@ -42,6 +42,14 @@ const ApproveAccessRequestGetter = React.lazy(
 const RequestGroupAccess = React.lazy(
   () => import("./access-requests/pages/RequestGroupAccess")
 );
+const Dashboards = React.lazy(() => import("./users/pages/Dashboards"));
+const UserCasesLayout = React.lazy(
+  () => import("./users/pages/UserCasesLayout")
+);
+const CaseRegisterOptions = React.lazy(
+  () => import("./cases/pages/CaseRegisterOptions")
+);
+const ContinueCase = React.lazy(() => import("./cases/pages/ContinueCase"));
 
 const App = () => {
   const {
@@ -73,11 +81,18 @@ const App = () => {
     routes = (
       <React.Fragment>
         <Route path="/:uid" element={<UserPage />}>
-          <Route path="cases" element={<UserCasesListGetter />}>
-            <Route path="new" element={<NewCase />} />
-            <Route path=":cid" element={<EditCase />} />
+          <Route index element={<Dashboards />} />
+          <Route path="cases" element={<UserCasesLayout />}>
+            <Route index element={<UserCasesListGetter />} />
+            <Route path="register" element={<CaseRegisterOptions />} />
           </Route>
         </Route>
+        <Route path="/:uid/cases/register/new" element={<NewCase />} />
+        <Route
+          path="/:uid/cases/register/continue/:cid"
+          element={<ContinueCase />}
+        />
+        <Route path="/:uid/cases/register/:cid" element={<EditCase />} />
         <Route path="/" element={<Navigate to={`../${userId}/`} />} />
         <Route path="/*" element={<Navigate to={`../${userId}/`} />} />
       </React.Fragment>
