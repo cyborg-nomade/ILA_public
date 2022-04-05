@@ -17,6 +17,7 @@ using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Util;
+using Microsoft.Ajax.Utilities;
 
 namespace CPTM.ILA.Web.Controllers.API
 {
@@ -242,7 +243,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
             }
 
-            if (!User.Identity.IsAuthenticated && tipo != TipoSolicitacaoAcesso.AcessoAoSistema)
+            if (!User.Identity.IsAuthenticated && tipo == TipoSolicitacaoAcesso.AcessoAGrupos)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
             }
@@ -261,13 +262,41 @@ namespace CPTM.ILA.Web.Controllers.API
                     new { message = "Solicitação de tipo incorreto." });
             }
 
-            if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSolicitante) ||
-                !Seguranca.ExisteUsuario(accessRequestDto.UsernameSuperior))
+            if (accessRequestDto.UsernameSolicitante.IsNullOrWhiteSpace())
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, new
                 {
                     message = "Pelo menos um dos nomes de usuário fornecidos não existe. Verifique e tente novamente."
                 });
+            }
+
+            if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSolicitante))
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new
+                {
+                    message = "Pelo menos um dos nomes de usuário fornecidos não existe. Verifique e tente novamente."
+                });
+            }
+
+            if (tipo != TipoSolicitacaoAcesso.AcessoComite)
+            {
+                if (accessRequestDto.UsernameSuperior.IsNullOrWhiteSpace())
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new
+                    {
+                        message =
+                            "Pelo menos um dos nomes de usuário fornecidos não existe. Verifique e tente novamente."
+                    });
+                }
+
+                if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSuperior))
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new
+                    {
+                        message =
+                            "Pelo menos um dos nomes de usuário fornecidos não existe. Verifique e tente novamente."
+                    });
+                }
             }
 
             try
@@ -282,22 +311,23 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var arGroups = new List<Group>();
 
-                if (tipo == TipoSolicitacaoAcesso.AcessoAGrupos)
+                if (tipo == TipoSolicitacaoAcesso.AcessoAGrupos || tipo == TipoSolicitacaoAcesso.AcessoComite)
                 {
                     foreach (var groupName in accessRequestDto.GroupNames)
                     {
-                        var group = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == groupName);
-                        if (group == null)
+                        var groups = await _context.Groups.ToListAsync();
+                        var selectedGroup = groups.SingleOrDefault(g => g.Nome == groupName);
+                        if (selectedGroup == null)
                         {
                             var newGroup = new Group()
                             {
                                 Nome = groupName
                             };
                             _context.Groups.Add(newGroup);
-                            group = newGroup;
+                            selectedGroup = newGroup;
                         }
 
-                        arGroups.Add(group);
+                        arGroups.Add(selectedGroup);
                     }
                 }
 
@@ -320,7 +350,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", error = e });
             }
         }
 

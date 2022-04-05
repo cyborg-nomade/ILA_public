@@ -1,6 +1,6 @@
-import React from "react";
+import React, { CSSProperties, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Formik } from "formik";
+import { Formik, Field } from "formik";
 import * as yup from "yup";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -11,15 +11,108 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 import { groups } from "./GroupSelector";
 import { AccessRequestDTO } from "./../../shared/models/DTOs/access-request-dto.model";
+import { tipoSolicitacaoAcesso } from "../../shared/models/access-control/access-request.model";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import Select from "react-select";
+import {
+  Assign,
+  ObjectShape,
+  AnyObject,
+  TypeOfShape,
+  AssertsShape,
+} from "yup/lib/object";
+import { RequiredStringSchema } from "yup/lib/string";
+import SelectField from "../../shared/components/UI/SelectField";
 
 type onSubmitFn = (item: AccessRequestDTO) => void;
 
-const schema = yup.object().shape({
-  usernameSolicitante: yup.string().required(),
-  usernameSuperior: yup.string().required(),
-  justificativa: yup.string().required(),
-  emailFile: yup.mixed().required(),
-});
+let schema: yup.ObjectSchema<
+  Assign<
+    ObjectShape,
+    {
+      usernameSolicitante: RequiredStringSchema<string | undefined, AnyObject>;
+      usernameSuperior: yup.StringSchema<
+        string | undefined,
+        AnyObject,
+        string | undefined
+      >;
+      justificativa: RequiredStringSchema<string | undefined, AnyObject>;
+      emailFile: any;
+    }
+  >,
+  AnyObject,
+  TypeOfShape<
+    Assign<
+      ObjectShape,
+      {
+        usernameSolicitante: RequiredStringSchema<
+          string | undefined,
+          AnyObject
+        >;
+        usernameSuperior: yup.StringSchema<
+          string | undefined,
+          AnyObject,
+          string | undefined
+        >;
+        justificativa: RequiredStringSchema<string | undefined, AnyObject>;
+        emailFile: any;
+      }
+    >
+  >,
+  AssertsShape<
+    Assign<
+      ObjectShape,
+      {
+        usernameSolicitante: RequiredStringSchema<
+          string | undefined,
+          AnyObject
+        >;
+        usernameSuperior: yup.StringSchema<
+          string | undefined,
+          AnyObject,
+          string | undefined
+        >;
+        justificativa: RequiredStringSchema<string | undefined, AnyObject>;
+        emailFile: any;
+      }
+    >
+  >
+>;
+
+export interface Options {
+  value: string;
+  label: string;
+}
+
+export interface GroupedOption {
+  label: string;
+  options: Options[];
+}
+
+const groupStyles = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+};
+const groupBadgeStyles: CSSProperties = {
+  backgroundColor: "#EBECF0",
+  borderRadius: "2em",
+  color: "#172B4D",
+  display: "inline-block",
+  fontSize: 12,
+  fontWeight: "normal",
+  lineHeight: "1",
+  minWidth: 1,
+  padding: "0.16666666666667em 0.5em",
+  textAlign: "center",
+};
+
+const formatGroupLabel = (data: GroupedOption) => (
+  <div style={groupStyles}>
+    <span>{data.label}</span>
+    <span style={groupBadgeStyles}>{data.options.length}</span>
+  </div>
+);
 
 const AccessRequestForm = (props: {
   item: AccessRequestDTO;
@@ -29,6 +122,32 @@ const AccessRequestForm = (props: {
   onSubmit: onSubmitFn;
   onReject?: onSubmitFn;
 }) => {
+  const [isComiteReq, setIsComiteReq] = useState(false);
+  const [groups, setGroups] = useState<GroupedOption[]>([]);
+
+  useEffect(() => {
+    schema = isComiteReq
+      ? yup.object().shape({
+          usernameSolicitante: yup.string().required(),
+          usernameSuperior: yup.string().required(),
+          justificativa: yup.string().required(),
+          emailFile: yup.mixed().required(),
+        })
+      : yup.object().shape({
+          usernameSolicitante: yup.string().required(),
+          usernameSuperior: yup.string().optional(),
+          justificativa: yup.string().required(),
+          emailFile: yup.mixed().optional(),
+        });
+    console.log(isComiteReq, schema.describe());
+
+    return () => {};
+  }, [isComiteReq]);
+
+  const handleCheckIsComiteReq = (event: any) => {
+    setIsComiteReq(!isComiteReq);
+  };
+
   let navigate = useNavigate();
   const backToHomepageHandler = () => {
     navigate("/");
@@ -37,11 +156,56 @@ const AccessRequestForm = (props: {
     navigate(-1);
   };
 
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+  const getGroups = useCallback(async () => {
+    const responseData = await sendRequest(
+      `${process.env.REACT_APP_CONNSTR}/groups`
+    );
+
+    const groupedOptions: GroupedOption[] = [
+      {
+        label: "Diretorias",
+        options: responseData.diretorias.map((d: string) => ({
+          value: d,
+          label: d,
+        })),
+      },
+      {
+        label: "Gerencias",
+        options: responseData.gerencias.map((g: string) => ({
+          value: g,
+          label: g,
+        })),
+      },
+      {
+        label: "Departamentos",
+        options: responseData.deptos.map((de: string) => ({
+          value: de,
+          label: de,
+        })),
+      },
+    ];
+
+    setGroups(groupedOptions);
+  }, [sendRequest]);
+
+  useEffect(() => {
+    getGroups();
+
+    return () => {};
+  }, [getGroups]);
+
   return (
     <Formik
       validationSchema={schema}
       enableReinitialize={true}
-      onSubmit={props.onSubmit}
+      onSubmit={(values) => {
+        values.tipoSolicitacaoAcesso = isComiteReq
+          ? tipoSolicitacaoAcesso.AcessoComite
+          : tipoSolicitacaoAcesso.AcessoAoSistema;
+        props.onSubmit(values);
+      }}
       initialValues={props.item}
     >
       {({
@@ -57,11 +221,21 @@ const AccessRequestForm = (props: {
       }) => (
         <Form noValidate onSubmit={handleSubmit}>
           <Card className="mx-auto" style={{ width: "28rem" }}>
-            <Card.Title className="pt-3 px-3">
-              Solicitação de Acesso{" "}
-              {props.register || props.approve ? "true" : "falsex"}{" "}
-            </Card.Title>
+            <Card.Title className="pt-3 px-3">Solicitação de Acesso</Card.Title>
             <Card.Body>
+              {props.register && (
+                <Row className="mb-3">
+                  <Form.Group as={Col} controlId="validationFormik00">
+                    <Form.Check
+                      checked={isComiteReq}
+                      onChange={handleCheckIsComiteReq}
+                      type="switch"
+                      id="custom-switch"
+                      label="Membro do Comitê LGPD?"
+                    />
+                  </Form.Group>
+                </Row>
+              )}
               {(props.register || props.approve) && (
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik01">
@@ -85,7 +259,7 @@ const AccessRequestForm = (props: {
                   </Form.Group>
                 </Row>
               )}
-              {(props.register || props.approve) && (
+              {((props.register && !isComiteReq) || props.approve) && (
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik02">
                     <Form.Label>Usuário AD do Superior</Form.Label>
@@ -107,28 +281,15 @@ const AccessRequestForm = (props: {
                   </Form.Group>
                 </Row>
               )}
-              {props.groups && (
+              {(props.groups || isComiteReq) && (
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik03">
-                    <Form.Label>Groupo a ser acessado</Form.Label>
-                    <Form.Select
-                      disabled={props.approve}
-                      name={"groups"}
-                      value={values.groupNames}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      isValid={touched.groupNames && !errors.groupNames}
-                      isInvalid={!!errors.groupNames}
-                    >
-                      {Object.values(groups).map((g) => (
-                        <option value={g} key={g}>
-                          {g}
-                        </option>
-                      ))}
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      Esse campo é obrigatório
-                    </Form.Control.Feedback>
+                    <Form.Label>Grupos a serem acessados</Form.Label>
+                    <Field
+                      component={SelectField}
+                      name="groupNames"
+                      options={groups}
+                    />
                   </Form.Group>
                 </Row>
               )}
@@ -151,21 +312,23 @@ const AccessRequestForm = (props: {
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
-              <Row className="mb-3">
-                <Form.Group controlId="formFile" className="mb-3">
-                  <Form.Label>E-mail com autorização do superior</Form.Label>
-                  <Form.Control
-                    type="file"
-                    name="emailFile"
-                    onChange={(event) => {
-                      const target = event.currentTarget as HTMLInputElement;
-                      const files = target.files as FileList;
+              {!isComiteReq && (
+                <Row className="mb-3">
+                  <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Label>E-mail com autorização do superior</Form.Label>
+                    <Form.Control
+                      type="file"
+                      name="emailFile"
+                      onChange={(event) => {
+                        const target = event.currentTarget as HTMLInputElement;
+                        const files = target.files as FileList;
 
-                      setFieldValue("emailFile", files[0]);
-                    }}
-                  />
-                </Form.Group>
-              </Row>
+                        setFieldValue("emailFile", files[0]);
+                      }}
+                    />
+                  </Form.Group>
+                </Row>
+              )}
               {props.register && (
                 <React.Fragment>
                   <Button
