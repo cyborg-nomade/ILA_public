@@ -3,6 +3,7 @@ import Card from "react-bootstrap/Card";
 import CardGroup from "react-bootstrap/CardGroup";
 import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
+import Row from "react-bootstrap/Row";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { ThreadStatusTotals } from "./../../shared/models/DTOs/thread-status-totals.model";
@@ -56,42 +57,48 @@ const ThreadDashboard = () => {
 
   return (
     <React.Fragment>
-      <h3 className="mb-4">Visão de Comentários</h3>
-      <CardGroup>
-        <Card>
-          <Card.Header>Pendentes</Card.Header>
-          <Card.Body>
-            <h1 className="text-center">
-              <Badge bg="danger">{pendentes}</Badge>
-            </h1>
-          </Card.Body>
-        </Card>
-        <Card>
-          <Card.Header>Respondidos</Card.Header>
-          <Card.Body>
-            <h1 className="text-center">
-              <Badge bg="secondary">{respondidos}</Badge>
-            </h1>
-          </Card.Body>
-        </Card>
-        <Card>
-          <Card.Header>Novos</Card.Header>
-          <Card.Body>
-            <h1 className="text-center">
-              <Badge bg="warning">{novos}</Badge>
-            </h1>
-          </Card.Body>
-        </Card>
-      </CardGroup>
-      <Button
-        variant="success"
-        className="mt-4 mx-auto"
-        style={{ width: "8rem", height: "2.5rem" }}
-        href="https://www.cptm.sp.gov.br/LGPD/Paginas/Perguntas-e-Respostas.aspx"
-        target="blank"
-      >
-        Ajuda
-      </Button>
+      <Row>
+        <h3 className="mb-4">Visão de Comentários</h3>
+      </Row>
+      <Row>
+        <CardGroup>
+          <Card border="danger">
+            <Card.Header>Pendentes</Card.Header>
+            <Card.Body>
+              <h1 className="text-center">
+                <Badge bg="danger">{pendentes}</Badge>
+              </h1>
+            </Card.Body>
+          </Card>
+          <Card border="secondary">
+            <Card.Header>Respondidos</Card.Header>
+            <Card.Body>
+              <h1 className="text-center">
+                <Badge bg="secondary">{respondidos}</Badge>
+              </h1>
+            </Card.Body>
+          </Card>
+          <Card border="warning">
+            <Card.Header>Novos</Card.Header>
+            <Card.Body>
+              <h1 className="text-center">
+                <Badge bg="warning">{novos}</Badge>
+              </h1>
+            </Card.Body>
+          </Card>
+        </CardGroup>
+      </Row>
+      <Row>
+        <Button
+          variant="success"
+          className="mt-4 mx-auto"
+          style={{ width: "8rem", height: "2.5rem" }}
+          href="https://www.cptm.sp.gov.br/LGPD/Paginas/Perguntas-e-Respostas.aspx"
+          target="blank"
+        >
+          Ajuda
+        </Button>
+      </Row>
     </React.Fragment>
   );
 };

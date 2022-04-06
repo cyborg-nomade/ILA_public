@@ -50,6 +50,12 @@ const CaseRegisterOptions = React.lazy(
   () => import("./cases/pages/CaseRegisterOptions")
 );
 const ContinueCase = React.lazy(() => import("./cases/pages/ContinueCase"));
+const ContinueCaseListGetter = React.lazy(
+  () => import("./cases/pages/ContinueCaseListGetter")
+);
+const EditCaseListGetter = React.lazy(
+  () => import("./cases/pages/EditCaseListGetter")
+);
 
 const App = () => {
   const {
@@ -85,14 +91,13 @@ const App = () => {
           <Route path="cases" element={<UserCasesLayout />}>
             <Route index element={<UserCasesListGetter />} />
             <Route path="register" element={<CaseRegisterOptions />} />
+            <Route path="continue" element={<ContinueCaseListGetter />} />
+            <Route path="edit" element={<EditCaseListGetter />} />
           </Route>
         </Route>
         <Route path="/:uid/cases/register/new" element={<NewCase />} />
-        <Route
-          path="/:uid/cases/register/continue/:cid"
-          element={<ContinueCase />}
-        />
-        <Route path="/:uid/cases/register/:cid" element={<EditCase />} />
+        <Route path="/:uid/cases/continue/:cid" element={<ContinueCase />} />
+        <Route path="/:uid/cases/edit/:cid" element={<EditCase />} />
         <Route path="/" element={<Navigate to={`../${userId}/`} />} />
         <Route path="/*" element={<Navigate to={`../${userId}/`} />} />
       </React.Fragment>
