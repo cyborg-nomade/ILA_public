@@ -9,6 +9,7 @@ const MainHeader = () => {
   return (
     <Navbar
       bg="transparent"
+      variant="dark"
       expand={"md"}
       collapseOnSelect
       style={{ background: "none" }}
@@ -25,7 +26,7 @@ const MainHeader = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="justify-content-end flex-grow-1 pe-3" variant="tabs">
+          <Nav className="justify-content-end flex-grow-1 pe-3" variant="pills">
             <NavLinks />
           </Nav>
         </Navbar.Collapse>

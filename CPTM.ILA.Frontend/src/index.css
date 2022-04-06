@@ -10,6 +10,12 @@ body {
   background-repeat: no-repeat;
 }
 
+h1,
+h2,
+h3 {
+  color: #e7f2ff;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

@@ -17,9 +17,9 @@ const EditCaseListGetter = () => {
     useHttpClient();
 
   useEffect(() => {
-    const getAllCases = async () => {
+    const getFinishedCases = async () => {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/`,
+        `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/true/true`,
         undefined,
         undefined,
         { Authorization: "Bearer " + token }
@@ -28,14 +28,10 @@ const EditCaseListGetter = () => {
       console.log(currentGroup);
       console.log(loadedCases);
 
-      const filteredCases = loadedCases.filter(
-        (c) => c.grupoCriador === currentGroup.nome
-      );
-
-      setCases(filteredCases);
+      setCases(loadedCases);
     };
 
-    getAllCases().catch((error) => {
+    getFinishedCases().catch((error) => {
       console.log(error);
     });
   }, [sendRequest, token, currentGroup]);
@@ -52,7 +48,7 @@ const EditCaseListGetter = () => {
 
   return (
     <React.Fragment>
-      <h1>Página Inicial - Todos os Itens Aprovados</h1>
+      <h2>Alterar Processo Existente - Todos os seus processos aprovados</h2>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}

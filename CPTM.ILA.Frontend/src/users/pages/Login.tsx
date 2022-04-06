@@ -65,7 +65,7 @@ const Login = () => {
         receivedAreaTratamentoDados
       );
 
-      navigate(`/${receivedUser.id}/cases`);
+      navigate(`/${receivedUser.id}/`);
     } catch (error) {
       console.log(error);
     }

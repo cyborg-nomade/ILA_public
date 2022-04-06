@@ -7,6 +7,10 @@
             Value = value;
         }
 
+        public TipoNivelCompartilhamento()
+        {
+        }
+
         public string Value { get; private set; }
 
         public static TipoNivelCompartilhamento TodoOProcesso() => new TipoNivelCompartilhamento("Todo o processo");

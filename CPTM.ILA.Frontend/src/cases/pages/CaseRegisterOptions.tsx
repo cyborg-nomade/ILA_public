@@ -23,10 +23,10 @@ const CaseRegisterOptions = () => {
     <React.Fragment>
       <h1>Registrar Processo - Escolha uma opção</h1>
       <CardGroup className="mt-5">
-        <Card className="border-0">
+        <Card className="border-0" bg="transparent">
           <Card.Body className="text-center">
             <Button
-              variant="primary"
+              variant="info"
               size="lg"
               style={{ height: "5rem" }}
               onClick={newHandler}
@@ -35,7 +35,7 @@ const CaseRegisterOptions = () => {
             </Button>
           </Card.Body>
         </Card>
-        <Card className="border-0">
+        <Card className="border-0" bg="transparent">
           <Card.Body className="text-center">
             <Button
               variant="success"
@@ -47,7 +47,7 @@ const CaseRegisterOptions = () => {
             </Button>
           </Card.Body>
         </Card>
-        <Card className="border-0">
+        <Card className="border-0" bg="transparent">
           <Card.Body className="text-center">
             <Button
               variant="secondary"

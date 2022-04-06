@@ -48,7 +48,7 @@ const ContinueCaseListGetter = () => {
 
   return (
     <React.Fragment>
-      <h1>Página Inicial - Todos os Itens Aprovados</h1>
+      <h2>Continuar Processo - Todos os seus processos iniciados</h2>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}
