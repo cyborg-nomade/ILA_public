@@ -7,6 +7,10 @@
             Value = value;
         }
 
+        public TipoFontesRetenção()
+        {
+        }
+
         public string Value { get; private set; }
 
         public static TipoFontesRetenção DocPapel => new TipoFontesRetenção("Documento em Papel");

@@ -7,6 +7,10 @@
             Value = value;
         }
 
+        public TipoMedidaSegurancaPrivacidade()
+        {
+        }
+
         public string Value { get; private set; }
 
         public static TipoMedidaSegurancaPrivacidade AberturaTransparenciaNotificacao =>

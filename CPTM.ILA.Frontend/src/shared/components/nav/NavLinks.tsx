@@ -10,7 +10,7 @@ const NavLinks = () => {
   return (
     <React.Fragment>
       {authContext.isLoggedIn && (
-        <Nav.Link as={NavLink} to="/">
+        <Nav.Link as={NavLink} to={`/${authContext.userId}/`}>
           Página Inicial
         </Nav.Link>
       )}
@@ -25,12 +25,12 @@ const NavLinks = () => {
         </Nav.Link>
       )}
       {authContext.isLoggedIn && authContext.isComite && (
-        <Nav.Link as={NavLink} to={`comite/cases/approve`}>
+        <Nav.Link as={NavLink} to={`comite/cases/approve/`}>
           Aprovar Registros
         </Nav.Link>
       )}
       {authContext.isLoggedIn && authContext.isComite && (
-        <Nav.Link as={NavLink} to={`/comite/access-requests/approve`}>
+        <Nav.Link as={NavLink} to={`/comite/access-requests/approve/`}>
           Aprovar Requisições de Acesso
         </Nav.Link>
       )}

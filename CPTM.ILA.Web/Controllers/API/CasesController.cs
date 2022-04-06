@@ -217,8 +217,9 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 if (gid <= 0)
-                    Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
-
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+                }
 
                 var groupCasesInDb = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
                     .ToListAsync();

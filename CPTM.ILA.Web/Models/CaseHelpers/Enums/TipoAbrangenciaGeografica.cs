@@ -7,6 +7,10 @@
             Value = value;
         }
 
+        public TipoAbrangenciaGeografica()
+        {
+        }
+
         public string Value { get; private set; }
 
         public TipoAbrangenciaGeografica Nacional() => new TipoAbrangenciaGeografica("Nacional");
