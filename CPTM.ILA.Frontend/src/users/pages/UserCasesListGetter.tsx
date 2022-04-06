@@ -57,8 +57,7 @@ const UserCasesListGetter = () => {
 
   return (
     <React.Fragment>
-      <h1>Olá, {areaTratamentoDados.nome}</h1>
-      <h1>Página Inicial - Todos os seus itens</h1>
+      <h1>Meus Processos - Todos os seus itens</h1>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}
@@ -69,7 +68,6 @@ const UserCasesListGetter = () => {
         </Alert>
       )}
       <CasesList items={cases} />
-      <Outlet />
     </React.Fragment>
   );
 };

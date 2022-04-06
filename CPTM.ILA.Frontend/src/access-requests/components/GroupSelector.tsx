@@ -4,6 +4,7 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useNavigate } from "react-router-dom";
+import Row from "react-bootstrap/Row";
 
 const GroupSelector = () => {
   const { changeGroup, userGroups } = useContext(AuthContext);
@@ -16,7 +17,7 @@ const GroupSelector = () => {
 
   return (
     <React.Fragment>
-      <Card>
+      <Card className="justify-content-center">
         <Card.Body>
           <Card.Title className="mb-3 text-center">
             Selecione o grupo desejado
@@ -37,9 +38,11 @@ const GroupSelector = () => {
             ))}
           </ButtonGroup>
           <hr></hr>
-          <Button variant="success" onClick={requestGroupAccessHandler}>
-            Solicitar Acesso a Novo Grupo
-          </Button>
+          <Row>
+            <Button variant="success" onClick={requestGroupAccessHandler}>
+              Solicitar Acesso a Novo Grupo
+            </Button>
+          </Row>
         </Card.Body>
       </Card>
     </React.Fragment>
