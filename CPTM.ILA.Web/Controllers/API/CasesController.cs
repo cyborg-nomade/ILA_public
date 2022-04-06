@@ -220,13 +220,13 @@ namespace CPTM.ILA.Web.Controllers.API
                     Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
 
 
-                var cases = await _context.Cases.Where(c =>
-                        c.GrupoCriador.Id == gid &&
-                        c.Aprovado == aprovado &&
-                        c.EncaminhadoAprovacao == encaminhadoAprovacao)
+                var groupCasesInDb = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
                     .ToListAsync();
+                var filteredCases = groupCasesInDb.Where(c => c.Aprovado == aprovado &&
+                                                              c.EncaminhadoAprovacao == encaminhadoAprovacao)
+                    .ToList();
 
-                var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+                var caseListItems = filteredCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
             }
@@ -234,7 +234,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
