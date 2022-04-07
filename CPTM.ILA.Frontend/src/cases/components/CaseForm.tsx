@@ -37,6 +37,7 @@ import Section14FormRow from "./form-items/Section14FormRow";
 import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
 import { BaseCase, Case, emptyBaseCase } from "../../shared/models/cases.model";
+import CreateCommentBox from "../../threads-comments/components/CreateCommentBox";
 
 type onSubmitFn = (item: BaseCase) => void;
 
@@ -214,8 +215,8 @@ const CaseForm = (props: {
               <Accordion.Item eventKey="0">
                 <Accordion.Header>Identificação</Accordion.Header>
                 <Accordion.Body>
-                  <Row className="mb-3">
-                    <Form.Group as={Col} controlId="validationFormik01">
+                  <Row className="mb-3 align-items-center">
+                    <Form.Group as={Col} lg={11} controlId="validationFormik01">
                       <Form.Label>Nome</Form.Label>
                       <Form.Control
                         disabled={!isEditing}
@@ -237,6 +238,11 @@ const CaseForm = (props: {
                         Esse campo é obrigatório
                       </Form.Control.Feedback>
                     </Form.Group>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox />
+                      </Row>
+                    </Col>
                   </Row>
                   {/* <Row className="mb-3">
                     <Form.Group as={Col} controlId="validationFormik02">

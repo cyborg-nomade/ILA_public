@@ -20,3 +20,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+@font-face {
+  font-family: "Swiss721";
+  src: local("Swis721"), url(./shared/assets/fonts/swiss.ttf) format("truetype");
+}
