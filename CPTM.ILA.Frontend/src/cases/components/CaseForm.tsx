@@ -166,10 +166,11 @@ const CaseForm = (props: {
         animation={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Salvar Progresso!</Modal.Title>
+          <Modal.Title>Enviar para o Encarregado de Dados!</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Você tem certeza que deseja salvar o seu progresso?
+          Você tem certeza que deseja enviar as informações para validação do
+          time de Privacidade de Dados?
         </Modal.Body>
         <Modal.Footer>
           <Button

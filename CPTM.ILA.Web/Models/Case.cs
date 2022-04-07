@@ -122,8 +122,9 @@ namespace CPTM.ILA.Web.Models
         {
             EncaminhadoAprovacao = true;
 
-            if (FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.Consentimento &&
-                FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.InteressesLegitimosControlador)
+            if (FinalidadeTratamento.HipoteseTratamento.Value != HipotesesTratamento.Consentimento.Value &&
+                FinalidadeTratamento.HipoteseTratamento.Value !=
+                HipotesesTratamento.InteressesLegitimosControlador.Value)
                 return this;
             var userAd = Seguranca.ObterUsuario(usernameCriador);
             var assunto = $"Processo LGPD {Nome} - ID {Id}";
@@ -131,8 +132,8 @@ namespace CPTM.ILA.Web.Models
                 $@"O processo {Nome} acabou de ser enviado para aprovação pelo Comitê LGPD, e sua Hipótese de Tratamento foi declarada como {FinalidadeTratamento.HipoteseTratamento}";
             var erro = "Algo deu errado no envio do e-mail. Contate o suporte técnico";
             //send email
-            Email.Enviar("ILA", userAd.Nome, userAd.Email, new List<string>() { "uriel.fiori@cptm.sp.gov.br" }, assunto,
-                mensagem, DateTime.Now, 1, ref erro);
+            var enviado = Email.Enviar("ILA", userAd.Nome, userAd.Email,
+                new List<string>() { "uriel.fiori@cptm.sp.gov.br" }, assunto, mensagem, DateTime.Now, 1, ref erro);
 
             return this;
         }
