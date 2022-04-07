@@ -521,6 +521,9 @@ namespace CPTM.ILA.Web.Controllers.API
                 caseToSave.RectifyCase();
 
                 _context.Cases.Add(caseToSave);
+                await _context.SaveChangesAsync();
+
+                newChangeLog.CaseId = caseToSave.Id;
                 _context.ChangeLogs.Add(newChangeLog);
                 await _context.SaveChangesAsync();
 
@@ -531,7 +534,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -846,7 +849,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     .State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Caso enviado para aprovação com sucesso!" });
             }
             catch (Exception e)
             {
