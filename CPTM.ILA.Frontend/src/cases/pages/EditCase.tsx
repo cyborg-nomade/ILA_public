@@ -49,7 +49,7 @@ const EditCase = () => {
 
   const submitFormHandler = async (item: BaseCase) => {
     item.area = item.extensaoEncarregado.area || "";
-    item.usuarioCriador = user;
+    item.usuarioCriadorId = user.id;
     for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
       if (value.descricao !== "Não se aplica") {
         item.dadosPessoaisSensiveis = true;

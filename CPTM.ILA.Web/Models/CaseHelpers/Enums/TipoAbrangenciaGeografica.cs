@@ -9,9 +9,10 @@
 
         public TipoAbrangenciaGeografica()
         {
+            Value = "";
         }
 
-        public string Value { get; private set; }
+        public string Value { get; set; }
 
         public TipoAbrangenciaGeografica Nacional() => new TipoAbrangenciaGeografica("Nacional");
         public TipoAbrangenciaGeografica Estadual() => new TipoAbrangenciaGeografica("Estadual");

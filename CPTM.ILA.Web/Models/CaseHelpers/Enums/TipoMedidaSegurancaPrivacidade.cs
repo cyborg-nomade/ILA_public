@@ -9,9 +9,10 @@
 
         public TipoMedidaSegurancaPrivacidade()
         {
+            Value = "";
         }
 
-        public string Value { get; private set; }
+        public string Value { get; set; }
 
         public static TipoMedidaSegurancaPrivacidade AberturaTransparenciaNotificacao =>
             new TipoMedidaSegurancaPrivacidade("Abertura, Transparência e Notificação");

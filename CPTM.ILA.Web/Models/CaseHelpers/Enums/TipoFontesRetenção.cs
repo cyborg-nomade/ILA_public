@@ -9,9 +9,10 @@
 
         public TipoFontesRetenção()
         {
+            Value = "";
         }
 
-        public string Value { get; private set; }
+        public string Value { get; set; }
 
         public static TipoFontesRetenção DocPapel => new TipoFontesRetenção("Documento em Papel");
         public static TipoFontesRetenção DocEletronico => new TipoFontesRetenção("Documento Eletrônico");

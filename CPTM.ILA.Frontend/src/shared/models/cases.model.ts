@@ -27,8 +27,8 @@ export interface BaseCase {
   area: string;
   dataCriacao: string;
   dataAtualizacao: string;
-  grupoCriador: Group;
-  usuarioCriador: User;
+  grupoCriadorId: number;
+  usuarioCriadorId: number;
   aprovado: boolean;
   encaminhadoAprovacao: boolean;
   dadosPessoaisSensiveis: boolean;
@@ -44,7 +44,7 @@ export interface BaseCase {
   finalidadeTratamento: FinalidadeTratamento;
   categoriaDadosPessoais: CategoriaDadosPessoais;
   categoriaDadosPessoaisSensiveis: CategoriaDadosPessoaisSensiveis;
-  frequenciaTratamento: string;
+  frequenciaTratamento: { value: string };
   qtdeDadosTratados: number;
   qtdeDadosSensiveisTratados: number;
   categoriasTitulares: CategoriaTitulares;
@@ -63,10 +63,10 @@ export interface Case extends BaseCase {
 export const emptyBaseCase = (): BaseCase => ({
   nome: "",
   area: "",
-  dataCriacao: "",
-  dataAtualizacao: "",
-  grupoCriador: emptyGroup(),
-  usuarioCriador: emptyUser(),
+  dataCriacao: new Date().toISOString(),
+  dataAtualizacao: new Date().toISOString(),
+  grupoCriadorId: 0,
+  usuarioCriadorId: 0,
   aprovado: false,
   encaminhadoAprovacao: false,
   dadosPessoaisSensiveis: false,
@@ -82,7 +82,7 @@ export const emptyBaseCase = (): BaseCase => ({
   finalidadeTratamento: emptyFinalidadeTratamento(),
   categoriaDadosPessoais: emptyCategoriaDadosPessoais(),
   categoriaDadosPessoaisSensiveis: emptyCategoriaDadosPessoaisSensiveis(),
-  frequenciaTratamento: "",
+  frequenciaTratamento: { value: "" },
   qtdeDadosTratados: 0,
   qtdeDadosSensiveisTratados: 0,
   categoriasTitulares: emptyCategoriaTitulares(),
@@ -98,10 +98,10 @@ export const emptyCase = (): Case => ({
   id: 0,
   nome: "",
   area: "",
-  dataCriacao: "",
-  dataAtualizacao: "",
-  grupoCriador: emptyGroup(),
-  usuarioCriador: emptyUser(),
+  dataCriacao: new Date().toISOString(),
+  dataAtualizacao: new Date().toISOString(),
+  grupoCriadorId: 0,
+  usuarioCriadorId: 0,
   aprovado: false,
   encaminhadoAprovacao: false,
   dadosPessoaisSensiveis: false,
@@ -117,7 +117,7 @@ export const emptyCase = (): Case => ({
   finalidadeTratamento: emptyFinalidadeTratamento(),
   categoriaDadosPessoais: emptyCategoriaDadosPessoais(),
   categoriaDadosPessoaisSensiveis: emptyCategoriaDadosPessoaisSensiveis(),
-  frequenciaTratamento: "",
+  frequenciaTratamento: { value: "" },
   qtdeDadosTratados: 0,
   qtdeDadosSensiveisTratados: 0,
   categoriasTitulares: emptyCategoriaTitulares(),
