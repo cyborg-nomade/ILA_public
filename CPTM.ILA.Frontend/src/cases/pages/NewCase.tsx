@@ -19,14 +19,18 @@ import {
   updatedDiff,
   detailedDiff,
 } from "deep-object-diff";
-import { ChangeLog } from "../../shared/models/change-logging/change-log.model";
+import {
+  BaseChangeLog,
+  ChangeLog,
+} from "../../shared/models/change-logging/change-log.model";
+import { CaseChange } from "../../shared/models/DTOs/case-change.model";
 
 const NewCase = () => {
   const [initialCase, setInitialCase] = useState<BaseCase | Case>(
     emptyBaseCase()
   );
 
-  const { token, user } = useContext(AuthContext);
+  const { token, user, currentGroup } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
@@ -34,7 +38,10 @@ const NewCase = () => {
   let navigate = useNavigate();
 
   const saveProgressHandler = async (item: BaseCase) => {
+    console.log("Initial item: ", item);
+
     item.usuarioCriador = user;
+    item.grupoCriador = currentGroup;
     item.area = item.extensaoEncarregado.area || "";
     for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
       if (value.length !== 0) {
@@ -42,20 +49,30 @@ const NewCase = () => {
       }
     }
 
-    const changeObj = diff(emptyBaseCase(), item);
+    console.log("Altered item: ", item);
 
-    const changeLog: ChangeLog = {
+    const changeObj = diff(initialCase, item);
+
+    const changeLog: BaseChangeLog = {
       caseDiff: JSON.stringify(changeObj),
-      caseId: 0,
       userId: user.id,
       changeDate: new Date(),
     };
+
+    console.log("Change Log: ", changeLog);
+
+    const caseChange: CaseChange = {
+      case: item,
+      changeLog: changeLog,
+    };
+
+    console.log("Case Change: ", caseChange);
 
     try {
       await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/`,
         "POST",
-        JSON.stringify(item),
+        JSON.stringify(caseChange),
         {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
@@ -70,6 +87,10 @@ const NewCase = () => {
   };
 
   const sendToApprovalHandler = async (item: BaseCase | Case) => {
+    console.log("sah, Initial item: ", item);
+
+    item.usuarioCriador = user;
+    item.grupoCriador = currentGroup;
     item.area = item.extensaoEncarregado.area || "";
     for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
       if (value.length !== 0) {
@@ -77,11 +98,30 @@ const NewCase = () => {
       }
     }
 
+    console.log("sah, Altered item: ", item);
+
+    const changeObj = diff(initialCase, item);
+
+    const changeLog: BaseChangeLog = {
+      caseDiff: JSON.stringify(changeObj),
+      userId: user.id,
+      changeDate: new Date(),
+    };
+
+    console.log("sah, Change Log: ", changeLog);
+
+    const caseChange: CaseChange = {
+      case: item,
+      changeLog: changeLog,
+    };
+
+    console.log("sah, Case change: ", changeLog);
+
     try {
       const initialResponse = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/`,
         "POST",
-        JSON.stringify(item),
+        JSON.stringify(caseChange),
         {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
@@ -93,7 +133,7 @@ const NewCase = () => {
       await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/request-approval/${savedCase.id}`,
         "POST",
-        JSON.stringify(item),
+        undefined,
         {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
@@ -132,6 +172,7 @@ const NewCase = () => {
       <CaseForm
         new={true}
         onSaveProgressSubmit={saveProgressHandler}
+        onSendToApprovalSubmit={sendToApprovalHandler}
         item={initialCase}
       />
     </React.Fragment>
