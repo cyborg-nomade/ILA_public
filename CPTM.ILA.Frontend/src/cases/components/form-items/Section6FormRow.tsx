@@ -11,7 +11,7 @@ import { Case } from "../../../shared/models/cases.model";
 import { hipotesesTratamento } from "../../../shared/models/case-helpers/enums.model";
 
 const Section6FormRow = (props: {
-  tooltip: JSX.Element;
+  tooltip?: JSX.Element;
   label: string;
   disabled: boolean;
   name: string;
@@ -33,12 +33,16 @@ const Section6FormRow = (props: {
 
   return (
     <Row className="mb-3">
-      <OverlayTrigger
-        placement="right"
-        overlay={<Tooltip className="text-muted">{props.tooltip}</Tooltip>}
-      >
+      {props.tooltip ? (
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip className="text-muted">{props.tooltip}</Tooltip>}
+        >
+          <Form.Label as={Col}>{props.label}</Form.Label>
+        </OverlayTrigger>
+      ) : (
         <Form.Label as={Col}>{props.label}</Form.Label>
-      </OverlayTrigger>
+      )}
       <Col lg={8}>
         {props.type === "select" && (
           <Form.Select

@@ -5,27 +5,21 @@ import {
   AgenteTratamento,
   emptyAgenteTratamento,
 } from "../models/case-helpers/case-helpers.model";
+import { emptyUser, User } from "../models/access-control/users.model";
+import { boolean } from "yup/lib/locale";
 
 export const AuthContext = createContext({
-  userId: "",
-  username: "",
-  isComite: false,
-  isDpo: false,
+  user: emptyUser(),
   isDeveloper: false,
   token: "",
   currentGroup: emptyGroup(),
-  userGroups: [] as Group[],
   areaTratamentoDados: emptyAgenteTratamento(),
   isLoggedIn: false,
   login: (
-    uid: string,
-    username: string,
-    isComite: boolean,
-    isDpo: boolean,
+    user: User,
     isDeveloper: boolean,
     token: string,
     currentGroup: Group,
-    userGroups: Group[],
     areaTratamentoDados: AgenteTratamento
   ) => {},
   logout: () => {},

@@ -3,12 +3,8 @@ import { Outlet } from "react-router-dom";
 import { AuthContext } from "../../shared/context/auth-context";
 
 const UserCasesLayout = () => {
-  const {
-    userId: uid,
-    token,
-    username,
-    areaTratamentoDados,
-  } = useContext(AuthContext);
+  const { user, isDeveloper, token, areaTratamentoDados } =
+    useContext(AuthContext);
 
   return (
     <React.Fragment>

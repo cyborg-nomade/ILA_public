@@ -1,3 +1,5 @@
+import { emptyGroup, Group } from "./access-control/group.model";
+import { emptyUser, User } from "./access-control/users.model";
 import {
   AgenteTratamento,
   CategoriaDadosPessoais,
@@ -25,8 +27,8 @@ export interface BaseCase {
   area: string;
   dataCriacao: string;
   dataAtualizacao: string;
-  grupoCriador: string;
-  usuarioCriador: string;
+  grupoCriador: Group;
+  usuarioCriador: User;
   aprovado: boolean;
   encaminhadoAprovacao: boolean;
   dadosPessoaisSensiveis: boolean;
@@ -63,8 +65,8 @@ export const emptyBaseCase = (): BaseCase => ({
   area: "",
   dataCriacao: "",
   dataAtualizacao: "",
-  grupoCriador: "",
-  usuarioCriador: "",
+  grupoCriador: emptyGroup(),
+  usuarioCriador: emptyUser(),
   aprovado: false,
   encaminhadoAprovacao: false,
   dadosPessoaisSensiveis: false,
@@ -98,8 +100,8 @@ export const emptyCase = (): Case => ({
   area: "",
   dataCriacao: "",
   dataAtualizacao: "",
-  grupoCriador: "",
-  usuarioCriador: "",
+  grupoCriador: emptyGroup(),
+  usuarioCriador: emptyUser(),
   aprovado: false,
   encaminhadoAprovacao: false,
   dadosPessoaisSensiveis: false,

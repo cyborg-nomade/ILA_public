@@ -10,7 +10,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 import { Case } from "../../../shared/models/cases.model";
 
 const Section7FormRow = (props: {
-  tooltip: JSX.Element;
+  tooltip?: JSX.Element;
   label: string;
   disabled: boolean;
   name: string;
@@ -65,12 +65,16 @@ const Section7FormRow = (props: {
 
   return (
     <Row className={props.className}>
-      <OverlayTrigger
-        placement="right"
-        overlay={<Tooltip className="text-muted">{props.tooltip}</Tooltip>}
-      >
+      {props.tooltip ? (
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip className="text-muted">{props.tooltip}</Tooltip>}
+        >
+          <Form.Label as={Col}>{props.label}</Form.Label>
+        </OverlayTrigger>
+      ) : (
         <Form.Label as={Col}>{props.label}</Form.Label>
-      </OverlayTrigger>
+      )}
       <Col>
         <Form.Control
           disabled={props.disabled}

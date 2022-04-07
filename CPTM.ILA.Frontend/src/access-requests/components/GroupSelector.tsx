@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 
 const GroupSelector = () => {
-  const { changeGroup, userGroups } = useContext(AuthContext);
+  const { changeGroup, user } = useContext(AuthContext);
 
   let navigate = useNavigate();
 
@@ -27,7 +27,7 @@ const GroupSelector = () => {
             vertical
             className="d-block align-content-center text-center"
           >
-            {userGroups.map((g) => (
+            {user.groups.map((g) => (
               <Button
                 key={g.id}
                 variant="outline-secondary"

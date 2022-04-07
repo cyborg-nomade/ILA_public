@@ -13,6 +13,7 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
+import Stack from "react-bootstrap/Stack";
 
 import {
   emptyItemCategoriaDadosPessoais,
@@ -35,577 +36,27 @@ import Section13FormRow from "./form-items/Section13FormRow";
 import Section14FormRow from "./form-items/Section14FormRow";
 import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
-import { BaseCase, Case } from "../../shared/models/cases.model";
+import { BaseCase, Case, emptyBaseCase } from "../../shared/models/cases.model";
 
 type onSubmitFn = (item: BaseCase) => void;
-
-// const schema = yup.object().shape({
-//   nome: yup.string().required(),
-//   id: yup.number().required(),
-//   ref: yup.string().required(),
-//   dataCriacao: yup.date().required(),
-//   dataAtualizacao: yup.date().required(),
-//   controlador: yup.object().shape({
-//     nome: yup.string().required(),
-//     area: yup.string().optional(),
-//     telefone: yup.string().optional(),
-//     email: yup.string().email().optional(),
-//   }),
-//   encarregado: yup.object().shape({
-//     nome: yup.string().required(),
-//     area: yup.string().optional(),
-//     telefone: yup.string().optional(),
-//     email: yup.string().email().optional(),
-//   }),
-//   extensaoEncarregado: yup.object().shape({
-//     nome: yup.string().required(),
-//     area: yup.string().required(),
-//     telefone: yup.string().required(),
-//     email: yup.string().email().required(),
-//   }),
-//   areaTratamentoDados: yup.object().shape({
-//     nome: yup.string().optional(),
-//     area: yup.string().optional(),
-//     telefone: yup.string().optional(),
-//     email: yup.string().email().optional(),
-//   }),
-//   operador: yup.object().shape({
-//     nome: yup.string().required(),
-//     area: yup.string().optional(),
-//     telefone: yup.string().optional(),
-//     email: yup.string().email().optional(),
-//   }),
-//   fasesCicloTratamento: yup.object({
-//     coleta: yup.boolean(),
-//     retencao: yup.boolean(),
-//     processamento: yup.boolean(),
-//     compartilhamento: yup.boolean(),
-//     eliminacao: yup.boolean(),
-//     verbos: yup.array().optional(),
-//   }),
-//   descricaoFluxoTratamento: yup.string().required(),
-//   abrangenciaGeografica: yup.string().required(),
-//   fonteDados: yup.string().required(),
-//   finalidadeTratamento: yup.object().shape({
-//     hipoteseTratamento: yup.string().required(),
-//     descricaoFinalidade: yup.string().required(),
-//     previsaoLegal: yup.string().required(),
-//     resultadosTitular: yup.string().required(),
-//     beneficiosEsperados: yup.string().required(),
-//   }),
-//   categoriaDadosPessoais: yup.object().shape({
-//     identificacao: yup.object().shape({
-//       idPessoal: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       idGov: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       idEletronica: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       locEletronica: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     financeiros: yup.object().shape({
-//       idFin: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       recursosFin: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       dividasDespesas: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       solvencia: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       emprestimosHipotecaCredito: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       assistenciaFin: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       apoliceSeguro: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       planoPensao: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       transacaoFin: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       compensacao: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       atividadeProfissional: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       acordosAjustes: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       autorizacoesConsentimentos: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     caracteristicas: yup.object().shape({
-//       detalhesPessoais: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       detalhesMilitares: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       situacaoImigracao: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       descricaoFisica: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     habitos: yup.object().shape({
-//       habitos: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       estiloVida: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       viagensDeslocamento: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       contatosSociais: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       posses: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       denunciasIncidentesAcidentes: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       distincoes: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       usoMidia: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     caracteristicasPsicologicas: yup.object().shape({
-//       descricaoPsi: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     composicaoFamiliar: yup.object().shape({
-//       casamentoCoabitacao: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       historicoConjugal: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       membrosFamilia: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     interessesLazer: yup.object().shape({
-//       atividadesInteressesLaz: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     associacoes: yup.object().shape({
-//       outrasAssociacoesNaoSensiveis: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     processoJudAdmCrim: yup.object().shape({
-//       suspeitas: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       condenacoesSentencas: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       acoesJud: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       penalidadesAdm: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     habitosConsumo: yup.object().shape({
-//       dadosBensServicos: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     residenciais: yup.object().shape({
-//       dadosResidencia: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     educacaoTreinamento: yup.object().shape({
-//       academicosEscolares: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       registroFinanceiro: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       qualificacaoExperienciaProf: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     profissaoEmprego: yup.object().shape({
-//       empregoAtual: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       recrutamento: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       rescisao: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       carreira: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       absenteismoDisciplina: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       avaliacaoDesempenho: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     regVideoImgVoz: yup.object().shape({
-//       videoImagem: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       imagemVigilancia: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       voz: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     outros: yup.object().shape({
-//       outros: yup.array(),
-//     }),
-//   }),
-//   categoriaDadosPessoaisSensiveis: yup.object().shape({
-//     origemRacialEtnica: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     conviccaoReligiosa: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     opiniaoPolitica: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     filiacaoSindicato: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     filiacaoOrganizacaoReligiosa: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     filiacaoCrencaFilosofica: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     filiacaoPreferenciaPolitica: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     saudeVidaSexual: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     geneticos: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     biometricos: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//   }),
-//   frequenciaTratamento: yup.string().required(),
-//   quantidadeDadosTratados: yup.string().required(),
-//   categoriasTitulares: yup.object().shape({
-//     categorias: yup
-//       .array()
-//       .required()
-//       .of(
-//         yup.object().shape({
-//           tipoCategoria: yup.string().required(),
-//           descricao: yup.string().optional(),
-//         })
-//       ),
-//     criancasAdolescentes: yup
-//       .array()
-//       .optional()
-//       .of(
-//         yup.object().shape({
-//           tipoCategoria: yup.string().required(),
-//           descricao: yup.string().optional(),
-//         })
-//       ),
-//     outrosGruposVulneraveis: yup
-//       .array()
-//       .optional()
-//       .of(
-//         yup.object().shape({
-//           tipoCategoria: yup.string().required(),
-//           descricao: yup.string().optional(),
-//         })
-//       ),
-//   }),
-//   compartilhamentoDadosPessoais: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         nomeInstituicao: yup.string().required(),
-//         dadosCompartilhados: yup.string().optional(),
-//         finalidadeCompartilhamento: yup.string().optional(),
-//       })
-//     ),
-//   medidasSegurancaPrivacidade: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         tipo: yup.string().required(),
-//         descricaoControles: yup.string().optional(),
-//       })
-//     ),
-//   transferenciaInternacional: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         nomeOrganizacao: yup.string().required(),
-//         pais: yup.string().required(),
-//         dadosTransferidos: yup.string().required(),
-//         tipoGarantia: yup.string().required(),
-//       })
-//     ),
-//   contratoServicosTITratamentoDados: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         numeroContrato: yup.string().required(),
-//         numeroProcessoContratacao: yup.string().optional(),
-//         objetoContrato: yup.string().required(),
-//         emailGestorContrato: yup.string().required(),
-//       })
-//     ),
-//   riscosPrivacidade: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         tipoRisco: yup.string().required(),
-//         observacoes: yup.string().optional(),
-//       })
-//     ),
-//   observacoesProcesso: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         descricaoObs: yup.string().required(),
-//       })
-//     ),
-// });
 
 const CaseForm = (props: {
   item: BaseCase | Case;
   new?: boolean;
   edit?: boolean;
   approve?: boolean;
-  onSubmit: onSubmitFn;
+  continue?: boolean;
+  onSaveProgressSubmit?: onSubmitFn;
+  onSendToApprovalSubmit?: onSubmitFn;
 }) => {
   const [isEditing, setIsEditing] = useState(props.new || false);
-  const [showModal, setShowModal] = useState(false);
+  const [itemValues, setItemValues] = useState<BaseCase | Case>(
+    emptyBaseCase()
+  );
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
+  const [showSendToApprovalModal, setShowSendToApprovalModal] = useState(false);
 
   const { token } = useContext(AuthContext);
 
@@ -638,15 +89,18 @@ const CaseForm = (props: {
       navigate(`/`);
     } catch (err) {
       console.log(err);
-      handleCloseModal();
+      setShowDeleteModal(false);
     }
   };
 
-  const handleShowDeleteModal = () => {
-    setShowModal(true);
+  const handleSaveProgressClick = (item: BaseCase | Case) => {
+    setItemValues(item);
+    setShowSaveProgressModal(true);
   };
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleSendToApprovalClick = (item: BaseCase | Case) => {
+    item.encaminhadoAprovacao = true;
+    setItemValues(item);
+    setShowSendToApprovalModal(true);
   };
 
   if (isLoading) {
@@ -661,7 +115,11 @@ const CaseForm = (props: {
 
   return (
     <React.Fragment>
-      <Modal show={showModal} onHide={handleCloseModal} animation={false}>
+      <Modal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        animation={false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Remover Registro!</Modal.Title>
         </Modal.Header>
@@ -669,11 +127,63 @@ const CaseForm = (props: {
           Você está prestes a deletar o registro {props.item.nome}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleCloseModal}>
+          <Button variant="primary" onClick={() => setShowDeleteModal(false)}>
             Cancelar
           </Button>
           <Button variant="danger" onClick={() => onDelete(cid)}>
             Prosseguir com Remoção
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showSaveProgressModal}
+        onHide={() => setShowSaveProgressModal(false)}
+        animation={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Salvar Progresso!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Você tem certeza que deseja salvar o seu progresso?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="danger"
+            onClick={() => setShowSaveProgressModal(false)}
+          >
+            Não
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => props.onSaveProgressSubmit!(itemValues)}
+          >
+            Sim
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showSendToApprovalModal}
+        onHide={() => setShowSendToApprovalModal(false)}
+        animation={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Salvar Progresso!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Você tem certeza que deseja salvar o seu progresso?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="danger"
+            onClick={() => setShowSendToApprovalModal(false)}
+          >
+            Não
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => props.onSendToApprovalSubmit!(itemValues)}
+          >
+            Sim
           </Button>
         </Modal.Footer>
       </Modal>
@@ -685,7 +195,7 @@ const CaseForm = (props: {
       <Formik
         // validationSchema={schema}
         enableReinitialize={true}
-        onSubmit={props.onSubmit!}
+        onSubmit={(item: BaseCase | Case) => setItemValues(item)}
         initialValues={props.item}
       >
         {({
@@ -1376,7 +886,6 @@ const CaseForm = (props: {
                   />
                   <Section6FormRow
                     label="Resultados pretendidos para o titular de dados"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="finalidadeTratamento.resultadosTitular"
                     type="text"
@@ -1385,7 +894,6 @@ const CaseForm = (props: {
                   <Section6FormRow
                     label="Benefícios esperados para o órgão, entidade ou para a
                     sociedade como um todo"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="finalidadeTratamento.beneficiosEsperados"
                     type="text"
@@ -2376,7 +1884,6 @@ const CaseForm = (props: {
                                             : ""
                                         }`}
                                         label="Outros (Especificar)"
-                                        tooltip={<React.Fragment />}
                                         disabled={!isEditing}
                                         name={`categoriaDadosPessoais.outros.outros[${index}]`}
                                       />
@@ -2454,70 +1961,60 @@ const CaseForm = (props: {
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam origem racial ou étnica"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.origemRacialEtnica"
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam convicção religiosa"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.conviccaoReligiosa"
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam opinião política"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.opiniaoPolitica"
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam filiação a sindicato"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.filiacaoSindicato"
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam filiação a organização de caráter religioso"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.filiacaoOrganizacaoReligiosa"
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam filiação ou crença filosófica"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.filiacaoCrencaFilosofica"
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam filiação ou preferências política"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.filiacaoPreferenciaPolitica"
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados referentes à saúde ou à vida sexual"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.saudeVidaSexual"
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados genéticos"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.geneticos"
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados biométricos"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.biometricos"
                   />
@@ -3360,13 +2857,25 @@ const CaseForm = (props: {
               </Accordion.Item>
             </Accordion>
             {props.new && (
-              <Button
-                type="submit"
-                className="float-end mt-3"
-                disabled={!(isValid && dirty)}
-              >
-                Registrar Novo
-              </Button>
+              <Stack direction="horizontal" className="mt-3" gap={3}>
+                <Button
+                  type="button"
+                  disabled={!(isValid && dirty)}
+                  variant="secondary"
+                  className="ms-auto"
+                  onClick={() => setShowSaveProgressModal(true)}
+                >
+                  Salvar Alterações
+                </Button>
+                <Button
+                  type="button"
+                  disabled={!(isValid && dirty)}
+                  variant="warning"
+                  onClick={() => setShowSendToApprovalModal(true)}
+                >
+                  Encaminhar para encarregado de Dados
+                </Button>
+              </Stack>
             )}
             {props.approve && (
               <Row className="float-end mt-3">
@@ -3382,11 +2891,7 @@ const CaseForm = (props: {
               </Row>
             )}
             {props.edit && isEditing && isValid && (
-              <Button
-                type="submit"
-                className="float-end mt-3"
-                disabled={!(isValid && dirty)}
-              >
+              <Button className="float-end mt-3" disabled={!(isValid && dirty)}>
                 Salvar Alterações
               </Button>
             )}
@@ -3399,7 +2904,10 @@ const CaseForm = (props: {
                   >
                     Cancelar
                   </Button>
-                  <Button variant="danger" onClick={handleShowDeleteModal}>
+                  <Button
+                    variant="danger"
+                    onClick={() => setShowDeleteModal(true)}
+                  >
                     Remover
                   </Button>
                   <Button variant="primary" onClick={() => onStartEditing()}>

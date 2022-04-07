@@ -84,7 +84,7 @@ const ApproveCaseGetter = () => {
           Ocorreu um erro: {error}
         </Alert>
       )}
-      <CaseForm item={fullCase} approve={true} onSubmit={submitFormHandler} />
+      <CaseForm item={fullCase} approve={true} onSaveProgressSubmit={submitFormHandler} />
     </React.Fragment>
   );
 };

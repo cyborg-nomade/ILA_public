@@ -5,39 +5,37 @@ import Nav from "react-bootstrap/Nav";
 import { AuthContext } from "./../../context/auth-context";
 
 const NavLinks = () => {
-  const authContext = useContext(AuthContext);
+  const { user, isLoggedIn, logout } = useContext(AuthContext);
 
   return (
     <React.Fragment>
-      {authContext.isLoggedIn && (
-        <Nav.Link as={NavLink} to={`/${authContext.userId}/`}>
+      {isLoggedIn && (
+        <Nav.Link as={NavLink} to={`/${user.id}/`}>
           Página Inicial
         </Nav.Link>
       )}
-      {authContext.isLoggedIn && !authContext.isComite && (
-        <Nav.Link as={NavLink} to={`${authContext.userId}/cases/`}>
+      {isLoggedIn && !user.isComite && (
+        <Nav.Link as={NavLink} to={`${user.id}/cases/`}>
           Meus Processos
         </Nav.Link>
       )}
-      {authContext.isLoggedIn && !authContext.isComite && (
-        <Nav.Link as={NavLink} to={`${authContext.userId}/cases/register/`}>
+      {isLoggedIn && !user.isComite && (
+        <Nav.Link as={NavLink} to={`${user.id}/cases/register/`}>
           Formulário
         </Nav.Link>
       )}
-      {authContext.isLoggedIn && authContext.isComite && (
+      {isLoggedIn && user.isComite && (
         <Nav.Link as={NavLink} to={`comite/cases/approve/`}>
           Aprovar Registros
         </Nav.Link>
       )}
-      {authContext.isLoggedIn && authContext.isComite && (
+      {isLoggedIn && user.isComite && (
         <Nav.Link as={NavLink} to={`/comite/access-requests/approve/`}>
           Aprovar Requisições de Acesso
         </Nav.Link>
       )}
-      {authContext.isLoggedIn && (
-        <Nav.Link onClick={authContext.logout}>Sair</Nav.Link>
-      )}
-      {!authContext.isLoggedIn && (
+      {isLoggedIn && <Nav.Link onClick={logout}>Sair</Nav.Link>}
+      {!isLoggedIn && (
         <Nav.Link as={NavLink} to="/login">
           Login
         </Nav.Link>
