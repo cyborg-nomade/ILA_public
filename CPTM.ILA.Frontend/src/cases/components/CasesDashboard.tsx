@@ -6,6 +6,7 @@ import { GroupTotals } from "../../shared/models/DTOs/group-totals.model";
 import { StatusTotals } from "../../shared/models/DTOs/status-totals.model";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
+import randomColor from "randomcolor";
 
 type PieChartData = {
   title: string;
@@ -14,16 +15,12 @@ type PieChartData = {
   key: number;
 };
 
-const dataMock: PieChartData[] = [
-  { title: "One", value: 10, color: "#E38627", key: 1 },
-  { title: "Two", value: 15, color: "#C13C37", key: 2 },
-  { title: "Three", value: 20, color: "#6A2135", key: 3 },
-];
-
-const defaultLabelStyle = {
-  fontSize: "5px",
-  fontFamily: "sans-serif",
-};
+const colors = randomColor({
+  count: 100,
+  hue: "random",
+  luminosity: "random",
+  seed: "same",
+});
 
 const CasesDashboard = () => {
   const [selected, setSelected] = useState<number | undefined>(0);
@@ -58,7 +55,7 @@ const CasesDashboard = () => {
           return {
             title: d.nome,
             value: d.quantidadeByStatus,
-            color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+            color: colors[index],
             key: index,
           };
         });

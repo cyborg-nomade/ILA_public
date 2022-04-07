@@ -133,7 +133,7 @@ namespace CPTM.ILA.Web.Models
             var erro = "Algo deu errado no envio do e-mail. Contate o suporte técnico";
             //send email
             var enviado = Email.Enviar("ILA", userAd.Nome, userAd.Email,
-                new List<string>() { "uriel.fiori@cptm.sp.gov.br" }, assunto, mensagem, DateTime.Now, 1, ref erro);
+                new List<string>() { "uriel.fiori@cptm.sp.gov.br" }, assunto, mensagem, DateTime.Now, 24642, ref erro);
 
             return this;
         }

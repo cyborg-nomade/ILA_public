@@ -14,7 +14,9 @@
     "deep-object-diff": "^1.1.7",
     "formik": "^2.2.9",
     "jsdoc": "^3.6.10",
+    "pleasejs": "^0.4.2",
     "prop-types": "^15.8.1",
+    "randomcolor": "^0.6.2",
     "react": "^17.0.2",
     "react-bootstrap": "^2.1.2",
     "react-bs-datatable": "^3.0.0-beta.0",
@@ -54,6 +56,8 @@
     ]
   },
   "devDependencies": {
+    "@types/pleasejs": "^0.0.30",
+    "@types/randomcolor": "^0.5.6",
     "@types/react-router-bootstrap": "^0.24.5",
     "@types/react-tag-input": "^6.1.3"
   }
