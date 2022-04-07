@@ -89,9 +89,8 @@ const CasesDashboard = () => {
                 y={y}
                 dx={dx}
                 dy={dy}
-                dominantBaseline="central"
+                dominantBaseline="middle"
                 textAnchor="middle"
-                transform="translate(0,22)"
                 style={{
                   fontSize: "4px",
                   fontFamily: "sans-serif",
@@ -104,7 +103,7 @@ const CasesDashboard = () => {
               </text>
             )}
             radius={20}
-            labelPosition={130}
+            labelPosition={150}
             onClick={(event, index) => {
               console.log("CLICK", { event, index });
               setSelected(index === selected ? undefined : index);

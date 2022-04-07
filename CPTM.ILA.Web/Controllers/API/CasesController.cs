@@ -832,7 +832,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var caseToRequestApproval = await _context.Cases.FindAsync(cid);
+                var caseToRequestApproval = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .SingleOrDefaultAsync(c => c.Id == cid);
 
                 if (caseToRequestApproval == null)
                 {

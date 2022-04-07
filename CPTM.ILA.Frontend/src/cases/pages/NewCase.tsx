@@ -130,9 +130,9 @@ const NewCase = () => {
         }
       );
 
-      const savedCase: Case = initialResponse.case;
+      const savedCase: Case = initialResponse.caseToSave;
 
-      await sendRequest(
+      const resp2 = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/request-approval/${savedCase.id}`,
         "POST",
         undefined,
@@ -141,6 +141,7 @@ const NewCase = () => {
           Authorization: "Bearer " + token,
         }
       );
+      console.log(resp2);
 
       navigate(`/`);
     } catch (err) {
