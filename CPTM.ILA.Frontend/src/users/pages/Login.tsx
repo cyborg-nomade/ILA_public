@@ -30,7 +30,7 @@ const initialValues: AuthUser = {
 };
 
 const Login = () => {
-  const authContext = useContext(AuthContext);
+  const { login, user } = useContext(AuthContext);
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
@@ -53,15 +53,11 @@ const Login = () => {
       const isDeveloper = responseData.isDeveloper;
       console.log(receivedUser);
 
-      authContext.login(
-        receivedUser.id,
-        receivedUser.username,
-        receivedUser.isComite,
-        receivedUser.isDpo,
+      login(
+        receivedUser,
         isDeveloper,
         responseData.token,
         receivedUser.originGroup,
-        receivedUser.groups,
         receivedAreaTratamentoDados
       );
 

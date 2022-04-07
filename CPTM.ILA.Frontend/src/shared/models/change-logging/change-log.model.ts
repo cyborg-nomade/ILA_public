@@ -3,8 +3,8 @@ import { Case } from "../cases.model";
 import { ItemIdentity } from "../messaging/item-identity.model";
 
 export interface ChangeLog {
-  user: User;
-  case: Case;
+  userId: number;
+  caseId: number;
   changeDate: Date;
-  items: ItemIdentity[];
+  caseDiff: string;
 }

@@ -59,14 +59,10 @@ const EditCaseListGetter = React.lazy(
 
 const App = () => {
   const {
-    userId,
-    username,
-    isComite,
-    isDpo,
+    user,
     isDeveloper,
     token,
     currentGroup,
-    userGroups,
     areaTratamentoDados,
     login,
     logout,
@@ -83,7 +79,7 @@ const App = () => {
         <Route path="*" element={<Navigate to="/" />} />
       </React.Fragment>
     );
-  } else if (token && !isComite) {
+  } else if (token && !user.isComite) {
     routes = (
       <React.Fragment>
         <Route path="/:uid" element={<UserPage />}>
@@ -98,8 +94,8 @@ const App = () => {
         <Route path="/:uid/cases/register/new" element={<NewCase />} />
         <Route path="/:uid/cases/continue/:cid" element={<ContinueCase />} />
         <Route path="/:uid/cases/edit/:cid" element={<EditCase />} />
-        <Route path="/" element={<Navigate to={`../${userId}/`} />} />
-        <Route path="/*" element={<Navigate to={`../${userId}/`} />} />
+        <Route path="/" element={<Navigate to={`../${user.id}/`} />} />
+        <Route path="/*" element={<Navigate to={`../${user.id}/`} />} />
       </React.Fragment>
     );
   } else {
@@ -130,14 +126,10 @@ const App = () => {
   return (
     <AuthContext.Provider
       value={{
-        userId,
-        username,
-        isComite,
-        isDpo,
+        user,
         isDeveloper,
         token,
         currentGroup,
-        userGroups,
         areaTratamentoDados,
         isLoggedIn: !!token,
         login,

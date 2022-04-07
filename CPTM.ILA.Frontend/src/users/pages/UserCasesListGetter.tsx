@@ -13,9 +13,10 @@ const UserCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
 
   const {
-    userId: uid,
+    user,
+    isDeveloper,
     token,
-    username,
+
     areaTratamentoDados,
   } = useContext(AuthContext);
 
@@ -25,7 +26,7 @@ const UserCasesListGetter = () => {
   useEffect(() => {
     const getUserCases = async () => {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/user/${uid}`,
+        `${process.env.REACT_APP_CONNSTR}/cases/user/${user.id}`,
         undefined,
         undefined,
         {
@@ -43,7 +44,7 @@ const UserCasesListGetter = () => {
     getUserCases().catch((error) => {
       console.log(error);
     });
-  }, [uid, sendRequest, token]);
+  }, [user.id, sendRequest, token]);
 
   if (isLoading) {
     return (

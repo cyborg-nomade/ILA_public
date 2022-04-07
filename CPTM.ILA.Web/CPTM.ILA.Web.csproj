@@ -331,6 +331,10 @@
     <Compile Include="Migrations\202204051654441_RemoveUserFromGroups.designer.cs">
       <DependentUpon>202204051654441_RemoveUserFromGroups.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204062353483_ChangeLogStructure.cs" />
+    <Compile Include="Migrations\202204062353483_ChangeLogStructure.designer.cs">
+      <DependentUpon>202204062353483_ChangeLogStructure.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
     <Compile Include="DTOs\AuthUser.cs" />
@@ -509,6 +513,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204051654441_RemoveUserFromGroups.resx">
       <DependentUpon>202204051654441_RemoveUserFromGroups.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204062353483_ChangeLogStructure.resx">
+      <DependentUpon>202204062353483_ChangeLogStructure.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -524,7 +524,8 @@ namespace CPTM.ILA.Web.Controllers.API
                 _context.ChangeLogs.Add(newChangeLog);
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso registrado com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Caso registrado com sucesso!", caseToSave });
             }
             catch (Exception e)
             {
@@ -659,17 +660,14 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var deleteChangeLog = new ChangeLog()
                 {
-                    Case = caseToDelete,
+                    CaseId = caseToDelete.Id,
                     ChangeDate = DateTime.Now,
-                    User = userDeleting,
-                    Items = new List<ItemIdentity>()
-                    {
-                        new ItemIdentity()
+                    UserId = userDeleting.Id,
+                    CaseDiff = @"
                         {
-                            Name = "Remoção",
-                            Identifier = "0.0.2"
-                        }
-                    }
+                            Name = ""Remoção"",
+                            Identifier = ""0.0.2""
+                        }"
                 };
 
                 _context.ChangeLogs.Add(deleteChangeLog);
@@ -737,9 +735,9 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var changeLog = new ChangeLog()
                 {
-                    Case = caseToApprove,
+                    CaseId = caseToApprove.Id,
                     ChangeDate = DateTime.Now,
-                    User = await _context.Users.FindAsync(userId),
+                    UserId = userId,
                 };
 
 
@@ -747,13 +745,10 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     caseToApprove.ReproveCase();
 
-                    changeLog.Items = new List<ItemIdentity>()
-                    {
-                        new ItemIdentity()
+                    changeLog.CaseDiff = @"
                         {
-                            Identifier = "0.0", Name = "Reprovação"
-                        }
-                    };
+                            Identifier = ""0.0"", Name = ""Reprovação""
+                        }";
 
                     _context.ChangeLogs.Add(changeLog);
                     _context.Entry(caseToApprove)
@@ -765,13 +760,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 caseToApprove.ApproveCase();
 
-                changeLog.Items = new List<ItemIdentity>()
-                {
-                    new ItemIdentity()
+                changeLog.CaseDiff = @"
                     {
-                        Identifier = "0.1", Name = "Aprovado"
+                        Identifier = ""0.1"", Name = ""Aprovado""
                     }
-                };
+                ";
 
                 _context.ChangeLogs.Add(changeLog);
                 _context.Entry(caseToApprove)
@@ -839,16 +832,13 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var changeLog = new ChangeLog()
                 {
-                    Case = caseToRequestApproval,
+                    CaseId = caseToRequestApproval.Id,
                     ChangeDate = DateTime.Now,
-                    User = await _context.Users.FindAsync(userId),
-                    Items = new List<ItemIdentity>()
-                    {
-                        new ItemIdentity()
+                    UserId = userId,
+                    CaseDiff = @"
                         {
-                            Identifier = "0.0.1", Name = "Encaminhado para aprovação"
-                        }
-                    }
+                            Identifier = ""0.0.1"", Name = ""Encaminhado para aprovação""
+                        }"
                 };
 
                 _context.ChangeLogs.Add(changeLog);

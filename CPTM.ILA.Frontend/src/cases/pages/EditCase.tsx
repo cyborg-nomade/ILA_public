@@ -12,7 +12,7 @@ import CaseForm from "../components/CaseForm";
 const EditCase = () => {
   const [fullCase, setFullCase] = useState<BaseCase>(emptyBaseCase());
 
-  const { userId: uid, token } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
@@ -49,7 +49,7 @@ const EditCase = () => {
 
   const submitFormHandler = async (item: BaseCase) => {
     item.area = item.extensaoEncarregado.area || "";
-    item.usuarioCriador = uid;
+    item.usuarioCriador = user;
     for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
       if (value.descricao !== "Não se aplica") {
         item.dadosPessoaisSensiveis = true;
@@ -86,7 +86,11 @@ const EditCase = () => {
           Ocorreu um erro: {error}
         </Alert>
       )}
-      <CaseForm item={fullCase} edit={true} onSubmit={submitFormHandler} />
+      <CaseForm
+        item={fullCase}
+        edit={true}
+        onSaveProgressSubmit={submitFormHandler}
+      />
     </React.Fragment>
   );
 };

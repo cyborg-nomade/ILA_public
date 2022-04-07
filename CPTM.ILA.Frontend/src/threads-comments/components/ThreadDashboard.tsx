@@ -13,13 +13,7 @@ const ThreadDashboard = () => {
   const [respondidos, setRespondidos] = useState(0);
   const [novos, setNovos] = useState(0);
 
-  const {
-    userId: uid,
-    token,
-    username,
-    areaTratamentoDados,
-    currentGroup,
-  } = useContext(AuthContext);
+  const { user, token, currentGroup } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();

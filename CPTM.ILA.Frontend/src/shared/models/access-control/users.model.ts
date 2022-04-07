@@ -1,9 +1,9 @@
 import { Case } from "../cases.model";
 import { AuthUser } from "../DTOs/auth-user";
-import { Group } from "./group.model";
+import { emptyGroup, Group } from "./group.model";
 
 export interface User extends AuthUser {
-  id: string;
+  id: number;
   isComite: boolean;
   isDpo: boolean;
   isSystem: boolean;
@@ -13,3 +13,19 @@ export interface User extends AuthUser {
   groups: Group[];
   groupAccessExpirationDate: Date;
 }
+
+export const emptyUser = (): User => {
+  return {
+    id: 0,
+    username: "",
+    password: "",
+    isComite: false,
+    isDpo: false,
+    isSystem: false,
+    isDeveloper: false,
+    cases: [],
+    originGroup: emptyGroup(),
+    groups: [],
+    groupAccessExpirationDate: new Date(),
+  };
+};

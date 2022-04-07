@@ -28,13 +28,7 @@ const CasesDashboard = () => {
   const [hovered, setHovered] = useState<number | undefined>(undefined);
   const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
 
-  const {
-    userId: uid,
-    token,
-    username,
-    areaTratamentoDados,
-    currentGroup,
-  } = useContext(AuthContext);
+  const { user, token, currentGroup } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
