@@ -9,9 +9,10 @@
 
         public TipoRiscoPrivacidade()
         {
+            Value = "";
         }
 
-        public string Value { get; private set; }
+        public string Value { get; set; }
 
         public static TipoRiscoPrivacidade AcessoNaoAutorizado => new TipoRiscoPrivacidade("Acesso não autorizado");
 

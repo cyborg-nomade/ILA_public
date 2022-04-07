@@ -9,9 +9,10 @@
 
         public TipoCategoriaTitulares()
         {
+            Value = "";
         }
 
-        public string Value { get; private set; }
+        public string Value { get; set; }
 
         public static TipoCategoriaTitulares Colaboradores => new TipoCategoriaTitulares("Colaboradores");
         public static TipoCategoriaTitulares Dependentes => new TipoCategoriaTitulares("Dependentes");

@@ -20,8 +20,8 @@ namespace CPTM.ILA.Web.Models
         public string Area { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public Group GrupoCriador { get; set; }
-        public User UsuarioCriador { get; set; }
+        public int GrupoCriadorId { get; set; }
+        public int UsuarioCriadorId { get; set; }
         public bool Aprovado { get; set; }
         public bool EncaminhadoAprovacao { get; set; }
         public bool DadosPessoaisSensiveis { get; set; }
@@ -65,7 +65,7 @@ namespace CPTM.ILA.Web.Models
                 HipotesesTratamento = fullCase.FinalidadeTratamento.HipoteseTratamento,
                 Id = fullCase.Id,
                 Nome = fullCase.Nome,
-                GrupoCriador = fullCase.GrupoCriador.Nome
+                GrupoCriadorId = fullCase.GrupoCriadorId
             };
 
         public Case FillStandardValues()
@@ -79,11 +79,8 @@ namespace CPTM.ILA.Web.Models
                 Nome = "Olivia Shibata Nishiyama", Area = "Encarregado de Dados (DPO)",
                 Telefone = "+ 55 11 3117 – 7001", Email = "encarregado.dados@cptm.sp.gov.br"
             };
-            FinalidadeTratamento = new FinalidadeTratamento()
-            {
-                DescricaoFinalidade =
-                    "Atendimento de finalidade pública, na persecução do interesse público, com o objetivo de executar as competências legais ou cumprir as atribuições legais do serviço público."
-            };
+            FinalidadeTratamento.DescricaoFinalidade =
+                "Atendimento de finalidade pública, na persecução do interesse público, com o objetivo de executar as competências legais ou cumprir as atribuições legais do serviço público.";
             return this;
         }
 
@@ -102,7 +99,7 @@ namespace CPTM.ILA.Web.Models
 
             if (FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.ObrigacaoLegal)
             {
-                FinalidadeTratamento.PrevisaoLegal = null;
+                FinalidadeTratamento.PrevisaoLegal = "";
             }
 
             return this;
@@ -121,14 +118,14 @@ namespace CPTM.ILA.Web.Models
             return this;
         }
 
-        public Case SendCaseToApproval()
+        public Case SendCaseToApproval(string usernameCriador)
         {
             EncaminhadoAprovacao = true;
 
             if (FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.Consentimento &&
                 FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.InteressesLegitimosControlador)
                 return this;
-            var userAd = Seguranca.ObterUsuario(UsuarioCriador.Username);
+            var userAd = Seguranca.ObterUsuario(usernameCriador);
             var assunto = $"Processo LGPD {Nome} - ID {Id}";
             var mensagem =
                 $@"O processo {Nome} acabou de ser enviado para aprovação pelo Comitê LGPD, e sua Hipótese de Tratamento foi declarada como {FinalidadeTratamento.HipoteseTratamento}";

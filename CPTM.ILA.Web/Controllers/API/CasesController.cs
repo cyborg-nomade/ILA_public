@@ -108,7 +108,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
 
 
-                var cases = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
+                var cases = await _context.Cases.Where(c => c.GrupoCriadorId == gid)
                     .ToListAsync();
 
                 var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
@@ -155,20 +155,29 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
+                var userGroupIds = userGroups.Select(g => g.Id)
+                    .ToList();
 
-                var totals = await _context.Cases.Where(c => userGroups.Contains(c.GrupoCriador))
-                    .GroupBy(c => c.GrupoCriador)
+                var totals = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
+                    .GroupBy(c => c.GrupoCriadorId)
                     .Select(c => new GroupTotals()
                     {
                         GroupId = c.First()
-                            .GrupoCriador.Id,
-                        GroupName = c.First()
-                            .GrupoCriador.Nome,
+                            .GrupoCriadorId,
+                        GroupName = "",
                         QuantityInGroup = c.Count()
                     })
                     .ToListAsync();
 
-                var totalQuantity = await _context.Cases.Where(c => userGroups.Contains(c.GrupoCriador))
+                foreach (var total in totals)
+                {
+                    total.GroupName = await GetGroupName(total.GroupId);
+                }
+
+                totals = totals.OrderBy(t => t.GroupName)
+                    .ToList();
+
+                var totalQuantity = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
                     .CountAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
@@ -221,7 +230,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
                 }
 
-                var groupCasesInDb = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
+                var groupCasesInDb = await _context.Cases.Where(c => c.GrupoCriadorId == gid)
                     .ToListAsync();
                 var filteredCases = groupCasesInDb.Where(c => c.Aprovado == aprovado &&
                                                               c.EncaminhadoAprovacao == encaminhadoAprovacao)
@@ -273,7 +282,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
 
-                var totals = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
+                var totals = await _context.Cases.Where(c => c.GrupoCriadorId == gid)
                     .GroupBy(c => new
                     {
                         c.Aprovado,
@@ -296,7 +305,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     })
                     .ToListAsync();
 
-                var totalQuantity = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
+                var totalQuantity = await _context.Cases.Where(c => c.GrupoCriadorId == gid)
                     .CountAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
@@ -347,8 +356,11 @@ namespace CPTM.ILA.Web.Controllers.API
                         message = "Usuário não encontrado."
                     });
 
+                var comiteMemberGroupsIds = comiteMember.Groups.Select(g => g.Id)
+                    .ToList();
+
                 var pendingCases = await _context.Cases
-                    .Where(c => comiteMember.Groups.Contains(c.GrupoCriador) && !c.Aprovado)
+                    .Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId) && !c.Aprovado)
                     .ToListAsync();
 
                 var caseListItems = pendingCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
@@ -397,8 +409,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 foreach (var comiteMember in comiteMembers)
                 {
+                    var comiteMemberGroupsIds = comiteMember.Groups.Select(g => g.Id)
+                        .ToList();
+
                     var pendingCases = await _context.Cases.CountAsync(c =>
-                        comiteMember.Groups.Contains(c.GrupoCriador) && !c.Aprovado);
+                        comiteMemberGroupsIds.Contains(c.GrupoCriadorId) && !c.Aprovado);
 
 
                     totals.Add(new ExtensaoEncarregadoTotals()
@@ -459,9 +474,12 @@ namespace CPTM.ILA.Web.Controllers.API
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
 
-                    var caseGroup = uniqueCase.GrupoCriador;
+                    var userGroupsId = userGroups.Select(g => g.Id)
+                        .ToList();
 
-                    if (!(userGroups.Contains(caseGroup) || claims.IsDpo || claims.IsDeveloper))
+                    var caseGroupId = uniqueCase.GrupoCriadorId;
+
+                    if (!(userGroupsId.Contains(caseGroupId) || claims.IsDpo || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -500,7 +518,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var caseGroup = caseChange.Case.GrupoCriador;
+                    var caseGroup = await _context.Groups.FindAsync(caseChange.Case.GrupoCriadorId);
 
                     if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
                     {
@@ -561,10 +579,14 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var caseGroup = caseChange.Case.GrupoCriador;
+
+                    var userGroupsId = userGroups.Select(g => g.Id)
+                        .ToList();
+
+                    var caseGroupId = caseChange.Case.GrupoCriadorId;
 
 
-                    if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
+                    if (!(userGroupsId.Contains(caseGroupId) && !claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -650,11 +672,15 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var caseGroup = caseToDelete.GrupoCriador;
+
+                    var userGroupsId = userGroups.Select(g => g.Id)
+                        .ToList();
+
+                    var caseGroupId = caseToDelete.GrupoCriadorId;
 
                     userDeleting = await _context.Users.FindAsync(claims.UserId);
 
-                    if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
+                    if (!(userGroupsId.Contains(caseGroupId) && !claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -726,10 +752,12 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var caseGroup = caseToApprove.GrupoCriador;
+                    var userGroupsId = userGroups.Select(g => g.Id)
+                        .ToList();
+                    var caseGroupId = caseToApprove.GrupoCriadorId;
 
 
-                    if (!(claims.IsComite && userGroups.Contains(caseGroup) || claims.IsDpo || claims.IsDeveloper))
+                    if (!(claims.IsComite && userGroupsId.Contains(caseGroupId) || claims.IsDpo || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -822,16 +850,24 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var caseGroup = caseToRequestApproval.GrupoCriador;
+                    var userGroupsId = userGroups.Select(g => g.Id)
+                        .ToList();
+                    var caseGroupId = caseToRequestApproval.GrupoCriadorId;
 
-                    if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
+                    if (!(userGroupsId.Contains(caseGroupId) && !claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
                     }
                 }
 
-                caseToRequestApproval.SendCaseToApproval();
+                var usuarioCriador = await _context.Users.FindAsync(caseToRequestApproval.UsuarioCriadorId);
+                if (usuarioCriador == null)
+                {
+                    throw new ArgumentNullException(nameof(usuarioCriador));
+                }
+
+                caseToRequestApproval.SendCaseToApproval(usuarioCriador.Username);
 
                 var changeLog = new ChangeLog()
                 {
@@ -856,7 +892,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -869,6 +905,12 @@ namespace CPTM.ILA.Web.Controllers.API
             }
 
             base.Dispose(disposing);
+        }
+
+        private async Task<string> GetGroupName(int gid)
+        {
+            var groupInDb = await _context.Groups.FindAsync(gid);
+            return (groupInDb != null) ? groupInDb.Nome : "";
         }
     }
 }

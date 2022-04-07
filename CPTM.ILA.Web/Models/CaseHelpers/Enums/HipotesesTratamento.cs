@@ -9,9 +9,10 @@
 
         public HipotesesTratamento()
         {
+            Value = "";
         }
 
-        public string Value { get; private set; }
+        public string Value { get; set; }
 
         public static HipotesesTratamento Consentimento => new HipotesesTratamento("Consentimento do titular");
 

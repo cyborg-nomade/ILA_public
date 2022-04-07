@@ -12,6 +12,6 @@ namespace CPTM.ILA.Web.DTOs
         public HipotesesTratamento HipotesesTratamento { get; set; }
         public string DescricaoFinalidade { get; set; }
         public string DadosPessoaisSensiveis { get; set; }
-        public string GrupoCriador { get; set; }
+        public int GrupoCriadorId { get; set; }
     }
 }

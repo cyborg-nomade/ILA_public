@@ -98,7 +98,6 @@ const CaseForm = (props: {
     setShowSaveProgressModal(true);
   };
   const handleSendToApprovalClick = (item: BaseCase | Case) => {
-    item.encaminhadoAprovacao = true;
     setItemValues(item);
     setShowSendToApprovalModal(true);
   };
@@ -2055,13 +2054,13 @@ const CaseForm = (props: {
                       <Form.Control
                         disabled={!isEditing}
                         type="text"
-                        name="frequenciaTratamento"
-                        value={values.frequenciaTratamento}
+                        name="frequenciaTratamento.value"
+                        value={values.frequenciaTratamento.value}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         isValid={
-                          touched.frequenciaTratamento &&
-                          !errors.frequenciaTratamento
+                          touched.frequenciaTratamento?.value &&
+                          !errors.frequenciaTratamento?.value
                         }
                         isInvalid={!!errors.frequenciaTratamento}
                       />
@@ -2863,7 +2862,7 @@ const CaseForm = (props: {
                   disabled={!(isValid && dirty)}
                   variant="secondary"
                   className="ms-auto"
-                  onClick={() => setShowSaveProgressModal(true)}
+                  onClick={() => handleSaveProgressClick(values)}
                 >
                   Salvar Alterações
                 </Button>
@@ -2871,7 +2870,7 @@ const CaseForm = (props: {
                   type="button"
                   disabled={!(isValid && dirty)}
                   variant="warning"
-                  onClick={() => setShowSendToApprovalModal(true)}
+                  onClick={() => handleSendToApprovalClick(values)}
                 >
                   Encaminhar para encarregado de Dados
                 </Button>

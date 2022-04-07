@@ -8,7 +8,6 @@ export interface User extends AuthUser {
   isDpo: boolean;
   isSystem: boolean;
   isDeveloper: boolean;
-  cases: Case[];
   originGroup: Group;
   groups: Group[];
   groupAccessExpirationDate: Date;
@@ -23,7 +22,6 @@ export const emptyUser = (): User => {
     isDpo: false,
     isSystem: false,
     isDeveloper: false,
-    cases: [],
     originGroup: emptyGroup(),
     groups: [],
     groupAccessExpirationDate: new Date(),

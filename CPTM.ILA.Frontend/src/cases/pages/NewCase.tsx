@@ -40,8 +40,8 @@ const NewCase = () => {
   const saveProgressHandler = async (item: BaseCase) => {
     console.log("Initial item: ", item);
 
-    item.usuarioCriador = user;
-    item.grupoCriador = currentGroup;
+    item.usuarioCriadorId = user.id;
+    item.grupoCriadorId = currentGroup.id;
     item.area = item.extensaoEncarregado.area || "";
     for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
       if (value.length !== 0) {
@@ -51,10 +51,11 @@ const NewCase = () => {
 
     console.log("Altered item: ", item);
 
-    const changeObj = diff(initialCase, item);
+    const changeObj = diff(emptyBaseCase(), item);
 
-    const changeLog: BaseChangeLog = {
+    const changeLog: ChangeLog = {
       caseDiff: JSON.stringify(changeObj),
+      caseId: 0,
       userId: user.id,
       changeDate: new Date(),
     };
@@ -89,8 +90,8 @@ const NewCase = () => {
   const sendToApprovalHandler = async (item: BaseCase | Case) => {
     console.log("sah, Initial item: ", item);
 
-    item.usuarioCriador = user;
-    item.grupoCriador = currentGroup;
+    item.usuarioCriadorId = user.id;
+    item.grupoCriadorId = currentGroup.id;
     item.area = item.extensaoEncarregado.area || "";
     for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
       if (value.length !== 0) {
@@ -100,10 +101,11 @@ const NewCase = () => {
 
     console.log("sah, Altered item: ", item);
 
-    const changeObj = diff(initialCase, item);
+    const changeObj = diff(emptyBaseCase(), item);
 
-    const changeLog: BaseChangeLog = {
+    const changeLog: ChangeLog = {
       caseDiff: JSON.stringify(changeObj),
+      caseId: 0,
       userId: user.id,
       changeDate: new Date(),
     };
