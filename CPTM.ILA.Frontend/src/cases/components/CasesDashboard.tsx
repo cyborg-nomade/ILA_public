@@ -4,6 +4,8 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { GroupTotals } from "../../shared/models/DTOs/group-totals.model";
 import { StatusTotals } from "../../shared/models/DTOs/status-totals.model";
+import Card from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
 
 type PieChartData = {
   title: string;
@@ -56,10 +58,12 @@ const CasesDashboard = () => {
           return {
             title: d.nome,
             value: d.quantidadeByStatus,
-            color: Math.floor(Math.random() * 16777215).toString(16),
+            color: "#" + Math.floor(Math.random() * 16777215).toString(16),
             key: index,
           };
         });
+        console.log(transformedData);
+
         setPieChartData(transformedData);
       }
     };
@@ -71,39 +75,49 @@ const CasesDashboard = () => {
 
   return (
     <React.Fragment>
-      <h3 className="mb-4">Visão de Processos</h3>
-      <PieChart
-        data={pieChartData}
-        label={({ x, y, dx, dy, dataEntry, dataIndex }) => (
-          <text
-            key={dataIndex}
-            x={x}
-            y={y}
-            dx={dx}
-            dy={dy}
-            dominantBaseline="central"
-            textAnchor="middle"
-            style={{
-              fontSize: "5px",
-              fontFamily: "sans-serif",
+      <Row>
+        <h3 className="mb-4">Visão de Processos</h3>
+      </Row>
+      <Row>
+        <Card border="danger" className="m-0">
+          <PieChart
+            data={pieChartData}
+            label={({ x, y, dx, dy, dataEntry, dataIndex }) => (
+              <text
+                key={dataIndex}
+                x={x}
+                y={y}
+                dx={dx}
+                dy={dy}
+                dominantBaseline="central"
+                textAnchor="middle"
+                transform="translate(0,22)"
+                style={{
+                  fontSize: "4px",
+                  fontFamily: "sans-serif",
+                }}
+              >
+                {dataEntry.title +
+                  ": " +
+                  Math.round(dataEntry.percentage) +
+                  "%"}
+              </text>
+            )}
+            radius={20}
+            labelPosition={130}
+            onClick={(event, index) => {
+              console.log("CLICK", { event, index });
+              setSelected(index === selected ? undefined : index);
             }}
-          >
-            {dataEntry.title + ": " + Math.round(dataEntry.percentage) + "%"}
-          </text>
-        )}
-        radius={30}
-        labelPosition={135}
-        onClick={(event, index) => {
-          console.log("CLICK", { event, index });
-          setSelected(index === selected ? undefined : index);
-        }}
-        onMouseOver={(_, index) => {
-          setHovered(index);
-        }}
-        onMouseOut={() => {
-          setHovered(undefined);
-        }}
-      />
+            onMouseOver={(_, index) => {
+              setHovered(index);
+            }}
+            onMouseOut={() => {
+              setHovered(undefined);
+            }}
+          />
+        </Card>
+      </Row>
     </React.Fragment>
   );
 };
