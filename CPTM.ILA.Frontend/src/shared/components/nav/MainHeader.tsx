@@ -13,6 +13,7 @@ const MainHeader = () => {
       expand={"md"}
       collapseOnSelect
       style={{ background: "none" }}
+      className="swiss721"
     >
       <Container fluid>
         <Navbar.Brand as={Link} to="/">
