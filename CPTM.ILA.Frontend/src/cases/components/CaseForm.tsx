@@ -240,7 +240,7 @@ const CaseForm = (props: {
                     </Form.Group>
                     <Col lg={1}>
                       <Row>
-                        <CreateCommentBox />
+                        <CreateCommentBox item="1.1" />
                       </Row>
                     </Col>
                   </Row>

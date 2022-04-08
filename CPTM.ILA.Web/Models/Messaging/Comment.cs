@@ -14,6 +14,6 @@ namespace CPTM.ILA.Web.Models.Messaging
         public User Author { get; set; }
         public Thread Thread { get; set; }
         public DateTime DataCriacao { get; set; }
-        public ItemIdentity RefItem { get; set; }
+        public string RefItem { get; set; }
     }
 }

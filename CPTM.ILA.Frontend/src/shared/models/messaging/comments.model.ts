@@ -3,5 +3,5 @@ import { Thread } from "./thread.model";
 
 export interface Comment extends CommentDTO {
   id: number;
-  thread: Thread;
+  dataCriacao: Date;
 }

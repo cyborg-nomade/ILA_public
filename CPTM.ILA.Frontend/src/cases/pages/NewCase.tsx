@@ -162,7 +162,7 @@ const NewCase = () => {
 
   return (
     <React.Fragment>
-      <h1>Registrar Novo Item</h1>
+      <h1>Registrar Novo Processo</h1>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}

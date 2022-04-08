@@ -347,6 +347,10 @@
     <Compile Include="Migrations\202204071513451_ChangeGroupsAndUsersInCaseToInt.designer.cs">
       <DependentUpon>202204071513451_ChangeGroupsAndUsersInCaseToInt.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204081152574_RemoveCommentsListFromThreads.cs" />
+    <Compile Include="Migrations\202204081152574_RemoveCommentsListFromThreads.designer.cs">
+      <DependentUpon>202204081152574_RemoveCommentsListFromThreads.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
     <Compile Include="DTOs\AuthUser.cs" />
@@ -537,6 +541,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204071513451_ChangeGroupsAndUsersInCaseToInt.resx">
       <DependentUpon>202204071513451_ChangeGroupsAndUsersInCaseToInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204081152574_RemoveCommentsListFromThreads.resx">
+      <DependentUpon>202204081152574_RemoveCommentsListFromThreads.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

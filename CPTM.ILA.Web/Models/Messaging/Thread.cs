@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using CPTM.ILA.Web.Models.AccessControl;
 
 namespace CPTM.ILA.Web.Models.Messaging
@@ -8,16 +7,9 @@ namespace CPTM.ILA.Web.Models.Messaging
     public class Thread
     {
         public int Id { get; set; }
-        public ICollection<Comment> Comments { get; set; }
         public Group AuthorGroup { get; set; }
         public ThreadStatus AuthorStatus { get; set; }
         public ThreadStatus ComiteStatus { get; set; }
-
-        public Thread AddComment(Comment comment)
-        {
-            Comments.Add(comment);
-            return this;
-        }
 
         public Thread AddComiteReply()
         {
