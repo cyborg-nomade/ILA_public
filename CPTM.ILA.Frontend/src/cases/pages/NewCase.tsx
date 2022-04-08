@@ -8,6 +8,7 @@ import {
   emptyBaseCase,
   BaseCase,
   Case,
+  emptyCase,
 } from "./../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
@@ -26,9 +27,7 @@ import {
 import { CaseChange } from "../../shared/models/DTOs/case-change.model";
 
 const NewCase = () => {
-  const [initialCase, setInitialCase] = useState<BaseCase | Case>(
-    emptyBaseCase()
-  );
+  const [initialCase, setInitialCase] = useState<Case>(emptyCase());
 
   const { token, user, currentGroup } = useContext(AuthContext);
 
@@ -37,7 +36,7 @@ const NewCase = () => {
 
   let navigate = useNavigate();
 
-  const saveProgressHandler = async (item: BaseCase) => {
+  const saveProgressHandler = async (item: Case) => {
     console.log("Initial item: ", item);
 
     item.usuarioCriadorId = user.id;
@@ -87,7 +86,7 @@ const NewCase = () => {
     }
   };
 
-  const sendToApprovalHandler = async (item: BaseCase | Case) => {
+  const sendToApprovalHandler = async (item: Case) => {
     console.log("sah, Initial item: ", item);
 
     item.usuarioCriadorId = user.id;

@@ -105,8 +105,13 @@ export const emptyCase = (): Case => ({
   aprovado: false,
   encaminhadoAprovacao: false,
   dadosPessoaisSensiveis: false,
-  controlador: emptyAgenteTratamento(),
-  encarregado: emptyAgenteTratamento(),
+  controlador: emptyAgenteTratamento("CPTM"),
+  encarregado: emptyAgenteTratamento(
+    "Olivia Shibata Nishiyama",
+    "Encarregado de Dados (DPO)",
+    "+ 55 11 3117 – 7001",
+    "encarregado.dados@cptm.sp.gov.br"
+  ),
   extensaoEncarregado: emptyAgenteTratamento(),
   areaTratamentoDados: emptyAgenteTratamento(),
   operador: emptyAgenteTratamento(),

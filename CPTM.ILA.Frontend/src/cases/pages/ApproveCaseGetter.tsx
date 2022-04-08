@@ -4,13 +4,13 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { emptyCase, BaseCase } from "../../shared/models/cases.model";
+import { emptyCase, BaseCase, Case } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
 
 const ApproveCaseGetter = () => {
-  const [fullCase, setFullCase] = useState<BaseCase>(emptyCase());
+  const [fullCase, setFullCase] = useState<Case>(emptyCase());
 
   const { token } = useContext(AuthContext);
 
@@ -51,7 +51,7 @@ const ApproveCaseGetter = () => {
     );
   }
 
-  const submitFormHandler = async (item: BaseCase) => {
+  const submitFormHandler = async (item: Case) => {
     item.aprovado = true;
 
     try {
@@ -84,7 +84,11 @@ const ApproveCaseGetter = () => {
           Ocorreu um erro: {error}
         </Alert>
       )}
-      <CaseForm item={fullCase} approve={true} onSaveProgressSubmit={submitFormHandler} />
+      <CaseForm
+        item={fullCase}
+        approve={true}
+        onSaveProgressSubmit={submitFormHandler}
+      />
     </React.Fragment>
   );
 };

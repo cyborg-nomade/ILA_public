@@ -319,37 +319,9 @@
     <Compile Include="Migrations\202203312006350_Existing-Model.designer.cs">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202203312008172_FullModel.cs" />
-    <Compile Include="Migrations\202203312008172_FullModel.designer.cs">
-      <DependentUpon>202203312008172_FullModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202203312202592_AddARFilePath.cs" />
-    <Compile Include="Migrations\202203312202592_AddARFilePath.designer.cs">
-      <DependentUpon>202203312202592_AddARFilePath.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202204051654441_RemoveUserFromGroups.cs" />
-    <Compile Include="Migrations\202204051654441_RemoveUserFromGroups.designer.cs">
-      <DependentUpon>202204051654441_RemoveUserFromGroups.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202204062353483_ChangeLogStructure.cs" />
-    <Compile Include="Migrations\202204062353483_ChangeLogStructure.designer.cs">
-      <DependentUpon>202204062353483_ChangeLogStructure.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202204071338345_RemoveCasesFromGroup.cs" />
-    <Compile Include="Migrations\202204071338345_RemoveCasesFromGroup.designer.cs">
-      <DependentUpon>202204071338345_RemoveCasesFromGroup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202204071351356_RemoveCasesFromUser.cs" />
-    <Compile Include="Migrations\202204071351356_RemoveCasesFromUser.designer.cs">
-      <DependentUpon>202204071351356_RemoveCasesFromUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202204071513451_ChangeGroupsAndUsersInCaseToInt.cs" />
-    <Compile Include="Migrations\202204071513451_ChangeGroupsAndUsersInCaseToInt.designer.cs">
-      <DependentUpon>202204071513451_ChangeGroupsAndUsersInCaseToInt.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202204081152574_RemoveCommentsListFromThreads.cs" />
-    <Compile Include="Migrations\202204081152574_RemoveCommentsListFromThreads.designer.cs">
-      <DependentUpon>202204081152574_RemoveCommentsListFromThreads.cs</DependentUpon>
+    <Compile Include="Migrations\202204081351597_FullModel.cs" />
+    <Compile Include="Migrations\202204081351597_FullModel.designer.cs">
+      <DependentUpon>202204081351597_FullModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
@@ -521,29 +493,8 @@
     <EmbeddedResource Include="Migrations\202203312006350_Existing-Model.resx">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203312008172_FullModel.resx">
-      <DependentUpon>202203312008172_FullModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203312202592_AddARFilePath.resx">
-      <DependentUpon>202203312202592_AddARFilePath.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204051654441_RemoveUserFromGroups.resx">
-      <DependentUpon>202204051654441_RemoveUserFromGroups.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204062353483_ChangeLogStructure.resx">
-      <DependentUpon>202204062353483_ChangeLogStructure.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204071338345_RemoveCasesFromGroup.resx">
-      <DependentUpon>202204071338345_RemoveCasesFromGroup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204071351356_RemoveCasesFromUser.resx">
-      <DependentUpon>202204071351356_RemoveCasesFromUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204071513451_ChangeGroupsAndUsersInCaseToInt.resx">
-      <DependentUpon>202204071513451_ChangeGroupsAndUsersInCaseToInt.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204081152574_RemoveCommentsListFromThreads.resx">
-      <DependentUpon>202204081152574_RemoveCommentsListFromThreads.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202204081351597_FullModel.resx">
+      <DependentUpon>202204081351597_FullModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

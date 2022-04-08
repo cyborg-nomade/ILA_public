@@ -49,11 +49,16 @@ export interface AgenteTratamento {
   email?: string;
 }
 
-export const emptyAgenteTratamento = (): AgenteTratamento => ({
-  nome: "",
-  area: "",
-  telefone: "",
-  email: "",
+export const emptyAgenteTratamento = (
+  nome?: string,
+  area?: string,
+  telefone?: string,
+  email?: string
+): AgenteTratamento => ({
+  nome: nome || "",
+  area: area || "",
+  telefone: telefone || "",
+  email: email || "",
 });
 
 export interface CategoriaDadosPessoaisSensiveis {
