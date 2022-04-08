@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -469,13 +468,10 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> Post([FromBody] CommentDTO commentDto)
         {
-            var groupId = 0;
-
             if (User.Identity is ClaimsIdentity identity)
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                groupId = claims.GroupId;
 
                 if (claims.IsComite)
                 {
@@ -491,7 +487,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                if (ThreadExists(commentDto.Thread.Id))
+                if (commentDto.Thread != null && ThreadExists(commentDto.Thread.Id))
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new
                     {
@@ -510,10 +506,9 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var thread = new Thread
                 {
-                    AuthorGroup = await _context.Groups.FindAsync(groupId),
+                    AuthorGroup = await _context.Groups.FindAsync(commentDto.GroupId),
                     AuthorStatus = ThreadStatus.Pendente,
-                    ComiteStatus = ThreadStatus.Novo,
-                    Comments = new List<Comment>() { comment }
+                    ComiteStatus = ThreadStatus.Novo
                 };
 
                 _context.Threads.Add(thread);
