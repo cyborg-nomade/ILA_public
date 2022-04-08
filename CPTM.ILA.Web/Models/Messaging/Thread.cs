@@ -7,7 +7,7 @@ namespace CPTM.ILA.Web.Models.Messaging
     public class Thread
     {
         public int Id { get; set; }
-        public Group AuthorGroup { get; set; }
+        public int GroupId { get; set; }
         public ThreadStatus AuthorStatus { get; set; }
         public ThreadStatus ComiteStatus { get; set; }
 

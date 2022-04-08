@@ -1,6 +1,6 @@
 export const CaseIndexDictionary = {
   nome: "1.1",
-  area: "1.2",
+  id: "1.2",
   dataCriacao: "1.3",
   dataAtualizacao: "1.4",
   controlador: "2.1",

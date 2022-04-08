@@ -105,7 +105,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
                 }
 
-                var threads = await _context.Threads.Where(t => t.AuthorGroup.Id == gid)
+                var threads = await _context.Threads.Where(t => t.GroupId == gid)
                     .ToListAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { threads });
@@ -215,7 +215,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                var totals = await _context.Threads.Where(t => t.AuthorGroup.Id == gid)
+                var totals = await _context.Threads.Where(t => t.GroupId == gid)
                     .GroupBy(t => isComite ? t.ComiteStatus : t.AuthorStatus)
                     .Select(g => new ThreadStatusTotals()
                     {
@@ -273,9 +273,11 @@ namespace CPTM.ILA.Web.Controllers.API
                 var userGroups = await _context.Users.Where(u => u.Id == uid)
                     .SelectMany(u => u.Groups)
                     .ToListAsync();
+                var userGroupsId = userGroups.Select(g => g.Id)
+                    .ToList();
 
                 var threads = await _context.Threads
-                    .Where(t => userGroups.Contains(t.AuthorGroup) && t.ComiteStatus == sid)
+                    .Where(t => userGroupsId.Contains(t.GroupId) && t.ComiteStatus == sid)
                     .ToListAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { threads });
@@ -323,7 +325,10 @@ namespace CPTM.ILA.Web.Controllers.API
                     .SelectMany(u => u.Groups)
                     .ToListAsync();
 
-                var totals = await _context.Threads.Where(t => userGroups.Contains(t.AuthorGroup))
+                var userGroupsId = userGroups.Select(g => g.Id)
+                    .ToList();
+
+                var totals = await _context.Threads.Where(t => userGroupsId.Contains(t.GroupId))
                     .GroupBy(t => t.ComiteStatus)
                     .Select(g => new ThreadStatusTotals()
                     {
@@ -379,7 +384,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
 
-                    var threadGroup = thread.AuthorGroup;
+                    var threadGroup = await _context.Groups.FindAsync(thread.GroupId);
 
                     if (!(userGroups.Contains(threadGroup) || claims.IsDpo || claims.IsDeveloper))
                     {
@@ -433,7 +438,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var threadGroup = thread.AuthorGroup;
+                    var threadGroup = await _context.Groups.FindAsync(thread.GroupId);
 
                     if (!(userGroups.Contains(threadGroup) || claims.IsDeveloper || claims.IsDpo))
                     {
@@ -442,7 +447,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                var comments = await _context.Comments.Where(c => c.Thread == thread)
+                var comments = await _context.Comments.Where(c => c.ThreadId == thread.Id)
                     .ToListAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { comments });
@@ -498,7 +503,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var comment = new Comment()
                 {
-                    Author = commentDto.Author,
+                    UserId = commentDto.Author.Id,
                     DataCriacao = DateTime.Now,
                     RefItem = commentDto.RefItem,
                     Text = commentDto.Text
@@ -506,7 +511,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var thread = new Thread
                 {
-                    AuthorGroup = await _context.Groups.FindAsync(commentDto.GroupId),
+                    GroupId = commentDto.GroupId,
                     AuthorStatus = ThreadStatus.Pendente,
                     ComiteStatus = ThreadStatus.Novo
                 };
@@ -514,7 +519,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 _context.Threads.Add(thread);
                 await _context.SaveChangesAsync();
 
-                comment.Thread = thread;
+                comment.ThreadId = thread.Id;
 
                 _context.Comments.Add(comment);
                 await _context.SaveChangesAsync();
@@ -574,7 +579,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var threadGroup = thread.AuthorGroup;
+                    var threadGroup = await _context.Groups.FindAsync(thread.GroupId);
 
                     if (!(userGroups.Contains(threadGroup) || claims.IsDpo || claims.IsDeveloper))
                     {
@@ -600,11 +605,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var comment = new Comment()
                 {
-                    Author = commentDto.Author,
+                    UserId = commentDto.Author.Id,
                     DataCriacao = DateTime.Now,
                     RefItem = commentDto.RefItem,
                     Text = commentDto.Text,
-                    Thread = commentDto.Thread
+                    ThreadId = commentDto.Thread.Id
                 };
 
                 _context.Comments.Add(comment);
@@ -659,7 +664,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var threadGroup = thread.AuthorGroup;
+                    var threadGroup = await _context.Groups.FindAsync(thread.GroupId);
 
                     if (!(userGroups.Contains(threadGroup) || claims.IsDpo || claims.IsDeveloper))
                     {

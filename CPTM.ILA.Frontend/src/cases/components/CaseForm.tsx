@@ -36,13 +36,20 @@ import Section13FormRow from "./form-items/Section13FormRow";
 import Section14FormRow from "./form-items/Section14FormRow";
 import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
-import { BaseCase, Case, emptyBaseCase } from "../../shared/models/cases.model";
+import {
+  BaseCase,
+  Case,
+  emptyBaseCase,
+  emptyCase,
+} from "../../shared/models/cases.model";
 import CreateCommentBox from "../../threads-comments/components/CreateCommentBox";
+import { CaseIndexDictionary } from "./../../shared/models/case-index.dictionary";
+import Section3FormRow from "./form-items/Section3FormRow";
 
-type onSubmitFn = (item: BaseCase) => void;
+type onSubmitFn = (item: Case) => void;
 
 const CaseForm = (props: {
-  item: BaseCase | Case;
+  item: Case;
   new?: boolean;
   edit?: boolean;
   approve?: boolean;
@@ -51,9 +58,7 @@ const CaseForm = (props: {
   onSendToApprovalSubmit?: onSubmitFn;
 }) => {
   const [isEditing, setIsEditing] = useState(props.new || false);
-  const [itemValues, setItemValues] = useState<BaseCase | Case>(
-    emptyBaseCase()
-  );
+  const [itemValues, setItemValues] = useState<Case>(emptyCase());
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
@@ -94,11 +99,11 @@ const CaseForm = (props: {
     }
   };
 
-  const handleSaveProgressClick = (item: BaseCase | Case) => {
+  const handleSaveProgressClick = (item: Case) => {
     setItemValues(item);
     setShowSaveProgressModal(true);
   };
-  const handleSendToApprovalClick = (item: BaseCase | Case) => {
+  const handleSendToApprovalClick = (item: Case) => {
     setItemValues(item);
     setShowSendToApprovalModal(true);
   };
@@ -196,7 +201,7 @@ const CaseForm = (props: {
       <Formik
         // validationSchema={schema}
         enableReinitialize={true}
-        onSubmit={(item: BaseCase | Case) => setItemValues(item)}
+        onSubmit={(item: Case) => setItemValues(item)}
         initialValues={props.item}
       >
         {({
@@ -213,10 +218,13 @@ const CaseForm = (props: {
           <Form noValidate onSubmit={handleSubmit}>
             <Accordion defaultActiveKey="0">
               <Accordion.Item eventKey="0">
-                <Accordion.Header>Identificação</Accordion.Header>
+                <Accordion.Header>1 - Identificação</Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 align-items-center">
-                    <Form.Group as={Col} lg={11} controlId="validationFormik01">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.nome}</p>
+                    </Col>
+                    <Form.Group as={Col} controlId="validationFormik01">
                       <Form.Label>Nome</Form.Label>
                       <Form.Control
                         disabled={!isEditing}
@@ -240,37 +248,34 @@ const CaseForm = (props: {
                     </Form.Group>
                     <Col lg={1}>
                       <Row>
-                        <CreateCommentBox item="1.1" />
+                        <CreateCommentBox item={CaseIndexDictionary.nome} />
                       </Row>
                     </Col>
                   </Row>
-                  {/* <Row className="mb-3">
-                    <Form.Group as={Col} controlId="validationFormik02">
-                      <Form.Label>ID</Form.Label>
-                      <Form.Control
-                        disabled={!isEditing}
-                        type="text"
-                        name="ref"
-                        value={values.ref}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={touched.ref && !errors.ref}
-                        isInvalid={!!errors.ref}
-                      />
-                      <Form.Text className="text-muted">
-                        Digite o Número ou um ID para identificação da atividade
-                        de tratamento de dados pessoais relacionada ao serviço /
-                        processo de negócio. Exemplo de Número de Referência:
-                        0001. 0002 e etc. Exemplo de ID adotando Sigla do
-                        Serviço informado no campo "Nome do serviço/ Processo de
-                        Negócio: AVA, CRRA e etc.
-                      </Form.Text>
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Row> */}
+                  {!props.new && (
+                    <Row className="mb-3">
+                      <Col lg={1}>
+                        <p>{CaseIndexDictionary.id}</p>
+                      </Col>
+                      <Form.Group as={Col} controlId="validationFormik02">
+                        <Form.Label>ID</Form.Label>
+                        <Form.Control
+                          disabled={true}
+                          type="text"
+                          name="id"
+                          value={values.id}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          isValid={touched.id && !errors.id}
+                          isInvalid={!!errors.id}
+                        />
+                      </Form.Group>
+                    </Row>
+                  )}
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.dataCriacao}</p>
+                    </Col>
                     <Form.Group as={Col} controlId="validationFormik03">
                       <Form.Label>Data de Criação do Inventário</Form.Label>
                       <Form.Control
@@ -293,6 +298,9 @@ const CaseForm = (props: {
                     </Form.Group>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.dataAtualizacao}</p>
+                    </Col>
                     <Form.Group as={Col} controlId="validationFormik04">
                       <Form.Label>Data Atualização do Inventário</Form.Label>
                       <Form.Control
@@ -319,7 +327,7 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="1">
                 <Accordion.Header>
-                  Agentes de Tratamento e Encarregado
+                  2 - Agentes de Tratamento e Encarregado
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
@@ -330,6 +338,9 @@ const CaseForm = (props: {
                     <Form.Label as={Col}>E-mail</Form.Label>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.controlador}</p>
+                    </Col>
                     <Col>
                       <OverlayTrigger
                         placement="right"
@@ -347,21 +358,11 @@ const CaseForm = (props: {
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="controlador.nome"
                         value={values.controlador.nome}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "controlador.nome") &&
-                          !getIn(errors, "controlador.nome")
-                        }
-                        isInvalid={!!getIn(errors, "controlador.nome")}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control disabled />
@@ -374,6 +375,9 @@ const CaseForm = (props: {
                     </Col>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.encarregado}</p>
+                    </Col>
                     <Col>
                       <OverlayTrigger
                         placement="right"
@@ -391,33 +395,41 @@ const CaseForm = (props: {
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="encarregado.nome"
                         value={values.encarregado.nome}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "encarregado.nome") &&
-                          !getIn(errors, "encarregado.nome")
-                        }
-                        isInvalid={!!getIn(errors, "encarregado.nome")}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
-                      <Form.Control disabled />
+                      <Form.Control
+                        disabled
+                        type="text"
+                        name="encarregado.area"
+                        value={values.encarregado.area}
+                      />
                     </Col>
                     <Col>
-                      <Form.Control disabled />
+                      <Form.Control
+                        disabled
+                        type="tel"
+                        name="encarregado.telefone"
+                        value={values.encarregado.telefone}
+                      />
                     </Col>
                     <Col>
-                      <Form.Control disabled />
+                      <Form.Control
+                        disabled
+                        type="email"
+                        name="encarregado.email"
+                        value={values.encarregado.email}
+                      />
                     </Col>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.extensaoEncarregado}</p>
+                    </Col>
                     <Col>
                       <OverlayTrigger
                         placement="right"
@@ -435,59 +447,27 @@ const CaseForm = (props: {
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="extensaoEncarregado.nome"
                         value={values.extensaoEncarregado.nome}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "extensaoEncarregado.nome") &&
-                          !getIn(errors, "extensaoEncarregado.nome")
-                        }
-                        isInvalid={!!getIn(errors, "extensaoEncarregado.nome")}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="extensaoEncarregado.area"
                         value={values.extensaoEncarregado.area}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "extensaoEncarregado.area") &&
-                          !getIn(errors, "extensaoEncarregado.area")
-                        }
-                        isInvalid={!!getIn(errors, "extensaoEncarregado.area")}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="tel"
                         name="extensaoEncarregado.telefone"
                         value={values.extensaoEncarregado.telefone}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "extensaoEncarregado.telefone") &&
-                          !getIn(errors, "extensaoEncarregado.telefone")
-                        }
-                        isInvalid={
-                          !!getIn(errors, "extensaoEncarregado.telefone")
-                        }
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
@@ -495,20 +475,13 @@ const CaseForm = (props: {
                         type="email"
                         name="extensaoEncarregado.email"
                         value={values.extensaoEncarregado.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "extensaoEncarregado.email") &&
-                          !getIn(errors, "extensaoEncarregado.email")
-                        }
-                        isInvalid={!!getIn(errors, "extensaoEncarregado.email")}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Utilize um e-mail válido.
-                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.areaTratamentoDados}</p>
+                    </Col>
                     <Col>
                       <OverlayTrigger
                         placement="right"
@@ -526,80 +499,41 @@ const CaseForm = (props: {
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="areaTratamentoDados.nome"
                         value={values.areaTratamentoDados.nome}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "areaTratamentoDados.nome") &&
-                          !getIn(errors, "areaTratamentoDados.nome")
-                        }
-                        isInvalid={!!getIn(errors, "areaTratamentoDados.nome")}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="areaTratamentoDados.area"
                         value={values.areaTratamentoDados.area}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "areaTratamentoDados.area") &&
-                          !getIn(errors, "areaTratamentoDados.area")
-                        }
-                        isInvalid={!!getIn(errors, "areaTratamentoDados.area")}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="tel"
                         name="areaTratamentoDados.telefone"
                         value={values.areaTratamentoDados.telefone}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "areaTratamentoDados.telefone") &&
-                          !getIn(errors, "areaTratamentoDados.telefone")
-                        }
-                        isInvalid={
-                          !!getIn(errors, "areaTratamentoDados.telefone")
-                        }
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="email"
                         name="areaTratamentoDados.email"
                         value={values.areaTratamentoDados.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "areaTratamentoDados.email") &&
-                          !getIn(errors, "areaTratamentoDados.email")
-                        }
-                        isInvalid={!!getIn(errors, "areaTratamentoDados.email")}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Utilize um e-mail válido
-                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.operador}</p>
+                    </Col>
                     <Col>
                       <OverlayTrigger
                         placement="right"
@@ -616,17 +550,10 @@ const CaseForm = (props: {
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="operador.nome"
                         value={values.operador.nome}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "operador.nome") &&
-                          !getIn(errors, "operador.nome")
-                        }
-                        isInvalid={!!getIn(errors, "operador.nome")}
                       />
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
@@ -646,91 +573,19 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="2">
                 <Accordion.Header>
-                  Fases do Ciclo de Vida do Tratamento de Dados Pessoais
+                  3 - Fases do Ciclo de Vida do Tratamento de Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
                     <Form.Label as={Col}></Form.Label>
+                    <Form.Label as={Col}>Opera em alguma fase?</Form.Label>
                     <Form.Label as={Col}>Coleta</Form.Label>
                     <Form.Label as={Col}>Retenção</Form.Label>
                     <Form.Label as={Col}>Processamento</Form.Label>
                     <Form.Label as={Col}>Compartilhamento</Form.Label>
                     <Form.Label as={Col}>Eliminação</Form.Label>
                   </Row>
-                  <Row className="mb-3">
-                    <Col>
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={
-                          <Tooltip className="text-muted">
-                            Informações sobre o ciclo de vida do tratamento de
-                            dados pessoais podem ser observadas no capítulo 3 do
-                            Guia de Boas Práticas LGPD, disponível em
-                            https://www.gov.br/governodigital/pt-br/governanca-de-dados/guia-de-boas-praticas-lei-geral-de-protecao-de-dados-lgpd
-                          </Tooltip>
-                        }
-                      >
-                        <Form.Label>
-                          Em qual fase do ciclo de vida o Operador atua?
-                        </Form.Label>
-                      </OverlayTrigger>
-                    </Col>
-                    <Col>
-                      <Form.Check
-                        disabled={!isEditing}
-                        type="checkbox"
-                        id="fasesCicloTratamento.coleta"
-                        name="fasesCicloTratamento.coleta"
-                        checked={values.fasesCicloTratamento.coleta}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                    <Col>
-                      <Form.Check
-                        disabled={!isEditing}
-                        type="checkbox"
-                        id="fasesCicloTratamento.retencao"
-                        name="fasesCicloTratamento.retencao"
-                        checked={values.fasesCicloTratamento.retencao}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                    <Col>
-                      <Form.Check
-                        disabled={!isEditing}
-                        type="checkbox"
-                        id="fasesCicloTratamento.processamento"
-                        name="fasesCicloTratamento.processamento"
-                        checked={values.fasesCicloTratamento.processamento}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                    <Col>
-                      <Form.Check
-                        disabled={!isEditing}
-                        type="checkbox"
-                        id="fasesCicloTratamento.compartilhamento"
-                        name="fasesCicloTratamento.compartilhamento"
-                        checked={values.fasesCicloTratamento.compartilhamento}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                    <Col>
-                      <Form.Check
-                        disabled={!isEditing}
-                        type="checkbox"
-                        id="fasesCicloTratamento.eliminacao"
-                        name="fasesCicloTratamento.eliminacao"
-                        checked={values.fasesCicloTratamento.eliminacao}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                  </Row>
+                  <Section3FormRow />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="3">
