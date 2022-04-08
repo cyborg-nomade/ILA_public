@@ -138,7 +138,7 @@ const App = () => {
       }}
     >
       <MainHeader />
-      <Container className="mt-5" fluid>
+      <Container className="mt-5 swiss721" fluid>
         <Suspense
           fallback={
             <Row className="justify-content-center">
