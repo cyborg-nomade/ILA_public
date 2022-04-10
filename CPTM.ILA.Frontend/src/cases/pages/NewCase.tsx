@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
@@ -25,16 +25,41 @@ import {
   ChangeLog,
 } from "../../shared/models/change-logging/change-log.model";
 import { CaseChange } from "../../shared/models/DTOs/case-change.model";
+import { User } from "../../shared/models/access-control/users.model";
+import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
 
 const NewCase = () => {
-  const [initialCase, setInitialCase] = useState<Case>(emptyCase());
+  const { token, user, currentGroup, areaTratamentoDados } =
+    useContext(AuthContext);
 
-  const { token, user, currentGroup } = useContext(AuthContext);
+  const [initialCase, setInitialCase] = useState<Case>(
+    emptyCase(areaTratamentoDados)
+  );
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
 
   let navigate = useNavigate();
+
+  useEffect(() => {
+    const getComiteMembers = async () => {
+      const responseData = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/users/comite-members/${currentGroup.id}`,
+        undefined,
+        undefined,
+        { Authorization: "Bearer " + token }
+      );
+      const loadedComiteMember: AgenteTratamento = responseData.comiteMember;
+      setInitialCase((prevCase) => ({
+        ...prevCase,
+        extensaoEncarregado: loadedComiteMember,
+      }));
+    };
+
+    getComiteMembers().catch((error) => {
+      console.log(error);
+    });
+  }, [currentGroup.id, sendRequest, token]);
 
   const saveProgressHandler = async (item: Case) => {
     console.log("Initial item: ", item);

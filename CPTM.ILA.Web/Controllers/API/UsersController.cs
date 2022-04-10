@@ -150,30 +150,87 @@ namespace CPTM.ILA.Web.Controllers.API
         }
 
         /// <summary>
-        /// Retorna os usuários dos membros do Comitê LGPD.
+        /// Retorna o membro do Comitê LGPD responsável pelo grupo determinado.
         /// Endpoint disponibilizado para todos os usuários com acesso ao ILA.
         /// </summary>
+        /// <param name="gid">Id do grupo especificado</param>
         /// <returns>
-        /// Status da transação e um objeto JSON com uma chave "comiteMembers" contendo os dados dos membros do Comitê LGPD (objetos User)
+        /// Status da transação e um objeto JSON com uma chave "comiteMember" contendo os dados dos membros do Comitê LGPD (objeto AgenteTratamento)
         /// Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
         /// </returns>
-        [Route("comite-members")]
+        [Route("comite-members/{gid:int}")]
         [Authorize]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetComiteMembers()
+        public async Task<HttpResponseMessage> GetComiteMember(int gid)
         {
             try
             {
+                if (gid <= 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+                }
+
+                var selectedGroup = await _context.Groups.FindAsync(gid);
+
+                if (selectedGroup == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+                }
+
                 var comiteMembers = await _context.Users.Where(u => u.IsComite == true)
                     .ToListAsync();
+                var selectedComiteMember = comiteMembers.FirstOrDefault(cm => cm.Groups.Contains(selectedGroup));
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { comiteMembers });
+                if (selectedComiteMember == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        message = "Nenhum usuário do Comitê LGPD é responsável por este grupo",
+                        comiteMember = new AgenteTratamento()
+                        {
+                            Area = "DFIS",
+                            Email = "teste@teste.com",
+                            Nome = "Tuba",
+                            Telefone = "11954719466"
+                        }
+                    });
+                }
+
+                var comiteMemberUserAd = Seguranca.ObterUsuario(selectedComiteMember.Username);
+
+                if (comiteMemberUserAd == null)
+                {
+                    _context.Users.Remove(selectedComiteMember);
+                    await _context.SaveChangesAsync();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        message = "Nenhum usuário do Comitê LGPD é responsável por este grupo",
+                        comiteMember = new AgenteTratamento()
+                        {
+                            Area = "DFIS",
+                            Email = "teste@teste.com",
+                            Nome = "Tuba",
+                            Telefone = "11954719466"
+                        }
+                    });
+                }
+
+                var comiteMember = new AgenteTratamento()
+                {
+                    Area = selectedGroup.Nome,
+                    Email = comiteMemberUserAd.Email,
+                    Nome = comiteMemberUserAd.Nome,
+                    Telefone = comiteMemberUserAd.TelefoneComercial
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { comiteMember });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
