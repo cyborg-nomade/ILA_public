@@ -57,7 +57,8 @@ namespace CPTM.ILA.Web.Controllers.API
         {
             try
             {
-                var systems = await _context.ILA_VW_CATPROD_PRODUTO.ToListAsync();
+                var systems = await _context.ILA_VW_CATPROD_PRODUTO.Select(s => s.TX_NOME)
+                    .ToListAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { systems });
             }

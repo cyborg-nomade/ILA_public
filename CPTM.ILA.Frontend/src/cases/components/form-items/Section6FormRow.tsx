@@ -9,6 +9,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 import { Case } from "../../../shared/models/cases.model";
 import { hipotesesTratamento } from "../../../shared/models/case-helpers/enums.model";
+import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
 import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 
 const Section6FormRow = (props: {
@@ -81,6 +82,11 @@ const Section6FormRow = (props: {
         <Form.Control.Feedback type="invalid">
           {props.invalid}
         </Form.Control.Feedback>
+      </Col>
+      <Col lg={1}>
+        <Row>
+          <CreateCommentBox item={props.itemRef} />
+        </Row>
       </Col>
     </Row>
   );

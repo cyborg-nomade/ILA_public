@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Formik, getIn, FieldArray } from "formik";
 // import * as yup from "yup";
@@ -45,6 +45,10 @@ import {
 import CreateCommentBox from "../../threads-comments/components/CreateCommentBox";
 import { CaseIndexDictionary } from "./../../shared/models/case-index.dictionary";
 import Section3FormRow from "./form-items/Section3FormRow";
+import {
+  hipotesesTratamento,
+  tipoAbrangenciaGeografica,
+} from "../../shared/models/case-helpers/enums.model";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -59,6 +63,7 @@ const CaseForm = (props: {
 }) => {
   const [isEditing, setIsEditing] = useState(props.new || false);
   const [itemValues, setItemValues] = useState<Case>(emptyCase());
+  const [systems, setSystems] = useState<string[]>([]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
@@ -67,6 +72,25 @@ const CaseForm = (props: {
   const { token } = useContext(AuthContext);
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+  const getSystems = useCallback(async () => {
+    const responseData = await sendRequest(
+      `${process.env.REACT_APP_CONNSTR}/utilities/systems`,
+      undefined,
+      undefined,
+      { "Content-Type": "application/json", Authorization: "Bearer " + token }
+    );
+
+    const systems: string[] = responseData.systems;
+
+    setSystems(systems);
+  }, [sendRequest, token]);
+
+  useEffect(() => {
+    getSystems();
+
+    return () => {};
+  }, [getSystems]);
 
   let navigate = useNavigate();
   const cid = useParams().cid || "";
@@ -673,22 +697,34 @@ const CaseForm = (props: {
                       Abrangência da área geográfica do tratamento
                     </Form.Label>
                     <Col lg={8}>
-                      <Form.Control
+                      <Form.Select
                         disabled={!isEditing}
-                        type="text"
-                        name="abrangenciaGeografica"
+                        name="abrangenciaGeografica.value"
                         value={values.abrangenciaGeografica.value}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         isValid={
-                          touched.abrangenciaGeografica &&
-                          !errors.abrangenciaGeografica
+                          touched.abrangenciaGeografica?.value &&
+                          !errors.abrangenciaGeografica?.value
                         }
-                        isInvalid={!!errors.abrangenciaGeografica}
-                      />
+                        isInvalid={!!errors.abrangenciaGeografica?.value}
+                      >
+                        {Object.values(tipoAbrangenciaGeografica).map((tag) => (
+                          <option value={tag} key={tag}>
+                            {tag}
+                          </option>
+                        ))}
+                      </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
                       </Form.Control.Feedback>
+                    </Col>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.abrangenciaGeografica}
+                        />
+                      </Row>
                     </Col>
                   </Row>
                   <Row className="mb-3">
@@ -699,19 +735,31 @@ const CaseForm = (props: {
                       Fonte de dados utilizada para obtenção dos dados pessoais
                     </Form.Label>
                     <Col lg={8}>
-                      <Form.Control
+                      <Form.Select
                         disabled={!isEditing}
-                        type="text"
                         name="fonteDados"
                         value={values.fonteDados}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         isValid={touched.fonteDados && !errors.fonteDados}
                         isInvalid={!!errors.fonteDados}
-                      />
+                      >
+                        {Object.values(systems).map((s) => (
+                          <option value={s} key={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
                       </Form.Control.Feedback>
+                    </Col>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.fonteDados}
+                        />
+                      </Row>
                     </Col>
                   </Row>
                 </Accordion.Body>
@@ -738,7 +786,7 @@ const CaseForm = (props: {
                       </p>
                     }
                     disabled={!isEditing}
-                    name="finalidadeTratamento.hipoteseTratamento"
+                    name="finalidadeTratamento.hipoteseTratamento.value"
                     type="select"
                     invalid="Esse campo é obrigatório"
                     itemRef={
@@ -783,7 +831,11 @@ const CaseForm = (props: {
                         institui o Programa de Localização de Desaparecidos.
                       </p>
                     }
-                    disabled={!isEditing}
+                    disabled={
+                      !isEditing ||
+                      values.finalidadeTratamento.hipoteseTratamento.value !==
+                        hipotesesTratamento.obrigacaoLegal
+                    }
                     name="finalidadeTratamento.previsaoLegal"
                     type="text"
                     invalid="Esse campo é obrigatório"
