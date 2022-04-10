@@ -246,11 +246,6 @@ const CaseForm = (props: {
                         Esse campo é obrigatório
                       </Form.Control.Feedback>
                     </Form.Group>
-                    <Col lg={1}>
-                      <Row>
-                        <CreateCommentBox item={CaseIndexDictionary.nome} />
-                      </Row>
-                    </Col>
                   </Row>
                   {!props.new && (
                     <Row className="mb-3">
@@ -260,14 +255,11 @@ const CaseForm = (props: {
                       <Form.Group as={Col} controlId="validationFormik02">
                         <Form.Label>ID</Form.Label>
                         <Form.Control
-                          disabled={true}
+                          disabled
                           type="text"
                           name="id"
                           value={values.id}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          isValid={touched.id && !errors.id}
-                          isInvalid={!!errors.id}
+                          readOnly
                         />
                       </Form.Group>
                     </Row>
@@ -279,22 +271,13 @@ const CaseForm = (props: {
                     <Form.Group as={Col} controlId="validationFormik03">
                       <Form.Label>Data de Criação do Inventário</Form.Label>
                       <Form.Control
-                        disabled={!isEditing}
-                        type="date"
+                        disabled={false}
+                        type="text"
                         name="dataCriacao"
+                        defaultValue={values.dataCriacao}
                         value={values.dataCriacao}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={touched.dataCriacao && !errors.dataCriacao}
-                        isInvalid={!!errors.dataCriacao}
+                        readOnly
                       />
-                      <Form.Text className="text-muted">
-                        Informar data de criação do inventário de dados
-                        pessoais.
-                      </Form.Text>
-                      <Form.Control.Feedback type="invalid">
-                        Informe uma data válida
-                      </Form.Control.Feedback>
                     </Form.Group>
                   </Row>
                   <Row className="mb-3">
@@ -304,23 +287,12 @@ const CaseForm = (props: {
                     <Form.Group as={Col} controlId="validationFormik04">
                       <Form.Label>Data Atualização do Inventário</Form.Label>
                       <Form.Control
-                        disabled={!isEditing}
-                        type="date"
+                        disabled
+                        type="text"
                         name="dataAtualizacao"
                         value={values.dataAtualizacao}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          touched.dataAtualizacao && !errors.dataAtualizacao
-                        }
-                        isInvalid={!!errors.dataAtualizacao}
+                        readOnly
                       />
-                      <Form.Text className="text-muted">
-                        Informar data da última atualização do inventário.
-                      </Form.Text>
-                      <Form.Control.Feedback type="invalid">
-                        Informe uma data válida
-                      </Form.Control.Feedback>
                     </Form.Group>
                   </Row>
                 </Accordion.Body>
@@ -362,6 +334,7 @@ const CaseForm = (props: {
                         type="text"
                         name="controlador.nome"
                         value={values.controlador.nome}
+                        readOnly
                       />
                     </Col>
                     <Col>
@@ -399,6 +372,7 @@ const CaseForm = (props: {
                         type="text"
                         name="encarregado.nome"
                         value={values.encarregado.nome}
+                        readOnly
                       />
                     </Col>
                     <Col>
@@ -407,6 +381,7 @@ const CaseForm = (props: {
                         type="text"
                         name="encarregado.area"
                         value={values.encarregado.area}
+                        readOnly
                       />
                     </Col>
                     <Col>
@@ -415,6 +390,7 @@ const CaseForm = (props: {
                         type="tel"
                         name="encarregado.telefone"
                         value={values.encarregado.telefone}
+                        readOnly
                       />
                     </Col>
                     <Col>
@@ -423,6 +399,7 @@ const CaseForm = (props: {
                         type="email"
                         name="encarregado.email"
                         value={values.encarregado.email}
+                        readOnly
                       />
                     </Col>
                   </Row>
@@ -451,6 +428,7 @@ const CaseForm = (props: {
                         type="text"
                         name="extensaoEncarregado.nome"
                         value={values.extensaoEncarregado.nome}
+                        readOnly
                       />
                     </Col>
                     <Col>
@@ -459,6 +437,7 @@ const CaseForm = (props: {
                         type="text"
                         name="extensaoEncarregado.area"
                         value={values.extensaoEncarregado.area}
+                        readOnly
                       />
                     </Col>
                     <Col>
@@ -467,14 +446,16 @@ const CaseForm = (props: {
                         type="tel"
                         name="extensaoEncarregado.telefone"
                         value={values.extensaoEncarregado.telefone}
+                        readOnly
                       />
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="email"
                         name="extensaoEncarregado.email"
                         value={values.extensaoEncarregado.email}
+                        readOnly
                       />
                     </Col>
                   </Row>
@@ -503,6 +484,7 @@ const CaseForm = (props: {
                         type="text"
                         name="areaTratamentoDados.nome"
                         value={values.areaTratamentoDados.nome}
+                        readOnly
                       />
                     </Col>
                     <Col>
@@ -511,6 +493,7 @@ const CaseForm = (props: {
                         type="text"
                         name="areaTratamentoDados.area"
                         value={values.areaTratamentoDados.area}
+                        readOnly
                       />
                     </Col>
                     <Col>
@@ -519,6 +502,7 @@ const CaseForm = (props: {
                         type="tel"
                         name="areaTratamentoDados.telefone"
                         value={values.areaTratamentoDados.telefone}
+                        readOnly
                       />
                     </Col>
                     <Col>
@@ -527,6 +511,7 @@ const CaseForm = (props: {
                         type="email"
                         name="areaTratamentoDados.email"
                         value={values.areaTratamentoDados.email}
+                        readOnly
                       />
                     </Col>
                   </Row>
@@ -554,6 +539,7 @@ const CaseForm = (props: {
                         type="text"
                         name="operador.nome"
                         value={values.operador.nome}
+                        readOnly
                       />
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
@@ -577,23 +563,60 @@ const CaseForm = (props: {
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
-                    <Form.Label as={Col}></Form.Label>
-                    <Form.Label as={Col}>Opera em alguma fase?</Form.Label>
-                    <Form.Label as={Col}>Coleta</Form.Label>
-                    <Form.Label as={Col}>Retenção</Form.Label>
-                    <Form.Label as={Col}>Processamento</Form.Label>
-                    <Form.Label as={Col}>Compartilhamento</Form.Label>
-                    <Form.Label as={Col}>Eliminação</Form.Label>
+                    <Form.Label as={Col} lg={1}></Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    ></Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Atua?
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Coleta
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Retenção
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Processamento
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Compartilhamento
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Eliminação
+                    </Form.Label>
                   </Row>
                   <Section3FormRow />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="3">
                 <Accordion.Header>
-                  Fluxo de Tratamento de Dados Pessoais
+                  4 - Fluxo de Tratamento de Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.descricaoFluxoTratamento}</p>
+                    </Col>
                     <OverlayTrigger
                       placement="right"
                       overlay={
@@ -633,10 +656,13 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="4">
                 <Accordion.Header>
-                  Escopo e Natureza dos Dados Pessoais
+                  5 - Escopo e Natureza dos Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.abrangenciaGeografica}</p>
+                    </Col>
                     <Form.Label as={Col}>
                       Abrangência da área geográfica do tratamento
                     </Form.Label>
@@ -660,6 +686,9 @@ const CaseForm = (props: {
                     </Col>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.fonteDados}</p>
+                    </Col>
                     <Form.Label as={Col}>
                       Fonte de dados utilizada para obtenção dos dados pessoais
                     </Form.Label>
@@ -683,7 +712,7 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="5">
                 <Accordion.Header>
-                  Finalidade do Tratamento de Dados Pessoais
+                  6 - Finalidade do Tratamento de Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Section6FormRow
@@ -706,6 +735,10 @@ const CaseForm = (props: {
                     name="finalidadeTratamento.hipoteseTratamento"
                     type="select"
                     invalid="Esse campo é obrigatório"
+                    itemRef={
+                      CaseIndexDictionary.finalidadeTratamento
+                        .hipoteseTratamento
+                    }
                   />
                   <Section6FormRow
                     label="Finalidade"
@@ -722,6 +755,10 @@ const CaseForm = (props: {
                     name="finalidadeTratamento.descricaoFinalidade"
                     type="text"
                     invalid="Esse campo é obrigatório"
+                    itemRef={
+                      CaseIndexDictionary.finalidadeTratamento
+                        .descricaoFinalidade
+                    }
                   />
                   <Section6FormRow
                     label="Previsão legal"
@@ -744,6 +781,9 @@ const CaseForm = (props: {
                     name="finalidadeTratamento.previsaoLegal"
                     type="text"
                     invalid="Esse campo é obrigatório"
+                    itemRef={
+                      CaseIndexDictionary.finalidadeTratamento.previsaoLegal
+                    }
                   />
                   <Section6FormRow
                     label="Resultados pretendidos para o titular de dados"
@@ -751,6 +791,9 @@ const CaseForm = (props: {
                     name="finalidadeTratamento.resultadosTitular"
                     type="text"
                     invalid="Esse campo é obrigatório"
+                    itemRef={
+                      CaseIndexDictionary.finalidadeTratamento.resultadosTitular
+                    }
                   />
                   <Section6FormRow
                     label="Benefícios esperados para o órgão, entidade ou para a
@@ -759,16 +802,22 @@ const CaseForm = (props: {
                     name="finalidadeTratamento.beneficiosEsperados"
                     type="text"
                     invalid="Esse campo é obrigatório"
+                    itemRef={
+                      CaseIndexDictionary.finalidadeTratamento
+                        .beneficiosEsperados
+                    }
                   />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="6">
-                <Accordion.Header>Categoria de Dados Pessoais</Accordion.Header>
+                <Accordion.Header>
+                  7 - Categoria de Dados Pessoais
+                </Accordion.Header>
                 <Accordion.Body>
                   <Accordion>
                     <Accordion.Item eventKey="60">
                       <Accordion.Header>
-                        Dados de Identificação Pessoal
+                        7.1 - Dados de Identificação Pessoal
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">

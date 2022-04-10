@@ -8,7 +8,7 @@ export const CaseIndexDictionary = {
   extensaoEncarregado: "2.2.2",
   areaTratamentoDados: "2.3",
   operador: "2.4",
-  fasesCicloTratamento: "3",
+  fasesCicloTratamento: "3.1",
   descricaoFluxoTratamento: "4.1",
   abrangenciaGeografica: "5.1",
   fonteDados: "5.2",

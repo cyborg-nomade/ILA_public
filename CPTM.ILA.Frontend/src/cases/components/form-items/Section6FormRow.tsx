@@ -9,6 +9,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 import { Case } from "../../../shared/models/cases.model";
 import { hipotesesTratamento } from "../../../shared/models/case-helpers/enums.model";
+import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 
 const Section6FormRow = (props: {
   tooltip?: JSX.Element;
@@ -17,6 +18,7 @@ const Section6FormRow = (props: {
   name: string;
   type: string;
   invalid: string;
+  itemRef: string;
 }) => {
   const { values, touched, errors, setFieldValue, handleChange, handleBlur } =
     useFormikContext<Case>();
@@ -33,6 +35,9 @@ const Section6FormRow = (props: {
 
   return (
     <Row className="mb-3">
+      <Col lg={1}>
+        <p>{props.itemRef}</p>
+      </Col>
       {props.tooltip ? (
         <OverlayTrigger
           placement="right"

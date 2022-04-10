@@ -63,6 +63,11 @@ const Section3FormRow = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setCompartilhamento(event.currentTarget.value);
+    setFieldValue(
+      "fasesCicloTratamento.compartilhamento",
+      compartilhamento,
+      true
+    );
   };
   const handleBlurCompartilhamento = (
     event: React.FocusEvent<HTMLInputElement>
@@ -94,7 +99,7 @@ const Section3FormRow = () => {
   };
 
   return (
-    <Row className="mb-3">
+    <Row className="mb-3 align-items-center bg-primary bg-opacity-10">
       <Col lg={1}>
         <p>{CaseIndexDictionary.fasesCicloTratamento}</p>
       </Col>
@@ -115,12 +120,11 @@ const Section3FormRow = () => {
           </Form.Label>
         </OverlayTrigger>
       </Col>
-      <Col>
+      <Col className="d-grid justify-content-center">
         <Form.Check
           type="radio"
           name="trata"
           required
-          inline
           label="Sim"
           value="SIM"
           onChange={handleTrataRadio}
@@ -135,7 +139,7 @@ const Section3FormRow = () => {
           onChange={handleTrataRadio}
         />
       </Col>
-      <Col>
+      <Col className="d-grid justify-content-center">
         <Form.Check
           disabled={!trata}
           type="checkbox"
@@ -151,7 +155,7 @@ const Section3FormRow = () => {
           isInvalid={!!getIn(errors, "fasesCicloTratamento.coleta")}
         />
       </Col>
-      <Col>
+      <Col className="d-grid justify-content-center">
         <Form.Check
           disabled={!trata}
           type="checkbox"
@@ -167,7 +171,7 @@ const Section3FormRow = () => {
           isInvalid={!!getIn(errors, "fasesCicloTratamento.retencao")}
         />
       </Col>
-      <Col>
+      <Col className="d-grid justify-content-center">
         <Form.Check
           disabled={!trata}
           type="checkbox"
@@ -183,7 +187,7 @@ const Section3FormRow = () => {
           isInvalid={!!getIn(errors, "fasesCicloTratamento.processamento")}
         />
       </Col>
-      <Col>
+      <Col className="d-grid justify-content-center">
         <Form.Check
           disabled={!trata}
           type="checkbox"
@@ -199,7 +203,7 @@ const Section3FormRow = () => {
           isInvalid={!!getIn(errors, "fasesCicloTratamento.compartilhamento")}
         />
       </Col>
-      <Col>
+      <Col className="d-grid justify-content-center">
         <Form.Check
           disabled={!trata}
           type="checkbox"
