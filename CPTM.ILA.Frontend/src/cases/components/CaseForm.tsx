@@ -604,6 +604,7 @@ const CaseForm = (props: {
                     >
                       Eliminação
                     </Form.Label>
+                    <Form.Label as={Col} lg={1}></Form.Label>
                   </Row>
                   <Section3FormRow />
                 </Accordion.Body>
@@ -650,6 +651,11 @@ const CaseForm = (props: {
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
                       </Form.Control.Feedback>
+                    </Col>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox item={CaseIndexDictionary.nome} />
+                      </Row>
                     </Col>
                   </Row>
                 </Accordion.Body>
