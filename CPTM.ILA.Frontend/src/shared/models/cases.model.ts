@@ -94,7 +94,7 @@ export const emptyBaseCase = (): BaseCase => ({
   observacoesProcesso: [],
 });
 
-export const emptyCase = (): Case => ({
+export const emptyCase = (currentAreaTratamento?: AgenteTratamento): Case => ({
   id: 0,
   nome: "",
   area: "",
@@ -113,7 +113,14 @@ export const emptyCase = (): Case => ({
     "encarregado.dados@cptm.sp.gov.br"
   ),
   extensaoEncarregado: emptyAgenteTratamento(),
-  areaTratamentoDados: emptyAgenteTratamento(),
+  areaTratamentoDados: currentAreaTratamento
+    ? emptyAgenteTratamento(
+        currentAreaTratamento.nome,
+        currentAreaTratamento.area,
+        currentAreaTratamento.telefone,
+        currentAreaTratamento.email
+      )
+    : emptyAgenteTratamento(),
   operador: emptyAgenteTratamento(),
   fasesCicloTratamento: emptyFasesCicloTratamento(),
   descricaoFluxoTratamento: "",

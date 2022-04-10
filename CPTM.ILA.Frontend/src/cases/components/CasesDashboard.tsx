@@ -76,7 +76,7 @@ const CasesDashboard = () => {
         <h3 className="mb-4">Visão de Processos</h3>
       </Row>
       <Row>
-        <Card border="danger" className="m-0">
+        <Card border="primary" className="m-0">
           <PieChart
             data={pieChartData}
             label={({ x, y, dx, dy, dataEntry, dataIndex }) => (
