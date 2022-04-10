@@ -8,6 +8,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
 import { Case } from "../../../shared/models/cases.model";
+import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
 
 const Section7FormRow = (props: {
   tooltip?: JSX.Element;
@@ -15,6 +16,7 @@ const Section7FormRow = (props: {
   disabled: boolean;
   name: string;
   className: string;
+  itemRef: string;
 }) => {
   const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
     useFormikContext<Case>();
@@ -65,6 +67,9 @@ const Section7FormRow = (props: {
 
   return (
     <Row className={props.className}>
+      <Col lg={1}>
+        <p>{props.itemRef}</p>
+      </Col>
       {props.tooltip ? (
         <OverlayTrigger
           placement="right"
@@ -142,6 +147,11 @@ const Section7FormRow = (props: {
           }
           isInvalid={!!getIn(errors, `${props.name}.caminhoRedeSistema`)}
         />
+      </Col>
+      <Col lg={1}>
+        <Row>
+          <CreateCommentBox item={props.itemRef} />
+        </Row>
       </Col>
     </Row>
   );

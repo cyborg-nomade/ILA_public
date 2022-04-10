@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Formik, getIn, FieldArray } from "formik";
+import { Formik, FieldArray } from "formik";
 // import * as yup from "yup";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -36,12 +36,7 @@ import Section13FormRow from "./form-items/Section13FormRow";
 import Section14FormRow from "./form-items/Section14FormRow";
 import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
-import {
-  BaseCase,
-  Case,
-  emptyBaseCase,
-  emptyCase,
-} from "../../shared/models/cases.model";
+import { Case, emptyCase } from "../../shared/models/cases.model";
 import CreateCommentBox from "../../threads-comments/components/CreateCommentBox";
 import { CaseIndexDictionary } from "./../../shared/models/case-index.dictionary";
 import Section3FormRow from "./form-items/Section3FormRow";
@@ -588,10 +583,7 @@ const CaseForm = (props: {
                 <Accordion.Body>
                   <Row className="mb-3">
                     <Form.Label as={Col} lg={1}></Form.Label>
-                    <Form.Label
-                      as={Col}
-                      className="d-grid justify-content-center"
-                    ></Form.Label>
+                    <Form.Label as={Col}></Form.Label>
                     <Form.Label
                       as={Col}
                       className="d-grid justify-content-center"
@@ -879,6 +871,7 @@ const CaseForm = (props: {
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -886,8 +879,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -902,6 +896,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.identificacao.idPessoal"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .identificacao.idPessoal
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -917,6 +915,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.identificacao.idGov"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .identificacao.idGov
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -929,6 +931,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.identificacao.idEletronica"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .identificacao.idEletronica
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -942,13 +948,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.identificacao.locEletronica"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .identificacao.locEletronica
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="61">
-                      <Accordion.Header>Dados Financeiros</Accordion.Header>
+                      <Accordion.Header>
+                        7.2 - Dados Financeiros
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -956,8 +969,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -972,6 +986,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.idFin"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.idFin
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -987,6 +1005,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.recursosFin"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.recursosFin
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1000,6 +1022,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.dividasDespesas"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.dividasDespesas
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1012,6 +1038,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.solvencia"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.solvencia
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1027,6 +1057,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.emprestimosHipotecaCredito"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.emprestimosHipotecaCredito
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1039,6 +1073,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.assistenciaFin"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.assistenciaFin
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1054,6 +1092,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.apoliceSeguro"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.apoliceSeguro
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1068,6 +1110,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.planoPensao"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.planoPensao
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1082,6 +1128,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.transacaoFin"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.transacaoFin
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1095,6 +1145,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.compensacao"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.compensacao
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1110,6 +1164,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.atividadeProfissional"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.atividadeProfissional
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1123,6 +1181,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.acordosAjustes"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.acordosAjustes
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1136,15 +1198,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.autorizacoesConsentimentos"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.autorizacoesConsentimentos
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="62">
                       <Accordion.Header>
-                        Características Pessoais
+                        7.3 - Características Pessoais
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1152,8 +1219,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1167,6 +1235,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.caracteristicas.detalhesPessoais"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .caracteristicas.detalhesPessoais
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1179,6 +1251,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.caracteristicas.detalhesMilitares"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .caracteristicas.detalhesMilitares
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1193,6 +1269,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.caracteristicas.situacaoImigracao"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .caracteristicas.situacaoImigracao
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1208,13 +1288,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.caracteristicas.descricaoFisica"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .caracteristicas.descricaoFisica
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="63">
-                      <Accordion.Header>Hábitos Pessoais</Accordion.Header>
+                      <Accordion.Header>
+                        7.4 - Hábitos Pessoais
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1222,8 +1309,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1236,7 +1324,11 @@ const CaseForm = (props: {
                             </p>
                           }
                           disabled={!isEditing}
-                          name="categoriaDadosPessoais.habitos.habitos"
+                          name="categoriaDadosPessoais.habitos.habitosPessoais"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .habitosPessoais
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1250,6 +1342,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.estiloVida"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .estiloVida
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1263,6 +1359,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.viagensDeslocamento"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .viagensDeslocamento
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1276,6 +1376,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.contatosSociais"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .contatosSociais
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1288,6 +1392,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.posses"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .posses
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1303,6 +1411,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.denunciasIncidentesAcidentes"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .denunciasIncAcidentes
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1315,6 +1427,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.distincoes"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .distincoes
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1328,15 +1444,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.usoMidia"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .usoMidia
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="64">
                       <Accordion.Header>
-                        Características Psicológicas
+                        7.5 - Características Psicológicas
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1344,8 +1465,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1357,14 +1479,21 @@ const CaseForm = (props: {
                             </p>
                           }
                           disabled={!isEditing}
-                          name="categoriaDadosPessoais.habitos.distincoes"
+                          name="categoriaDadosPessoais.caracteristicasPsicologicas.descricaoPsi"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .caracteristicasPsicologicas.descricaoPsi
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="65">
-                      <Accordion.Header>Composição Familiar</Accordion.Header>
+                      <Accordion.Header>
+                        7.6 - Composição Familiar
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1372,8 +1501,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1388,6 +1518,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.composicaoFamiliar.casamentoCoabitacao"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .composicaoFamiliar.casamentoCoabitacao
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1401,6 +1535,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.composicaoFamiliar.historicoConjugal"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .composicaoFamiliar.historicoConjugal
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1414,13 +1552,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.composicaoFamiliar.membrosFamilia"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .composicaoFamiliar.membrosFamilia
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="66">
-                      <Accordion.Header>Interesses de lazer</Accordion.Header>
+                      <Accordion.Header>
+                        7.7 - Interesses de lazer
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1428,8 +1573,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1442,13 +1588,18 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.interessesLazer.atividadesInteressesLaz"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .interessesLazer.atividadesInteressesLaz
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="67">
-                      <Accordion.Header>Associações</Accordion.Header>
+                      <Accordion.Header>7.8 - Associações</Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1456,8 +1607,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1471,15 +1623,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.associacoes.outrasAssociacoesNaoSensiveis"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .associacoes.outrasAssNaoSensiveis
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="68">
                       <Accordion.Header>
-                        Processo Judicial/Administrativo/Criminal
+                        7.9 - Processo Judicial/Administrativo/Criminal
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1487,8 +1644,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1504,6 +1662,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.processoJudAdmCrim.suspeitas"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .processoJudAdmCrim.suspeitas
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1516,6 +1678,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.processoJudAdmCrim.condenacoesSentencas"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .processoJudAdmCrim.condenacoesSentencas
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1529,6 +1695,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.processoJudAdmCrim.acoesJud"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .processoJudAdmCrim.acoesJud
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1544,13 +1714,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.processoJudAdmCrim.penalidadesAdm"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .processoJudAdmCrim.penalidadesAdm
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="69">
-                      <Accordion.Header>Hábitos de Consumo</Accordion.Header>
+                      <Accordion.Header>
+                        7.10 - Hábitos de Consumo
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1558,8 +1735,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1573,13 +1751,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitosConsumo.dadosBensServicos"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .habitosConsumo.dadosBensServicos
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="610">
-                      <Accordion.Header>Dados Residenciais</Accordion.Header>
+                      <Accordion.Header>
+                        7.11 - Dados Residenciais
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1587,8 +1772,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1605,15 +1791,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.residenciais.dadosResidencia"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .residenciais.dadosResidencia
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="611">
                       <Accordion.Header>
-                        Educação e Treinamento
+                        7.12 - Educação e Treinamento
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1621,8 +1812,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1637,6 +1829,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.educacaoTreinamento.academicosEscolares"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .educacaoTreinamento.academicosEscolares
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1650,6 +1846,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.educacaoTreinamento.registroFinanceiro"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .educacaoTreinamento.registroFinanceiro
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1664,13 +1864,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.educacaoTreinamento.qualificacaoExperienciaProf"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .educacaoTreinamento.qualificacaoExperienciaProf
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="612">
-                      <Accordion.Header>Profissão e emprego</Accordion.Header>
+                      <Accordion.Header>
+                        7.13 - Profissão e emprego
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1678,8 +1885,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1696,6 +1904,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.empregoAtual"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.empregoAtual
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1710,6 +1922,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.recrutamento"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.recrutamento
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1723,6 +1939,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.rescisao"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.rescisao
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1736,6 +1956,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.carreira"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.carreira
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1749,6 +1973,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.absenteismoDisciplina"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.absenteismoDisciplina
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1762,15 +1990,20 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.avaliacaoDesempenho"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.avaliacaoDesempenho
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="613">
                       <Accordion.Header>
-                        Registros/gravações de vídeo, imagem e voz
+                        7.14 - Registros/gravações de vídeo, imagem e voz
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1778,8 +2011,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1792,6 +2026,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.regVideoImgVoz.videoImagem"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .regVideoImgVoz.videoImagem
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1804,6 +2042,10 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.regVideoImgVoz.imagemVigilancia"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .regVideoImgVoz.imagemVigilancia
+                          }
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1817,13 +2059,18 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.regVideoImgVoz.voz"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .regVideoImgVoz.voz
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="614">
-                      <Accordion.Header>Outros</Accordion.Header>
+                      <Accordion.Header>7.15 - Outros</Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
                           <Form.Label as={Col}>
@@ -1831,8 +2078,9 @@ const CaseForm = (props: {
                           </Form.Label>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
                           <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <FieldArray
                           name="categoriaDadosPessoais.outros.outros"
@@ -1853,7 +2101,12 @@ const CaseForm = (props: {
                                         }`}
                                         label="Outros (Especificar)"
                                         disabled={!isEditing}
-                                        name={`categoriaDadosPessoais.outros.outros[${index}]`}
+                                        name={`categoriaDadosPessoais.outros.outrosItems[${index}]`}
+                                        itemRef={
+                                          CaseIndexDictionary
+                                            .categoriaDadosPessoais.outros
+                                            .outrosItems
+                                        }
                                       />
                                       <Row className="justify-content-center">
                                         <ButtonGroup
@@ -1914,77 +2167,117 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="7">
                 <Accordion.Header>
-                  Categorias de Dados Pessoais Sensíveis
+                  8 - Categorias de Dados Pessoais Sensíveis
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                    <Form.Label as={Col} lg={1}></Form.Label>
                     <Form.Label as={Col}></Form.Label>
                     <Form.Label as={Col}>Descrição</Form.Label>
                     <Form.Label as={Col}>Tempo Retenção dos Dados</Form.Label>
                     <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                    <Form.Label as={Col}>
-                      Caminho Rede e/ou Sistema CPTM
-                    </Form.Label>
+                    <Form.Label as={Col}>Local de Armazenamento</Form.Label>
+                    <Form.Label as={Col} lg={1}></Form.Label>
                   </Row>
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam origem racial ou étnica"
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.origemRacialEtnica"
+                    itemRef={
+                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                        .origemRacialEtnica
+                    }
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam convicção religiosa"
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.conviccaoReligiosa"
+                    itemRef={
+                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                        .conviccaoReligiosa
+                    }
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam opinião política"
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.opiniaoPolitica"
+                    itemRef={
+                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                        .opiniaoPolitica
+                    }
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam filiação a sindicato"
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.filiacaoSindicato"
+                    itemRef={
+                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                        .filiacaoSindicato
+                    }
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam filiação a organização de caráter religioso"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.filiacaoOrganizacaoReligiosa"
+                    name="categoriaDadosPessoaisSensiveis.filiacaoOrgReligiosa"
+                    itemRef={
+                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                        .filiacaoOrgReligiosa
+                    }
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam filiação ou crença filosófica"
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.filiacaoCrencaFilosofica"
+                    itemRef={
+                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                        .filiacaoCrencaFilosofica
+                    }
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam filiação ou preferências política"
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.filiacaoPreferenciaPolitica"
+                    itemRef={
+                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                        .filiacaoPreferenciaPolitica
+                    }
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados referentes à saúde ou à vida sexual"
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.saudeVidaSexual"
+                    itemRef={
+                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                        .saudeVidaSexual
+                    }
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados genéticos"
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.geneticos"
+                    itemRef={
+                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                        .geneticos
+                    }
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados biométricos"
                     disabled={!isEditing}
                     name="categoriaDadosPessoaisSensiveis.biometricos"
+                    itemRef={
+                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                        .biometricos
+                    }
                   />
                 </Accordion.Body>
               </Accordion.Item>
