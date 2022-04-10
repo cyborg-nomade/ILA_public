@@ -18,10 +18,7 @@ import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.
 
 const schema = yup.object().shape({
   username: yup.string().required(),
-  password: yup
-    .string()
-    .required()
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/),
+  password: yup.string().required(),
 });
 
 const initialValues: AuthUser = {
@@ -132,8 +129,7 @@ const Login = () => {
                       isInvalid={!!errors.password}
                     />
                     <Form.Control.Feedback type="invalid">
-                      A senha deve ter pelo menos 8 caracteres, um caracter
-                      especial, uma letra maiúscula e um número
+                      Esse campo é obrigatório
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Row>

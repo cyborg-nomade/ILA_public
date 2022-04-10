@@ -1,5 +1,3 @@
-import { emptyGroup, Group } from "./access-control/group.model";
-import { emptyUser, User } from "./access-control/users.model";
 import {
   AgenteTratamento,
   CategoriaDadosPessoais,
