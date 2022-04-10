@@ -9,6 +9,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 import { Case } from "../../../shared/models/cases.model";
 import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
+import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
 
 const Section3FormRow = () => {
   const { values, touched, errors, setFieldValue, handleBlur } =
@@ -218,6 +219,9 @@ const Section3FormRow = () => {
           }
           isInvalid={!!getIn(errors, "fasesCicloTratamento.eliminacao")}
         />
+      </Col>
+      <Col lg={1} className="p-0">
+        <CreateCommentBox item={CaseIndexDictionary.fasesCicloTratamento} />
       </Col>
     </Row>
   );
