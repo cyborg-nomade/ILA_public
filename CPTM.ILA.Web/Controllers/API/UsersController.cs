@@ -78,7 +78,8 @@ namespace CPTM.ILA.Web.Controllers.API
                 var usersInDb = await _context.Users.Include(u => u.Groups)
                     .Include(u => u.OriginGroup)
                     .ToListAsync();
-                var userInDb = usersInDb.SingleOrDefault(u => u.Username == user.Username);
+                var userInDb = usersInDb.SingleOrDefault(u =>
+                    string.Equals(u.Username, user.Username, StringComparison.CurrentCultureIgnoreCase));
                 var isDeveloper = user.Username.ToLower() == "urielf";
 
                 if (isDeveloper && userInDb == null)
