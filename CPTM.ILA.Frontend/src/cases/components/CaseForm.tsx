@@ -873,12 +873,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -900,6 +934,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .identificacao.idPessoal
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -919,6 +954,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .identificacao.idGov
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -935,6 +971,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .identificacao.idEletronica
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -952,6 +989,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .identificacao.locEletronica
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -963,12 +1001,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -990,6 +1062,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.idFin
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1009,6 +1082,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.recursosFin
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1026,6 +1100,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.dividasDespesas
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1042,6 +1117,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.solvencia
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1061,6 +1137,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.emprestimosHipotecaCredito
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1077,6 +1154,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.assistenciaFin
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1096,6 +1174,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.apoliceSeguro
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1114,6 +1193,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.planoPensao
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1132,6 +1212,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.transacaoFin
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1149,6 +1230,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.compensacao
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1168,6 +1250,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.atividadeProfissional
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1185,6 +1268,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.acordosAjustes
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1202,6 +1286,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .financeiros.autorizacoesConsentimentos
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1213,12 +1298,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1239,6 +1358,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .caracteristicas.detalhesPessoais
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1255,6 +1375,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .caracteristicas.detalhesMilitares
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1273,6 +1394,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .caracteristicas.situacaoImigracao
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1292,6 +1414,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .caracteristicas.descricaoFisica
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1303,12 +1426,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1329,6 +1486,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais.habitos
                               .habitosPessoais
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1346,6 +1504,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais.habitos
                               .estiloVida
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1363,6 +1522,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais.habitos
                               .viagensDeslocamento
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1380,6 +1540,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais.habitos
                               .contatosSociais
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1396,6 +1557,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais.habitos
                               .posses
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1415,6 +1577,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais.habitos
                               .denunciasIncAcidentes
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1431,6 +1594,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais.habitos
                               .distincoes
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1448,6 +1612,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais.habitos
                               .usoMidia
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1459,12 +1624,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1484,6 +1683,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .caracteristicasPsicologicas.descricaoPsi
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1495,12 +1695,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1522,6 +1756,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .composicaoFamiliar.casamentoCoabitacao
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1539,6 +1774,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .composicaoFamiliar.historicoConjugal
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1556,6 +1792,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .composicaoFamiliar.membrosFamilia
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1567,12 +1804,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1592,6 +1863,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .interessesLazer.atividadesInteressesLaz
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1601,12 +1873,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1622,11 +1928,12 @@ const CaseForm = (props: {
                             </p>
                           }
                           disabled={!isEditing}
-                          name="categoriaDadosPessoais.associacoes.outrasAssociacoesNaoSensiveis"
+                          name="categoriaDadosPessoais.associacoes.outrasAssNaoSensiveis"
                           itemRef={
                             CaseIndexDictionary.categoriaDadosPessoais
                               .associacoes.outrasAssNaoSensiveis
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1638,12 +1945,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1666,6 +2007,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .processoJudAdmCrim.suspeitas
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1682,6 +2024,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .processoJudAdmCrim.condenacoesSentencas
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1699,6 +2042,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .processoJudAdmCrim.acoesJud
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1718,6 +2062,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .processoJudAdmCrim.penalidadesAdm
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1729,12 +2074,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1755,6 +2134,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .habitosConsumo.dadosBensServicos
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1766,12 +2146,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1795,6 +2209,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .residenciais.dadosResidencia
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1806,12 +2221,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1833,6 +2282,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .educacaoTreinamento.academicosEscolares
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1850,6 +2300,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .educacaoTreinamento.registroFinanceiro
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1868,6 +2319,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .educacaoTreinamento.qualificacaoExperienciaProf
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -1879,12 +2331,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1908,6 +2394,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .profissaoEmprego.empregoAtual
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1926,6 +2413,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .profissaoEmprego.recrutamento
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1943,6 +2431,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .profissaoEmprego.rescisao
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1960,6 +2449,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .profissaoEmprego.carreira
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1977,6 +2467,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .profissaoEmprego.absenteismoDisciplina
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1994,6 +2485,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .profissaoEmprego.avaliacaoDesempenho
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -2005,12 +2497,46 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -2030,6 +2556,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .regVideoImgVoz.videoImagem
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2046,6 +2573,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .regVideoImgVoz.imagemVigilancia
                           }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2063,6 +2591,7 @@ const CaseForm = (props: {
                             CaseIndexDictionary.categoriaDadosPessoais
                               .regVideoImgVoz.voz
                           }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -2072,93 +2601,67 @@ const CaseForm = (props: {
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
                           </Form.Label>
-                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Descrição
+                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label
+                              as={Col}
+                              className="d-grid justify-content-center"
+                            >
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Fonte Retenção
+                          </Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
-                        <FieldArray
-                          name="categoriaDadosPessoais.outros.outros"
-                          render={(arrayHelpers) => (
-                            <React.Fragment>
-                              {values.categoriaDadosPessoais.outros
-                                .outrosItems &&
-                              values.categoriaDadosPessoais.outros.outrosItems
-                                .length > 0 ? (
-                                values.categoriaDadosPessoais.outros.outrosItems.map(
-                                  (item, index) => (
-                                    <React.Fragment key={index}>
-                                      <Section7FormRow
-                                        className={`mb-3 pt-2 pb-2 ${
-                                          index % 2 === 0
-                                            ? "bg-primary bg-opacity-10"
-                                            : ""
-                                        }`}
-                                        label="Outros (Especificar)"
-                                        disabled={!isEditing}
-                                        name={`categoriaDadosPessoais.outros.outrosItems[${index}]`}
-                                        itemRef={
-                                          CaseIndexDictionary
-                                            .categoriaDadosPessoais.outros
-                                            .outrosItems
-                                        }
-                                      />
-                                      <Row className="justify-content-center">
-                                        <ButtonGroup
-                                          as={Col}
-                                          className="mt-1 mb-3"
-                                          lg={2}
-                                        >
-                                          <Button
-                                            variant="primary"
-                                            onClick={() =>
-                                              arrayHelpers.push(
-                                                emptyItemCategoriaDadosPessoais()
-                                              )
-                                            }
-                                          >
-                                            +
-                                          </Button>
-                                          <Button
-                                            variant="danger"
-                                            onClick={() =>
-                                              arrayHelpers.remove(index)
-                                            }
-                                          >
-                                            -
-                                          </Button>
-                                        </ButtonGroup>
-                                      </Row>
-                                    </React.Fragment>
-                                  )
-                                )
-                              ) : (
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(
-                                          emptyItemCategoriaDadosPessoais()
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              )}
-                            </React.Fragment>
-                          )}
+                        <Section7FormRow
+                          className="mb-3 pt-2 pb-2 bg-primary bg-opacity-10"
+                          label="Outros (Especificar)"
+                          tooltip={
+                            <p>
+                              Descrever se são tratadas fitas e arquivos
+                              digitais de voz, bem como outros registros de
+                              gravações de voz , etc
+                            </p>
+                          }
+                          disabled={!isEditing}
+                          name="categoriaDadosPessoais.outros.outrosItems"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.outros
+                              .outrosItems
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -2173,10 +2676,48 @@ const CaseForm = (props: {
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                     <Form.Label as={Col} lg={1}></Form.Label>
                     <Form.Label as={Col}></Form.Label>
-                    <Form.Label as={Col}>Descrição</Form.Label>
-                    <Form.Label as={Col}>Tempo Retenção dos Dados</Form.Label>
-                    <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                    <Form.Label as={Col}>Local de Armazenamento</Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Trata?
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Descrição
+                    </Form.Label>
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={
+                        <Tooltip className="text-muted">
+                          Para maiores informações visite o
+                          <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                            site da CADA
+                          </a>
+                        </Tooltip>
+                      }
+                    >
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Tempo Retenção dos Dados
+                      </Form.Label>
+                    </OverlayTrigger>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Fonte Retenção
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Local de Armazenamento
+                    </Form.Label>
                     <Form.Label as={Col} lg={1}></Form.Label>
                   </Row>
                   <Section7FormRow
@@ -2188,6 +2729,7 @@ const CaseForm = (props: {
                       CaseIndexDictionary.categoriaDadosPessoaisSensiveis
                         .origemRacialEtnica
                     }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2198,6 +2740,7 @@ const CaseForm = (props: {
                       CaseIndexDictionary.categoriaDadosPessoaisSensiveis
                         .conviccaoReligiosa
                     }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
@@ -2208,6 +2751,7 @@ const CaseForm = (props: {
                       CaseIndexDictionary.categoriaDadosPessoaisSensiveis
                         .opiniaoPolitica
                     }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2218,6 +2762,7 @@ const CaseForm = (props: {
                       CaseIndexDictionary.categoriaDadosPessoaisSensiveis
                         .filiacaoSindicato
                     }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
@@ -2228,6 +2773,7 @@ const CaseForm = (props: {
                       CaseIndexDictionary.categoriaDadosPessoaisSensiveis
                         .filiacaoOrgReligiosa
                     }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2238,6 +2784,7 @@ const CaseForm = (props: {
                       CaseIndexDictionary.categoriaDadosPessoaisSensiveis
                         .filiacaoCrencaFilosofica
                     }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
@@ -2248,6 +2795,7 @@ const CaseForm = (props: {
                       CaseIndexDictionary.categoriaDadosPessoaisSensiveis
                         .filiacaoPreferenciaPolitica
                     }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2258,6 +2806,7 @@ const CaseForm = (props: {
                       CaseIndexDictionary.categoriaDadosPessoaisSensiveis
                         .saudeVidaSexual
                     }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
@@ -2268,6 +2817,7 @@ const CaseForm = (props: {
                       CaseIndexDictionary.categoriaDadosPessoaisSensiveis
                         .geneticos
                     }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2278,6 +2828,7 @@ const CaseForm = (props: {
                       CaseIndexDictionary.categoriaDadosPessoaisSensiveis
                         .biometricos
                     }
+                    systems={systems}
                   />
                 </Accordion.Body>
               </Accordion.Item>
