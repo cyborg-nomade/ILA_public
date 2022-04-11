@@ -6,26 +6,16 @@ import Spinner from "react-bootstrap/Spinner";
 
 import {
   emptyBaseCase,
-  BaseCase,
   Case,
   emptyCase,
 } from "./../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
-import {
-  diff,
-  addedDiff,
-  deletedDiff,
-  updatedDiff,
-  detailedDiff,
-} from "deep-object-diff";
-import {
-  BaseChangeLog,
-  ChangeLog,
-} from "../../shared/models/change-logging/change-log.model";
+import { diff } from "deep-object-diff";
+import { ChangeLog } from "../../shared/models/change-logging/change-log.model";
 import { CaseChange } from "../../shared/models/DTOs/case-change.model";
-import { User } from "../../shared/models/access-control/users.model";
+
 import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
 
 const NewCase = () => {

@@ -2904,17 +2904,35 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="9">
                 <Accordion.Header>
-                  Categorias dos titulares de dados pessoais
+                  10 - Categorias dos titulares de dados pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Accordion>
                     <Accordion.Item eventKey="90">
-                      <Accordion.Header>Categorias gerais</Accordion.Header>
+                      <Accordion.Header>
+                        10.1 - Categorias gerais
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Tipo de Categoria</Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
+                        </Row>
+                        <Row>
+                          <Form.Label as={Col}></Form.Label>
+                          <Form.Label as={Col}></Form.Label>
+                          <Form.Label as={Col}></Form.Label>
+                          <Col lg={1}>
+                            <Row>
+                              <CreateCommentBox
+                                item={
+                                  CaseIndexDictionary.categoriasTitulares
+                                    .categorias
+                                }
+                              />
+                            </Row>
+                          </Col>
                         </Row>
                         <FieldArray
                           name="categoriasTitulares.categorias"
@@ -2932,9 +2950,14 @@ const CaseForm = (props: {
                                             ? "bg-primary bg-opacity-10"
                                             : ""
                                         }`}
-                                        label={`Categoria ${index + 1}`}
+                                        label={`Categoria`}
                                         disabled={!isEditing}
                                         name={`categoriasTitulares.categorias[${index}]`}
+                                        full={true}
+                                        itemRef={
+                                          CaseIndexDictionary
+                                            .categoriasTitulares.categorias
+                                        }
                                       />
                                       <Row className="justify-content-center">
                                         <ButtonGroup
@@ -2992,176 +3015,55 @@ const CaseForm = (props: {
                     </Accordion.Item>
                     <Accordion.Item eventKey="91">
                       <Accordion.Header>
-                        Categorias que envolvam crianças e adolescentes
+                        10.3 - Categorias que envolvam crianças e adolescentes
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Tipo de Categoria</Form.Label>
+                          <Form.Label as={Col}>Trata?</Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
-                        {/* <FieldArray
-                          name="categoriasTitulares.criancasAdolescentes"
-                          render={(arrayHelpers) => (
-                            <React.Fragment>
-                              {values.categoriasTitulares
-                                .criancasAdolescentes &&
-                              values.categoriasTitulares.criancasAdolescentes
-                                .length > 0 ? (
-                                values.categoriasTitulares.criancasAdolescentes.map(
-                                  (item, index) => (
-                                    <React.Fragment key={index}>
-                                      <Section10FormRow
-                                        className={`mb-3 pt-2 pb-2 ${
-                                          index % 2 === 0
-                                            ? "bg-primary bg-opacity-10"
-                                            : ""
-                                        }`}
-                                        label={`Categoria Crianças e Adolescentes ${
-                                          index + 1
-                                        }`}
-                                        disabled={!isEditing}
-                                        name={`categoriasTitulares.criancasAdolescentes[${index}]`}
-                                      />
-                                      <Row className="justify-content-center">
-                                        <ButtonGroup
-                                          as={Col}
-                                          className="mt-1 mb-3"
-                                          lg={2}
-                                        >
-                                          <Button
-                                            variant="primary"
-                                            onClick={() =>
-                                              arrayHelpers.push(
-                                                emptyItemCategoriaTitulares()
-                                              )
-                                            }
-                                          >
-                                            +
-                                          </Button>
-                                          <Button
-                                            variant="danger"
-                                            onClick={() =>
-                                              arrayHelpers.remove(index)
-                                            }
-                                          >
-                                            -
-                                          </Button>
-                                        </ButtonGroup>
-                                      </Row>
-                                    </React.Fragment>
-                                  )
-                                )
-                              ) : (
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(
-                                          emptyItemCategoriaTitulares()
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              )}
-                            </React.Fragment>
-                          )}
-                        /> */}
+                        <Section10FormRow
+                          className={"mb-3 pt-2 pb-2 bg-primary bg-opacity-10"}
+                          label={"Categoria Crianças e Adolescentes"}
+                          disabled={!isEditing}
+                          name={"categoriasTitulares.criancasAdolescentes"}
+                          full={false}
+                          itemRef={
+                            CaseIndexDictionary.categoriasTitulares
+                              .criancasAdolescentes
+                          }
+                        />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="92">
                       <Accordion.Header>
-                        Categorias que envolvam outros grupos vulneráveis
+                        10.4 - Categorias que envolvam outros grupos vulneráveis
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Tipo de Categoria</Form.Label>
+                          <Form.Label as={Col}>Trata?</Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
-                        {/* <FieldArray
-                          name="categoriasTitulares.outrosGruposVulneraveis"
-                          render={(arrayHelpers) => (
-                            <React.Fragment>
-                              {values.categoriasTitulares
-                                .outrosGruposVulneraveis &&
-                              values.categoriasTitulares.outrosGruposVulneraveis
-                                .length > 0 ? (
-                                values.categoriasTitulares.outrosGruposVulneraveis.map(
-                                  (item, index) => (
-                                    <React.Fragment key={index}>
-                                      <Section10FormRow
-                                        className={`mb-3 pt-2 pb-2 ${
-                                          index % 2 === 0
-                                            ? "bg-primary bg-opacity-10"
-                                            : ""
-                                        }`}
-                                        label={`Categoria Outros Grupos Vulneráveis ${
-                                          index + 1
-                                        }`}
-                                        disabled={!isEditing}
-                                        name={`categoriasTitulares.outrosGruposVulneraveis[${index}]`}
-                                      />
-                                      <Row className="justify-content-center">
-                                        <ButtonGroup
-                                          as={Col}
-                                          className="mt-1 mb-3"
-                                          lg={2}
-                                        >
-                                          <Button
-                                            variant="primary"
-                                            onClick={() =>
-                                              arrayHelpers.push(
-                                                emptyItemCategoriaTitulares()
-                                              )
-                                            }
-                                          >
-                                            +
-                                          </Button>
-                                          <Button
-                                            variant="danger"
-                                            onClick={() =>
-                                              arrayHelpers.remove(index)
-                                            }
-                                          >
-                                            -
-                                          </Button>
-                                        </ButtonGroup>
-                                      </Row>
-                                    </React.Fragment>
-                                  )
-                                )
-                              ) : (
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(
-                                          emptyItemCategoriaTitulares()
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              )}
-                            </React.Fragment>
-                          )}
-                        /> */}
+                        <Section10FormRow
+                          className={
+                            "mb-3 pt-2 pb-2 $ bg-primary bg-opacity-10"
+                          }
+                          label={"Categoria Outros Grupos Vulneráveis"}
+                          disabled={!isEditing}
+                          name={"categoriasTitulares.outrosGruposVulneraveis"}
+                          full={false}
+                          tooltip={
+                            "Idoso, pessoa em situação de rua, pessoa com deficiência, entre outros"
+                          }
+                          itemRef={
+                            CaseIndexDictionary.categoriasTitulares
+                              .outrosGruposVulneraveis
+                          }
+                        />
                       </Accordion.Body>
                     </Accordion.Item>
                   </Accordion>
