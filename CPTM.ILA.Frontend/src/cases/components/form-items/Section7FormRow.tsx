@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { useFormikContext, getIn } from "formik";
+import { useFormikContext, getIn, FieldArray } from "formik";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -9,6 +9,14 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 import { Case } from "../../../shared/models/cases.model";
 import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
+import { tipoFontesRetencao } from "../../../shared/models/case-helpers/enums.model";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Button from "react-bootstrap/Button";
+import {
+  emptyItemCategoriaDadosPessoais,
+  itemCategoriaDadosPessoais,
+} from "../../../shared/models/case-helpers/case-helpers.model";
+import Section7FormRowSub from "./Section7FormRowSub";
 
 const Section7FormRow = (props: {
   tooltip?: JSX.Element;
@@ -17,147 +25,123 @@ const Section7FormRow = (props: {
   name: string;
   className: string;
   itemRef: string;
+  systems: string[];
 }) => {
-  const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
-    useFormikContext<Case>();
+  const { values, setFieldValue } = useFormikContext<Case>();
 
-  const [descricao, setDescricao] = useState(
-    getIn(values, `${props.name}.descricao`)
-  );
-  const [tempoRetencao, setTempoRetencao] = useState(
-    getIn(values, `${props.name}.tempoRetencao`)
-  );
-  const [caminhoRedeSistema, setCaminhoRedeSistema] = useState(
-    getIn(values, `${props.name}.caminhoRedeSistema`)
+  const [trata, setTrata] = useState(false);
+
+  const categoriaAray: itemCategoriaDadosPessoais[] = getIn(
+    values,
+    `${props.name}`
   );
 
-  const handleChangeDescricao = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setDescricao(event.currentTarget.value);
-  };
-  const handleBlurDescricao = (event: React.FocusEvent<HTMLInputElement>) => {
-    handleBlur(event);
-    setFieldValue(`${props.name}.descricao`, descricao, true);
-  };
-
-  const handleChangeTempoRetencao = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setTempoRetencao(event.currentTarget.value);
-  };
-  const handleBlurTempoRetencao = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(`${props.name}.tempoRetencao`, tempoRetencao, true);
-  };
-
-  const handleChangeCaminhoRedeSistema = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setCaminhoRedeSistema(event.currentTarget.value);
-  };
-  const handleBlurCaminhoRedeSistema = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(`${props.name}.caminhoRedeSistema`, caminhoRedeSistema, true);
+  const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.value === "SIM") {
+      setTrata(true);
+    } else {
+      setTrata(false);
+      setFieldValue(`${props.name}`, []);
+    }
   };
 
   return (
-    <Row className={props.className}>
-      <Col lg={1}>
-        <p>{props.itemRef}</p>
-      </Col>
-      {props.tooltip ? (
-        <OverlayTrigger
-          placement="right"
-          overlay={<Tooltip className="text-muted">{props.tooltip}</Tooltip>}
-        >
+    <React.Fragment>
+      <Row className={props.className}>
+        <Col lg={1}>
+          <p>{props.itemRef}</p>
+        </Col>
+        {props.tooltip ? (
+          <OverlayTrigger
+            placement="right"
+            overlay={<Tooltip className="text-muted">{props.tooltip}</Tooltip>}
+          >
+            <Form.Label as={Col}>{props.label}</Form.Label>
+          </OverlayTrigger>
+        ) : (
           <Form.Label as={Col}>{props.label}</Form.Label>
-        </OverlayTrigger>
-      ) : (
-        <Form.Label as={Col}>{props.label}</Form.Label>
-      )}
-      <Col>
-        <Form.Control
-          disabled={props.disabled}
-          type="text"
-          name={`${props.name}.descricao`}
-          value={descricao}
-          onChange={handleChangeDescricao}
-          onBlur={handleBlurDescricao}
-          isValid={
-            getIn(touched, `${props.name}.descricao`) &&
-            !getIn(errors, `${props.name}.descricao`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.descricao`)}
-        />
-        <Form.Control.Feedback type="invalid">
-          Esse campo é obrigatório
-        </Form.Control.Feedback>
-      </Col>
-      <Col>
-        <Form.Control
-          disabled={props.disabled || !(descricao !== "Não se aplica")}
-          type="text"
-          name={`${props.name}.tempoRetencao`}
-          value={tempoRetencao}
-          onChange={handleChangeTempoRetencao}
-          onBlur={handleBlurTempoRetencao}
-          isValid={
-            getIn(touched, `${props.name}.tempoRetencao`) &&
-            !getIn(errors, `${props.name}.tempoRetencao`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.tempoRetencao`)}
-        />
-      </Col>
-      <Col>
-        <Form.Select
-          disabled={props.disabled || !(descricao !== "Não se aplica")}
-          name={`${props.name}.fonteRetencao`}
-          value={getIn(values, `${props.name}.fonteRetencao`)}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          isValid={
-            getIn(touched, `${props.name}.fonteRetencao`) &&
-            !getIn(errors, `${props.name}.fonteRetencao`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.fonteRetencao`)}
-        >
-          {Object.values(fontesRetencao).map((fnt) => (
-            <option value={fnt} key={fnt}>
-              {fnt}
-            </option>
-          ))}
-        </Form.Select>
-      </Col>
-      <Col>
-        <Form.Control
-          disabled={props.disabled || !(descricao !== "Não se aplica")}
-          type="text"
-          name={`${props.name}.caminhoRedeSistema`}
-          value={caminhoRedeSistema}
-          onChange={handleChangeCaminhoRedeSistema}
-          onBlur={handleBlurCaminhoRedeSistema}
-          isValid={
-            getIn(touched, `${props.name}.caminhoRedeSistema`) &&
-            !getIn(errors, `${props.name}.caminhoRedeSistema`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.caminhoRedeSistema`)}
-        />
-      </Col>
-      <Col lg={1}>
-        <Row>
-          <CreateCommentBox item={props.itemRef} />
-        </Row>
-      </Col>
-    </Row>
+        )}
+        <Col className="d-grid justify-content-center">
+          <Form.Check
+            type="radio"
+            name="trata"
+            required
+            label="Sim"
+            value="SIM"
+            onChange={handleTrataRadio}
+          />
+          <Form.Check
+            type="radio"
+            name="trata"
+            required
+            inline
+            label="Não"
+            value="NÃO"
+            onChange={handleTrataRadio}
+          />
+        </Col>
+        <Col></Col>
+        <Col></Col>
+        <Col></Col>
+        <Col></Col>
+        <Col lg={1}>
+          <Row>
+            <CreateCommentBox item={props.itemRef} />
+          </Row>
+        </Col>
+      </Row>
+      <FieldArray
+        name={props.name}
+        render={(arrayHelpers) => (
+          <React.Fragment>
+            {categoriaAray && categoriaAray.length > 0 ? (
+              categoriaAray.map((item, index) => (
+                <React.Fragment key={index}>
+                  <Section7FormRowSub
+                    systems={props.systems}
+                    className={props.className}
+                    name={`${props.name}[${index}]`}
+                  />
+                  <Row className="justify-content-center">
+                    <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                      <Button
+                        variant="primary"
+                        onClick={() =>
+                          arrayHelpers.push(emptyItemCategoriaDadosPessoais())
+                        }
+                      >
+                        +
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={() => arrayHelpers.remove(index)}
+                      >
+                        -
+                      </Button>
+                    </ButtonGroup>
+                  </Row>
+                </React.Fragment>
+              ))
+            ) : (
+              <Row className="justify-content-center">
+                <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                  <Button
+                    variant="primary"
+                    disabled={!trata}
+                    onClick={() =>
+                      arrayHelpers.push(emptyItemCategoriaDadosPessoais())
+                    }
+                  >
+                    +
+                  </Button>
+                </ButtonGroup>
+              </Row>
+            )}
+          </React.Fragment>
+        )}
+      />
+    </React.Fragment>
   );
 };
 
 export default Section7FormRow;
-function fontesRetencao(fontesRetencao: any) {
-  throw new Error("Function not implemented.");
-}
