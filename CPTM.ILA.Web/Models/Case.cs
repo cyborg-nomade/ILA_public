@@ -97,7 +97,7 @@ namespace CPTM.ILA.Web.Models
                 itemTransferenciaInternacional.Rectify();
             }
 
-            if (FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.ObrigacaoLegal)
+            if (FinalidadeTratamento.HipoteseTratamento.Value != HipotesesTratamento.ObrigacaoLegal.Value)
             {
                 FinalidadeTratamento.PrevisaoLegal = "";
             }

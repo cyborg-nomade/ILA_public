@@ -14,11 +14,11 @@
 
         public string Value { get; set; }
 
-        public static TipoFrequenciaTratamento Total24por7() => new TipoFrequenciaTratamento("27/7");
+        public static TipoFrequenciaTratamento Total24por7 => new TipoFrequenciaTratamento("27/7");
 
-        public static TipoFrequenciaTratamento HorarioOperacional() =>
+        public static TipoFrequenciaTratamento HorarioOperacional =>
             new TipoFrequenciaTratamento("Horário Operacional");
 
-        public static TipoFrequenciaTratamento HorarioComercial() => new TipoFrequenciaTratamento("Horário Comercial");
+        public static TipoFrequenciaTratamento HorarioComercial => new TipoFrequenciaTratamento("Horário Comercial");
     }
 }
