@@ -71,6 +71,7 @@ const Section12FormRow = (props: {
           isInvalid={!!getIn(errors, `${props.name}.descricaoControles`)}
         />
       </Col>
+      <Col lg={1}></Col>
     </Row>
   );
 };

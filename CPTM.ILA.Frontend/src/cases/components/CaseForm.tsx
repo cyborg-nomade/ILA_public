@@ -3097,7 +3097,7 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="11">
                 <Accordion.Header>
-                  Medidas de Segurança/Privacidade
+                  12 - Medidas de Segurança/Privacidade
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
@@ -3108,6 +3108,19 @@ const CaseForm = (props: {
                     <Form.Label as={Col}>
                       Descrição do(s) Controle(s)
                     </Form.Label>
+                    <Form.Label as={Col} lg={1}></Form.Label>
+                  </Row>
+                  <Row>
+                    <Col></Col>
+                    <Col></Col>
+                    <Col></Col>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.medidasSegurancaPrivacidade}
+                        />
+                      </Row>
+                    </Col>
                   </Row>
                   <FieldArray
                     name="medidasSegurancaPrivacidade"
