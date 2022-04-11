@@ -43,7 +43,9 @@ import Section3FormRow from "./form-items/Section3FormRow";
 import {
   hipotesesTratamento,
   tipoAbrangenciaGeografica,
+  tipoFrequenciaTratamento,
 } from "../../shared/models/case-helpers/enums.model";
+import Section9QuantityRow from "./form-items/Section9QuantityRow";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -2834,11 +2836,14 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="8">
                 <Accordion.Header>
-                  Frequência e totalização das categorias de dados pessoais
+                  9 - Frequência e totalização das categorias de dados pessoais
                   tratados
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.frequenciaTratamento}</p>
+                    </Col>
                     <OverlayTrigger
                       placement="right"
                       overlay={
@@ -2864,9 +2869,8 @@ const CaseForm = (props: {
                       </Form.Label>
                     </OverlayTrigger>
                     <Col lg={8}>
-                      <Form.Control
+                      <Form.Select
                         disabled={!isEditing}
-                        type="text"
                         name="frequenciaTratamento.value"
                         value={values.frequenciaTratamento.value}
                         onChange={handleChange}
@@ -2875,63 +2879,27 @@ const CaseForm = (props: {
                           touched.frequenciaTratamento?.value &&
                           !errors.frequenciaTratamento?.value
                         }
-                        isInvalid={!!errors.frequenciaTratamento}
-                      />
+                        isInvalid={!!errors.frequenciaTratamento?.value}
+                      >
+                        {Object.values(tipoFrequenciaTratamento).map((tft) => (
+                          <option value={tft} key={tft}>
+                            {tft}
+                          </option>
+                        ))}
+                      </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
                       </Form.Control.Feedback>
                     </Col>
-                  </Row>
-                  <Row className="mb-3">
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip className="text-muted">
-                          Informar a quantidade total de dados pessoais e dados
-                          pessoais sensíveis descritos no invetário.
-                          <br />
-                          <b>Exemplo:</b>
-                          <br />
-                          Tratamento de dados pessoais de detalhes pessoais como
-                          Idade, sexo, data de nascimento, local de nascimento,
-                          estado civil, nacionalidade.
-                          <br />
-                          Tratamento de dados pessoais de saúde como CID10 e
-                          data de último exame médico
-                          <br />A informação que deve ser preenchida no
-                          inventário é:
-                          <br />
-                          <b>
-                            São tratados 6 dados pessoais e 2 dados pessoais
-                            sensíveis, totalizando 8 dados pessoais tratados
-                            pelo serviço.
-                          </b>
-                        </Tooltip>
-                      }
-                    >
-                      <Form.Label as={Col}>
-                        Quantidade de dados pessoais e dados pessoais sensíveis
-                        tratados
-                      </Form.Label>
-                    </OverlayTrigger>
-                    <Col lg={8}>
-                      <Form.Control
-                        disabled={!isEditing}
-                        type="text"
-                        name="quantidadeDadosTratados"
-                        value={values.qtdeDadosTratados}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          touched.qtdeDadosTratados && !errors.qtdeDadosTratados
-                        }
-                        isInvalid={!!errors.qtdeDadosTratados}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.frequenciaTratamento}
+                        />
+                      </Row>
                     </Col>
                   </Row>
+                  <Section9QuantityRow />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="9">
