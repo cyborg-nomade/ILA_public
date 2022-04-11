@@ -3071,82 +3071,28 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="10">
                 <Accordion.Header>
-                  Compartilhamento de Dados Pessoais
+                  11 - Compartilhamento de Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
-                    <Form.Label as={Col}>Nome da Instituição</Form.Label>
                     <Form.Label as={Col}>
-                      Dados pessoais compartilhados
+                      Nome da Instituição Receptora
                     </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Compartilha?
+                    </Form.Label>
+                    <Form.Label as={Col}>Público/Privado</Form.Label>
+                    <Form.Label as={Col}>Nível de Compartilhamento</Form.Label>
+                    <Form.Label as={Col}>Descrição do Nível</Form.Label>
                     <Form.Label as={Col}>
-                      Finalidade do compartilhamento
+                      Finalidade do Compartilhamento
                     </Form.Label>
+                    <Form.Label as={Col} lg={1}></Form.Label>
                   </Row>
-                  <FieldArray
-                    name="compartilhamentoDadosPessoais"
-                    render={(arrayHelpers) => (
-                      <React.Fragment>
-                        {values.compartilhamentoDadosPessoais &&
-                        values.compartilhamentoDadosPessoais.length > 0 ? (
-                          values.compartilhamentoDadosPessoais.map(
-                            (item, index) => (
-                              <React.Fragment key={index}>
-                                <Section11FormRow
-                                  className={`mb-3 pt-2 pb-2 ${
-                                    index % 2 === 0
-                                      ? "bg-primary bg-opacity-10"
-                                      : ""
-                                  }`}
-                                  disabled={!isEditing}
-                                  name={`compartilhamentoDadosPessoais[${index}]`}
-                                />
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(
-                                          emptyItemCompatilhamentoDados()
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                    <Button
-                                      variant="danger"
-                                      onClick={() => arrayHelpers.remove(index)}
-                                    >
-                                      -
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              </React.Fragment>
-                            )
-                          )
-                        ) : (
-                          <Row className="justify-content-center">
-                            <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
-                              <Button
-                                variant="primary"
-                                onClick={() =>
-                                  arrayHelpers.push(
-                                    emptyItemCompatilhamentoDados()
-                                  )
-                                }
-                              >
-                                +
-                              </Button>
-                            </ButtonGroup>
-                          </Row>
-                        )}
-                      </React.Fragment>
-                    )}
-                  />
+                  <Section11FormRow disabled={!isEditing} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="11">

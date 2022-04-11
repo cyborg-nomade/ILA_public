@@ -17,17 +17,17 @@ namespace CPTM.ILA.Web.Models.CaseHelpers
 
         public ItemCompartilhamentoDados Rectify()
         {
-            if (NivelCompartilhamento == TipoNivelCompartilhamento.TodoOProcesso())
+            if (NivelCompartilhamento.Value == TipoNivelCompartilhamento.TodoOProcesso.Value)
             {
                 DescricaoDadosCompartilhados = null;
             }
 
-            if (TipoCompDados == TipoCompartilhamentoDados.Privado())
+            if (TipoCompDados.Value == TipoCompartilhamentoDados.Privado.Value)
             {
                 DescricaoFinalidadeComp = null;
             }
 
-            if (TipoCompDados == TipoCompartilhamentoDados.Publico())
+            if (TipoCompDados.Value == TipoCompartilhamentoDados.Publico.Value)
             {
                 FinalidadeComp = new TipoFinalidadeCompartilhamento(null);
             }

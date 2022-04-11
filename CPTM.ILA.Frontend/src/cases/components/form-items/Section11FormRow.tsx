@@ -1,124 +1,121 @@
 import React, { useState } from "react";
 
-import { useFormikContext, getIn } from "formik";
+import { useFormikContext, getIn, FieldArray } from "formik";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { Case } from "../../../shared/models/cases.model";
+import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
+import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Button from "react-bootstrap/Button";
+import { emptyItemCompatilhamentoDados } from "../../../shared/models/case-helpers/case-helpers.model";
+import Section11FormRowSub from "./Section11FormRowSub";
 
-const Section11FormRow = (props: {
-  disabled: boolean;
-  name: string;
-  className: string;
-}) => {
-  const { values, touched, errors, handleBlur, setFieldValue } =
-    useFormikContext<Case>();
+const Section11FormRow = (props: { disabled: boolean }) => {
+  const { values, setFieldValue } = useFormikContext<Case>();
 
-  const [nomeInstituicao, setNomeInstituicao] = useState(
-    getIn(values, `${props.name}.nomeInstituicao`)
-  );
-  const [dadosCompartilhados, setDadosCompartilhados] = useState(
-    getIn(values, `${props.name}.dadosCompartilhados`)
-  );
-  const [finalidadeCompartilhamento, setFinalidadeCompartilhamento] = useState(
-    getIn(values, `${props.name}.finalidadeCompartilhamento`)
-  );
+  const [trata, setTrata] = useState(false);
 
-  const handleChangeNomeInstituicao = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setNomeInstituicao(event.currentTarget.value);
-  };
-  const handleBlurNomeInstituicao = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(`${props.name}.nomeInstituicao`, nomeInstituicao, true);
-  };
-
-  const handleChangeDadosCompartilhados = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setDadosCompartilhados(event.currentTarget.value);
-  };
-  const handleBlurDadosCompartilhados = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(
-      `${props.name}.dadosCompartilhados`,
-      dadosCompartilhados,
-      true
-    );
-  };
-
-  const handleChangeFinalidadeCompartilhamento = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFinalidadeCompartilhamento(event.currentTarget.value);
-  };
-  const handleBlurFinalidadeCompartilhamento = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(
-      `${props.name}.finalidadeCompartilhamento`,
-      finalidadeCompartilhamento,
-      true
-    );
+  const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.value === "SIM") {
+      setTrata(true);
+    } else {
+      setTrata(false);
+      setFieldValue("compartilhamentoDadosPessoais", []);
+    }
   };
 
   return (
-    <Row className={props.className}>
-      <Col>
-        <Form.Control
-          disabled={props.disabled}
-          type="text"
-          name={`${props.name}.nomeInstituicao`}
-          value={nomeInstituicao}
-          onChange={handleChangeNomeInstituicao}
-          onBlur={handleBlurNomeInstituicao}
-          isValid={
-            getIn(touched, `${props.name}.nomeInstituicao`) &&
-            !getIn(errors, `${props.name}.nomeInstituicao`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.nomeInstituicao`)}
-        />
-      </Col>
-      <Col>
-        <Form.Control
-          disabled={props.disabled}
-          type="text"
-          name={`${props.name}.dadosCompartilhados`}
-          value={dadosCompartilhados}
-          onChange={handleChangeDadosCompartilhados}
-          onBlur={handleBlurDadosCompartilhados}
-          isValid={
-            getIn(touched, `${props.name}.dadosCompartilhados`) &&
-            !getIn(errors, `${props.name}.dadosCompartilhados`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.dadosCompartilhados`)}
-        />
-      </Col>
-      <Col>
-        <Form.Control
-          disabled={props.disabled}
-          type="text"
-          name={`${props.name}.finalidadeCompartilhamento`}
-          value={finalidadeCompartilhamento}
-          onChange={handleChangeFinalidadeCompartilhamento}
-          onBlur={handleBlurFinalidadeCompartilhamento}
-          isValid={
-            getIn(touched, `${props.name}.finalidadeCompartilhamento`) &&
-            !getIn(errors, `${props.name}.finalidadeCompartilhamento`)
-          }
-          isInvalid={
-            !!getIn(errors, `${props.name}.finalidadeCompartilhamento`)
-          }
-        />
-      </Col>
-    </Row>
+    <React.Fragment>
+      <Row>
+        <Form.Label as={Col}></Form.Label>
+        <Col className="d-grid justify-content-center">
+          <Form.Check
+            type="radio"
+            name="trata"
+            required
+            label="Sim"
+            value="SIM"
+            onChange={handleTrataRadio}
+          />
+          <Form.Check
+            type="radio"
+            name="trata"
+            required
+            inline
+            label="Não"
+            value="NÃO"
+            onChange={handleTrataRadio}
+          />
+        </Col>
+        <Form.Label as={Col}></Form.Label>
+        <Form.Label as={Col}></Form.Label>
+        <Form.Label as={Col}></Form.Label>
+        <Form.Label as={Col}></Form.Label>
+        <Col lg={1}>
+          <Row>
+            <CreateCommentBox
+              item={CaseIndexDictionary.compartilhamentoDadosPessoais}
+            />
+          </Row>
+        </Col>
+      </Row>
+      <FieldArray
+        name="compartilhamentoDadosPessoais"
+        render={(arrayHelpers) => (
+          <React.Fragment>
+            {values.compartilhamentoDadosPessoais &&
+            values.compartilhamentoDadosPessoais.length > 0 ? (
+              values.compartilhamentoDadosPessoais.map((item, index) => (
+                <React.Fragment key={index}>
+                  <Section11FormRowSub
+                    className={`mb-3 pt-2 pb-2 ${
+                      index % 2 === 0 ? "bg-primary bg-opacity-10" : ""
+                    }`}
+                    disabled={props.disabled}
+                    name={`compartilhamentoDadosPessoais[${index}]`}
+                  />
+                  <Row className="justify-content-center">
+                    <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                      <Button
+                        variant="primary"
+                        onClick={() =>
+                          arrayHelpers.push(emptyItemCompatilhamentoDados())
+                        }
+                      >
+                        +
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={() => arrayHelpers.remove(index)}
+                      >
+                        -
+                      </Button>
+                    </ButtonGroup>
+                  </Row>
+                </React.Fragment>
+              ))
+            ) : (
+              <Row className="justify-content-center">
+                <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                  <Button
+                    variant="primary"
+                    onClick={() =>
+                      arrayHelpers.push(emptyItemCompatilhamentoDados())
+                    }
+                    disabled={!trata}
+                  >
+                    +
+                  </Button>
+                </ButtonGroup>
+              </Row>
+            )}
+          </React.Fragment>
+        )}
+      />
+    </React.Fragment>
   );
 };
 
