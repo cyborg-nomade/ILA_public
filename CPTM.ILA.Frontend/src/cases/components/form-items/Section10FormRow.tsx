@@ -8,6 +8,8 @@ import Col from "react-bootstrap/Col";
 import { Case } from "../../../shared/models/cases.model";
 import { tipoCategoriaTitulares } from "../../../shared/models/case-helpers/enums.model";
 import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 
 const Section10FormRow = (props: {
   label: string;
@@ -20,8 +22,6 @@ const Section10FormRow = (props: {
 }) => {
   const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
     useFormikContext<Case>();
-
-  const [trata, setTrata] = useState(false);
 
   const [descricao, setDescricao] = useState(
     getIn(values, `${props.name}.descricao`)
@@ -37,17 +37,18 @@ const Section10FormRow = (props: {
     setFieldValue(`${props.name}.descricao`, descricao, true);
   };
 
-  const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.currentTarget.value === "SIM") {
-      setTrata(true);
-    } else {
-      setTrata(false);
-    }
-  };
-
   return (
     <Row className={props.className}>
-      <Form.Label as={Col}>{props.label}</Form.Label>
+      {props.tooltip ? (
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip className="text-muted">{props.tooltip}</Tooltip>}
+        >
+          <Form.Label as={Col}>{props.label}</Form.Label>
+        </OverlayTrigger>
+      ) : (
+        <Form.Label as={Col}>{props.label}</Form.Label>
+      )}
       {props.full ? (
         <Col>
           <Form.Select

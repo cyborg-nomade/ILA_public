@@ -517,7 +517,7 @@
                 c => new
                     {
                         Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
-                        TrataDados = c.Decimal(nullable: false, precision: 1, scale: 0),
+                        TrataDados = c.String(),
                         DescricaoDados = c.String(maxLength: 250),
                     })
                 .PrimaryKey(t => t.Id);
