@@ -195,13 +195,13 @@ export const emptyItemCategoriaTitulares = (): itemCategoriaTitulares => ({
 });
 
 export interface itemCategoriaTitularesExtra {
-  trataDados: boolean;
+  trataDados: string;
   descricaoDados: string;
 }
 
 export const emptyItemCategoriaTitularesExtra =
   (): itemCategoriaTitularesExtra => ({
-    trataDados: false,
+    trataDados: "NÃO",
     descricaoDados: "",
   });
 

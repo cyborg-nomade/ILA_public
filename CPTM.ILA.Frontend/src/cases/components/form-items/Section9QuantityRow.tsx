@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -10,8 +10,7 @@ import { Case } from "../../../shared/models/cases.model";
 import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
 
 const Section9QuantityRow = () => {
-  const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
-    useFormikContext<Case>();
+  const { values, setFieldValue } = useFormikContext<Case>();
 
   useEffect(() => {
     let totalDadosTratados = 0;
