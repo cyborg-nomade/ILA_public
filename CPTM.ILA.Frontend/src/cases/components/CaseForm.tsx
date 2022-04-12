@@ -16,9 +16,7 @@ import Alert from "react-bootstrap/Alert";
 import Stack from "react-bootstrap/Stack";
 
 import {
-  emptyItemCategoriaDadosPessoais,
   emptyItemCategoriaTitulares,
-  emptyItemCompatilhamentoDados,
   emptyItemContratoTI,
   emptyItemMedidaSegurancaPrivacidade,
   emptyItemObservacoesProcesso,
@@ -61,6 +59,7 @@ const CaseForm = (props: {
   const [isEditing, setIsEditing] = useState(props.new || false);
   const [itemValues, setItemValues] = useState<Case>(emptyCase());
   const [systems, setSystems] = useState<string[]>([]);
+  const [countries, setCountries] = useState<string[]>([]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
@@ -83,11 +82,25 @@ const CaseForm = (props: {
     setSystems(systems);
   }, [sendRequest, token]);
 
+  const getCountries = useCallback(async () => {
+    const responseData = await sendRequest(
+      `${process.env.REACT_APP_CONNSTR}/utilities/countries`,
+      undefined,
+      undefined,
+      { "Content-Type": "application/json", Authorization: "Bearer " + token }
+    );
+
+    const countries: string[] = responseData.countries;
+
+    setCountries(countries);
+  }, [sendRequest, token]);
+
   useEffect(() => {
     getSystems();
+    getCountries();
 
     return () => {};
-  }, [getSystems]);
+  }, [getCountries, getSystems]);
 
   let navigate = useNavigate();
   const cid = useParams().cid || "";
@@ -3193,12 +3206,18 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="12">
                 <Accordion.Header>
-                  Transferência Internacional de Dados Pessoais
+                  13 - Transferência Internacional de Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                     <Form.Label as={Col}>
                       Nome da Organização Receptora
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Transfere?
                     </Form.Label>
                     <Form.Label as={Col}>País</Form.Label>
                     <Form.Label as={Col}>
@@ -3207,71 +3226,9 @@ const CaseForm = (props: {
                     <Form.Label as={Col}>
                       Tipo de garantia para transferência
                     </Form.Label>
+                    <Col lg={1}></Col>
                   </Row>
-                  <FieldArray
-                    name="transferenciaInternacional"
-                    render={(arrayHelpers) => (
-                      <React.Fragment>
-                        {values.transferenciaInternacional &&
-                        values.transferenciaInternacional.length > 0 ? (
-                          values.transferenciaInternacional.map(
-                            (item, index) => (
-                              <React.Fragment key={index}>
-                                <Section13FormRow
-                                  className={`mb-3 pt-2 pb-2 ${
-                                    index % 2 === 0
-                                      ? "bg-primary bg-opacity-10"
-                                      : ""
-                                  }`}
-                                  disabled={!isEditing}
-                                  name={`transferenciaInternacional[${index}]`}
-                                />
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(
-                                          emptyItemTransferenciaInternacional()
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                    <Button
-                                      variant="danger"
-                                      onClick={() => arrayHelpers.remove(index)}
-                                    >
-                                      -
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              </React.Fragment>
-                            )
-                          )
-                        ) : (
-                          <Row className="justify-content-center">
-                            <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
-                              <Button
-                                variant="primary"
-                                onClick={() =>
-                                  arrayHelpers.push(
-                                    emptyItemTransferenciaInternacional()
-                                  )
-                                }
-                              >
-                                +
-                              </Button>
-                            </ButtonGroup>
-                          </Row>
-                        )}
-                      </React.Fragment>
-                    )}
-                  />
+                  <Section13FormRow countries={countries} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="13">
