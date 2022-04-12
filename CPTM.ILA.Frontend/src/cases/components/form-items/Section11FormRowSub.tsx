@@ -75,6 +75,7 @@ const Section11FormRowSub = (props: {
 
   return (
     <Row className={props.className}>
+      <Col></Col>
       <Col>
         <Form.Control
           disabled={props.disabled}
@@ -90,7 +91,6 @@ const Section11FormRowSub = (props: {
           isInvalid={!!getIn(errors, `${props.name}.nomeInstituicao`)}
         />
       </Col>
-      <Col></Col>
       <Col>
         <Form.Select
           name={`${props.name}.tipoCompDados.value`}

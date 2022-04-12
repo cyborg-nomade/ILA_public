@@ -30,7 +30,6 @@ const Section13FormRow = (props: { countries: string[] }) => {
   return (
     <React.Fragment>
       <Row>
-        <Col></Col>
         <Col className="d-grid justify-content-center">
           <Form.Check
             type="radio"
@@ -50,6 +49,7 @@ const Section13FormRow = (props: { countries: string[] }) => {
             onChange={handleTrataRadio}
           />
         </Col>
+        <Col></Col>
         <Col></Col>
         <Col></Col>
         <Col></Col>

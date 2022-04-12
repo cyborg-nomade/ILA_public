@@ -30,7 +30,6 @@ const Section11FormRow = (props: { disabled: boolean }) => {
   return (
     <React.Fragment>
       <Row>
-        <Form.Label as={Col}></Form.Label>
         <Col className="d-grid justify-content-center">
           <Form.Check
             type="radio"
@@ -50,6 +49,7 @@ const Section11FormRow = (props: { disabled: boolean }) => {
             onChange={handleTrataRadio}
           />
         </Col>
+        <Form.Label as={Col}></Form.Label>
         <Form.Label as={Col}></Form.Label>
         <Form.Label as={Col}></Form.Label>
         <Form.Label as={Col}></Form.Label>
