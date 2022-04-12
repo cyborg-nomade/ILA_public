@@ -69,6 +69,7 @@ const Section15FormRow = (props: {
           isInvalid={!!getIn(errors, `${props.name}.observacoes`)}
         />
       </Col>
+      <Col lg={1}></Col>
     </Row>
   );
 };

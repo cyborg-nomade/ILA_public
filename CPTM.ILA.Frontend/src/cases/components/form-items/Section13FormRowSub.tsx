@@ -48,6 +48,7 @@ const Section13FormRowSub = (props: {
 
   return (
     <Row className={props.className}>
+      <Col></Col>
       <Col>
         <Form.Control
           type="text"
@@ -62,7 +63,6 @@ const Section13FormRowSub = (props: {
           isInvalid={!!getIn(errors, `${props.name}.nomeOrganizacao`)}
         />
       </Col>
-      <Col></Col>
       <Col>
         <Form.Select
           name={`${props.name}.pais`}

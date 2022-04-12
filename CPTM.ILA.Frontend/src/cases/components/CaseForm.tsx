@@ -3088,14 +3088,14 @@ const CaseForm = (props: {
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
-                    <Form.Label as={Col}>
-                      Nome da Instituição Receptora
-                    </Form.Label>
                     <Form.Label
                       as={Col}
                       className="d-grid justify-content-center"
                     >
                       Compartilha?
+                    </Form.Label>
+                    <Form.Label as={Col}>
+                      Nome da Instituição Receptora
                     </Form.Label>
                     <Form.Label as={Col}>Público/Privado</Form.Label>
                     <Form.Label as={Col}>Nível de Compartilhamento</Form.Label>
@@ -3210,14 +3210,14 @@ const CaseForm = (props: {
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
-                    <Form.Label as={Col}>
-                      Nome da Organização Receptora
-                    </Form.Label>
                     <Form.Label
                       as={Col}
                       className="d-grid justify-content-center"
                     >
                       Transfere?
+                    </Form.Label>
+                    <Form.Label as={Col}>
+                      Nome da Organização Receptora
                     </Form.Label>
                     <Form.Label as={Col}>País</Form.Label>
                     <Form.Label as={Col}>
@@ -3233,82 +3233,30 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="13">
                 <Accordion.Header>
-                  Contrato(s) de serviços e/ou soluções de TI que trata(m) dados
-                  pessoais do serviço/processo de negócio
+                  14 - Contrato(s) de serviços e/ou soluções de TI que trata(m)
+                  dados pessoais do serviço/processo de negócio
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Existe?
+                    </Form.Label>
                     <Form.Label as={Col}>Número do Contrato</Form.Label>
                     <Form.Label as={Col}>Nº Processo Contratação</Form.Label>
                     <Form.Label as={Col}>Objeto do Contrato</Form.Label>
                     <Form.Label as={Col}>
                       E-mail do Gestor do Contrato
                     </Form.Label>
+                    <Col lg={1}></Col>
                   </Row>
-                  <FieldArray
-                    name="contratoServicosTITratamentoDados"
-                    render={(arrayHelpers) => (
-                      <React.Fragment>
-                        {values.contratoServicosTITratamentoDados &&
-                        values.contratoServicosTITratamentoDados.length > 0 ? (
-                          values.contratoServicosTITratamentoDados.map(
-                            (item, index) => (
-                              <React.Fragment key={index}>
-                                <Section14FormRow
-                                  className={`mb-3 pt-2 pb-2 ${
-                                    index % 2 === 0
-                                      ? "bg-primary bg-opacity-10"
-                                      : ""
-                                  }`}
-                                  disabled={!isEditing}
-                                  name={`contratoServicosTITratamentoDados[${index}]`}
-                                />
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(emptyItemContratoTI())
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                    <Button
-                                      variant="danger"
-                                      onClick={() => arrayHelpers.remove(index)}
-                                    >
-                                      -
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              </React.Fragment>
-                            )
-                          )
-                        ) : (
-                          <Row className="justify-content-center">
-                            <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
-                              <Button
-                                variant="primary"
-                                onClick={() =>
-                                  arrayHelpers.push(emptyItemContratoTI())
-                                }
-                              >
-                                +
-                              </Button>
-                            </ButtonGroup>
-                          </Row>
-                        )}
-                      </React.Fragment>
-                    )}
-                  />
+                  <Section14FormRow />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="14">
-                <Accordion.Header>Risco de Privacidade</Accordion.Header>
+                <Accordion.Header>15 - Risco de Privacidade</Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                     <Form.Label as={Col}></Form.Label>
@@ -3316,6 +3264,19 @@ const CaseForm = (props: {
                       Tipo de Risco de Privacidade
                     </Form.Label>
                     <Form.Label as={Col}>Observações</Form.Label>
+                    <Col lg={1}></Col>
+                  </Row>
+                  <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                    <Form.Label as={Col}></Form.Label>
+                    <Form.Label as={Col}></Form.Label>
+                    <Form.Label as={Col}></Form.Label>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.riscosPrivacidade}
+                        />
+                      </Row>
+                    </Col>
                   </Row>
                   <FieldArray
                     name="riscosPrivacidade"
@@ -3382,11 +3343,22 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="15">
                 <Accordion.Header>
-                  Observações sobre o Processo
+                  16 - Observações sobre o Processo
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                     <Form.Label as={Col}>Observação</Form.Label>
+                    <Col lg={1}></Col>
+                  </Row>
+                  <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                    <Form.Label as={Col}>Observação</Form.Label>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.observacoesProcesso}
+                        />
+                      </Row>
+                    </Col>
                   </Row>
                   <FieldArray
                     name="observacoesProcesso"
