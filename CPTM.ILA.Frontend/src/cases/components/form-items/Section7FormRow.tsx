@@ -83,7 +83,7 @@ const Section7FormRow = (props: {
         <Col></Col>
         <Col></Col>
         <Col></Col>
-        <Col></Col>
+        <Col lg={2}></Col>
         <Col lg={1}>
           <Row>
             <CreateCommentBox item={props.itemRef} />

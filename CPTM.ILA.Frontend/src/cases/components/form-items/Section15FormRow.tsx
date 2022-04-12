@@ -37,15 +37,15 @@ const Section15FormRow = (props: {
       <Col>
         <Form.Select
           disabled={props.disabled}
-          name={`${props.name}.tipoRisco`}
-          value={getIn(values, `${props.name}.tipoRisco`)}
+          name={`${props.name}.tipoRisco.value`}
+          value={getIn(values, `${props.name}.tipoRisco.value`)}
           onChange={handleChange}
           onBlur={handleBlur}
           isValid={
-            getIn(touched, `${props.name}.tipoRisco`) &&
-            !getIn(errors, `${props.name}.tipoRisco`)
+            getIn(touched, `${props.name}.tipoRisco.value`) &&
+            !getIn(errors, `${props.name}.tipoRisco.value`)
           }
-          isInvalid={!!getIn(errors, `${props.name}.tipoRisco`)}
+          isInvalid={!!getIn(errors, `${props.name}.tipoRisco.value`)}
         >
           {Object.values(tipoRiscoPrivacidade).map((tip) => (
             <option value={tip} key={tip}>

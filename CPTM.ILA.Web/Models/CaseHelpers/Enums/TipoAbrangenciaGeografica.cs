@@ -14,9 +14,9 @@
 
         public string Value { get; set; }
 
-        public TipoAbrangenciaGeografica Nacional => new TipoAbrangenciaGeografica("Nacional");
-        public TipoAbrangenciaGeografica Estadual => new TipoAbrangenciaGeografica("Estadual");
-        public TipoAbrangenciaGeografica Municipal => new TipoAbrangenciaGeografica("Municipal");
-        public TipoAbrangenciaGeografica Regional => new TipoAbrangenciaGeografica("Regional");
+        public TipoAbrangenciaGeografica Nacional() => new TipoAbrangenciaGeografica("Nacional");
+        public TipoAbrangenciaGeografica Estadual() => new TipoAbrangenciaGeografica("Estadual");
+        public TipoAbrangenciaGeografica Municipal() => new TipoAbrangenciaGeografica("Municipal");
+        public TipoAbrangenciaGeografica Regional() => new TipoAbrangenciaGeografica("Regional");
     }
 }

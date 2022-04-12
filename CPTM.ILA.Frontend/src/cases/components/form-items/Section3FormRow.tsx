@@ -12,90 +12,21 @@ import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionar
 import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
 
 const Section3FormRow = () => {
-  const { values, touched, errors, setFieldValue, handleBlur } =
+  const { values, touched, errors, setFieldValue, handleBlur, handleChange } =
     useFormikContext<Case>();
 
   const [trata, setTrata] = useState(false);
-  const [coleta, setColeta] = useState(
-    getIn(values, "fasesCicloTratamento.coleta")
-  );
-  const [retencao, setRetencao] = useState(
-    getIn(values, "fasesCicloTratamento.retencao")
-  );
-  const [processamento, setProcessamento] = useState(
-    getIn(values, "fasesCicloTratamento.processamento")
-  );
-  const [compartilhamento, setCompartilhamento] = useState(
-    getIn(values, "fasesCicloTratamento.compatilhamento")
-  );
-  const [eliminacao, setEliminacao] = useState(
-    getIn(values, "fasesCicloTratamento.eliminacao")
-  );
-
-  const handleChangeColeta = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setColeta(event.currentTarget.value);
-  };
-  const handleBlurColeta = (event: React.FocusEvent<HTMLInputElement>) => {
-    handleBlur(event);
-    setFieldValue("fasesCicloTratamento.coleta", coleta, true);
-  };
-
-  const handleChangeRetencao = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRetencao(event.currentTarget.value);
-  };
-  const handleBlurRetencao = (event: React.FocusEvent<HTMLInputElement>) => {
-    handleBlur(event);
-    setFieldValue("fasesCicloTratamento.retencao", retencao, true);
-  };
-
-  const handleChangeProcessamento = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setProcessamento(event.currentTarget.value);
-  };
-  const handleBlurProcessamento = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue("fasesCicloTratamento.processamento", processamento, true);
-  };
-
-  const handleChangeCompartilhamento = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setCompartilhamento(event.currentTarget.value);
-    setFieldValue(
-      "fasesCicloTratamento.compartilhamento",
-      compartilhamento,
-      true
-    );
-  };
-  const handleBlurCompartilhamento = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(
-      "fasesCicloTratamento.compartilhamento",
-      compartilhamento,
-      true
-    );
-  };
-
-  const handleChangeEliminacao = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setEliminacao(event.currentTarget.value);
-  };
-  const handleBlurEliminacao = (event: React.FocusEvent<HTMLInputElement>) => {
-    handleBlur(event);
-    setFieldValue("fasesCicloTratamento.eliminacao", eliminacao, true);
-  };
 
   const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.value === "SIM") {
       setTrata(true);
     } else {
       setTrata(false);
+      setFieldValue("fasesCicloTratamento.coleta", false);
+      setFieldValue("fasesCicloTratamento.retencao", false);
+      setFieldValue("fasesCicloTratamento.processamento", false);
+      setFieldValue("fasesCicloTratamento.compartilhamento", false);
+      setFieldValue("fasesCicloTratamento.eliminacao", false);
     }
   };
 
@@ -147,8 +78,8 @@ const Section3FormRow = () => {
           id="fasesCicloTratamento.coleta"
           name="fasesCicloTratamento.coleta"
           checked={values.fasesCicloTratamento.coleta}
-          onChange={handleChangeColeta}
-          onBlur={handleBlurColeta}
+          onChange={handleChange}
+          onBlur={handleBlur}
           isValid={
             getIn(touched, "fasesCicloTratamento.coleta") &&
             !getIn(errors, "fasesCicloTratamento.coleta")
@@ -163,8 +94,8 @@ const Section3FormRow = () => {
           id="fasesCicloTratamento.retencao"
           name="fasesCicloTratamento.retencao"
           checked={values.fasesCicloTratamento.retencao}
-          onChange={handleChangeRetencao}
-          onBlur={handleBlurRetencao}
+          onChange={handleChange}
+          onBlur={handleBlur}
           isValid={
             getIn(touched, "fasesCicloTratamento.retencao") &&
             !getIn(errors, "fasesCicloTratamento.retencao")
@@ -179,8 +110,8 @@ const Section3FormRow = () => {
           id="fasesCicloTratamento.processamento"
           name="fasesCicloTratamento.processamento"
           checked={values.fasesCicloTratamento.processamento}
-          onChange={handleChangeProcessamento}
-          onBlur={handleBlurProcessamento}
+          onChange={handleChange}
+          onBlur={handleBlur}
           isValid={
             getIn(touched, "fasesCicloTratamento.processamento") &&
             !getIn(errors, "fasesCicloTratamento.processamento")
@@ -195,8 +126,8 @@ const Section3FormRow = () => {
           id="fasesCicloTratamento.compartilhamento"
           name="fasesCicloTratamento.compartilhamento"
           checked={values.fasesCicloTratamento.compartilhamento}
-          onChange={handleChangeCompartilhamento}
-          onBlur={handleBlurCompartilhamento}
+          onChange={handleChange}
+          onBlur={handleBlur}
           isValid={
             getIn(touched, "fasesCicloTratamento.compartilhamento") &&
             !getIn(errors, "fasesCicloTratamento.compartilhamento")
@@ -211,8 +142,8 @@ const Section3FormRow = () => {
           id="fasesCicloTratamento.eliminacao"
           name="fasesCicloTratamento.eliminacao"
           checked={values.fasesCicloTratamento.eliminacao}
-          onChange={handleChangeEliminacao}
-          onBlur={handleBlurEliminacao}
+          onChange={handleChange}
+          onBlur={handleBlur}
           isValid={
             getIn(touched, "fasesCicloTratamento.eliminacao") &&
             !getIn(errors, "fasesCicloTratamento.eliminacao")

@@ -4,9 +4,9 @@ import Select from "react-select";
 import {
   GroupedOption,
   Options,
-} from "./../../../access-requests/components/AccessRequestForm";
+} from "../../../access-requests/components/AccessRequestForm";
 
-const SelectField = (props: FieldAttributes<any>) => {
+const SelectFieldMulti = (props: FieldAttributes<any>) => {
   const [field, state, { setValue, setTouched }] = useField(props.field.name);
 
   // value is an array now
@@ -29,4 +29,4 @@ const SelectField = (props: FieldAttributes<any>) => {
   );
 };
 
-export default SelectField;
+export default SelectFieldMulti;

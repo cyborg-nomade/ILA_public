@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
-import { useFormikContext, getIn } from "formik";
+import { useFormikContext, getIn, Field } from "formik";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { Case } from "../../../shared/models/cases.model";
+import SelectFieldSearch from "../../../shared/components/UI/SelectFieldSearch";
 
 const Section13FormRowSub = (props: {
   name: string;
@@ -64,7 +65,7 @@ const Section13FormRowSub = (props: {
         />
       </Col>
       <Col>
-        <Form.Select
+        {/* <Form.Select
           name={`${props.name}.pais`}
           value={getIn(values, `${props.name}.pais`)}
           onChange={handleChange}
@@ -80,7 +81,12 @@ const Section13FormRowSub = (props: {
               {c}
             </option>
           ))}
-        </Form.Select>
+        </Form.Select> */}
+        <Field
+          component={SelectFieldSearch}
+          name={`${props.name}.pais`}
+          options={props.countries.map((c) => ({ value: c, label: c }))}
+        />
       </Col>
       <Col>
         <Form.Control

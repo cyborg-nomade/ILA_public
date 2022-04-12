@@ -26,6 +26,9 @@ const Section10FormRow = (props: {
   const [descricao, setDescricao] = useState(
     getIn(values, `${props.name}.descricao`)
   );
+  const [isDescricaoEnabled, setIsDescricaoEnabled] = useState(
+    false || props.full
+  );
 
   const handleChangeDescricao = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -34,7 +37,16 @@ const Section10FormRow = (props: {
   };
   const handleBlurDescricao = (event: React.FocusEvent<HTMLInputElement>) => {
     handleBlur(event);
-    setFieldValue(`${props.name}.descricao`, descricao, true);
+    setFieldValue(`${props.name}.descricao`, descricao);
+  };
+
+  const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleChange(event);
+    if (event.currentTarget.value === "NÃO") {
+      setIsDescricaoEnabled(false);
+    } else {
+      setIsDescricaoEnabled(true);
+    }
   };
 
   return (
@@ -53,15 +65,15 @@ const Section10FormRow = (props: {
         <Col>
           <Form.Select
             disabled={props.disabled}
-            name={`${props.name}.tipoCategoria`}
-            value={getIn(values, `${props.name}.tipoCategoria`)}
+            name={`${props.name}.tipoCategoria.value`}
+            value={getIn(values, `${props.name}.tipoCategoria.value`)}
             onChange={handleChange}
             onBlur={handleBlur}
             isValid={
-              getIn(touched, `${props.name}.tipoCategoria`) &&
-              !getIn(errors, `${props.name}.tipoCategoria`)
+              getIn(touched, `${props.name}.tipoCategoria.value`) &&
+              !getIn(errors, `${props.name}.tipoCategoria.value`)
             }
-            isInvalid={!!getIn(errors, `${props.name}.tipoCategoria`)}
+            isInvalid={!!getIn(errors, `${props.name}.tipoCategoria.value`)}
           >
             {Object.values(tipoCategoriaTitulares).map((ctg) => (
               <option value={ctg} key={ctg}>
@@ -78,7 +90,7 @@ const Section10FormRow = (props: {
             required
             label="Sim"
             value="SIM"
-            onChange={handleChange}
+            onChange={handleChangeRadio}
             onBlur={handleBlur}
             isValid={
               getIn(touched, `${props.name}.trataDados`) &&
@@ -92,7 +104,7 @@ const Section10FormRow = (props: {
             required
             label="Não"
             value="NÃO"
-            onChange={handleChange}
+            onChange={handleChangeRadio}
             onBlur={handleBlur}
             isValid={
               getIn(touched, `${props.name}.trataDados`) &&
@@ -104,14 +116,12 @@ const Section10FormRow = (props: {
       )}
       <Col>
         <Form.Control
-          disabled={
-            props.disabled ||
-            (getIn(values, `${props.name}.trataDados`) &&
-              getIn(values, `${props.name}.trataDados`) !== "SIM")
-          }
+          disabled={props.disabled || !isDescricaoEnabled}
           type="text"
           name={`${props.name}.descricao`}
-          value={descricao}
+          value={
+            getIn(values, `${props.name}.trataDados`) === "NÃO" ? "" : descricao
+          }
           onChange={handleChangeDescricao}
           onBlur={handleBlurDescricao}
           isValid={
