@@ -3266,7 +3266,7 @@ const CaseForm = (props: {
                     <Form.Label as={Col}>Observações</Form.Label>
                     <Col lg={1}></Col>
                   </Row>
-                  <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                  <Row className="mb-3 pt-2 pb-2">
                     <Form.Label as={Col}></Form.Label>
                     <Form.Label as={Col}></Form.Label>
                     <Form.Label as={Col}></Form.Label>
@@ -3350,8 +3350,8 @@ const CaseForm = (props: {
                     <Form.Label as={Col}>Observação</Form.Label>
                     <Col lg={1}></Col>
                   </Row>
-                  <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
-                    <Form.Label as={Col}>Observação</Form.Label>
+                  <Row className="mb-3 pt-2 pb-2">
+                    <Form.Label as={Col}></Form.Label>
                     <Col lg={1}>
                       <Row>
                         <CreateCommentBox
