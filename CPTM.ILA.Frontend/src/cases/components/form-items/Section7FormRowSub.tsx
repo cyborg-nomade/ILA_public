@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { useFormikContext, getIn } from "formik";
+import { useFormikContext, getIn, Field } from "formik";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,6 +10,10 @@ import {
   tipoFontesRetencao,
   tipoTempoRetencao,
 } from "../../../shared/models/case-helpers/enums.model";
+import { Options } from "./../../../access-requests/components/AccessRequestForm";
+import Select from "react-select";
+import SelectFieldSearch from "./../../../shared/components/UI/SelectFieldSearch";
+import SelectFieldMulti from "./../../../shared/components/UI/SelectFieldMulti";
 
 const Section7FormRowSub = (props: {
   name: string;
@@ -45,6 +49,11 @@ const Section7FormRowSub = (props: {
     }
     handleChange(event);
   };
+
+  const selectOptions: Options[] = props.systems.map((s) => ({
+    value: s,
+    label: s,
+  }));
 
   return (
     <Row className={props.className}>
@@ -106,7 +115,7 @@ const Section7FormRowSub = (props: {
           ))}
         </Form.Select>
       </Col>
-      <Col>
+      <Col lg={2}>
         {!isSystemSelect ? (
           <Form.Control
             type="text"
@@ -121,23 +130,30 @@ const Section7FormRowSub = (props: {
             isInvalid={!!getIn(errors, `${props.name}.localArmazenamento`)}
           />
         ) : (
-          <Form.Select
-            name={`${props.name}.localArmazenamento`}
-            value={getIn(values, `${props.name}.localArmazenamento`)}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            isValid={
-              getIn(touched, `${props.name}.localArmazenamento`) &&
-              !getIn(errors, `${props.name}.localArmazenamento`)
-            }
-            isInvalid={!!getIn(errors, `${props.name}.localArmazenamento`)}
-          >
-            {Object.values(props.systems).map((s) => (
-              <option value={s} key={s}>
-                {s}
-              </option>
-            ))}
-          </Form.Select>
+          <React.Fragment>
+            {/* <Form.Select
+              name={`${props.name}.localArmazenamento`}
+              value={getIn(values, `${props.name}.localArmazenamento`)}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              isValid={
+                getIn(touched, `${props.name}.localArmazenamento`) &&
+                !getIn(errors, `${props.name}.localArmazenamento`)
+              }
+              isInvalid={!!getIn(errors, `${props.name}.localArmazenamento`)}
+            >
+              {Object.values(props.systems).map((s) => (
+                <option value={s} key={s}>
+                  {s}
+                </option>
+              ))}
+            </Form.Select> */}
+            <Field
+              component={SelectFieldSearch}
+              name={`${props.name}.localArmazenamento`}
+              options={selectOptions}
+            />
+          </React.Fragment>
         )}
       </Col>
       <Col lg={1}></Col>

@@ -56,7 +56,7 @@ const NewCase = () => {
 
     item.usuarioCriadorId = user.id;
     item.grupoCriadorId = currentGroup.id;
-    item.area = item.extensaoEncarregado.area || "";
+    item.area = currentGroup.nome;
     for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
       if (value.length !== 0) {
         item.dadosPessoaisSensiveis = true;
@@ -83,22 +83,22 @@ const NewCase = () => {
 
     console.log("Case Change: ", caseChange);
 
-    // try {
-    //   await sendRequest(
-    //     `${process.env.REACT_APP_CONNSTR}/cases/`,
-    //     "POST",
-    //     JSON.stringify(caseChange),
-    //     {
-    //       "Content-Type": "application/json",
-    //       Authorization: "Bearer " + token,
-    //     }
-    //   );
+    try {
+      await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/cases/`,
+        "POST",
+        JSON.stringify(caseChange),
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        }
+      );
 
-    //   navigate(`/`);
-    // } catch (err) {
-    //   console.log(err);
-    //   setInitialCase(item);
-    // }
+      navigate(`/`);
+    } catch (err) {
+      console.log(err);
+      setInitialCase(item);
+    }
   };
 
   const sendToApprovalHandler = async (item: Case) => {

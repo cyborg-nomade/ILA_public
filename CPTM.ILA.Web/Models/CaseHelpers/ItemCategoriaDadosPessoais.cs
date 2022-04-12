@@ -10,7 +10,7 @@ namespace CPTM.ILA.Web.Models.CaseHelpers
         public int Id { get; set; }
         public string Descricao { get; set; }
         public TipoTempoRetencao TempoRetencao { get; set; }
-        public TipoFontesRetenção FonteRetenção { get; set; }
+        public TipoFontesRetenção FonteRetencao { get; set; }
         public string LocalArmazenamento { get; set; }
     }
 }

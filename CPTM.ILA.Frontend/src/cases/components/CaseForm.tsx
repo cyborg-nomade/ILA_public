@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Formik, FieldArray } from "formik";
+import { Formik, FieldArray, Field } from "formik";
 // import * as yup from "yup";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -17,11 +17,9 @@ import Stack from "react-bootstrap/Stack";
 
 import {
   emptyItemCategoriaTitulares,
-  emptyItemContratoTI,
   emptyItemMedidaSegurancaPrivacidade,
   emptyItemObservacoesProcesso,
   emptyItemRiscoPrivacidade,
-  emptyItemTransferenciaInternacional,
 } from "../../shared/models/case-helpers/case-helpers.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
@@ -44,6 +42,8 @@ import {
   tipoFrequenciaTratamento,
 } from "../../shared/models/case-helpers/enums.model";
 import Section9QuantityRow from "./form-items/Section9QuantityRow";
+import { useUtilities } from "../../shared/hooks/utilities-hook";
+import SelectFieldSearch from "../../shared/components/UI/SelectFieldSearch";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -58,8 +58,6 @@ const CaseForm = (props: {
 }) => {
   const [isEditing, setIsEditing] = useState(props.new || false);
   const [itemValues, setItemValues] = useState<Case>(emptyCase());
-  const [systems, setSystems] = useState<string[]>([]);
-  const [countries, setCountries] = useState<string[]>([]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
@@ -67,40 +65,9 @@ const CaseForm = (props: {
 
   const { token } = useContext(AuthContext);
 
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { sendRequest, error, clearError, isLoading } = useHttpClient();
 
-  const getSystems = useCallback(async () => {
-    const responseData = await sendRequest(
-      `${process.env.REACT_APP_CONNSTR}/utilities/systems`,
-      undefined,
-      undefined,
-      { "Content-Type": "application/json", Authorization: "Bearer " + token }
-    );
-
-    const systems: string[] = responseData.systems;
-
-    setSystems(systems);
-  }, [sendRequest, token]);
-
-  const getCountries = useCallback(async () => {
-    const responseData = await sendRequest(
-      `${process.env.REACT_APP_CONNSTR}/utilities/countries`,
-      undefined,
-      undefined,
-      { "Content-Type": "application/json", Authorization: "Bearer " + token }
-    );
-
-    const countries: string[] = responseData.countries;
-
-    setCountries(countries);
-  }, [sendRequest, token]);
-
-  useEffect(() => {
-    getSystems();
-    getCountries();
-
-    return () => {};
-  }, [getCountries, getSystems]);
+  const { systems, countries } = useUtilities();
 
   let navigate = useNavigate();
   const cid = useParams().cid || "";
@@ -308,7 +275,6 @@ const CaseForm = (props: {
                         disabled={false}
                         type="text"
                         name="dataCriacao"
-                        defaultValue={values.dataCriacao}
                         value={values.dataCriacao}
                         readOnly
                       />
@@ -742,7 +708,7 @@ const CaseForm = (props: {
                       Fonte de dados utilizada para obtenção dos dados pessoais
                     </Form.Label>
                     <Col lg={8}>
-                      <Form.Select
+                      {/* <Form.Select
                         disabled={!isEditing}
                         name="fonteDados"
                         value={values.fonteDados}
@@ -759,7 +725,12 @@ const CaseForm = (props: {
                       </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
-                      </Form.Control.Feedback>
+                      </Form.Control.Feedback> */}
+                      <Field
+                        component={SelectFieldSearch}
+                        name="fonteDados"
+                        options={systems.map((s) => ({ value: s, label: s }))}
+                      />
                     </Col>
                     <Col lg={1}>
                       <Row>
@@ -812,7 +783,7 @@ const CaseForm = (props: {
                         titular dos dados.
                       </p>
                     }
-                    disabled={!isEditing}
+                    disabled
                     name="finalidadeTratamento.descricaoFinalidade"
                     type="text"
                     invalid="Esse campo é obrigatório"
@@ -894,14 +865,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -911,23 +878,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1022,14 +978,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -1039,23 +991,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1319,14 +1260,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -1336,23 +1273,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1447,14 +1373,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -1464,23 +1386,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1645,14 +1556,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -1662,23 +1569,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1716,14 +1612,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -1733,23 +1625,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1825,14 +1706,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -1842,23 +1719,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1894,14 +1760,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -1911,23 +1773,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -1966,14 +1817,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -1983,23 +1830,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -2095,14 +1931,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -2112,23 +1944,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -2167,14 +1988,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -2184,23 +2001,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -2242,14 +2048,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -2259,23 +2061,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -2352,14 +2143,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -2369,23 +2156,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -2518,14 +2294,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -2535,23 +2307,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -2622,14 +2383,10 @@ const CaseForm = (props: {
                           >
                             Trata?
                           </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Descrição
-                          </Form.Label>
+                          <Form.Label as={Col}>Descrição</Form.Label>
                           <OverlayTrigger
                             placement="top"
+                            trigger={["click", "hover"]}
                             overlay={
                               <Tooltip className="text-muted">
                                 Para maiores informações visite o
@@ -2639,23 +2396,12 @@ const CaseForm = (props: {
                               </Tooltip>
                             }
                           >
-                            <Form.Label
-                              as={Col}
-                              className="d-grid justify-content-center"
-                            >
+                            <Form.Label as={Col}>
                               Tempo Retenção dos Dados
                             </Form.Label>
                           </OverlayTrigger>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
-                            Fonte Retenção
-                          </Form.Label>
-                          <Form.Label
-                            as={Col}
-                            className="d-grid justify-content-center"
-                          >
+                          <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                          <Form.Label as={Col} lg={2}>
                             Local de Armazenamento
                           </Form.Label>
                           <Form.Label as={Col} lg={1}></Form.Label>
@@ -2697,14 +2443,10 @@ const CaseForm = (props: {
                     >
                       Trata?
                     </Form.Label>
-                    <Form.Label
-                      as={Col}
-                      className="d-grid justify-content-center"
-                    >
-                      Descrição
-                    </Form.Label>
+                    <Form.Label as={Col}>Descrição</Form.Label>
                     <OverlayTrigger
                       placement="top"
+                      trigger={["click", "hover"]}
                       overlay={
                         <Tooltip className="text-muted">
                           Para maiores informações visite o
@@ -2714,23 +2456,10 @@ const CaseForm = (props: {
                         </Tooltip>
                       }
                     >
-                      <Form.Label
-                        as={Col}
-                        className="d-grid justify-content-center"
-                      >
-                        Tempo Retenção dos Dados
-                      </Form.Label>
+                      <Form.Label as={Col}>Tempo Retenção dos Dados</Form.Label>
                     </OverlayTrigger>
-                    <Form.Label
-                      as={Col}
-                      className="d-grid justify-content-center"
-                    >
-                      Fonte Retenção
-                    </Form.Label>
-                    <Form.Label
-                      as={Col}
-                      className="d-grid justify-content-center"
-                    >
+                    <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                    <Form.Label as={Col} lg={2}>
                       Local de Armazenamento
                     </Form.Label>
                     <Form.Label as={Col} lg={1}></Form.Label>

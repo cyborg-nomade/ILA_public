@@ -97,7 +97,9 @@ namespace CPTM.ILA.Web.Models
                 itemTransferenciaInternacional.Rectify();
             }
 
-            if (FinalidadeTratamento.HipoteseTratamento.Value != HipotesesTratamento.ObrigacaoLegal.Value)
+            if (FinalidadeTratamento.HipoteseTratamento.Value !=
+                HipotesesTratamento.ObrigacaoLegal()
+                    .Value)
             {
                 FinalidadeTratamento.PrevisaoLegal = "";
             }
@@ -122,9 +124,12 @@ namespace CPTM.ILA.Web.Models
         {
             EncaminhadoAprovacao = true;
 
-            if (FinalidadeTratamento.HipoteseTratamento.Value != HipotesesTratamento.Consentimento.Value &&
+            if (FinalidadeTratamento.HipoteseTratamento.Value !=
+                HipotesesTratamento.Consentimento()
+                    .Value &&
                 FinalidadeTratamento.HipoteseTratamento.Value !=
-                HipotesesTratamento.InteressesLegitimosControlador.Value)
+                HipotesesTratamento.InteressesLegitimosControlador()
+                    .Value)
                 return this;
             var userAd = Seguranca.ObterUsuario(usernameCriador);
             var assunto = $"Processo LGPD {Nome} - ID {Id}";

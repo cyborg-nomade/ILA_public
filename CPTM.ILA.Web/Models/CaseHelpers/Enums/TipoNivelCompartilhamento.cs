@@ -14,7 +14,7 @@
 
         public string Value { get; set; }
 
-        public static TipoNivelCompartilhamento TodoOProcesso => new TipoNivelCompartilhamento("Todo o processo");
-        public static TipoNivelCompartilhamento Parcial => new TipoNivelCompartilhamento("Parcial");
+        public static TipoNivelCompartilhamento TodoOProcesso() => new TipoNivelCompartilhamento("Todo o processo");
+        public static TipoNivelCompartilhamento Parcial() => new TipoNivelCompartilhamento("Parcial");
     }
 }

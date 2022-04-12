@@ -323,6 +323,10 @@
     <Compile Include="Migrations\202204111916447_FullModel.designer.cs">
       <DependentUpon>202204111916447_FullModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204122055590_RemoveCedilhaRetencao.cs" />
+    <Compile Include="Migrations\202204122055590_RemoveCedilhaRetencao.designer.cs">
+      <DependentUpon>202204122055590_RemoveCedilhaRetencao.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
     <Compile Include="DTOs\AuthUser.cs" />
@@ -495,6 +499,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204111916447_FullModel.resx">
       <DependentUpon>202204111916447_FullModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204122055590_RemoveCedilhaRetencao.resx">
+      <DependentUpon>202204122055590_RemoveCedilhaRetencao.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -20,7 +20,7 @@ import {
   AssertsShape,
 } from "yup/lib/object";
 import { RequiredStringSchema } from "yup/lib/string";
-import SelectField from "../../shared/components/UI/SelectField";
+import SelectFieldMulti from "../../shared/components/UI/SelectFieldMulti";
 
 type onSubmitFn = (item: AccessRequestDTO) => void;
 
@@ -284,7 +284,7 @@ const AccessRequestForm = (props: {
                   <Form.Group as={Col} controlId="validationFormik03">
                     <Form.Label>Grupos a serem acessados</Form.Label>
                     <Field
-                      component={SelectField}
+                      component={SelectFieldMulti}
                       name="groupNames"
                       options={groups}
                     />
