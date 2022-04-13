@@ -696,9 +696,9 @@ namespace CPTM.ILA.Web.Controllers.API
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
         /// </returns>
-        [Route("{cid:int}")]
+        [Route("delete/{cid:int}")]
         [Authorize]
-        [HttpDelete]
+        [HttpPost]
         public async Task<HttpResponseMessage> Delete(int cid)
         {
             if (cid <= 0)

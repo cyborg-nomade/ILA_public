@@ -21,61 +21,119 @@ import {
 } from "yup/lib/object";
 import { RequiredStringSchema } from "yup/lib/string";
 import SelectFieldMulti from "../../shared/components/UI/SelectFieldMulti";
+import { RequiredArraySchema } from "yup/lib/array";
+import { MixedSchema } from "yup/lib/mixed";
 
 type onSubmitFn = (item: AccessRequestDTO) => void;
 
-let schema: yup.ObjectSchema<
-  Assign<
-    ObjectShape,
-    {
-      usernameSolicitante: RequiredStringSchema<string | undefined, AnyObject>;
-      usernameSuperior: yup.StringSchema<
-        string | undefined,
-        AnyObject,
-        string | undefined
-      >;
-      justificativa: RequiredStringSchema<string | undefined, AnyObject>;
-      emailFile: any;
-    }
-  >,
-  AnyObject,
-  TypeOfShape<
-    Assign<
-      ObjectShape,
-      {
-        usernameSolicitante: RequiredStringSchema<
-          string | undefined,
-          AnyObject
-        >;
-        usernameSuperior: yup.StringSchema<
-          string | undefined,
-          AnyObject,
-          string | undefined
-        >;
-        justificativa: RequiredStringSchema<string | undefined, AnyObject>;
-        emailFile: any;
-      }
+let schema:
+  | yup.ObjectSchema<
+      Assign<
+        ObjectShape,
+        {
+          usernameSuperior: RequiredStringSchema<string | undefined, AnyObject>;
+          groupNames: RequiredArraySchema<
+            yup.AnySchema<any, any, any>,
+            AnyObject,
+            any[] | undefined
+          >;
+          justificativa: RequiredStringSchema<string | undefined, AnyObject>;
+          emailFile: MixedSchema<any, AnyObject, any>;
+        }
+      >,
+      AnyObject,
+      TypeOfShape<
+        Assign<
+          ObjectShape,
+          {
+            usernameSuperior: RequiredStringSchema<
+              string | undefined,
+              AnyObject
+            >;
+            groupNames: RequiredArraySchema<
+              yup.AnySchema<any, any, any>,
+              AnyObject,
+              any[] | undefined
+            >;
+            justificativa: RequiredStringSchema<string | undefined, AnyObject>;
+            emailFile: MixedSchema<any, AnyObject, any>;
+          }
+        >
+      >,
+      AssertsShape<
+        Assign<
+          ObjectShape,
+          {
+            usernameSuperior: RequiredStringSchema<
+              string | undefined,
+              AnyObject
+            >;
+            groupNames: RequiredArraySchema<
+              yup.AnySchema<any, any, any>,
+              AnyObject,
+              any[] | undefined
+            >;
+            justificativa: RequiredStringSchema<string | undefined, AnyObject>;
+            emailFile: MixedSchema<any, AnyObject, any>;
+          }
+        >
+      >
     >
-  >,
-  AssertsShape<
-    Assign<
-      ObjectShape,
-      {
-        usernameSolicitante: RequiredStringSchema<
-          string | undefined,
-          AnyObject
-        >;
-        usernameSuperior: yup.StringSchema<
-          string | undefined,
-          AnyObject,
-          string | undefined
-        >;
-        justificativa: RequiredStringSchema<string | undefined, AnyObject>;
-        emailFile: any;
-      }
-    >
-  >
->;
+  | yup.ObjectSchema<
+      Assign<
+        ObjectShape,
+        {
+          usernameSolicitante: RequiredStringSchema<
+            string | undefined,
+            AnyObject
+          >;
+          usernameSuperior: yup.StringSchema<
+            string | undefined,
+            AnyObject,
+            string | undefined
+          >;
+          justificativa: RequiredStringSchema<string | undefined, AnyObject>;
+          emailFile: any;
+        }
+      >,
+      AnyObject,
+      TypeOfShape<
+        Assign<
+          ObjectShape,
+          {
+            usernameSolicitante: RequiredStringSchema<
+              string | undefined,
+              AnyObject
+            >;
+            usernameSuperior: yup.StringSchema<
+              string | undefined,
+              AnyObject,
+              string | undefined
+            >;
+            justificativa: RequiredStringSchema<string | undefined, AnyObject>;
+            emailFile: any;
+          }
+        >
+      >,
+      AssertsShape<
+        Assign<
+          ObjectShape,
+          {
+            usernameSolicitante: RequiredStringSchema<
+              string | undefined,
+              AnyObject
+            >;
+            usernameSuperior: yup.StringSchema<
+              string | undefined,
+              AnyObject,
+              string | undefined
+            >;
+            justificativa: RequiredStringSchema<string | undefined, AnyObject>;
+            emailFile: any;
+          }
+        >
+      >
+    >;
 
 export interface Options {
   value: string;
@@ -86,31 +144,6 @@ export interface GroupedOption {
   label: string;
   options: Options[];
 }
-
-const groupStyles = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-};
-const groupBadgeStyles: CSSProperties = {
-  backgroundColor: "#EBECF0",
-  borderRadius: "2em",
-  color: "#172B4D",
-  display: "inline-block",
-  fontSize: 12,
-  fontWeight: "normal",
-  lineHeight: "1",
-  minWidth: 1,
-  padding: "0.16666666666667em 0.5em",
-  textAlign: "center",
-};
-
-const formatGroupLabel = (data: GroupedOption) => (
-  <div style={groupStyles}>
-    <span>{data.label}</span>
-    <span style={groupBadgeStyles}>{data.options.length}</span>
-  </div>
-);
 
 const AccessRequestForm = (props: {
   item: AccessRequestDTO;
@@ -124,7 +157,14 @@ const AccessRequestForm = (props: {
   const [groups, setGroups] = useState<GroupedOption[]>([]);
 
   useEffect(() => {
-    schema = isComiteReq
+    schema = props.groups
+      ? yup.object().shape({
+          usernameSuperior: yup.string().required(),
+          groupNames: yup.array().required(),
+          justificativa: yup.string().required(),
+          emailFile: yup.mixed().required(),
+        })
+      : isComiteReq
       ? yup.object().shape({
           usernameSolicitante: yup.string().required(),
           usernameSuperior: yup.string().required(),
@@ -137,10 +177,9 @@ const AccessRequestForm = (props: {
           justificativa: yup.string().required(),
           emailFile: yup.mixed().optional(),
         });
-    console.log(isComiteReq, schema.describe());
 
     return () => {};
-  }, [isComiteReq]);
+  }, [isComiteReq, props.groups, props.item]);
 
   const handleCheckIsComiteReq = (event: any) => {
     setIsComiteReq(!isComiteReq);
@@ -199,7 +238,9 @@ const AccessRequestForm = (props: {
       validationSchema={schema}
       enableReinitialize={true}
       onSubmit={(values) => {
-        values.tipoSolicitacaoAcesso = isComiteReq
+        values.tipoSolicitacaoAcesso = props.groups
+          ? tipoSolicitacaoAcesso.AcessoAGrupos
+          : isComiteReq
           ? tipoSolicitacaoAcesso.AcessoComite
           : tipoSolicitacaoAcesso.AcessoAoSistema;
         props.onSubmit(values);
@@ -257,7 +298,9 @@ const AccessRequestForm = (props: {
                   </Form.Group>
                 </Row>
               )}
-              {((props.register && !isComiteReq) || props.approve) && (
+              {((props.register && !isComiteReq) ||
+                props.approve ||
+                props.groups) && (
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik02">
                     <Form.Label>Usuário AD do Superior</Form.Label>

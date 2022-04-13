@@ -94,6 +94,7 @@ const App = () => {
         <Route path="/:uid/cases/register/new" element={<NewCase />} />
         <Route path="/:uid/cases/continue/:cid" element={<ContinueCase />} />
         <Route path="/:uid/cases/edit/:cid" element={<EditCase />} />
+        <Route path="/request-group-access" element={<RequestGroupAccess />} />
         <Route path="/" element={<Navigate to={`../${user.id}/`} />} />
         <Route path="/*" element={<Navigate to={`../${user.id}/`} />} />
       </React.Fragment>
