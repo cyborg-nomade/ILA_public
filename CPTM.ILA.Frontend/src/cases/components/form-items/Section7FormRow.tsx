@@ -101,6 +101,7 @@ const Section7FormRow = (props: {
                     systems={props.systems}
                     className={props.className}
                     name={`${props.name}[${index}]`}
+                    disabled={props.disabled}
                   />
                   <Row className="justify-content-center">
                     <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>

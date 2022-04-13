@@ -730,6 +730,7 @@ const CaseForm = (props: {
                         component={SelectFieldSearch}
                         name="fonteDados"
                         options={systems.map((s) => ({ value: s, label: s }))}
+                        isDisabled={!isEditing}
                       />
                     </Col>
                     <Col lg={1}>
@@ -2639,7 +2640,7 @@ const CaseForm = (props: {
                       </Row>
                     </Col>
                   </Row>
-                  <Section9QuantityRow />
+                  <Section9QuantityRow isEditing={isEditing} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="9">
