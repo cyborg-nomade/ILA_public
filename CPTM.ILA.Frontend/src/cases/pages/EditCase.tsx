@@ -13,16 +13,19 @@ import {
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
+import { diff } from "deep-object-diff";
+import { ChangeLog } from "../../shared/models/change-logging/change-log.model";
+import { CaseChange } from "../../shared/models/DTOs/case-change.model";
 
 const EditCase = () => {
   const [fullCase, setFullCase] = useState<Case>(emptyCase());
 
-  const { user, token } = useContext(AuthContext);
+  const { user, token, currentGroup } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
 
-  const cid = useParams().cid || "";
+  const cid = +(useParams().cid || "");
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +36,11 @@ const EditCase = () => {
         undefined,
         { Authorization: "Bearer " + token }
       );
-      let loadedCase = responseData.case;
+      let loadedCase: Case = responseData.case;
+      loadedCase.dataCriacao = new Date(
+        loadedCase.dataCriacao
+      ).toLocaleDateString();
+      loadedCase.dataAtualizacao = new Date().toLocaleDateString();
       setFullCase(loadedCase);
     };
 
@@ -52,25 +59,133 @@ const EditCase = () => {
     );
   }
 
-  const submitFormHandler = async (item: Case) => {
-    item.area = item.extensaoEncarregado.area || "";
-    item.usuarioCriadorId = user.id;
-    for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
-      if (value.descricao !== "Não se aplica") {
+  const saveProgressHandler = async (item: Case) => {
+    console.log("Initial item: ", item);
+
+    const dateCriacaoParts = item.dataCriacao.split("/");
+    const dateAtualizacaoParts = item.dataAtualizacao.split("/");
+    item.dataCriacao = new Date(
+      +dateCriacaoParts[2],
+      +dateCriacaoParts[1] - 1,
+      +dateCriacaoParts[0]
+    ).toISOString();
+    item.dataAtualizacao = new Date(
+      +dateAtualizacaoParts[2],
+      +dateAtualizacaoParts[1] - 1,
+      +dateAtualizacaoParts[0]
+    ).toISOString();
+    item.area = currentGroup.nome;
+
+    for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
+      if (value.length !== 0) {
         item.dadosPessoaisSensiveis = true;
       }
     }
 
+    console.log("Altered item: ", item);
+
+    const changeObj = diff(fullCase, item);
+
+    const changeLog: ChangeLog = {
+      caseDiff: JSON.stringify(changeObj),
+      caseId: cid,
+      userId: user.id,
+      changeDate: new Date(),
+    };
+
+    console.log("Change Log: ", changeLog);
+
+    const caseChange: CaseChange = {
+      case: item,
+      changeLog: changeLog,
+    };
+
+    console.log("Case Change: ", caseChange);
+
     try {
       await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
-        "PUT",
-        JSON.stringify(item),
+        "POST",
+        JSON.stringify(caseChange),
         {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
         }
       );
+
+      navigate(`/`);
+    } catch (err) {
+      console.log(err);
+      setFullCase(item);
+    }
+  };
+
+  const sendToApprovalHandler = async (item: Case) => {
+    console.log("sah, Initial item: ", item);
+
+    const dateCriacaoParts = item.dataCriacao.split("/");
+    const dateAtualizacaoParts = item.dataAtualizacao.split("/");
+    item.dataCriacao = new Date(
+      +dateCriacaoParts[2],
+      +dateCriacaoParts[1] - 1,
+      +dateCriacaoParts[0]
+    ).toISOString();
+    item.dataAtualizacao = new Date(
+      +dateAtualizacaoParts[2],
+      +dateAtualizacaoParts[1] - 1,
+      +dateAtualizacaoParts[0]
+    ).toISOString();
+    item.area = currentGroup.nome;
+
+    for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
+      if (value.length !== 0) {
+        item.dadosPessoaisSensiveis = true;
+      }
+    }
+
+    console.log("sah, Altered item: ", item);
+
+    const changeObj = diff(fullCase, item);
+
+    const changeLog: ChangeLog = {
+      caseDiff: JSON.stringify(changeObj),
+      caseId: 0,
+      userId: user.id,
+      changeDate: new Date(),
+    };
+
+    console.log("sah, Change Log: ", changeLog);
+
+    const caseChange: CaseChange = {
+      case: item,
+      changeLog: changeLog,
+    };
+
+    console.log("sah, Case change: ", changeLog);
+
+    try {
+      const initialResponse = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
+        "POST",
+        JSON.stringify(caseChange),
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        }
+      );
+
+      const savedCase: Case = initialResponse.caseToSave;
+
+      const resp2 = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/cases/request-approval/${savedCase.id}`,
+        "POST",
+        undefined,
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        }
+      );
+      console.log(resp2);
 
       navigate(`/`);
     } catch (err) {
@@ -94,7 +209,8 @@ const EditCase = () => {
       <CaseForm
         item={fullCase}
         edit={true}
-        onSaveProgressSubmit={submitFormHandler}
+        onSaveProgressSubmit={saveProgressHandler}
+        onSendToApprovalSubmit={sendToApprovalHandler}
       />
     </React.Fragment>
   );

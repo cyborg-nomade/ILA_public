@@ -7,16 +7,16 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class Habitos
     {
         public int Id { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> HabitosPessoais { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> EstiloVida { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> ViagensDeslocamento { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> ContatosSociais { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> Posses { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> HabitosPessoais { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> EstiloVida { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> ViagensDeslocamento { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> ContatosSociais { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Posses { get; set; }
 
 
-        public ICollection<ItemCategoriaDadosPessoais> DenunciasIncAcidentes { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> DenunciasIncAcidentes { get; set; }
 
-        public ICollection<ItemCategoriaDadosPessoais> Distincoes { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> UsoMidia { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Distincoes { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> UsoMidia { get; set; }
     }
 }

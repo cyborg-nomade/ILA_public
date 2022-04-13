@@ -41,7 +41,7 @@ export interface BaseCase {
   fonteDados: string;
   finalidadeTratamento: FinalidadeTratamento;
   categoriaDadosPessoais: CategoriaDadosPessoais;
-  categoriaDadosPessoaisSensiveis: CategoriaDadosPessoaisSensiveis;
+  catDadosPessoaisSensiveis: CategoriaDadosPessoaisSensiveis;
   frequenciaTratamento: { value: string };
   qtdeDadosTratados: number;
   qtdeDadosSensiveisTratados: number;
@@ -79,7 +79,7 @@ export const emptyBaseCase = (): BaseCase => ({
   fonteDados: "",
   finalidadeTratamento: emptyFinalidadeTratamento(),
   categoriaDadosPessoais: emptyCategoriaDadosPessoais(),
-  categoriaDadosPessoaisSensiveis: emptyCategoriaDadosPessoaisSensiveis(),
+  catDadosPessoaisSensiveis: emptyCategoriaDadosPessoaisSensiveis(),
   frequenciaTratamento: { value: "" },
   qtdeDadosTratados: 0,
   qtdeDadosSensiveisTratados: 0,
@@ -126,7 +126,7 @@ export const emptyCase = (currentAreaTratamento?: AgenteTratamento): Case => ({
   fonteDados: "",
   finalidadeTratamento: emptyFinalidadeTratamento(),
   categoriaDadosPessoais: emptyCategoriaDadosPessoais(),
-  categoriaDadosPessoaisSensiveis: emptyCategoriaDadosPessoaisSensiveis(),
+  catDadosPessoaisSensiveis: emptyCategoriaDadosPessoaisSensiveis(),
   frequenciaTratamento: { value: "" },
   qtdeDadosTratados: 0,
   qtdeDadosSensiveisTratados: 0,

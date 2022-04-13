@@ -7,6 +7,6 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class CaracteristicasPsicologicas
     {
         public int Id { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> DescricaoPsi { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> DescricaoPsi { get; set; }
     }
 }

@@ -6,7 +6,7 @@ export interface CaseListItem {
   area: string;
   dataCriacao: string;
   dataAtualizacao: string;
-  hipoteseTratamento: { value: hipotesesTratamento };
+  hipotesesTratamento: string;
   descricaoFinalidade: string;
   dadosPessoaisSensiveis: string;
   grupoCriador: string;

@@ -12,13 +12,7 @@ import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 const UserCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
 
-  const {
-    user,
-    isDeveloper,
-    token,
-
-    areaTratamentoDados,
-  } = useContext(AuthContext);
+  const { token, currentGroup } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
@@ -26,7 +20,7 @@ const UserCasesListGetter = () => {
   useEffect(() => {
     const getUserCases = async () => {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/user/${user.id}`,
+        `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}`,
         undefined,
         undefined,
         {
@@ -44,7 +38,7 @@ const UserCasesListGetter = () => {
     getUserCases().catch((error) => {
       console.log(error);
     });
-  }, [user.id, sendRequest, token]);
+  }, [sendRequest, token, currentGroup.id]);
 
   if (isLoading) {
     return (
@@ -68,7 +62,7 @@ const UserCasesListGetter = () => {
           {error}
         </Alert>
       )}
-      <CasesList items={cases} />
+      <CasesList items={cases} redirect={false} />
     </React.Fragment>
   );
 };

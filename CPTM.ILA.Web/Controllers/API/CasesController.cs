@@ -16,6 +16,7 @@ using CPTM.ILA.Web.Models.Messaging;
 using CPTM.ILA.Web.Util;
 using CPTM.GNU.Library;
 using CPTM.ILA.Web.Models.AccessControl;
+using CPTM.ILA.Web.Models.CaseHelpers;
 
 
 namespace CPTM.ILA.Web.Controllers.API
@@ -58,7 +59,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var cases = await _context.Cases.ToListAsync();
+                var cases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .ToListAsync();
 
                 var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
 
@@ -108,7 +110,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
 
 
-                var cases = await _context.Cases.Where(c => c.GrupoCriadorId == gid)
+                var cases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.GrupoCriadorId == gid)
                     .ToListAsync();
 
                 var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
@@ -119,7 +122,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -230,7 +233,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
                 }
 
-                var groupCasesInDb = await _context.Cases.Where(c => c.GrupoCriadorId == gid)
+                var groupCasesInDb = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.GrupoCriadorId == gid)
                     .ToListAsync();
                 var filteredCases = groupCasesInDb.Where(c => c.Aprovado == aprovado &&
                                                               c.EncaminhadoAprovacao == encaminhadoAprovacao)
@@ -359,7 +363,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var comiteMemberGroupsIds = comiteMember.Groups.Select(g => g.Id)
                     .ToList();
 
-                var pendingCases = await _context.Cases
+                var pendingCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
                     .Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId) && !c.Aprovado)
                     .ToListAsync();
 
@@ -459,12 +463,94 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var uniqueCase = await _context.Cases.FindAsync(cid);
+                var uniqueCase = await _context.Cases.Where(c => c.Id == cid)
+                    .Include(c => c.Controlador)
+                    .Include(c => c.Encarregado)
+                    .Include(c => c.ExtensaoEncarregado)
+                    .Include(c => c.AreaTratamentoDados)
+                    .Include(c => c.Operador)
+                    .Include(c => c.FasesCicloTratamento)
+                    .Include(c => c.FinalidadeTratamento)
+                    .Include(c => c.CategoriaDadosPessoais)
+                    .Include(c => c.CategoriaDadosPessoais.Associacoes)
+                    .Include(c => c.CategoriaDadosPessoais.Caracteristicas)
+                    .Include(c => c.CategoriaDadosPessoais.CaracteristicasPsicologicas)
+                    .Include(c => c.CategoriaDadosPessoais.ComposicaoFamiliar)
+                    .Include(c => c.CategoriaDadosPessoais.EducacaoTreinamento)
+                    .Include(c => c.CategoriaDadosPessoais.Financeiros)
+                    .Include(c => c.CategoriaDadosPessoais.Habitos)
+                    .Include(c => c.CategoriaDadosPessoais.HabitosConsumo)
+                    .Include(c => c.CategoriaDadosPessoais.Identificacao)
+                    .Include(c => c.CategoriaDadosPessoais.InteressesLazer)
+                    .Include(c => c.CategoriaDadosPessoais.Outros)
+                    .Include(c => c.CategoriaDadosPessoais.ProcessoJudAdmCrim)
+                    .Include(c => c.CategoriaDadosPessoais.ProfissaoEmprego)
+                    .Include(c => c.CategoriaDadosPessoais.RegVideoImgVoz)
+                    .Include(c => c.CategoriaDadosPessoais.Residenciais)
+                    .Include(c => c.CatDadosPessoaisSensiveis)
+                    .Include(c => c.CatDadosPessoaisSensiveis.OpiniaoPolitica)
+                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica)
+                    .Include(c => c.CatDadosPessoaisSensiveis.ConviccaoReligiosa)
+                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoPreferenciaPolitica)
+                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoSindicato)
+                    .Include(c => c.CatDadosPessoaisSensiveis.Geneticos)
+                    .Include(c => c.CatDadosPessoaisSensiveis.OrigemRacialEtnica)
+                    .Include(c => c.CatDadosPessoaisSensiveis.SaudeVidaSexual)
+                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoOrgReligiosa)
+                    .Include(c => c.CatDadosPessoaisSensiveis.Biometricos)
+                    .Include(c => c.CategoriasTitulares)
+                    .Include(c => c.CategoriasTitulares.Categorias)
+                    .Include(c => c.CategoriasTitulares.CriancasAdolescentes)
+                    .Include(c => c.CategoriasTitulares.OutrosGruposVulneraveis)
+                    .Include(c => c.CompartilhamentoDadosPessoais)
+                    .Include(c => c.MedidasSegurancaPrivacidade)
+                    .Include(c => c.TransferenciaInternacional)
+                    .Include(c => c.ContratoServicosTi)
+                    .Include(c => c.RiscosPrivacidade)
+                    .Include(c => c.ObservacoesProcesso)
+                    .SingleOrDefaultAsync();
 
                 if (uniqueCase == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
+
+                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
+                //    .Collection(c => c.FiliacaoCrencaFilosofica)
+                //    .LoadAsync();
+                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
+                //    .Collection(c => c.FiliacaoOrgReligiosa)
+                //    .LoadAsync();
+                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
+                //    .Collection(c => c.FiliacaoPreferenciaPolitica)
+                //    .LoadAsync();
+                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
+                //    .Collection(c => c.FiliacaoSindicato)
+                //    .LoadAsync();
+                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
+                //    .Collection(c => c.Geneticos)
+                //    .LoadAsync();
+                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
+                //    .Collection(c => c.OpiniaoPolitica)
+                //    .LoadAsync();
+                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
+                //    .Collection(c => c.OrigemRacialEtnica)
+                //    .LoadAsync();
+                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
+                //    .Collection(c => c.SaudeVidaSexual)
+                //    .LoadAsync();
+                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
+                //    .Collection(c => c.Biometricos)
+                //    .LoadAsync();
+                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
+                //    .Collection(c => c.ConviccaoReligiosa)
+                //    .LoadAsync();
+
+                //uniqueCase.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica = await _context.Cases
+                //    .Where(c => c.Id == cid)
+                //    .Select(c => c.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica)
+                //    .FirstOrDefaultAsync();
+
 
                 if (User.Identity is ClaimsIdentity identity)
                 {

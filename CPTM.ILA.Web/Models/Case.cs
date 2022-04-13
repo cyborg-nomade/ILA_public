@@ -62,7 +62,7 @@ namespace CPTM.ILA.Web.Models
                 DataAtualizacao = fullCase.DataAtualizacao.ToString("d", CultureInfo.GetCultureInfo("pt-BR")),
                 DataCriacao = fullCase.DataAtualizacao.ToString("d", CultureInfo.GetCultureInfo("pt-BR")),
                 DescricaoFinalidade = fullCase.FinalidadeTratamento.DescricaoFinalidade,
-                HipotesesTratamento = fullCase.FinalidadeTratamento.HipoteseTratamento,
+                HipotesesTratamento = fullCase.FinalidadeTratamento.HipoteseTratamento.Value,
                 Id = fullCase.Id,
                 Nome = fullCase.Nome,
                 GrupoCriadorId = fullCase.GrupoCriadorId

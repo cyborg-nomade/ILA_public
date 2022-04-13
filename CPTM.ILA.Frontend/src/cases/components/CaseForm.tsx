@@ -2468,9 +2468,9 @@ const CaseForm = (props: {
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam origem racial ou étnica"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.origemRacialEtnica"
+                    name="catDadosPessoaisSensiveis.origemRacialEtnica"
                     itemRef={
-                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
                         .origemRacialEtnica
                     }
                     systems={systems}
@@ -2479,9 +2479,9 @@ const CaseForm = (props: {
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam convicção religiosa"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.conviccaoReligiosa"
+                    name="catDadosPessoaisSensiveis.conviccaoReligiosa"
                     itemRef={
-                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
                         .conviccaoReligiosa
                     }
                     systems={systems}
@@ -2490,9 +2490,9 @@ const CaseForm = (props: {
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam opinião política"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.opiniaoPolitica"
+                    name="catDadosPessoaisSensiveis.opiniaoPolitica"
                     itemRef={
-                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
                         .opiniaoPolitica
                     }
                     systems={systems}
@@ -2501,9 +2501,9 @@ const CaseForm = (props: {
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam filiação a sindicato"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.filiacaoSindicato"
+                    name="catDadosPessoaisSensiveis.filiacaoSindicato"
                     itemRef={
-                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
                         .filiacaoSindicato
                     }
                     systems={systems}
@@ -2512,9 +2512,9 @@ const CaseForm = (props: {
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam filiação a organização de caráter religioso"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.filiacaoOrgReligiosa"
+                    name="catDadosPessoaisSensiveis.filiacaoOrgReligiosa"
                     itemRef={
-                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
                         .filiacaoOrgReligiosa
                     }
                     systems={systems}
@@ -2523,9 +2523,9 @@ const CaseForm = (props: {
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam filiação ou crença filosófica"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.filiacaoCrencaFilosofica"
+                    name="catDadosPessoaisSensiveis.filiacaoCrencaFilosofica"
                     itemRef={
-                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
                         .filiacaoCrencaFilosofica
                     }
                     systems={systems}
@@ -2534,9 +2534,9 @@ const CaseForm = (props: {
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam filiação ou preferências política"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.filiacaoPreferenciaPolitica"
+                    name="catDadosPessoaisSensiveis.filiacaoPreferenciaPolitica"
                     itemRef={
-                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
                         .filiacaoPreferenciaPolitica
                     }
                     systems={systems}
@@ -2545,9 +2545,9 @@ const CaseForm = (props: {
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados referentes à saúde ou à vida sexual"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.saudeVidaSexual"
+                    name="catDadosPessoaisSensiveis.saudeVidaSexual"
                     itemRef={
-                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
                         .saudeVidaSexual
                     }
                     systems={systems}
@@ -2556,10 +2556,9 @@ const CaseForm = (props: {
                     className="mb-3 pt-2 pb-2"
                     label="Dados genéticos"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.geneticos"
+                    name="catDadosPessoaisSensiveis.geneticos"
                     itemRef={
-                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
-                        .geneticos
+                      CaseIndexDictionary.catDadosPessoaisSensiveis.geneticos
                     }
                     systems={systems}
                   />
@@ -2567,10 +2566,9 @@ const CaseForm = (props: {
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados biométricos"
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.biometricos"
+                    name="catDadosPessoaisSensiveis.biometricos"
                     itemRef={
-                      CaseIndexDictionary.categoriaDadosPessoaisSensiveis
-                        .biometricos
+                      CaseIndexDictionary.catDadosPessoaisSensiveis.biometricos
                     }
                     systems={systems}
                   />
@@ -3190,9 +3188,25 @@ const CaseForm = (props: {
               </Row>
             )}
             {props.edit && isEditing && isValid && (
-              <Button className="float-end mt-3" disabled={!(isValid && dirty)}>
-                Salvar Alterações
-              </Button>
+              <Stack direction="horizontal" className="mt-3" gap={3}>
+                <Button
+                  type="button"
+                  disabled={!(isValid && dirty)}
+                  variant="secondary"
+                  className="ms-auto"
+                  onClick={() => handleSaveProgressClick(values)}
+                >
+                  Salvar Alterações
+                </Button>
+                <Button
+                  type="button"
+                  disabled={!(isValid && dirty)}
+                  variant="warning"
+                  onClick={() => handleSendToApprovalClick(values)}
+                >
+                  Encaminhar para encarregado de Dados
+                </Button>
+              </Stack>
             )}
             {props.edit && !isEditing && (
               <Row className="float-end mt-3">

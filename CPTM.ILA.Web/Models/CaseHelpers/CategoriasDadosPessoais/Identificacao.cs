@@ -7,9 +7,9 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class Identificacao
     {
         public int Id { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> IdPessoal { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> IdGov { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> IdEletronica { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> LocEletronica { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> IdPessoal { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> IdGov { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> IdEletronica { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> LocEletronica { get; set; }
     }
 }
