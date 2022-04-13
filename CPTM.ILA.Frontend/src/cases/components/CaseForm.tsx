@@ -83,8 +83,8 @@ const CaseForm = (props: {
 
     try {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/${itemId}`,
-        "DELETE",
+        `${process.env.REACT_APP_CONNSTR}/cases/delete/${itemId}`,
+        "POST",
         undefined,
         {
           "Content-Type": "application/json",
@@ -3210,25 +3210,21 @@ const CaseForm = (props: {
               </Stack>
             )}
             {props.edit && !isEditing && (
-              <Row className="float-end mt-3">
-                <ButtonGroup as={Col} lg={2}>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => onCancel()}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={() => setShowDeleteModal(true)}
-                  >
-                    Remover
-                  </Button>
-                  <Button variant="primary" onClick={() => onStartEditing()}>
-                    Editar
-                  </Button>
-                </ButtonGroup>
-              </Row>
+              <Stack direction="horizontal" className="mt-3" gap={0}>
+                <Button variant="light" onClick={() => onCancel()}>
+                  Cancelar
+                </Button>
+                <Button
+                  variant="danger"
+                  className="ms-auto"
+                  onClick={() => setShowDeleteModal(true)}
+                >
+                  Remover
+                </Button>
+                <Button variant="primary" onClick={() => onStartEditing()}>
+                  Editar
+                </Button>
+              </Stack>
             )}
           </Form>
         )}
