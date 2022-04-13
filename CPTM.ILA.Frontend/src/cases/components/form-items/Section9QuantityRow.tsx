@@ -24,7 +24,7 @@ const Section9QuantityRow = () => {
       }
     }
 
-    for (const item of Object.values(values.categoriaDadosPessoaisSensiveis)) {
+    for (const item of Object.values(values.catDadosPessoaisSensiveis)) {
       if (Array.isArray(item)) {
         totalDadosSensiveisTratados += item.length;
       }

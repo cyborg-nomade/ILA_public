@@ -7,6 +7,6 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class HabitosConsumo
     {
         public int Id { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> DadosBensServicos { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> DadosBensServicos { get; set; }
     }
 }

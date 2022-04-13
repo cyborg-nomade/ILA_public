@@ -23,8 +23,8 @@ const Section10FormRow = (props: {
   const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
     useFormikContext<Case>();
 
-  const [descricao, setDescricao] = useState(
-    getIn(values, `${props.name}.descricao`)
+  const [descricaoDados, setDescricaoDados] = useState(
+    getIn(values, `${props.name}.descricaoDados`)
   );
   const [isDescricaoEnabled, setIsDescricaoEnabled] = useState(
     false || props.full
@@ -33,11 +33,11 @@ const Section10FormRow = (props: {
   const handleChangeDescricao = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setDescricao(event.currentTarget.value);
+    setDescricaoDados(event.currentTarget.value);
   };
   const handleBlurDescricao = (event: React.FocusEvent<HTMLInputElement>) => {
     handleBlur(event);
-    setFieldValue(`${props.name}.descricao`, descricao);
+    setFieldValue(`${props.name}.descricaoDados`, descricaoDados);
   };
 
   const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,17 +118,19 @@ const Section10FormRow = (props: {
         <Form.Control
           disabled={props.disabled || !isDescricaoEnabled}
           type="text"
-          name={`${props.name}.descricao`}
+          name={`${props.name}.descricaoDados`}
           value={
-            getIn(values, `${props.name}.trataDados`) === "NÃO" ? "" : descricao
+            getIn(values, `${props.name}.trataDados`) === "NÃO"
+              ? ""
+              : descricaoDados
           }
           onChange={handleChangeDescricao}
           onBlur={handleBlurDescricao}
           isValid={
-            getIn(touched, `${props.name}.descricao`) &&
-            !getIn(errors, `${props.name}.descricao`)
+            getIn(touched, `${props.name}.descricaoDados`) &&
+            !getIn(errors, `${props.name}.descricaoDados`)
           }
-          isInvalid={!!getIn(errors, `${props.name}.descricao`)}
+          isInvalid={!!getIn(errors, `${props.name}.descricaoDados`)}
         />
       </Col>
       <Col lg={1}>

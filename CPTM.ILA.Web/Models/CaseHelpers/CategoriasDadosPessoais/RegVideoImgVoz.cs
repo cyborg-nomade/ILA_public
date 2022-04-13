@@ -7,8 +7,8 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class RegVideoImgVoz
     {
         public int Id { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> VideoImagem { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> ImagemVigilancia { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> Voz { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> VideoImagem { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> ImagemVigilancia { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Voz { get; set; }
     }
 }

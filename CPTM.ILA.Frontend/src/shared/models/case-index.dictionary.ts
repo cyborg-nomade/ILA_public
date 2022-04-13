@@ -105,7 +105,7 @@ export const CaseIndexDictionary = {
       outrosItems: "7.15.1",
     },
   },
-  categoriaDadosPessoaisSensiveis: {
+  catDadosPessoaisSensiveis: {
     origemRacialEtnica: "8.1",
     conviccaoReligiosa: "8.2",
     opiniaoPolitica: "8.3",

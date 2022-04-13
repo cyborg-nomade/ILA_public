@@ -178,7 +178,7 @@ export interface itemCategoriaDadosPessoais {
 
 export const emptyItemCategoriaDadosPessoais =
   (): itemCategoriaDadosPessoais => ({
-    descricao: "Não se aplica",
+    descricao: "",
     tempoRetencao: { value: tipoTempoRetencao.ano1 },
     fonteRetencao: { value: tipoFontesRetencao.docPapel },
     localArmazenamento: "",

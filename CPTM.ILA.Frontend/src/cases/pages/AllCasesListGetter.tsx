@@ -62,7 +62,7 @@ const AllCasesListGetter = () => {
           {error}
         </Alert>
       )}
-      <CasesList items={cases} />
+      <CasesList items={cases} redirect={false} />
     </React.Fragment>
   );
 };

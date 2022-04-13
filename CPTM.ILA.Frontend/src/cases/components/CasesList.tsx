@@ -15,6 +15,7 @@ import {
   CaseListItem,
   headersCaseListItem,
 } from "../../shared/models/DTOs/case-list-item.model";
+import Card from "react-bootstrap/Card";
 
 const headers: {
   title: string;
@@ -45,7 +46,7 @@ const headers: {
   },
   {
     title: "Hipotese de Tratamento",
-    prop: "hipoteseTratamento",
+    prop: "hipotesesTratamento",
     isFilterable: true,
     isSortable: true,
   },
@@ -57,7 +58,7 @@ const headers: {
   },
 ];
 
-const CasesList = (props: { items: CaseListItem[] }) => {
+const CasesList = (props: { items: CaseListItem[]; redirect: boolean }) => {
   let navigate = useNavigate();
 
   if (props.items.length === 0) {
@@ -73,57 +74,61 @@ const CasesList = (props: { items: CaseListItem[] }) => {
   }
 
   const handleRowClick = (row: CaseListItem) => {
-    navigate(`${row.id}`);
+    if (props.redirect) {
+      navigate(`${row.id}`);
+    }
   };
 
   return (
-    <DatatableWrapper
-      body={props.items}
-      headers={headers}
-      paginationOptionsProps={{
-        initialState: {
-          rowsPerPage: 10,
-          options: [5, 10, 15, 20],
-        },
-      }}
-    >
-      <Row className="mb-4">
-        <Col
-          xs={12}
-          lg={4}
-          className="d-flex flex-col justify-content-end align-items-end"
-        >
-          <Filter placeholder="Entre sua busca" />
-        </Col>
-        <Col
-          xs={12}
-          sm={6}
-          lg={4}
-          className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
-        >
-          <PaginationOpts labels={{ beforeSelect: "Linhas por página" }} />
-        </Col>
-        <Col
-          xs={12}
-          sm={6}
-          lg={4}
-          className="d-flex flex-col justify-content-end align-items-end"
-        >
-          <Pagination
-            labels={{
-              firstPage: "Primeira",
-              lastPage: "Última",
-              nextPage: "Próxima",
-              prevPage: "Anterior",
-            }}
-          />
-        </Col>
-      </Row>
-      <Table>
-        <TableHeader tableHeaders={headers} />
-        <TableBody onRowClick={handleRowClick} />
-      </Table>
-    </DatatableWrapper>
+    <Card>
+      <DatatableWrapper
+        body={props.items}
+        headers={headers}
+        paginationOptionsProps={{
+          initialState: {
+            rowsPerPage: 10,
+            options: [5, 10, 15, 20],
+          },
+        }}
+      >
+        <Row className="mb-4">
+          <Col
+            xs={12}
+            lg={4}
+            className="d-flex flex-col justify-content-end align-items-end"
+          >
+            <Filter placeholder="Entre sua busca" />
+          </Col>
+          <Col
+            xs={12}
+            sm={6}
+            lg={4}
+            className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
+          >
+            <PaginationOpts labels={{ beforeSelect: "Linhas por página" }} />
+          </Col>
+          <Col
+            xs={12}
+            sm={6}
+            lg={4}
+            className="d-flex flex-col justify-content-end align-items-end"
+          >
+            <Pagination
+              labels={{
+                firstPage: "Primeira",
+                lastPage: "Última",
+                nextPage: "Próxima",
+                prevPage: "Anterior",
+              }}
+            />
+          </Col>
+        </Row>
+        <Table>
+          <TableHeader tableHeaders={headers} />
+          <TableBody onRowClick={handleRowClick} />
+        </Table>
+      </DatatableWrapper>
+    </Card>
   );
 };
 

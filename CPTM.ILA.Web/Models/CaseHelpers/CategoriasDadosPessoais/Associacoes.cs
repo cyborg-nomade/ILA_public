@@ -8,6 +8,6 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     {
         public int Id { get; set; }
 
-        public ICollection<ItemCategoriaDadosPessoais> OutrasAssNaoSensiveis { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> OutrasAssNaoSensiveis { get; set; }
     }
 }

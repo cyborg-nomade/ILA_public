@@ -56,8 +56,20 @@ const NewCase = () => {
 
     item.usuarioCriadorId = user.id;
     item.grupoCriadorId = currentGroup.id;
+    const dateCriacaoParts = item.dataCriacao.split("/");
+    const dateAtualizacaoParts = item.dataAtualizacao.split("/");
+    item.dataCriacao = new Date(
+      +dateCriacaoParts[2],
+      +dateCriacaoParts[1] - 1,
+      +dateCriacaoParts[0]
+    ).toISOString();
+    item.dataAtualizacao = new Date(
+      +dateAtualizacaoParts[2],
+      +dateAtualizacaoParts[1] - 1,
+      +dateAtualizacaoParts[0]
+    ).toISOString();
     item.area = currentGroup.nome;
-    for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
+    for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
       if (value.length !== 0) {
         item.dadosPessoaisSensiveis = true;
       }
@@ -106,8 +118,21 @@ const NewCase = () => {
 
     item.usuarioCriadorId = user.id;
     item.grupoCriadorId = currentGroup.id;
-    item.area = item.extensaoEncarregado.area || "";
-    for (const value of Object.values(item.categoriaDadosPessoaisSensiveis)) {
+    item.area = currentGroup.nome;
+    const dateCriacaoParts = item.dataCriacao.split("/");
+    const dateAtualizacaoParts = item.dataAtualizacao.split("/");
+    item.dataCriacao = new Date(
+      +dateCriacaoParts[2],
+      +dateCriacaoParts[1] - 1,
+      +dateCriacaoParts[0]
+    ).toISOString();
+    item.dataAtualizacao = new Date(
+      +dateAtualizacaoParts[2],
+      +dateAtualizacaoParts[1] - 1,
+      +dateAtualizacaoParts[0]
+    ).toISOString();
+    item.area = currentGroup.nome;
+    for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
       if (value.length !== 0) {
         item.dadosPessoaisSensiveis = true;
       }

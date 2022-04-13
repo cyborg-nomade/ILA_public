@@ -58,7 +58,7 @@ const EditCaseListGetter = () => {
           {error}
         </Alert>
       )}
-      <CasesList items={cases} />
+      <CasesList items={cases} redirect={true} />
     </React.Fragment>
   );
 };
