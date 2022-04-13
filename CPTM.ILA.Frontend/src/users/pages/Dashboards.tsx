@@ -7,11 +7,11 @@ import ThreadDashboard from "../../threads-comments/components/ThreadDashboard";
 const Dashboards = () => {
   return (
     <Row className="justify-content-evenly">
-      <Col xs={12} sm={12} md={12} lg={4} className="justify-content-center">
-        <ThreadDashboard />
-      </Col>
-      <Col xs={12} sm={12} md={12} lg={4}>
+      <Col xs={12} sm={12} md={12} lg={7}>
         <CasesDashboard />
+      </Col>
+      <Col xs={12} sm={12} md={12} lg={4} className="justify-content-center">
+        {/* <ThreadDashboard /> */}
       </Col>
     </Row>
   );

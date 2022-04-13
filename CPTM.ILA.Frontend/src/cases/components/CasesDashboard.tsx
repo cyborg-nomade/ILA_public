@@ -76,7 +76,7 @@ const CasesDashboard = () => {
         <h3 className="mb-4">Visão de Processos</h3>
       </Row>
       <Row>
-        <Card border="primary" className="m-0">
+        <Card border="primary" className="m-0" style={{ height: "400px" }}>
           <PieChart
             data={pieChartData}
             label={({ x, y, dx, dy, dataEntry, dataIndex }) => (
@@ -89,7 +89,7 @@ const CasesDashboard = () => {
                 dominantBaseline="middle"
                 textAnchor="middle"
                 style={{
-                  fontSize: "4px",
+                  fontSize: "5px",
                   fontFamily: "sans-serif",
                 }}
               >
@@ -100,7 +100,7 @@ const CasesDashboard = () => {
               </text>
             )}
             radius={20}
-            labelPosition={150}
+            labelPosition={250}
             onClick={(event, index) => {
               console.log("CLICK", { event, index });
               setSelected(index === selected ? undefined : index);
