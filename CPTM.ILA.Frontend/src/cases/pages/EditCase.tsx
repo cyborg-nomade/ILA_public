@@ -36,7 +36,7 @@ const EditCase = () => {
         undefined,
         { Authorization: "Bearer " + token }
       );
-      let loadedCase: Case = responseData.case;
+      let loadedCase: Case = responseData.uniqueCase;
       loadedCase.dataCriacao = new Date(
         loadedCase.dataCriacao
       ).toLocaleDateString();
@@ -75,6 +75,8 @@ const EditCase = () => {
       +dateAtualizacaoParts[0]
     ).toISOString();
     item.area = currentGroup.nome;
+    item.aprovado = false;
+    item.encaminhadoAprovacao = false;
 
     for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
       if (value.length !== 0) {
@@ -196,7 +198,7 @@ const EditCase = () => {
 
   return (
     <React.Fragment>
-      <h1>Editar Item</h1>
+      <h1>Alterar Processo Aprovado</h1>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}

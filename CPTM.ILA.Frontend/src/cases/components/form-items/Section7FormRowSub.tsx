@@ -19,6 +19,7 @@ const Section7FormRowSub = (props: {
   name: string;
   className: string;
   systems: string[];
+  disabled: boolean;
 }) => {
   const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
     useFormikContext<Case>();
@@ -72,6 +73,7 @@ const Section7FormRowSub = (props: {
             !getIn(errors, `${props.name}.descricao`)
           }
           isInvalid={!!getIn(errors, `${props.name}.descricao`)}
+          disabled={props.disabled}
         />
         <Form.Control.Feedback type="invalid">
           Esse campo é obrigatório
@@ -88,6 +90,7 @@ const Section7FormRowSub = (props: {
             !getIn(errors, `${props.name}.tempoRetencao.value`)
           }
           isInvalid={!!getIn(errors, `${props.name}.tempoRetencao.value`)}
+          disabled={props.disabled}
         >
           {Object.values(tipoTempoRetencao).map((ttr) => (
             <option value={ttr} key={ttr}>
@@ -107,6 +110,7 @@ const Section7FormRowSub = (props: {
             !getIn(errors, `${props.name}.fonteRetencao.value`)
           }
           isInvalid={!!getIn(errors, `${props.name}.fonteRetencao.value`)}
+          disabled={props.disabled}
         >
           {Object.values(tipoFontesRetencao).map((tfr) => (
             <option value={tfr} key={tfr}>
@@ -128,6 +132,7 @@ const Section7FormRowSub = (props: {
               !getIn(errors, `${props.name}.localArmazenamento`)
             }
             isInvalid={!!getIn(errors, `${props.name}.localArmazenamento`)}
+            disabled={props.disabled}
           />
         ) : (
           <React.Fragment>
@@ -152,6 +157,7 @@ const Section7FormRowSub = (props: {
               component={SelectFieldSearch}
               name={`${props.name}.localArmazenamento`}
               options={selectOptions}
+              disabled={props.disabled}
             />
           </React.Fragment>
         )}

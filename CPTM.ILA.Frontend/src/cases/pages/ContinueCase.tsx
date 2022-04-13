@@ -36,7 +36,11 @@ const ContinueCase = () => {
         undefined,
         { Authorization: "Bearer " + token }
       );
-      let loadedCase = responseData.case;
+      let loadedCase: Case = responseData.uniqueCase;
+      loadedCase.dataCriacao = new Date(
+        loadedCase.dataCriacao
+      ).toLocaleDateString();
+      loadedCase.dataAtualizacao = new Date().toLocaleDateString();
       setFullCase(loadedCase);
     };
 
@@ -57,6 +61,20 @@ const ContinueCase = () => {
 
   const saveProgressHandler = async (item: Case) => {
     console.log("Initial item: ", item);
+
+    const dateCriacaoParts = item.dataCriacao.split("/");
+    const dateAtualizacaoParts = item.dataAtualizacao.split("/");
+    item.dataCriacao = new Date(
+      +dateCriacaoParts[2],
+      +dateCriacaoParts[1] - 1,
+      +dateCriacaoParts[0]
+    ).toISOString();
+    item.dataAtualizacao = new Date(
+      +dateAtualizacaoParts[2],
+      +dateAtualizacaoParts[1] - 1,
+      +dateAtualizacaoParts[0]
+    ).toISOString();
+    item.area = currentGroup.nome;
 
     for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
       if (value.length !== 0) {
@@ -98,12 +116,28 @@ const ContinueCase = () => {
       navigate(`/`);
     } catch (err) {
       console.log(err);
+      item.dataCriacao = new Date(item.dataCriacao).toLocaleDateString();
+      item.dataAtualizacao = new Date().toLocaleDateString();
       setFullCase(item);
     }
   };
 
   const sendToApprovalHandler = async (item: Case) => {
     console.log("sah, Initial item: ", item);
+
+    const dateCriacaoParts = item.dataCriacao.split("/");
+    const dateAtualizacaoParts = item.dataAtualizacao.split("/");
+    item.dataCriacao = new Date(
+      +dateCriacaoParts[2],
+      +dateCriacaoParts[1] - 1,
+      +dateCriacaoParts[0]
+    ).toISOString();
+    item.dataAtualizacao = new Date(
+      +dateAtualizacaoParts[2],
+      +dateAtualizacaoParts[1] - 1,
+      +dateAtualizacaoParts[0]
+    ).toISOString();
+    item.area = currentGroup.nome;
 
     for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
       if (value.length !== 0) {
@@ -164,7 +198,7 @@ const ContinueCase = () => {
 
   return (
     <React.Fragment>
-      <h1>Editar Item</h1>
+      <h1>Continuar Processo Salvo</h1>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}

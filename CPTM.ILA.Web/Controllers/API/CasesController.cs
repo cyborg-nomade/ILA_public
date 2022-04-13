@@ -515,42 +515,6 @@ namespace CPTM.ILA.Web.Controllers.API
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
 
-                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
-                //    .Collection(c => c.FiliacaoCrencaFilosofica)
-                //    .LoadAsync();
-                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
-                //    .Collection(c => c.FiliacaoOrgReligiosa)
-                //    .LoadAsync();
-                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
-                //    .Collection(c => c.FiliacaoPreferenciaPolitica)
-                //    .LoadAsync();
-                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
-                //    .Collection(c => c.FiliacaoSindicato)
-                //    .LoadAsync();
-                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
-                //    .Collection(c => c.Geneticos)
-                //    .LoadAsync();
-                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
-                //    .Collection(c => c.OpiniaoPolitica)
-                //    .LoadAsync();
-                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
-                //    .Collection(c => c.OrigemRacialEtnica)
-                //    .LoadAsync();
-                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
-                //    .Collection(c => c.SaudeVidaSexual)
-                //    .LoadAsync();
-                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
-                //    .Collection(c => c.Biometricos)
-                //    .LoadAsync();
-                //await _context.Entry(uniqueCase.CatDadosPessoaisSensiveis)
-                //    .Collection(c => c.ConviccaoReligiosa)
-                //    .LoadAsync();
-
-                //uniqueCase.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica = await _context.Cases
-                //    .Where(c => c.Id == cid)
-                //    .Select(c => c.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica)
-                //    .FirstOrDefaultAsync();
-
 
                 if (User.Identity is ClaimsIdentity identity)
                 {
@@ -697,6 +661,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 var caseInDb = await _context.Cases.FindAsync(cid);
+
                 if (caseInDb == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
@@ -708,8 +673,8 @@ namespace CPTM.ILA.Web.Controllers.API
                 caseToSave.RectifyCase();
 
                 _context.ChangeLogs.Add(newChangeLog);
-                _context.Entry(caseToSave)
-                    .State = EntityState.Modified;
+                _context.Cases.Remove(caseInDb);
+                _context.Cases.Add(caseToSave);
 
                 await _context.SaveChangesAsync();
 
@@ -719,7 +684,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 

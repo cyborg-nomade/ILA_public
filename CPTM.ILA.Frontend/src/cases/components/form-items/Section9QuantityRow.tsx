@@ -9,34 +9,36 @@ import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionar
 import { Case } from "../../../shared/models/cases.model";
 import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
 
-const Section9QuantityRow = () => {
+const Section9QuantityRow = (props: { isEditing: boolean }) => {
   const { values, setFieldValue } = useFormikContext<Case>();
 
   useEffect(() => {
-    let totalDadosTratados = 0;
-    let totalDadosSensiveisTratados = 0;
+    if (props.isEditing) {
+      let totalDadosTratados = 0;
+      let totalDadosSensiveisTratados = 0;
 
-    for (const categoria of Object.values(values.categoriaDadosPessoais)) {
-      for (const item of Object.values(categoria)) {
-        if (Array.isArray(item)) {
-          totalDadosTratados += item.length;
+      for (const categoria of Object.values(values.categoriaDadosPessoais)) {
+        for (const item of Object.values(categoria)) {
+          if (Array.isArray(item)) {
+            totalDadosTratados += item.length;
+          }
         }
       }
-    }
 
-    for (const item of Object.values(values.catDadosPessoaisSensiveis)) {
-      if (Array.isArray(item)) {
-        totalDadosSensiveisTratados += item.length;
+      for (const item of Object.values(values.catDadosPessoaisSensiveis)) {
+        if (Array.isArray(item)) {
+          totalDadosSensiveisTratados += item.length;
+        }
       }
+
+      totalDadosTratados += totalDadosSensiveisTratados;
+
+      setFieldValue("qtdeDadosSensiveisTratados", totalDadosSensiveisTratados);
+      setFieldValue("qtdeDadosTratados", totalDadosTratados);
     }
-
-    totalDadosTratados += totalDadosSensiveisTratados;
-
-    setFieldValue("qtdeDadosSensiveisTratados", totalDadosSensiveisTratados);
-    setFieldValue("qtdeDadosTratados", totalDadosTratados);
 
     return () => {};
-  }, [setFieldValue, values]);
+  }, [props.isEditing, setFieldValue, values]);
 
   return (
     <React.Fragment>
