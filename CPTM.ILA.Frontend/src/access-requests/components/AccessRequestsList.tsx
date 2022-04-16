@@ -25,6 +25,7 @@ const headers: {
   isSortable: boolean;
   prop: headersAccessRequestsList;
 }[] = [
+  { title: "ID", prop: "id", isFilterable: true, isSortable: true },
   {
     title: "Usuário Solicitante",
     prop: "usernameSolicitante",

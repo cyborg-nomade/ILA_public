@@ -1,6 +1,7 @@
 import { tipoSolicitacaoAcesso } from "../access-control/access-request.model";
 
 export interface AccessRequestDTO {
+  id: number;
   usernameSolicitante: string;
   usernameSuperior: string;
   justificativa: string;
@@ -11,6 +12,7 @@ export interface AccessRequestDTO {
 
 export const emptyAccessRequestDTO = (): AccessRequestDTO => {
   return {
+    id: 0,
     usernameSolicitante: "",
     usernameSuperior: "",
     justificativa: "",
