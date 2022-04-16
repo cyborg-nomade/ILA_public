@@ -90,6 +90,8 @@ const Section10FormRow = (props: {
             required
             label="Sim"
             value="SIM"
+            disabled={props.disabled}
+            checked={isDescricaoEnabled}
             onChange={handleChangeRadio}
             onBlur={handleBlur}
             isValid={
@@ -104,6 +106,8 @@ const Section10FormRow = (props: {
             required
             label="Não"
             value="NÃO"
+            checked={!isDescricaoEnabled}
+            disabled={props.disabled}
             onChange={handleChangeRadio}
             onBlur={handleBlur}
             isValid={

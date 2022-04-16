@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useFormikContext, getIn } from "formik";
 import Form from "react-bootstrap/Form";
@@ -11,11 +11,20 @@ import { Case } from "../../../shared/models/cases.model";
 import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
 
-const Section3FormRow = () => {
+const Section3FormRow = (props: { disabled: boolean }) => {
   const { values, touched, errors, setFieldValue, handleBlur, handleChange } =
     useFormikContext<Case>();
 
   const [trata, setTrata] = useState(false);
+
+  useEffect(() => {
+    for (const value of Object.values(values.fasesCicloTratamento)) {
+      if (value) {
+        setTrata(true);
+      }
+    }
+    return () => {};
+  }, [values]);
 
   const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.value === "SIM") {
@@ -59,6 +68,8 @@ const Section3FormRow = () => {
           required
           label="Sim"
           value="SIM"
+          checked={trata}
+          disabled={props.disabled}
           onChange={handleTrataRadio}
         />
         <Form.Check
@@ -68,12 +79,14 @@ const Section3FormRow = () => {
           inline
           label="Não"
           value="NÃO"
+          checked={!trata}
+          disabled={props.disabled}
           onChange={handleTrataRadio}
         />
       </Col>
       <Col className="d-grid justify-content-center">
         <Form.Check
-          disabled={!trata}
+          disabled={!trata || props.disabled}
           type="checkbox"
           id="fasesCicloTratamento.coleta"
           name="fasesCicloTratamento.coleta"
@@ -89,7 +102,7 @@ const Section3FormRow = () => {
       </Col>
       <Col className="d-grid justify-content-center">
         <Form.Check
-          disabled={!trata}
+          disabled={!trata || props.disabled}
           type="checkbox"
           id="fasesCicloTratamento.retencao"
           name="fasesCicloTratamento.retencao"
@@ -105,7 +118,7 @@ const Section3FormRow = () => {
       </Col>
       <Col className="d-grid justify-content-center">
         <Form.Check
-          disabled={!trata}
+          disabled={!trata || props.disabled}
           type="checkbox"
           id="fasesCicloTratamento.processamento"
           name="fasesCicloTratamento.processamento"
@@ -121,7 +134,7 @@ const Section3FormRow = () => {
       </Col>
       <Col className="d-grid justify-content-center">
         <Form.Check
-          disabled={!trata}
+          disabled={!trata || props.disabled}
           type="checkbox"
           id="fasesCicloTratamento.compartilhamento"
           name="fasesCicloTratamento.compartilhamento"
@@ -137,7 +150,7 @@ const Section3FormRow = () => {
       </Col>
       <Col className="d-grid justify-content-center">
         <Form.Check
-          disabled={!trata}
+          disabled={!trata || props.disabled}
           type="checkbox"
           id="fasesCicloTratamento.eliminacao"
           name="fasesCicloTratamento.eliminacao"

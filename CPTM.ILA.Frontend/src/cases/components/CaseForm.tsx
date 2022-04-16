@@ -603,7 +603,7 @@ const CaseForm = (props: {
                     </Form.Label>
                     <Form.Label as={Col} lg={1}></Form.Label>
                   </Row>
-                  <Section3FormRow />
+                  <Section3FormRow disabled={!isEditing} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="3">
@@ -2707,6 +2707,7 @@ const CaseForm = (props: {
                                           lg={2}
                                         >
                                           <Button
+                                            disabled={!isEditing}
                                             variant="primary"
                                             onClick={() =>
                                               arrayHelpers.push(
@@ -2717,6 +2718,7 @@ const CaseForm = (props: {
                                             +
                                           </Button>
                                           <Button
+                                            disabled={!isEditing}
                                             variant="danger"
                                             onClick={() =>
                                               arrayHelpers.remove(index)
@@ -2737,6 +2739,7 @@ const CaseForm = (props: {
                                     lg={2}
                                   >
                                     <Button
+                                      disabled={!isEditing}
                                       variant="primary"
                                       onClick={() =>
                                         arrayHelpers.push(
@@ -2891,6 +2894,7 @@ const CaseForm = (props: {
                                     lg={2}
                                   >
                                     <Button
+                                      disabled={!isEditing}
                                       variant="primary"
                                       onClick={() =>
                                         arrayHelpers.push(
@@ -2901,6 +2905,7 @@ const CaseForm = (props: {
                                       +
                                     </Button>
                                     <Button
+                                      disabled={!isEditing}
                                       variant="danger"
                                       onClick={() => arrayHelpers.remove(index)}
                                     >
@@ -2915,6 +2920,7 @@ const CaseForm = (props: {
                           <Row className="justify-content-center">
                             <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                               <Button
+                                disabled={!isEditing}
                                 variant="primary"
                                 onClick={() =>
                                   arrayHelpers.push(
@@ -2956,7 +2962,10 @@ const CaseForm = (props: {
                     </Form.Label>
                     <Col lg={1}></Col>
                   </Row>
-                  <Section13FormRow countries={countries} />
+                  <Section13FormRow
+                    countries={countries}
+                    disabled={!isEditing}
+                  />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="13">
@@ -2980,7 +2989,7 @@ const CaseForm = (props: {
                     </Form.Label>
                     <Col lg={1}></Col>
                   </Row>
-                  <Section14FormRow />
+                  <Section14FormRow disabled={!isEditing} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="14">
@@ -3031,6 +3040,7 @@ const CaseForm = (props: {
                                   lg={2}
                                 >
                                   <Button
+                                    disabled={!isEditing}
                                     variant="primary"
                                     onClick={() =>
                                       arrayHelpers.push(
@@ -3041,6 +3051,7 @@ const CaseForm = (props: {
                                     +
                                   </Button>
                                   <Button
+                                    disabled={!isEditing}
                                     variant="danger"
                                     onClick={() => arrayHelpers.remove(index)}
                                   >
@@ -3054,6 +3065,7 @@ const CaseForm = (props: {
                           <Row className="justify-content-center">
                             <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                               <Button
+                                disabled={!isEditing}
                                 variant="primary"
                                 onClick={() =>
                                   arrayHelpers.push(emptyItemRiscoPrivacidade())
@@ -3113,6 +3125,7 @@ const CaseForm = (props: {
                                   lg={2}
                                 >
                                   <Button
+                                    disabled={!isEditing}
                                     variant="primary"
                                     onClick={() =>
                                       arrayHelpers.push(
@@ -3123,6 +3136,7 @@ const CaseForm = (props: {
                                     +
                                   </Button>
                                   <Button
+                                    disabled={!isEditing}
                                     variant="danger"
                                     onClick={() => arrayHelpers.remove(index)}
                                   >
@@ -3136,6 +3150,7 @@ const CaseForm = (props: {
                           <Row className="justify-content-center">
                             <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                               <Button
+                                disabled={!isEditing}
                                 variant="primary"
                                 onClick={() =>
                                   arrayHelpers.push(

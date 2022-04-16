@@ -37,6 +37,8 @@ const Section11FormRow = (props: { disabled: boolean }) => {
             required
             label="Sim"
             value="SIM"
+            checked={trata}
+            disabled={props.disabled}
             onChange={handleTrataRadio}
           />
           <Form.Check
@@ -46,6 +48,8 @@ const Section11FormRow = (props: { disabled: boolean }) => {
             inline
             label="Não"
             value="NÃO"
+            checked={!trata}
+            disabled={props.disabled}
             onChange={handleTrataRadio}
           />
         </Col>
