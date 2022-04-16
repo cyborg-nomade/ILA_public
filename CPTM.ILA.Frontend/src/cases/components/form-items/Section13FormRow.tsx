@@ -13,7 +13,10 @@ import CreateCommentBox from "./../../../threads-comments/components/CreateComme
 import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 import Section13FormRowSub from "./Section13FormRowSub";
 
-const Section13FormRow = (props: { countries: string[] }) => {
+const Section13FormRow = (props: {
+  countries: string[];
+  disabled: boolean;
+}) => {
   const { values, setFieldValue } = useFormikContext<Case>();
 
   const [trata, setTrata] = useState(false);
@@ -37,6 +40,8 @@ const Section13FormRow = (props: { countries: string[] }) => {
             required
             label="Sim"
             value="SIM"
+            checked={trata}
+            disabled={props.disabled}
             onChange={handleTrataRadio}
           />
           <Form.Check
@@ -46,6 +51,8 @@ const Section13FormRow = (props: { countries: string[] }) => {
             inline
             label="Não"
             value="NÃO"
+            checked={!trata}
+            disabled={props.disabled}
             onChange={handleTrataRadio}
           />
         </Col>

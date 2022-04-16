@@ -118,6 +118,8 @@ const EditCase = () => {
       navigate(`/`);
     } catch (err) {
       console.log(err);
+      item.dataCriacao = new Date(item.dataCriacao).toLocaleDateString();
+      item.dataAtualizacao = new Date().toLocaleDateString();
       setFullCase(item);
     }
   };
@@ -192,6 +194,8 @@ const EditCase = () => {
       navigate(`/`);
     } catch (err) {
       console.log(err);
+      item.dataCriacao = new Date(item.dataCriacao).toLocaleDateString();
+      item.dataAtualizacao = new Date().toLocaleDateString();
       setFullCase(item);
     }
   };

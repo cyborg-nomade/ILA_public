@@ -678,7 +678,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso registrado com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Caso registrado com sucesso!", caseToSave });
             }
             catch (Exception e)
             {
@@ -919,7 +920,11 @@ namespace CPTM.ILA.Web.Controllers.API
                     throw new ArgumentNullException(nameof(usuarioCriador));
                 }
 
-                caseToRequestApproval.SendCaseToApproval(usuarioCriador.Username);
+                var userEmailId = _context.ILA_VW_USUARIO.Where(u => u.TX_USERNAME == usuarioCriador.Username)
+                    .Select(u => u.ID_CODUSUARIO)
+                    .SingleOrDefault();
+
+                caseToRequestApproval.SendCaseToApproval(usuarioCriador.Username, userEmailId);
 
                 var changeLog = new ChangeLog()
                 {

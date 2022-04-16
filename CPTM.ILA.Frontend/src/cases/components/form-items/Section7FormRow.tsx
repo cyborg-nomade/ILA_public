@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useFormikContext, getIn, FieldArray } from "formik";
 import Form from "react-bootstrap/Form";
@@ -36,6 +36,20 @@ const Section7FormRow = (props: {
     `${props.name}`
   );
 
+  useEffect(() => {
+    const categoriaArayUseEffect: itemCategoriaDadosPessoais[] = getIn(
+      values,
+      `${props.name}`
+    );
+
+    if (categoriaArayUseEffect && categoriaArayUseEffect.length > 0) {
+      setTrata(true);
+    } else {
+      setTrata(false);
+    }
+    return () => {};
+  }, [props.name, values]);
+
   const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.value === "SIM") {
       setTrata(true);
@@ -68,6 +82,8 @@ const Section7FormRow = (props: {
             required
             label="Sim"
             value="SIM"
+            checked={trata}
+            disabled={props.disabled}
             onChange={handleTrataRadio}
           />
           <Form.Check
@@ -77,6 +93,8 @@ const Section7FormRow = (props: {
             inline
             label="Não"
             value="NÃO"
+            checked={!trata}
+            disabled={props.disabled}
             onChange={handleTrataRadio}
           />
         </Col>

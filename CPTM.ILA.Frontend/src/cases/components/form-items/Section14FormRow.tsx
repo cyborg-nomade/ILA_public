@@ -13,7 +13,7 @@ import { emptyItemContratoTI } from "../../../shared/models/case-helpers/case-he
 import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
 import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 
-const Section14FormRow = () => {
+const Section14FormRow = (props: { disabled: boolean }) => {
   const { values, setFieldValue } = useFormikContext<Case>();
 
   const [trata, setTrata] = useState(false);
@@ -37,6 +37,8 @@ const Section14FormRow = () => {
             required
             label="Sim"
             value="SIM"
+            checked={trata}
+            disabled={props.disabled}
             onChange={handleTrataRadio}
           />
           <Form.Check
@@ -46,6 +48,8 @@ const Section14FormRow = () => {
             inline
             label="Não"
             value="NÃO"
+            checked={!trata}
+            disabled={props.disabled}
             onChange={handleTrataRadio}
           />
         </Col>
