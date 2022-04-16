@@ -1,3 +1,4 @@
+import { AccessRequestDTO } from "../DTOs/access-request-dto.model";
 import { Group } from "./group.model";
 
 export enum tipoSolicitacaoAcesso {
@@ -19,7 +20,7 @@ export interface AccessRequest extends BaseAccessRequest {
   emailSuperiorPath: string;
 }
 
-export type headersAccessRequestsList = keyof AccessRequest;
+export type headersAccessRequestsList = keyof AccessRequestDTO;
 
 export const emptyAccessRequest = (): BaseAccessRequest | AccessRequest => {
   return {
