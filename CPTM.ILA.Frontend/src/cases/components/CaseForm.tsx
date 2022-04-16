@@ -55,6 +55,8 @@ const CaseForm = (props: {
   continue?: boolean;
   onSaveProgressSubmit?: onSubmitFn;
   onSendToApprovalSubmit?: onSubmitFn;
+  onApproveSubmit?: onSubmitFn;
+  onReproveSubmit?: onSubmitFn;
 }) => {
   const [isEditing, setIsEditing] = useState(props.new || false);
   const [itemValues, setItemValues] = useState<Case>(emptyCase());
@@ -62,6 +64,8 @@ const CaseForm = (props: {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
   const [showSendToApprovalModal, setShowSendToApprovalModal] = useState(false);
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [showReproveModal, setShowReproveModal] = useState(false);
 
   const { token } = useContext(AuthContext);
 
@@ -107,6 +111,14 @@ const CaseForm = (props: {
   const handleSendToApprovalClick = (item: Case) => {
     setItemValues(item);
     setShowSendToApprovalModal(true);
+  };
+  const handleApprovalClick = (item: Case) => {
+    setItemValues(item);
+    setShowApproveModal(true);
+  };
+  const handleReprovalClick = (item: Case) => {
+    setItemValues(item);
+    setShowReproveModal(true);
   };
 
   if (isLoading) {
@@ -189,6 +201,52 @@ const CaseForm = (props: {
           <Button
             variant="primary"
             onClick={() => props.onSendToApprovalSubmit!(itemValues)}
+          >
+            Sim
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showApproveModal}
+        onHide={() => setShowApproveModal(false)}
+        animation={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Aprovar Processo!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Você tem certeza que deseja aprovar este processo?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={() => setShowApproveModal(false)}>
+            Não
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => props.onApproveSubmit!(itemValues)}
+          >
+            Sim
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showReproveModal}
+        onHide={() => setShowReproveModal(false)}
+        animation={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Reprovar Processo!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Você tem certeza que deseja reprovar este processo?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={() => setShowReproveModal(false)}>
+            Não
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => props.onReproveSubmit!(itemValues)}
           >
             Sim
           </Button>
@@ -3191,17 +3249,24 @@ const CaseForm = (props: {
               </Stack>
             )}
             {props.approve && (
-              <Row className="float-end mt-3">
-                <ButtonGroup as={Col} lg={2}>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => onCancel()}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button type="submit">Aprovar</Button>
-                </ButtonGroup>
-              </Row>
+              <Stack direction="horizontal" className="mt-3" gap={0}>
+                <Button variant="light" onClick={() => onCancel()}>
+                  Cancelar
+                </Button>
+                <Button
+                  variant="danger"
+                  className="ms-auto"
+                  onClick={() => handleReprovalClick(values)}
+                >
+                  Reprovar
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => handleApprovalClick(values)}
+                >
+                  Aprovar
+                </Button>
+              </Stack>
             )}
             {props.edit && isEditing && isValid && (
               <Stack direction="horizontal" className="mt-3" gap={3}>

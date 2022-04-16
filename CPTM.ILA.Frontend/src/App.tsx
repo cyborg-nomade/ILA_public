@@ -56,6 +56,9 @@ const ContinueCaseListGetter = React.lazy(
 const EditCaseListGetter = React.lazy(
   () => import("./cases/pages/EditCaseListGetter")
 );
+const ComiteCasesListGetter = React.lazy(
+  () => import("./users/pages/ComiteCasesListGetter")
+);
 
 const App = () => {
   const {
@@ -102,14 +105,17 @@ const App = () => {
   } else {
     routes = (
       <React.Fragment>
-        <Route path="/comite/cases" element={<AllCasesPage />}>
-          <Route index element={<AllCasesListGetter />} />
-          <Route path=":cid" element={<EditCase />} />
+        <Route path="/comite" element={<UserPage />}>
+          <Route index element={<Dashboards />} />
+          <Route path="cases" element={<UserCasesLayout />}>
+            <Route index element={<ComiteCasesListGetter />} />
+            <Route path="approve" element={<ApproveCasesListGetter />} />
+          </Route>
         </Route>
-        <Route path="/comite/cases/approve" element={<ApproveCasesPage />}>
-          <Route index element={<ApproveCasesListGetter />} />
-          <Route path=":cid" element={<ApproveCaseGetter />} />
-        </Route>
+        <Route
+          path="/comite/cases/approve/:cid"
+          element={<ApproveCaseGetter />}
+        />
         <Route
           path="/comite/access-requests/approve"
           element={<AllAccessRequestsPage />}
@@ -118,8 +124,8 @@ const App = () => {
           <Route path=":arid" element={<ApproveAccessRequestGetter />} />
         </Route>
         <Route path="/request-group-access" element={<RequestGroupAccess />} />
-        <Route path="/" element={<Navigate replace to="../comite/cases" />} />
-        <Route path="*" element={<Navigate replace to="../comite/cases" />} />
+        <Route path="/" element={<Navigate replace to="../comite/" />} />
+        <Route path="*" element={<Navigate replace to="../comite/" />} />
       </React.Fragment>
     );
   }

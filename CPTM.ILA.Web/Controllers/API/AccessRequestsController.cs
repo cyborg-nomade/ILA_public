@@ -633,7 +633,147 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        [Route("add-comite-member")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> AddUserToComite([FromBody] string newComiteMemberUsername)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            if (newComiteMemberUsername == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest,
+                    new { message = "Nome de usuário do novo membro do Comitê LGPD é inválido" });
+            }
+
+            try
+            {
+                if (!Seguranca.ExisteUsuario(newComiteMemberUsername))
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new
+                    {
+                        message = "Usuário fornecido não existe. Verifique e tente novamente."
+                    });
+                }
+
+                var usersInDb = await _context.Users.ToListAsync();
+
+                var userInDb = usersInDb.SingleOrDefault(u => u.Username == newComiteMemberUsername.ToUpper());
+
+                if (userInDb == null)
+                {
+                    var userAd = Seguranca.ObterUsuario(newComiteMemberUsername);
+
+                    var groupInDb = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento);
+
+                    if (groupInDb == null)
+                    {
+                        var newGroup = new Group()
+                        {
+                            Nome = userAd.Departamento,
+                        };
+                        _context.Groups.Add(newGroup);
+                        groupInDb = newGroup;
+                    }
+
+                    var newUser = new User()
+                    {
+                        Username = userAd.Login,
+                        OriginGroup = groupInDb,
+                        IsComite = true,
+                    };
+                    _context.Users.Add(newUser);
+
+                    await _context.SaveChangesAsync();
+
+                    return Request.CreateResponse(HttpStatusCode.OK,
+                        new { message = "Usuario criado e adicionado ao Comitê LGPD com sucesso" });
+                }
+
+                userInDb.IsComite = true;
+
+                _context.Entry(userInDb)
+                    .State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Membro adicionado ao Comitê LGPD com sucesso" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        [Route("remove-comite-member/{uid:int}")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> RemoveUserFromComite(int uid)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                if (uid <= 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        new { message = "Id de usuário inválido" });
+                }
+
+                var userInDb = await _context.Users.FindAsync(uid);
+
+                if (userInDb == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
+                }
+
+                var userAd = Seguranca.ExisteUsuario(userInDb.Username);
+
+                if (!userAd)
+                {
+                    _context.Users.Remove(userInDb);
+                    await _context.SaveChangesAsync();
+
+                    return Request.CreateResponse(HttpStatusCode.OK,
+                        new { message = "Usuário não existia mais no AD, removido com sucesso da aplicação" });
+                }
+
+                userInDb.IsComite = false;
+                _context.Entry(userInDb)
+                    .State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Usuário removido com sucesso do Comitê LGPD" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
