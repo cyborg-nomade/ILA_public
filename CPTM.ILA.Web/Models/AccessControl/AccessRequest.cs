@@ -21,6 +21,7 @@ namespace CPTM.ILA.Web.Models.AccessControl
         {
             var accessRequestDto = new AccessRequestDTO()
             {
+                Id = accessRequest.Id,
                 UsernameSuperior = accessRequest.UsernameSuperior,
                 UsernameSolicitante = accessRequest.UsernameSolicitante,
                 Justificativa = accessRequest.Justificativa,

@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -149,16 +150,24 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 var fileData = File.ReadAllBytes(filePath);
+                var fileName = Path.GetFileName(filePath);
 
-                var response = Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Arquivo recuperado com sucesso!" });
+                var utf8 = Encoding.UTF8;
+                var utfBytes = utf8.GetBytes(fileName);
+
+                var fileNameProper = utf8.GetString(utfBytes);
+
+                var response = Request.CreateResponse(HttpStatusCode.OK);
                 response.Content = new ByteArrayContent(fileData);
                 response.Content.Headers.ContentLength = fileData.LongLength;
                 response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
                 {
-                    FileName = Path.GetFileName(filePath)
+                    FileName = fileNameProper
                 };
                 response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                response.Headers.Add("Filename", fileNameProper);
+                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+
 
                 return response;
             }

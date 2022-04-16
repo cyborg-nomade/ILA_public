@@ -1,5 +1,5 @@
-import React, { CSSProperties, useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Formik, Field } from "formik";
 import * as yup from "yup";
 import Form from "react-bootstrap/Form";
@@ -23,6 +23,7 @@ import { RequiredStringSchema } from "yup/lib/string";
 import SelectFieldMulti from "../../shared/components/UI/SelectFieldMulti";
 import { RequiredArraySchema } from "yup/lib/array";
 import { MixedSchema } from "yup/lib/mixed";
+import { AuthContext } from "../../shared/context/auth-context";
 
 type onSubmitFn = (item: AccessRequestDTO) => void;
 
@@ -156,6 +157,8 @@ const AccessRequestForm = (props: {
   const [isComiteReq, setIsComiteReq] = useState(false);
   const [groups, setGroups] = useState<GroupedOption[]>([]);
 
+  const { token } = useContext(AuthContext);
+
   useEffect(() => {
     schema = props.groups
       ? yup.object().shape({
@@ -185,12 +188,38 @@ const AccessRequestForm = (props: {
     setIsComiteReq(!isComiteReq);
   };
 
+  const arid = useParams().arid;
   let navigate = useNavigate();
   const backToHomepageHandler = () => {
     navigate("/");
   };
   const backOneHandler = () => {
     navigate(-1);
+  };
+  const getFileHandler = async () => {
+    const fileRes = await fetch(
+      `${process.env.REACT_APP_CONNSTR}/access-requests/get-file/${arid}`,
+      {
+        headers: { Authorization: "Bearer " + token },
+      }
+    );
+    const fileBlob = await fileRes.blob();
+
+    const url = window.URL.createObjectURL(new Blob([fileBlob]));
+    const filename = fileRes.headers.get("Filename") || "";
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    // Append to html link element page
+    document.body.appendChild(link);
+
+    // Start download
+    link.click();
+
+    // Clean up and remove the link
+    link.parentNode?.removeChild(link);
+
+    console.log(link, url, fileBlob, fileRes.headers.get("Filename"));
   };
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -230,7 +259,9 @@ const AccessRequestForm = (props: {
   useEffect(() => {
     getGroups();
 
-    return () => {};
+    return () => {
+      setGroups([]);
+    };
   }, [getGroups]);
 
   return (
@@ -322,11 +353,12 @@ const AccessRequestForm = (props: {
                   </Form.Group>
                 </Row>
               )}
-              {(props.groups || isComiteReq) && (
+              {(props.groups || isComiteReq || props.approve) && (
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik03">
                     <Form.Label>Grupos a serem acessados</Form.Label>
                     <Field
+                      isDisabled={props.approve}
                       component={SelectFieldMulti}
                       name="groupNames"
                       options={groups}
@@ -353,7 +385,7 @@ const AccessRequestForm = (props: {
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
-              {!isComiteReq && (
+              {!isComiteReq && !props.approve && (
                 <Row className="mb-3">
                   <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label>E-mail com autorização do superior</Form.Label>
@@ -368,6 +400,13 @@ const AccessRequestForm = (props: {
                       }}
                     />
                   </Form.Group>
+                </Row>
+              )}
+              {props.approve && (
+                <Row className="mb-3">
+                  <Button onClick={getFileHandler}>
+                    Baixar Arquivo de Autorização
+                  </Button>
                 </Row>
               )}
               {props.register && (
