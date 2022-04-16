@@ -3,13 +3,17 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { AccessRequest } from "../../shared/models/access-control/access-request.model";
+import {
+  AccessRequest,
+  tipoSolicitacaoAcesso,
+} from "../../shared/models/access-control/access-request.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import AccessRequestsList from "./AccessRequestsList";
+import { AccessRequestDTO } from "../../shared/models/DTOs/access-request-dto.model";
 
 const InitialAccessRequestsListGetter = () => {
-  const [accessRequests, setAccessRequests] = useState<AccessRequest[]>([]);
+  const [accessRequests, setAccessRequests] = useState<AccessRequestDTO[]>([]);
 
   const { token } = useContext(AuthContext);
 
@@ -19,19 +23,22 @@ const InitialAccessRequestsListGetter = () => {
   useEffect(() => {
     const getInitialAccessRequests = async () => {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/access-requests/initial`,
+        `${process.env.REACT_APP_CONNSTR}/access-requests/type/${tipoSolicitacaoAcesso.AcessoAoSistema}`,
         undefined,
         undefined,
         { Authorization: "Bearer " + token }
       );
-      const loadedAccessRequests: AccessRequest[] =
-        responseData.initialRequests;
+      const loadedAccessRequests: AccessRequestDTO[] = responseData.requests;
       setAccessRequests(loadedAccessRequests);
     };
 
     getInitialAccessRequests().catch((error) => {
       console.log(error);
     });
+
+    return () => {
+      setAccessRequests([]);
+    };
   }, [sendRequest, token]);
 
   if (isLoading) {
@@ -46,7 +53,7 @@ const InitialAccessRequestsListGetter = () => {
 
   return (
     <React.Fragment>
-      <h1>Requisições de Acesso ao Inventário LGPD Automatizado</h1>
+      <h2>Requisições de Acesso ao Inventário LGPD Automatizado</h2>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}

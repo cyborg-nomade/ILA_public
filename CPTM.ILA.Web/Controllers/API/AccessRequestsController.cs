@@ -219,7 +219,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 

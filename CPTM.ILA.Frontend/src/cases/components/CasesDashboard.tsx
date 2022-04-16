@@ -22,7 +22,7 @@ const colors = randomColor({
   seed: "same",
 });
 
-const CasesDashboard = (props: { isComite: boolean }) => {
+const CasesDashboard = () => {
   const [selected, setSelected] = useState<number | undefined>(0);
   const [hovered, setHovered] = useState<number | undefined>(undefined);
   const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
@@ -97,7 +97,7 @@ const CasesDashboard = (props: { isComite: boolean }) => {
       }
     };
 
-    if (props.isComite) {
+    if (user.isComite) {
       getComiteCasesTotals().catch((error) => {
         console.log(error);
       });
@@ -106,11 +106,7 @@ const CasesDashboard = (props: { isComite: boolean }) => {
         console.log(error);
       });
     }
-
-    getGroupCaseTotals().catch((error) => {
-      console.log(error);
-    });
-  }, [sendRequest, token, currentGroup.id, props.isComite]);
+  }, [sendRequest, token, currentGroup.id, user.isComite]);
 
   return (
     <React.Fragment>

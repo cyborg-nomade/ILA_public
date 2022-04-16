@@ -17,16 +17,25 @@ namespace CPTM.ILA.Web.Models.AccessControl
         public ICollection<Group> Groups { get; set; }
         public TipoSolicitacaoAcesso TipoSolicitacaoAcesso { get; set; }
 
-        public static AccessRequestDTO ReduceToDto(AccessRequest accessRequest) =>
-            new AccessRequestDTO()
+        public static AccessRequestDTO ReduceToDto(AccessRequest accessRequest)
+        {
+            var accessRequestDto = new AccessRequestDTO()
             {
                 UsernameSuperior = accessRequest.UsernameSuperior,
                 UsernameSolicitante = accessRequest.UsernameSolicitante,
                 Justificativa = accessRequest.Justificativa,
                 TipoSolicitacaoAcesso = accessRequest.TipoSolicitacaoAcesso,
-                GroupNames = accessRequest.Groups.Select(accessRequestGroup => accessRequestGroup.Nome)
-                    .ToList()
+                GroupNames = new List<string>()
             };
+
+            if (accessRequest.Groups != null)
+            {
+                accessRequestDto.GroupNames = accessRequest.Groups.Select(g => g.Nome)
+                    .ToList();
+            }
+
+            return accessRequestDto;
+        }
     }
 
     public enum TipoSolicitacaoAcesso
