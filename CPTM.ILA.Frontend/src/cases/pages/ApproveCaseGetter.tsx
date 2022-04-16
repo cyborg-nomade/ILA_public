@@ -31,8 +31,11 @@ const ApproveCaseGetter = () => {
         { Authorization: "Bearer " + token }
       );
 
-      let loadedCase = responseData.case;
-
+      let loadedCase = responseData.uniqueCase;
+      loadedCase.dataCriacao = new Date(
+        loadedCase.dataCriacao
+      ).toLocaleDateString();
+      loadedCase.dataAtualizacao = new Date().toLocaleDateString();
       setFullCase(loadedCase);
     };
 
@@ -51,21 +54,42 @@ const ApproveCaseGetter = () => {
     );
   }
 
-  const submitFormHandler = async (item: Case) => {
+  const approveCaseHandler = async (item: Case) => {
     item.aprovado = true;
 
     try {
       await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
-        "PUT",
-        JSON.stringify(item),
+        `${process.env.REACT_APP_CONNSTR}/cases/approve/${cid}`,
+        "POST",
+        JSON.stringify(item.aprovado),
         {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
         }
       );
 
-      navigate(`/comite/cases`);
+      navigate(`/comite/`);
+    } catch (err) {
+      console.log(err);
+      setFullCase(item);
+    }
+  };
+
+  const reproveCaseHandler = async (item: Case) => {
+    item.aprovado = false;
+
+    try {
+      await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/cases/approve/${cid}`,
+        "POST",
+        JSON.stringify(item.aprovado),
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        }
+      );
+
+      navigate(`/comite/`);
     } catch (err) {
       console.log(err);
       setFullCase(item);
@@ -87,7 +111,8 @@ const ApproveCaseGetter = () => {
       <CaseForm
         item={fullCase}
         approve={true}
-        onSaveProgressSubmit={submitFormHandler}
+        onApproveSubmit={approveCaseHandler}
+        onReproveSubmit={reproveCaseHandler}
       />
     </React.Fragment>
   );

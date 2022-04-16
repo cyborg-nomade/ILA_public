@@ -165,7 +165,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .GroupBy(c => c.GrupoCriadorId)
                     .Select(c => new GroupTotals()
                     {
-                        GroupId = c.First()
+                        GroupId = c.FirstOrDefault()
                             .GrupoCriadorId,
                         GroupName = "",
                         QuantityInGroup = c.Count()

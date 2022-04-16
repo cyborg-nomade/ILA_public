@@ -22,7 +22,7 @@ const colors = randomColor({
   seed: "same",
 });
 
-const CasesDashboard = () => {
+const CasesDashboard = (props: { isComite: boolean }) => {
   const [selected, setSelected] = useState<number | undefined>(0);
   const [hovered, setHovered] = useState<number | undefined>(undefined);
   const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
@@ -33,7 +33,7 @@ const CasesDashboard = () => {
     useHttpClient();
 
   useEffect(() => {
-    const getGroupThreadTotals = async () => {
+    const getGroupCaseTotals = async () => {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/totals`,
         undefined,
@@ -65,10 +65,52 @@ const CasesDashboard = () => {
       }
     };
 
-    getGroupThreadTotals().catch((error) => {
+    const getComiteCasesTotals = async () => {
+      const responseData = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/cases/group/comite-member/totals`,
+        undefined,
+        undefined,
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        }
+      );
+
+      console.log(responseData.totals);
+
+      const loadedTotals: GroupTotals[] = responseData.totals;
+
+      if (loadedTotals.length === 0) {
+        setPieChartData([]);
+      } else {
+        const transformedData: PieChartData[] = loadedTotals.map((d, index) => {
+          return {
+            title: d.groupName,
+            value: d.quantityInGroup,
+            color: colors[index],
+            key: index,
+          };
+        });
+        console.log(transformedData);
+
+        setPieChartData(transformedData);
+      }
+    };
+
+    if (props.isComite) {
+      getComiteCasesTotals().catch((error) => {
+        console.log(error);
+      });
+    } else {
+      getGroupCaseTotals().catch((error) => {
+        console.log(error);
+      });
+    }
+
+    getGroupCaseTotals().catch((error) => {
       console.log(error);
     });
-  }, [sendRequest, token, currentGroup.id]);
+  }, [sendRequest, token, currentGroup.id, props.isComite]);
 
   return (
     <React.Fragment>

@@ -1,14 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
+import { Outlet } from "react-router-dom";
 
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import CasesList from "../components/CasesList";
+import CasesList from "../../cases/components/CasesList";
 import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 
-const ApproveCasesListGetter = () => {
+const ComiteCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
 
   const { token, currentGroup } = useContext(AuthContext);
@@ -17,21 +18,27 @@ const ApproveCasesListGetter = () => {
     useHttpClient();
 
   useEffect(() => {
-    const getCasesToApprove = async () => {
+    const getApprovedCases = async () => {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/false/true`,
+        `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/true/true`,
         undefined,
         undefined,
-        { Authorization: "Bearer " + token }
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        }
       );
+
+      console.log(responseData.cases);
+
       const loadedCases: CaseListItem[] = responseData.cases;
       setCases(loadedCases);
     };
 
-    getCasesToApprove().catch((error) => {
+    getApprovedCases().catch((error) => {
       console.log(error);
     });
-  }, [currentGroup.id, sendRequest, token]);
+  }, [sendRequest, token, currentGroup.id]);
 
   if (isLoading) {
     return (
@@ -45,7 +52,9 @@ const ApproveCasesListGetter = () => {
 
   return (
     <React.Fragment>
-      <h1>Aprovações Pendentes</h1>
+      <h1>
+        Meus Processos - Todos os processos aprovados do grupo selecionado
+      </h1>
       {error && (
         <Alert
           variant={isWarning ? "warning" : "danger"}
@@ -55,9 +64,9 @@ const ApproveCasesListGetter = () => {
           {error}
         </Alert>
       )}
-      <CasesList items={cases} redirect={true} />
+      <CasesList items={cases} redirect={false} />
     </React.Fragment>
   );
 };
 
-export default ApproveCasesListGetter;
+export default ComiteCasesListGetter;

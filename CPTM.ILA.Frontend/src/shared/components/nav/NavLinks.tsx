@@ -9,13 +9,23 @@ const NavLinks = () => {
 
   return (
     <React.Fragment>
-      {isLoggedIn && (
+      {isLoggedIn && !user.isComite && (
         <Nav.Link as={NavLink} to={`/${user.id}/`}>
+          Página Inicial
+        </Nav.Link>
+      )}
+      {isLoggedIn && user.isComite && (
+        <Nav.Link as={NavLink} to={`/comite/`}>
           Página Inicial
         </Nav.Link>
       )}
       {isLoggedIn && !user.isComite && (
         <Nav.Link as={NavLink} to={`${user.id}/cases/`}>
+          Meus Processos
+        </Nav.Link>
+      )}
+      {isLoggedIn && user.isComite && (
+        <Nav.Link as={NavLink} to={`comite/cases/`}>
           Meus Processos
         </Nav.Link>
       )}

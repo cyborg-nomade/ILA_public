@@ -250,6 +250,12 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == username);
+                if (user == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound,
+                        new { message = "Usuário não encontrado.", username });
+                }
+
                 var groups = user.Groups;
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { groups });
@@ -270,9 +276,9 @@ namespace CPTM.ILA.Web.Controllers.API
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do comentário, ou indicando o erro ocorrido
         /// </returns>
-        [Route("{uid:int}")]
+        [Route("delete/{uid:int}")]
         [Authorize]
-        [HttpDelete]
+        [HttpPost]
         public async Task<HttpResponseMessage> Delete(int uid)
         {
             if (User.Identity is ClaimsIdentity identity)
