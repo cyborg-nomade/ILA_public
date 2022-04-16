@@ -51,17 +51,20 @@ const CreateCommentBox = (props: { item: string }) => {
 
     try {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/threads/`,
+        `${process.env.REACT_APP_ITSM_INTEGRATION_CONNSTR}/jwt/login`,
         "POST",
-        JSON.stringify(commentDto),
+        new URLSearchParams({
+          username: `${process.env.REACT_APP_ITSM_INTEGRATION_USERNAME}`,
+          password: `${process.env.REACT_APP_ITSM_INTEGRATION_PASSWORD}`,
+        }),
         {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
         }
       );
 
       console.log(responseData);
-      setMessage(responseData.message);
+
+      // setMessage(responseData);
       setText("");
     } catch (error) {
       console.log(error);
