@@ -364,7 +364,9 @@ namespace CPTM.ILA.Web.Controllers.API
                     .ToList();
 
                 var pendingCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
-                    .Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId) && !c.Aprovado)
+                    .Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId) &&
+                                !c.Aprovado &&
+                                c.EncaminhadoAprovacao)
                     .ToListAsync();
 
                 var caseListItems = pendingCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
@@ -417,7 +419,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         .ToList();
 
                     var pendingCases = await _context.Cases.CountAsync(c =>
-                        comiteMemberGroupsIds.Contains(c.GrupoCriadorId) && !c.Aprovado);
+                        comiteMemberGroupsIds.Contains(c.GrupoCriadorId) && !c.Aprovado && c.EncaminhadoAprovacao);
 
 
                     totals.Add(new ExtensaoEncarregadoTotals()

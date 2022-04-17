@@ -6,6 +6,7 @@ import {
   emptyAgenteTratamento,
 } from "../models/case-helpers/case-helpers.model";
 import { emptyUser, User } from "../models/access-control/users.model";
+import { ComiteMember, emptyComiteMember } from "../models/DTOs/comite-member";
 
 let logoutTimer: NodeJS.Timeout;
 
@@ -24,6 +25,9 @@ export const useAuth = () => {
   const [token, setToken] = useState("");
   const [tokenExpirationDate, setTokenExpirationDate] = useState<Date>();
   const [currentGroup, setCurrentGroup] = useState<Group>(emptyGroup());
+  const [currentComiteMember, setCurrentComiteMember] = useState<ComiteMember>(
+    emptyComiteMember()
+  );
   const [areaTratamentoDados, setAreaTratamentoDados] =
     useState<AgenteTratamento>(emptyAgenteTratamento());
 
@@ -64,16 +68,17 @@ export const useAuth = () => {
     setIsDeveloper(false);
     setUser(emptyUser());
     setCurrentGroup(emptyGroup());
+    setCurrentComiteMember(emptyComiteMember());
     setAreaTratamentoDados(emptyAgenteTratamento());
     localStorage.removeItem("userData");
   }, []);
 
   const changeGroup = (g: Group) => {
-    console.log(g, currentGroup);
-
     setCurrentGroup(g);
+  };
 
-    console.log(g, currentGroup);
+  const changeComiteMember = (cm: ComiteMember) => {
+    setCurrentComiteMember(cm);
   };
 
   //handle token expiration & auto-logout
@@ -121,9 +126,11 @@ export const useAuth = () => {
     isDeveloper,
     token,
     currentGroup,
+    currentComiteMember,
     areaTratamentoDados,
     login,
     logout,
     changeGroup,
+    changeComiteMember,
   };
 };

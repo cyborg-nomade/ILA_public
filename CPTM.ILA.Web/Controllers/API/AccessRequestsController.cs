@@ -698,7 +698,9 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                var userInDb = await _context.Users.SingleOrDefaultAsync(u => u.Username == newDpoUsername);
+                var usersInDb = await _context.Users.ToListAsync();
+                if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
+                var userInDb = usersInDb.SingleOrDefault(u => u.Username == newDpoUsername.ToUpper());
 
                 if (userInDb == null)
                 {
