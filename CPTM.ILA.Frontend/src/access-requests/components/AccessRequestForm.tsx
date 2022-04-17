@@ -10,7 +10,10 @@ import Card from "react-bootstrap/Card";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 import { AccessRequestDTO } from "./../../shared/models/DTOs/access-request-dto.model";
-import { tipoSolicitacaoAcesso } from "../../shared/models/access-control/access-request.model";
+import {
+  AccessRequest,
+  tipoSolicitacaoAcesso,
+} from "../../shared/models/access-control/access-request.model";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import {
   Assign,
@@ -224,45 +227,52 @@ const AccessRequestForm = (props: {
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-  const getGroups = useCallback(async () => {
-    const responseData = await sendRequest(
-      `${process.env.REACT_APP_CONNSTR}/groups`
-    );
-
-    const groupedOptions: GroupedOption[] = [
-      {
-        label: "Diretorias",
-        options: responseData.diretorias.map((d: string) => ({
-          value: d,
-          label: d,
-        })),
-      },
-      {
-        label: "Gerencias",
-        options: responseData.gerencias.map((g: string) => ({
-          value: g,
-          label: g,
-        })),
-      },
-      {
-        label: "Departamentos",
-        options: responseData.deptos.map((de: string) => ({
-          value: de,
-          label: de,
-        })),
-      },
-    ];
-
-    setGroups(groupedOptions);
-  }, [sendRequest]);
-
   useEffect(() => {
-    getGroups();
+    const getGroups = async () => {
+      const responseData = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/groups`,
+        undefined,
+        undefined,
+        {
+          "Content-Type": "application/json",
+        }
+      );
+
+      const groupedOptions: GroupedOption[] = [
+        {
+          label: "Diretorias",
+          options: responseData.diretorias.map((d: string) => ({
+            value: d,
+            label: d,
+          })),
+        },
+        {
+          label: "Gerencias",
+          options: responseData.gerencias.map((g: string) => ({
+            value: g,
+            label: g,
+          })),
+        },
+        {
+          label: "Departamentos",
+          options: responseData.deptos.map((de: string) => ({
+            value: de,
+            label: de,
+          })),
+        },
+      ];
+
+      setGroups(groupedOptions);
+    };
+
+    getGroups().catch((error) => {
+      console.log(error);
+    });
 
     return () => {
       setGroups([]);
     };
-  }, [getGroups]);
+  }, [sendRequest]);
 
   return (
     <Formik

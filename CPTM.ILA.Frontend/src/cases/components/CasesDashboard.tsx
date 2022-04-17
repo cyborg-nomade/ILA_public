@@ -106,6 +106,10 @@ const CasesDashboard = () => {
         console.log(error);
       });
     }
+
+    return () => {
+      setPieChartData([]);
+    };
   }, [sendRequest, token, currentGroup.id, user.isComite]);
 
   return (
