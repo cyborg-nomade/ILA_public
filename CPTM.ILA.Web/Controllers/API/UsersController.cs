@@ -121,13 +121,19 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Seu usuário ainda não tem acesso a este sistema. Solicite acesso." });
                 }
 
-                if (userInDb.GroupAccessExpirationDate <= DateTime.Now)
+                if (userInDb.GroupAccessExpirationDate <= DateTime.Now && !isDeveloper)
                 {
                     userInDb.Groups = new List<Group>() { userInDb.OriginGroup };
                 }
 
                 _context.Entry(userInDb)
                     .State = EntityState.Modified;
+                foreach (var @group in userInDb.Groups)
+                {
+                    _context.Entry(@group)
+                        .State = EntityState.Modified;
+                }
+
                 await _context.SaveChangesAsync();
 
                 var jwtToken = TokenUtil.CreateToken(userInDb, userAd, isDeveloper);

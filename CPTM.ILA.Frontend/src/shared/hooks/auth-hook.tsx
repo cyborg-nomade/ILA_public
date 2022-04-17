@@ -69,7 +69,11 @@ export const useAuth = () => {
   }, []);
 
   const changeGroup = (g: Group) => {
+    console.log(g, currentGroup);
+
     setCurrentGroup(g);
+
+    console.log(g, currentGroup);
   };
 
   //handle token expiration & auto-logout

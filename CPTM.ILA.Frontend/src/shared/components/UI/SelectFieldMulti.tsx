@@ -6,14 +6,34 @@ import {
   Options,
 } from "../../../access-requests/components/AccessRequestForm";
 
+const convertValue = (s: string) => ({ value: s, label: s });
+const converValueArray = (sArray: string[]) => {
+  if (!sArray) {
+    return console.log("hi");
+  }
+
+  return sArray.map((s) => convertValue(s));
+};
+const deconvertValue = (v: { value: string; label: string }) => v.value;
+const deconvertValueArray = (vArray: { value: string; label: string }[]) => {
+  console.log(vArray);
+
+  return vArray.map((v) => deconvertValue(v));
+};
+
 const SelectFieldMulti = (props: FieldAttributes<any>) => {
   const [field, state, { setValue, setTouched }] = useField(props.field.name);
 
   // value is an array now
-  const onChange = (value: any) => {
-    console.log(value.map((v: { value: any }) => v.value));
+  const onChange = (options: { value: string; label: string }[]) => {
+    console.log("select field multi");
 
-    setValue(value);
+    console.log(options);
+    console.log(deconvertValueArray(options));
+
+    setValue(deconvertValueArray(options));
+
+    console.log(state);
   };
 
   // use value to make this a  controlled component
@@ -21,7 +41,7 @@ const SelectFieldMulti = (props: FieldAttributes<any>) => {
   return (
     <Select
       {...props}
-      value={state?.value}
+      value={converValueArray(state?.value)}
       isMulti
       onChange={onChange}
       onBlur={setTouched}
