@@ -240,6 +240,39 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        [Route("comite-members")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetComiteMembers()
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDpo || claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var comiteMembersUsers = await _context.Users.Where(u => u.IsComite)
+                    .ToListAsync();
+
+                var comiteMembers =
+                    comiteMembersUsers.ConvertAll<ComiteMember>(Models.AccessControl.User.ReduceToComiteMember);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { comiteMembers });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
         /// <summary>
         /// Retorna os grupos de um usuário.
         /// Endpoint não disponibilizado publicamente.

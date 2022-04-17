@@ -310,6 +310,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DTOs\AccessRequestDTO.cs" />
     <Compile Include="DTOs\CaseChange.cs" />
+    <Compile Include="DTOs\ComiteMember.cs" />
     <Compile Include="DTOs\CommentDTO.cs" />
     <Compile Include="DTOs\ExtensaoEncarregadoTotals.cs" />
     <Compile Include="DTOs\GroupTotals.cs" />

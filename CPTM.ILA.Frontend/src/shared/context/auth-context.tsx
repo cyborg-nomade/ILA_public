@@ -6,13 +6,14 @@ import {
   emptyAgenteTratamento,
 } from "../models/case-helpers/case-helpers.model";
 import { emptyUser, User } from "../models/access-control/users.model";
-import { boolean } from "yup/lib/locale";
+import { ComiteMember, emptyComiteMember } from "../models/DTOs/comite-member";
 
 export const AuthContext = createContext({
   user: emptyUser(),
   isDeveloper: false,
   token: "",
   currentGroup: emptyGroup(),
+  currentComiteMember: emptyComiteMember(),
   areaTratamentoDados: emptyAgenteTratamento(),
   isLoggedIn: false,
   login: (
@@ -24,4 +25,5 @@ export const AuthContext = createContext({
   ) => {},
   logout: () => {},
   changeGroup: (g: Group) => {},
+  changeComiteMember: (cm: ComiteMember) => {},
 });

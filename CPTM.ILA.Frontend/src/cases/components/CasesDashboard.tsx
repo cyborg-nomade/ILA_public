@@ -7,6 +7,7 @@ import { StatusTotals } from "../../shared/models/DTOs/status-totals.model";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import randomColor from "randomcolor";
+import { ExtensaoEncarregadoTotals } from "../../shared/models/DTOs/extensao-encarregado-totals.model";
 
 type PieChartData = {
   title: string;
@@ -19,7 +20,7 @@ const colors = randomColor({
   count: 100,
   hue: "random",
   luminosity: "random",
-  seed: "same",
+  seed: "same2",
 });
 
 const CasesDashboard = () => {
@@ -96,8 +97,43 @@ const CasesDashboard = () => {
         setPieChartData(transformedData);
       }
     };
+    const getDpoCasesTotals = async () => {
+      const responseData = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/totals`,
+        undefined,
+        undefined,
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        }
+      );
 
-    if (user.isComite) {
+      console.log(responseData.totals);
+
+      const loadedTotals: ExtensaoEncarregadoTotals[] = responseData.totals;
+
+      if (loadedTotals.length === 0) {
+        setPieChartData([]);
+      } else {
+        const transformedData: PieChartData[] = loadedTotals.map((d, index) => {
+          return {
+            title: d.extensaoNome,
+            value: d.quantityByExtensao,
+            color: colors[index],
+            key: index,
+          };
+        });
+        console.log(transformedData);
+
+        setPieChartData(transformedData);
+      }
+    };
+
+    if (user.isComite && user.isDpo) {
+      getDpoCasesTotals().catch((error) => {
+        console.log(error);
+      });
+    } else if (user.isComite && !user.isDpo) {
       getComiteCasesTotals().catch((error) => {
         console.log(error);
       });
