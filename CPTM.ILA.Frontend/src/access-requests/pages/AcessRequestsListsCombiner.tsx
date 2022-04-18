@@ -9,7 +9,7 @@ const AcessRequestsListsCombiner = () => {
 
   return (
     <React.Fragment>
-      {user.isDpo && <ComiteAccessRequestsListGetter />}
+      {user.isDPO && <ComiteAccessRequestsListGetter />}
       <InitialAccessRequestsListGetter />
       <GroupsAccessRequestsListGetter />
     </React.Fragment>

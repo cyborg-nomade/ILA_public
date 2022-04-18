@@ -5,7 +5,7 @@ import { emptyGroup, Group } from "./group.model";
 export interface User extends AuthUser {
   id: number;
   isComite: boolean;
-  isDpo: boolean;
+  isDPO: boolean;
   isSystem: boolean;
   isDeveloper: boolean;
   originGroup: Group;
@@ -19,7 +19,7 @@ export const emptyUser = (): User => {
     username: "",
     password: "",
     isComite: false,
-    isDpo: false,
+    isDPO: false,
     isSystem: false,
     isDeveloper: false,
     originGroup: emptyGroup(),

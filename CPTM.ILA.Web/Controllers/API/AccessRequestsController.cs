@@ -869,6 +869,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 userInDb.IsComite = false;
+                userInDb.IsDPO = false;
                 _context.Entry(userInDb)
                     .State = EntityState.Modified;
                 await _context.SaveChangesAsync();

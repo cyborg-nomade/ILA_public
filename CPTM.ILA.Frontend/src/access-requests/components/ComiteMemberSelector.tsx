@@ -19,14 +19,10 @@ const ComiteMemberSelector = () => {
 
   let navigate = useNavigate();
 
-  const requestGroupAccessHandler = () => {
-    navigate("/request-group-access");
-  };
-
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   useEffect(() => {
-    const getGroups = async () => {
+    const getComiteMembers = async () => {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/users/comite-members`,
         undefined,
@@ -42,7 +38,7 @@ const ComiteMemberSelector = () => {
       setComiteMembers(loadedMembers);
     };
 
-    getGroups().catch((error) => {
+    getComiteMembers().catch((error) => {
       console.log(error);
     });
 

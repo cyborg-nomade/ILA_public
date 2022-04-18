@@ -8,8 +8,6 @@ import { AuthContext } from "./shared/context/auth-context";
 import { useAuth } from "./shared/hooks/auth-hook";
 import MainHeader from "./shared/components/nav/MainHeader";
 import "./App.css";
-import DpoPage from "./users/pages/DpoPage";
-import DpoCasesListGetter from "./users/pages/DpoCasesListGetter";
 
 const AllCasesListGetter = React.lazy(
   () => import("./cases/pages/AllCasesListGetter")
@@ -62,6 +60,13 @@ const ComiteCasesListGetter = React.lazy(
   () => import("./users/pages/ComiteCasesListGetter")
 );
 const ComiteHomePage = React.lazy(() => import("./users/pages/ComiteHomePage"));
+const DpoPage = React.lazy(() => import("./users/pages/DpoPage"));
+const DpoCasesListGetter = React.lazy(
+  () => import("./users/pages/DpoCasesListGetter")
+);
+const AlterComiteMemberCockpit = React.lazy(
+  () => import("./access-requests/pages/AlterComiteMemberCockpit")
+);
 
 const App = () => {
   const {
@@ -87,7 +92,7 @@ const App = () => {
         <Route path="*" element={<Navigate to="/" />} />
       </React.Fragment>
     );
-  } else if (token && !user.isComite) {
+  } else if (token && !user.isComite && !user.isDPO) {
     routes = (
       <React.Fragment>
         <Route path="/:uid" element={<UserPage />}>
@@ -107,7 +112,7 @@ const App = () => {
         <Route path="/*" element={<Navigate to={`../${user.id}/`} />} />
       </React.Fragment>
     );
-  } else if (token && user.isComite && !user.isDpo) {
+  } else if (token && user.isComite && !user.isDPO) {
     routes = (
       <React.Fragment>
         <Route path="/comite" element={<ComiteHomePage />}>
@@ -130,10 +135,10 @@ const App = () => {
         </Route>
         <Route path="/request-group-access" element={<RequestGroupAccess />} />
         <Route path="/" element={<Navigate replace to="../comite/" />} />
-        <Route path="*" element={<Navigate replace to="../comite/" />} />
+        <Route path="/*" element={<Navigate replace to="../comite/" />} />
       </React.Fragment>
     );
-  } else if (token && user.isDpo) {
+  } else if (token && user.isComite && user.isDPO) {
     routes = (
       <React.Fragment>
         <Route path="/dpo" element={<DpoPage />}>
@@ -149,8 +154,12 @@ const App = () => {
           <Route index element={<AcessRequestsListsCombiner />} />
           <Route path=":arid" element={<ApproveAccessRequestGetter />} />
         </Route>
+        <Route
+          path="/dpo/alter-comite-members"
+          element={<AlterComiteMemberCockpit />}
+        />
         <Route path="/" element={<Navigate replace to="../dpo/" />} />
-        <Route path="*" element={<Navigate replace to="../dpo/" />} />
+        <Route path="/*" element={<Navigate replace to="../dpo/" />} />
       </React.Fragment>
     );
   }

@@ -29,9 +29,9 @@ const DpoCasesListGetter = () => {
         }
       );
 
-      console.log(responseData.cases);
+      console.log(responseData.caseListItems);
 
-      const loadedCases: CaseListItem[] = responseData.cases;
+      const loadedCases: CaseListItem[] = responseData.caseListItems;
       setCases(loadedCases);
     };
 
