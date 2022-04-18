@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { FullCaseObject } from "../../../shared/models/cases.model";
+import { Case } from "../../../shared/models/cases.model";
 
 const Section16FormRow = (props: {
   label: string;
@@ -14,7 +14,7 @@ const Section16FormRow = (props: {
   className: string;
 }) => {
   const { values, touched, errors, handleBlur, setFieldValue } =
-    useFormikContext<FullCaseObject>();
+    useFormikContext<Case>();
 
   const [descricaoObs, setDescricaoObs] = useState(
     getIn(values, `${props.name}.descricaoObs`)
@@ -50,6 +50,7 @@ const Section16FormRow = (props: {
           isInvalid={!!getIn(errors, `${props.name}.descricaoObs`)}
         />
       </Col>
+      <Col lg={1}></Col>
     </Row>
   );
 };

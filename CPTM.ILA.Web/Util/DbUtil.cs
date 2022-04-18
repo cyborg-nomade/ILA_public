@@ -18,7 +18,9 @@ namespace CPTM.ILA.Web.Util
         /// <returns></returns>
         public static Int32 ObterValorSequence(DbContext context, string sequence)
         {
-            return Convert.ToInt32(context.Database.SqlQuery<Int64>(String.Concat("SELECT ", sequence, ".NEXTVAL FROM DUAL")).FirstOrDefault());
+            return Convert.ToInt32(context.Database
+                .SqlQuery<Int64>(String.Concat("SELECT ", sequence, ".NEXTVAL FROM DUAL"))
+                .FirstOrDefault());
         }
 
         /// <summary>
@@ -32,7 +34,8 @@ namespace CPTM.ILA.Web.Util
         /// </example>
         public static DateTime ObterDataHoraAtual(DbContext context)
         {
-            return Convert.ToDateTime(context.Database.SqlQuery<DateTime>("SELECT SYSDATE FROM DUAL").FirstOrDefault());
+            return Convert.ToDateTime(context.Database.SqlQuery<DateTime>("SELECT SYSDATE FROM DUAL")
+                .FirstOrDefault());
         }
 
         /// <summary>
@@ -45,7 +48,15 @@ namespace CPTM.ILA.Web.Util
         [Obsolete]
         public static List<string[]> ExecutarQuery(DbContext context, string query, bool consulta)
         {
-            if ((query.ToUpper().IndexOf("UPDATE") > -1 || query.ToUpper().IndexOf("DELETE") > -1) && query.ToUpper().IndexOf("WHERE") == -1)
+            if ((query.ToUpper()
+                     .IndexOf("UPDATE") >
+                 -1 ||
+                 query.ToUpper()
+                     .IndexOf("DELETE") >
+                 -1) &&
+                query.ToUpper()
+                    .IndexOf("WHERE") ==
+                -1)
                 throw new CPTMException("Não é permitida a execução de UPDATE ou DELETE sem WHERE.");
 
             using (OracleConnection connection = new OracleConnection(context.Database.Connection.ConnectionString))
@@ -59,14 +70,17 @@ namespace CPTM.ILA.Web.Util
                     var dataSet = new DataSet("DataSet");
                     dataAdapter.Fill(dataSet, "Table");
 
-                    var columnNames = dataSet.Tables[0].Columns.Cast<System.Data.DataColumn>()
-                                     .Select(x => x.ColumnName)
-                                     .ToArray();
+                    var columnNames = dataSet.Tables[0]
+                        .Columns.Cast<DataColumn>()
+                        .Select(x => x.ColumnName)
+                        .ToArray();
                     lista.Add(columnNames);
 
-                    foreach (System.Data.DataRow row in dataSet.Tables[0].Rows)
+                    foreach (DataRow row in dataSet.Tables[0]
+                                 .Rows)
                     {
-                        lista.Add(row.ItemArray.Select(x => x.ToString()).ToArray());
+                        lista.Add(row.ItemArray.Select(x => x.ToString())
+                            .ToArray());
                     }
 
                     return lista;
