@@ -7,13 +7,13 @@ namespace CPTM.ILA.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class AddARFilePath : IMigrationMetadata
+    public sealed partial class FullModel : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddARFilePath));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(FullModel));
         
         string IMigrationMetadata.Id
         {
-            get { return "202203312202592_AddARFilePath"; }
+            get { return "202204111916447_FullModel"; }
         }
         
         string IMigrationMetadata.Source

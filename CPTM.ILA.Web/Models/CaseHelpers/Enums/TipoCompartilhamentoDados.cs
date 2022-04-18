@@ -7,7 +7,12 @@
             Value = value;
         }
 
-        public string Value { get; private set; }
+        public TipoCompartilhamentoDados()
+        {
+            Value = "";
+        }
+
+        public string Value { get; set; }
 
         public static TipoCompartilhamentoDados Publico() => new TipoCompartilhamentoDados("Público");
         public static TipoCompartilhamentoDados Privado() => new TipoCompartilhamentoDados("Privado");

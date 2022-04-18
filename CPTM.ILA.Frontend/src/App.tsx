@@ -42,17 +42,44 @@ const ApproveAccessRequestGetter = React.lazy(
 const RequestGroupAccess = React.lazy(
   () => import("./access-requests/pages/RequestGroupAccess")
 );
+const Dashboards = React.lazy(() => import("./users/pages/Dashboards"));
+const UserCasesLayout = React.lazy(
+  () => import("./users/pages/UserCasesLayout")
+);
+const CaseRegisterOptions = React.lazy(
+  () => import("./cases/pages/CaseRegisterOptions")
+);
+const ContinueCase = React.lazy(() => import("./cases/pages/ContinueCase"));
+const ContinueCaseListGetter = React.lazy(
+  () => import("./cases/pages/ContinueCaseListGetter")
+);
+const EditCaseListGetter = React.lazy(
+  () => import("./cases/pages/EditCaseListGetter")
+);
+const ComiteCasesListGetter = React.lazy(
+  () => import("./users/pages/ComiteCasesListGetter")
+);
+const ComiteHomePage = React.lazy(() => import("./users/pages/ComiteHomePage"));
+const DpoPage = React.lazy(() => import("./users/pages/DpoPage"));
+const DpoCasesListGetter = React.lazy(
+  () => import("./users/pages/DpoCasesListGetter")
+);
+const AlterComiteMemberCockpit = React.lazy(
+  () => import("./access-requests/pages/AlterComiteMemberCockpit")
+);
 
 const App = () => {
   const {
+    user,
+    isDeveloper,
     token,
+    currentGroup,
+    currentComiteMember,
+    areaTratamentoDados,
     login,
     logout,
-    userId,
-    username,
-    isComite,
-    currentGroup,
     changeGroup,
+    changeComiteMember,
   } = useAuth();
 
   let routes;
@@ -65,29 +92,40 @@ const App = () => {
         <Route path="*" element={<Navigate to="/" />} />
       </React.Fragment>
     );
-  } else if (token && !isComite) {
+  } else if (token && !user.isComite && !user.isDPO) {
     routes = (
       <React.Fragment>
-        <Route path="/:uid/cases" element={<UserPage />}>
-          <Route index element={<UserCasesListGetter />} />
-          <Route path="new" element={<NewCase />} />
-          <Route path=":cid" element={<EditCase />} />
+        <Route path="/:uid" element={<UserPage />}>
+          <Route index element={<Dashboards />} />
+          <Route path="cases" element={<UserCasesLayout />}>
+            <Route index element={<UserCasesListGetter />} />
+            <Route path="register" element={<CaseRegisterOptions />} />
+            <Route path="continue" element={<ContinueCaseListGetter />} />
+            <Route path="edit" element={<EditCaseListGetter />} />
+          </Route>
         </Route>
-        <Route path="/" element={<Navigate to={`../${userId}/cases`} />} />
-        <Route path="/*" element={<Navigate to={`../${userId}/cases`} />} />
+        <Route path="/:uid/cases/register/new" element={<NewCase />} />
+        <Route path="/:uid/cases/continue/:cid" element={<ContinueCase />} />
+        <Route path="/:uid/cases/edit/:cid" element={<EditCase />} />
+        <Route path="/request-group-access" element={<RequestGroupAccess />} />
+        <Route path="/" element={<Navigate to={`../${user.id}/`} />} />
+        <Route path="/*" element={<Navigate to={`../${user.id}/`} />} />
       </React.Fragment>
     );
-  } else {
+  } else if (token && user.isComite && !user.isDPO) {
     routes = (
       <React.Fragment>
-        <Route path="/comite/cases" element={<AllCasesPage />}>
-          <Route index element={<AllCasesListGetter />} />
-          <Route path=":cid" element={<EditCase />} />
+        <Route path="/comite" element={<ComiteHomePage />}>
+          <Route index element={<Dashboards />} />
         </Route>
-        <Route path="/comite/cases/approve" element={<ApproveCasesPage />}>
-          <Route index element={<ApproveCasesListGetter />} />
-          <Route path=":cid" element={<ApproveCaseGetter />} />
+        <Route path="/comite/cases" element={<UserPage />}>
+          <Route index element={<ComiteCasesListGetter />} />
+          <Route path="approve" element={<ApproveCasesListGetter />} />
         </Route>
+        <Route
+          path="/comite/cases/approve/:cid"
+          element={<ApproveCaseGetter />}
+        />
         <Route
           path="/comite/access-requests/approve"
           element={<AllAccessRequestsPage />}
@@ -96,8 +134,32 @@ const App = () => {
           <Route path=":arid" element={<ApproveAccessRequestGetter />} />
         </Route>
         <Route path="/request-group-access" element={<RequestGroupAccess />} />
-        <Route path="/" element={<Navigate replace to="../comite/cases" />} />
-        <Route path="*" element={<Navigate replace to="../comite/cases" />} />
+        <Route path="/" element={<Navigate replace to="../comite/" />} />
+        <Route path="/*" element={<Navigate replace to="../comite/" />} />
+      </React.Fragment>
+    );
+  } else if (token && user.isComite && user.isDPO) {
+    routes = (
+      <React.Fragment>
+        <Route path="/dpo" element={<DpoPage />}>
+          <Route index element={<Dashboards />} />
+          <Route path="cases" element={<UserCasesLayout />}>
+            <Route index element={<DpoCasesListGetter />} />
+          </Route>
+        </Route>
+        <Route
+          path="/dpo/access-requests/approve"
+          element={<AllAccessRequestsPage />}
+        >
+          <Route index element={<AcessRequestsListsCombiner />} />
+          <Route path=":arid" element={<ApproveAccessRequestGetter />} />
+        </Route>
+        <Route
+          path="/dpo/alter-comite-members"
+          element={<AlterComiteMemberCockpit />}
+        />
+        <Route path="/" element={<Navigate replace to="../dpo/" />} />
+        <Route path="/*" element={<Navigate replace to="../dpo/" />} />
       </React.Fragment>
     );
   }
@@ -105,19 +167,21 @@ const App = () => {
   return (
     <AuthContext.Provider
       value={{
+        user,
+        isDeveloper,
+        token,
+        currentGroup,
+        currentComiteMember,
+        areaTratamentoDados,
         isLoggedIn: !!token,
         login,
         logout,
-        isComite,
-        userId,
-        token,
-        username,
-        currentGroup,
         changeGroup,
+        changeComiteMember,
       }}
     >
       <MainHeader />
-      <Container className="mt-5" fluid>
+      <Container className="mt-5 swiss721" fluid>
         <Suspense
           fallback={
             <Row className="justify-content-center">

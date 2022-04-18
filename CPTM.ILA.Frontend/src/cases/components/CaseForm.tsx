@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Formik, getIn, FieldArray } from "formik";
+import { Formik, FieldArray, Field } from "formik";
 // import * as yup from "yup";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -13,19 +13,14 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
+import Stack from "react-bootstrap/Stack";
 
 import {
-  emptyItemCategoriaDadosPessoais,
   emptyItemCategoriaTitulares,
-  emptyItemCompatilhamentoDados,
-  emptyItemContratoTI,
   emptyItemMedidaSegurancaPrivacidade,
   emptyItemObservacoesProcesso,
   emptyItemRiscoPrivacidade,
-  emptyItemTransferenciaInternacional,
-  BaseCase,
-  Case,
-} from "../../shared/models/cases.model";
+} from "../../shared/models/case-helpers/case-helpers.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import Section6FormRow from "./form-items/Section6FormRow";
@@ -37,580 +32,46 @@ import Section13FormRow from "./form-items/Section13FormRow";
 import Section14FormRow from "./form-items/Section14FormRow";
 import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
+import { Case, emptyCase } from "../../shared/models/cases.model";
+import CreateCommentBox from "../../threads-comments/components/CreateCommentBox";
+import { CaseIndexDictionary } from "./../../shared/models/case-index.dictionary";
+import Section3FormRow from "./form-items/Section3FormRow";
+import {
+  hipotesesTratamento,
+  tipoAbrangenciaGeografica,
+  tipoFrequenciaTratamento,
+} from "../../shared/models/case-helpers/enums.model";
+import Section9QuantityRow from "./form-items/Section9QuantityRow";
+import { useUtilities } from "../../shared/hooks/utilities-hook";
+import SelectFieldSearch from "../../shared/components/UI/SelectFieldSearch";
 
-type onSubmitFn = (item: BaseCase) => void;
-
-// const schema = yup.object().shape({
-//   nome: yup.string().required(),
-//   id: yup.number().required(),
-//   ref: yup.string().required(),
-//   dataCriacao: yup.date().required(),
-//   dataAtualizacao: yup.date().required(),
-//   controlador: yup.object().shape({
-//     nome: yup.string().required(),
-//     area: yup.string().optional(),
-//     telefone: yup.string().optional(),
-//     email: yup.string().email().optional(),
-//   }),
-//   encarregado: yup.object().shape({
-//     nome: yup.string().required(),
-//     area: yup.string().optional(),
-//     telefone: yup.string().optional(),
-//     email: yup.string().email().optional(),
-//   }),
-//   extensaoEncarregado: yup.object().shape({
-//     nome: yup.string().required(),
-//     area: yup.string().required(),
-//     telefone: yup.string().required(),
-//     email: yup.string().email().required(),
-//   }),
-//   areaTratamentoDados: yup.object().shape({
-//     nome: yup.string().optional(),
-//     area: yup.string().optional(),
-//     telefone: yup.string().optional(),
-//     email: yup.string().email().optional(),
-//   }),
-//   operador: yup.object().shape({
-//     nome: yup.string().required(),
-//     area: yup.string().optional(),
-//     telefone: yup.string().optional(),
-//     email: yup.string().email().optional(),
-//   }),
-//   fasesCicloTratamento: yup.object({
-//     coleta: yup.boolean(),
-//     retencao: yup.boolean(),
-//     processamento: yup.boolean(),
-//     compartilhamento: yup.boolean(),
-//     eliminacao: yup.boolean(),
-//     verbos: yup.array().optional(),
-//   }),
-//   descricaoFluxoTratamento: yup.string().required(),
-//   abrangenciaGeografica: yup.string().required(),
-//   fonteDados: yup.string().required(),
-//   finalidadeTratamento: yup.object().shape({
-//     hipoteseTratamento: yup.string().required(),
-//     descricaoFinalidade: yup.string().required(),
-//     previsaoLegal: yup.string().required(),
-//     resultadosTitular: yup.string().required(),
-//     beneficiosEsperados: yup.string().required(),
-//   }),
-//   categoriaDadosPessoais: yup.object().shape({
-//     identificacao: yup.object().shape({
-//       idPessoal: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       idGov: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       idEletronica: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       locEletronica: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     financeiros: yup.object().shape({
-//       idFin: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       recursosFin: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       dividasDespesas: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       solvencia: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       emprestimosHipotecaCredito: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       assistenciaFin: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       apoliceSeguro: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       planoPensao: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       transacaoFin: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       compensacao: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       atividadeProfissional: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       acordosAjustes: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       autorizacoesConsentimentos: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     caracteristicas: yup.object().shape({
-//       detalhesPessoais: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       detalhesMilitares: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       situacaoImigracao: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       descricaoFisica: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     habitos: yup.object().shape({
-//       habitos: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       estiloVida: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       viagensDeslocamento: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       contatosSociais: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       posses: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       denunciasIncidentesAcidentes: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       distincoes: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       usoMidia: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     caracteristicasPsicologicas: yup.object().shape({
-//       descricaoPsi: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     composicaoFamiliar: yup.object().shape({
-//       casamentoCoabitacao: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       historicoConjugal: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       membrosFamilia: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     interessesLazer: yup.object().shape({
-//       atividadesInteressesLaz: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     associacoes: yup.object().shape({
-//       outrasAssociacoesNaoSensiveis: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     processoJudAdmCrim: yup.object().shape({
-//       suspeitas: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       condenacoesSentencas: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       acoesJud: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       penalidadesAdm: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     habitosConsumo: yup.object().shape({
-//       dadosBensServicos: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     residenciais: yup.object().shape({
-//       dadosResidencia: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     educacaoTreinamento: yup.object().shape({
-//       academicosEscolares: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       registroFinanceiro: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       qualificacaoExperienciaProf: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     profissaoEmprego: yup.object().shape({
-//       empregoAtual: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       recrutamento: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       rescisao: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       carreira: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       absenteismoDisciplina: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       avaliacaoDesempenho: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     regVideoImgVoz: yup.object().shape({
-//       videoImagem: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       imagemVigilancia: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//       voz: yup.object().shape({
-//         descricao: yup.string().required(),
-//         tempoRetencao: yup.string().optional(),
-//         fonteRetencao: yup.string().optional(),
-//         caminhoRedeSistema: yup.string().optional(),
-//       }),
-//     }),
-//     outros: yup.object().shape({
-//       outros: yup.array(),
-//     }),
-//   }),
-//   categoriaDadosPessoaisSensiveis: yup.object().shape({
-//     origemRacialEtnica: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     conviccaoReligiosa: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     opiniaoPolitica: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     filiacaoSindicato: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     filiacaoOrganizacaoReligiosa: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     filiacaoCrencaFilosofica: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     filiacaoPreferenciaPolitica: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     saudeVidaSexual: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     geneticos: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//     biometricos: yup.object().shape({
-//       descricao: yup.string().required(),
-//       tempoRetencao: yup.string().optional(),
-//       fonteRetencao: yup.string().optional(),
-//       caminhoRedeSistema: yup.string().optional(),
-//     }),
-//   }),
-//   frequenciaTratamento: yup.string().required(),
-//   quantidadeDadosTratados: yup.string().required(),
-//   categoriasTitulares: yup.object().shape({
-//     categorias: yup
-//       .array()
-//       .required()
-//       .of(
-//         yup.object().shape({
-//           tipoCategoria: yup.string().required(),
-//           descricao: yup.string().optional(),
-//         })
-//       ),
-//     criancasAdolescentes: yup
-//       .array()
-//       .optional()
-//       .of(
-//         yup.object().shape({
-//           tipoCategoria: yup.string().required(),
-//           descricao: yup.string().optional(),
-//         })
-//       ),
-//     outrosGruposVulneraveis: yup
-//       .array()
-//       .optional()
-//       .of(
-//         yup.object().shape({
-//           tipoCategoria: yup.string().required(),
-//           descricao: yup.string().optional(),
-//         })
-//       ),
-//   }),
-//   compartilhamentoDadosPessoais: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         nomeInstituicao: yup.string().required(),
-//         dadosCompartilhados: yup.string().optional(),
-//         finalidadeCompartilhamento: yup.string().optional(),
-//       })
-//     ),
-//   medidasSegurancaPrivacidade: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         tipo: yup.string().required(),
-//         descricaoControles: yup.string().optional(),
-//       })
-//     ),
-//   transferenciaInternacional: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         nomeOrganizacao: yup.string().required(),
-//         pais: yup.string().required(),
-//         dadosTransferidos: yup.string().required(),
-//         tipoGarantia: yup.string().required(),
-//       })
-//     ),
-//   contratoServicosTITratamentoDados: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         numeroContrato: yup.string().required(),
-//         numeroProcessoContratacao: yup.string().optional(),
-//         objetoContrato: yup.string().required(),
-//         emailGestorContrato: yup.string().required(),
-//       })
-//     ),
-//   riscosPrivacidade: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         tipoRisco: yup.string().required(),
-//         observacoes: yup.string().optional(),
-//       })
-//     ),
-//   observacoesProcesso: yup
-//     .array()
-//     .optional()
-//     .of(
-//       yup.object().shape({
-//         descricaoObs: yup.string().required(),
-//       })
-//     ),
-// });
+type onSubmitFn = (item: Case) => void;
 
 const CaseForm = (props: {
-  item: BaseCase | Case;
+  item: Case;
   new?: boolean;
   edit?: boolean;
   approve?: boolean;
-  onSubmit: onSubmitFn;
+  continue?: boolean;
+  onSaveProgressSubmit?: onSubmitFn;
+  onSendToApprovalSubmit?: onSubmitFn;
+  onApproveSubmit?: onSubmitFn;
+  onReproveSubmit?: onSubmitFn;
 }) => {
   const [isEditing, setIsEditing] = useState(props.new || false);
-  const [showModal, setShowModal] = useState(false);
+  const [itemValues, setItemValues] = useState<Case>(emptyCase());
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
+  const [showSendToApprovalModal, setShowSendToApprovalModal] = useState(false);
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [showReproveModal, setShowReproveModal] = useState(false);
 
   const { token } = useContext(AuthContext);
 
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { sendRequest, error, clearError, isLoading } = useHttpClient();
+
+  const { systems, countries } = useUtilities();
 
   let navigate = useNavigate();
   const cid = useParams().cid || "";
@@ -626,8 +87,8 @@ const CaseForm = (props: {
 
     try {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/${itemId}`,
-        "DELETE",
+        `${process.env.REACT_APP_CONNSTR}/cases/delete/${itemId}`,
+        "POST",
         undefined,
         {
           "Content-Type": "application/json",
@@ -639,15 +100,25 @@ const CaseForm = (props: {
       navigate(`/`);
     } catch (err) {
       console.log(err);
-      handleCloseModal();
+      setShowDeleteModal(false);
     }
   };
 
-  const handleShowDeleteModal = () => {
-    setShowModal(true);
+  const handleSaveProgressClick = (item: Case) => {
+    setItemValues(item);
+    setShowSaveProgressModal(true);
   };
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleSendToApprovalClick = (item: Case) => {
+    setItemValues(item);
+    setShowSendToApprovalModal(true);
+  };
+  const handleApprovalClick = (item: Case) => {
+    setItemValues(item);
+    setShowApproveModal(true);
+  };
+  const handleReprovalClick = (item: Case) => {
+    setItemValues(item);
+    setShowReproveModal(true);
   };
 
   if (isLoading) {
@@ -662,7 +133,11 @@ const CaseForm = (props: {
 
   return (
     <React.Fragment>
-      <Modal show={showModal} onHide={handleCloseModal} animation={false}>
+      <Modal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        animation={false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Remover Registro!</Modal.Title>
         </Modal.Header>
@@ -670,11 +145,110 @@ const CaseForm = (props: {
           Você está prestes a deletar o registro {props.item.nome}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleCloseModal}>
+          <Button variant="primary" onClick={() => setShowDeleteModal(false)}>
             Cancelar
           </Button>
           <Button variant="danger" onClick={() => onDelete(cid)}>
             Prosseguir com Remoção
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showSaveProgressModal}
+        onHide={() => setShowSaveProgressModal(false)}
+        animation={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Salvar Progresso!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Você tem certeza que deseja salvar o seu progresso?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="danger"
+            onClick={() => setShowSaveProgressModal(false)}
+          >
+            Não
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => props.onSaveProgressSubmit!(itemValues)}
+          >
+            Sim
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showSendToApprovalModal}
+        onHide={() => setShowSendToApprovalModal(false)}
+        animation={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Enviar para o Encarregado de Dados!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Você tem certeza que deseja enviar as informações para validação do
+          time de Privacidade de Dados?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="danger"
+            onClick={() => setShowSendToApprovalModal(false)}
+          >
+            Não
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => props.onSendToApprovalSubmit!(itemValues)}
+          >
+            Sim
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showApproveModal}
+        onHide={() => setShowApproveModal(false)}
+        animation={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Aprovar Processo!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Você tem certeza que deseja aprovar este processo?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={() => setShowApproveModal(false)}>
+            Não
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => props.onApproveSubmit!(itemValues)}
+          >
+            Sim
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showReproveModal}
+        onHide={() => setShowReproveModal(false)}
+        animation={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Reprovar Processo!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Você tem certeza que deseja reprovar este processo?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={() => setShowReproveModal(false)}>
+            Não
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => props.onReproveSubmit!(itemValues)}
+          >
+            Sim
           </Button>
         </Modal.Footer>
       </Modal>
@@ -686,7 +260,7 @@ const CaseForm = (props: {
       <Formik
         // validationSchema={schema}
         enableReinitialize={true}
-        onSubmit={props.onSubmit!}
+        onSubmit={(item: Case) => setItemValues(item)}
         initialValues={props.item}
       >
         {({
@@ -703,9 +277,12 @@ const CaseForm = (props: {
           <Form noValidate onSubmit={handleSubmit}>
             <Accordion defaultActiveKey="0">
               <Accordion.Item eventKey="0">
-                <Accordion.Header>Identificação</Accordion.Header>
+                <Accordion.Header>1 - Identificação</Accordion.Header>
                 <Accordion.Body>
-                  <Row className="mb-3">
+                  <Row className="mb-3 align-items-center">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.nome}</p>
+                    </Col>
                     <Form.Group as={Col} controlId="validationFormik01">
                       <Form.Label>Nome</Form.Label>
                       <Form.Control
@@ -729,82 +306,58 @@ const CaseForm = (props: {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Row>
-                  {/* <Row className="mb-3">
-                    <Form.Group as={Col} controlId="validationFormik02">
-                      <Form.Label>ID</Form.Label>
-                      <Form.Control
-                        disabled={!isEditing}
-                        type="text"
-                        name="ref"
-                        value={values.ref}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={touched.ref && !errors.ref}
-                        isInvalid={!!errors.ref}
-                      />
-                      <Form.Text className="text-muted">
-                        Digite o Número ou um ID para identificação da atividade
-                        de tratamento de dados pessoais relacionada ao serviço /
-                        processo de negócio. Exemplo de Número de Referência:
-                        0001. 0002 e etc. Exemplo de ID adotando Sigla do
-                        Serviço informado no campo "Nome do serviço/ Processo de
-                        Negócio: AVA, CRRA e etc.
-                      </Form.Text>
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Row> */}
+                  {!props.new && (
+                    <Row className="mb-3">
+                      <Col lg={1}>
+                        <p>{CaseIndexDictionary.id}</p>
+                      </Col>
+                      <Form.Group as={Col} controlId="validationFormik02">
+                        <Form.Label>ID</Form.Label>
+                        <Form.Control
+                          disabled
+                          type="text"
+                          name="id"
+                          value={values.id}
+                          readOnly
+                        />
+                      </Form.Group>
+                    </Row>
+                  )}
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.dataCriacao}</p>
+                    </Col>
                     <Form.Group as={Col} controlId="validationFormik03">
                       <Form.Label>Data de Criação do Inventário</Form.Label>
                       <Form.Control
-                        disabled={!isEditing}
-                        type="date"
+                        disabled={false}
+                        type="text"
                         name="dataCriacao"
                         value={values.dataCriacao}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={touched.dataCriacao && !errors.dataCriacao}
-                        isInvalid={!!errors.dataCriacao}
+                        readOnly
                       />
-                      <Form.Text className="text-muted">
-                        Informar data de criação do inventário de dados
-                        pessoais.
-                      </Form.Text>
-                      <Form.Control.Feedback type="invalid">
-                        Informe uma data válida
-                      </Form.Control.Feedback>
                     </Form.Group>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.dataAtualizacao}</p>
+                    </Col>
                     <Form.Group as={Col} controlId="validationFormik04">
                       <Form.Label>Data Atualização do Inventário</Form.Label>
                       <Form.Control
-                        disabled={!isEditing}
-                        type="date"
+                        disabled
+                        type="text"
                         name="dataAtualizacao"
                         value={values.dataAtualizacao}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          touched.dataAtualizacao && !errors.dataAtualizacao
-                        }
-                        isInvalid={!!errors.dataAtualizacao}
+                        readOnly
                       />
-                      <Form.Text className="text-muted">
-                        Informar data da última atualização do inventário.
-                      </Form.Text>
-                      <Form.Control.Feedback type="invalid">
-                        Informe uma data válida
-                      </Form.Control.Feedback>
                     </Form.Group>
                   </Row>
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="1">
                 <Accordion.Header>
-                  Agentes de Tratamento e Encarregado
+                  2 - Agentes de Tratamento e Encarregado
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
@@ -815,6 +368,9 @@ const CaseForm = (props: {
                     <Form.Label as={Col}>E-mail</Form.Label>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.controlador}</p>
+                    </Col>
                     <Col>
                       <OverlayTrigger
                         placement="right"
@@ -832,21 +388,12 @@ const CaseForm = (props: {
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="controlador.nome"
                         value={values.controlador.nome}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "controlador.nome") &&
-                          !getIn(errors, "controlador.nome")
-                        }
-                        isInvalid={!!getIn(errors, "controlador.nome")}
+                        readOnly
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control disabled />
@@ -859,6 +406,9 @@ const CaseForm = (props: {
                     </Col>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.encarregado}</p>
+                    </Col>
                     <Col>
                       <OverlayTrigger
                         placement="right"
@@ -876,33 +426,45 @@ const CaseForm = (props: {
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="encarregado.nome"
                         value={values.encarregado.nome}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "encarregado.nome") &&
-                          !getIn(errors, "encarregado.nome")
-                        }
-                        isInvalid={!!getIn(errors, "encarregado.nome")}
+                        readOnly
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
-                      <Form.Control disabled />
+                      <Form.Control
+                        disabled
+                        type="text"
+                        name="encarregado.area"
+                        value={values.encarregado.area}
+                        readOnly
+                      />
                     </Col>
                     <Col>
-                      <Form.Control disabled />
+                      <Form.Control
+                        disabled
+                        type="tel"
+                        name="encarregado.telefone"
+                        value={values.encarregado.telefone}
+                        readOnly
+                      />
                     </Col>
                     <Col>
-                      <Form.Control disabled />
+                      <Form.Control
+                        disabled
+                        type="email"
+                        name="encarregado.email"
+                        value={values.encarregado.email}
+                        readOnly
+                      />
                     </Col>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.extensaoEncarregado}</p>
+                    </Col>
                     <Col>
                       <OverlayTrigger
                         placement="right"
@@ -920,80 +482,45 @@ const CaseForm = (props: {
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="extensaoEncarregado.nome"
                         value={values.extensaoEncarregado.nome}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "extensaoEncarregado.nome") &&
-                          !getIn(errors, "extensaoEncarregado.nome")
-                        }
-                        isInvalid={!!getIn(errors, "extensaoEncarregado.nome")}
+                        readOnly
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="extensaoEncarregado.area"
                         value={values.extensaoEncarregado.area}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "extensaoEncarregado.area") &&
-                          !getIn(errors, "extensaoEncarregado.area")
-                        }
-                        isInvalid={!!getIn(errors, "extensaoEncarregado.area")}
+                        readOnly
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="tel"
                         name="extensaoEncarregado.telefone"
                         value={values.extensaoEncarregado.telefone}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "extensaoEncarregado.telefone") &&
-                          !getIn(errors, "extensaoEncarregado.telefone")
-                        }
-                        isInvalid={
-                          !!getIn(errors, "extensaoEncarregado.telefone")
-                        }
+                        readOnly
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="email"
                         name="extensaoEncarregado.email"
                         value={values.extensaoEncarregado.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "extensaoEncarregado.email") &&
-                          !getIn(errors, "extensaoEncarregado.email")
-                        }
-                        isInvalid={!!getIn(errors, "extensaoEncarregado.email")}
+                        readOnly
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Utilize um e-mail válido.
-                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.areaTratamentoDados}</p>
+                    </Col>
                     <Col>
                       <OverlayTrigger
                         placement="right"
@@ -1011,80 +538,45 @@ const CaseForm = (props: {
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="areaTratamentoDados.nome"
                         value={values.areaTratamentoDados.nome}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "areaTratamentoDados.nome") &&
-                          !getIn(errors, "areaTratamentoDados.nome")
-                        }
-                        isInvalid={!!getIn(errors, "areaTratamentoDados.nome")}
+                        readOnly
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="areaTratamentoDados.area"
                         value={values.areaTratamentoDados.area}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "areaTratamentoDados.area") &&
-                          !getIn(errors, "areaTratamentoDados.area")
-                        }
-                        isInvalid={!!getIn(errors, "areaTratamentoDados.area")}
+                        readOnly
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="tel"
                         name="areaTratamentoDados.telefone"
                         value={values.areaTratamentoDados.telefone}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "areaTratamentoDados.telefone") &&
-                          !getIn(errors, "areaTratamentoDados.telefone")
-                        }
-                        isInvalid={
-                          !!getIn(errors, "areaTratamentoDados.telefone")
-                        }
+                        readOnly
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="email"
                         name="areaTratamentoDados.email"
                         value={values.areaTratamentoDados.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "areaTratamentoDados.email") &&
-                          !getIn(errors, "areaTratamentoDados.email")
-                        }
-                        isInvalid={!!getIn(errors, "areaTratamentoDados.email")}
+                        readOnly
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Utilize um e-mail válido
-                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.operador}</p>
+                    </Col>
                     <Col>
                       <OverlayTrigger
                         placement="right"
@@ -1101,17 +593,11 @@ const CaseForm = (props: {
                     </Col>
                     <Col>
                       <Form.Control
-                        disabled={!isEditing}
+                        disabled
                         type="text"
                         name="operador.nome"
                         value={values.operador.nome}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          getIn(touched, "operador.nome") &&
-                          !getIn(errors, "operador.nome")
-                        }
-                        isInvalid={!!getIn(errors, "operador.nome")}
+                        readOnly
                       />
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
@@ -1131,99 +617,62 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="2">
                 <Accordion.Header>
-                  Fases do Ciclo de Vida do Tratamento de Dados Pessoais
+                  3 - Fases do Ciclo de Vida do Tratamento de Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
+                    <Form.Label as={Col} lg={1}></Form.Label>
                     <Form.Label as={Col}></Form.Label>
-                    <Form.Label as={Col}>Coleta</Form.Label>
-                    <Form.Label as={Col}>Retenção</Form.Label>
-                    <Form.Label as={Col}>Processamento</Form.Label>
-                    <Form.Label as={Col}>Compartilhamento</Form.Label>
-                    <Form.Label as={Col}>Eliminação</Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Atua?
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Coleta
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Retenção
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Processamento
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Compartilhamento
+                    </Form.Label>
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Eliminação
+                    </Form.Label>
+                    <Form.Label as={Col} lg={1}></Form.Label>
                   </Row>
-                  <Row className="mb-3">
-                    <Col>
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={
-                          <Tooltip className="text-muted">
-                            Informações sobre o ciclo de vida do tratamento de
-                            dados pessoais podem ser observadas no capítulo 3 do
-                            Guia de Boas Práticas LGPD, disponível em
-                            https://www.gov.br/governodigital/pt-br/governanca-de-dados/guia-de-boas-praticas-lei-geral-de-protecao-de-dados-lgpd
-                          </Tooltip>
-                        }
-                      >
-                        <Form.Label>
-                          Em qual fase do ciclo de vida o Operador atua?
-                        </Form.Label>
-                      </OverlayTrigger>
-                    </Col>
-                    <Col>
-                      <Form.Check
-                        disabled={!isEditing}
-                        type="checkbox"
-                        id="fasesCicloTratamento.coleta"
-                        name="fasesCicloTratamento.coleta"
-                        checked={values.fasesCicloTratamento.coleta}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                    <Col>
-                      <Form.Check
-                        disabled={!isEditing}
-                        type="checkbox"
-                        id="fasesCicloTratamento.retencao"
-                        name="fasesCicloTratamento.retencao"
-                        checked={values.fasesCicloTratamento.retencao}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                    <Col>
-                      <Form.Check
-                        disabled={!isEditing}
-                        type="checkbox"
-                        id="fasesCicloTratamento.processamento"
-                        name="fasesCicloTratamento.processamento"
-                        checked={values.fasesCicloTratamento.processamento}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                    <Col>
-                      <Form.Check
-                        disabled={!isEditing}
-                        type="checkbox"
-                        id="fasesCicloTratamento.compartilhamento"
-                        name="fasesCicloTratamento.compartilhamento"
-                        checked={values.fasesCicloTratamento.compartilhamento}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                    <Col>
-                      <Form.Check
-                        disabled={!isEditing}
-                        type="checkbox"
-                        id="fasesCicloTratamento.eliminacao"
-                        name="fasesCicloTratamento.eliminacao"
-                        checked={values.fasesCicloTratamento.eliminacao}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                  </Row>
+                  <Section3FormRow disabled={!isEditing} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="3">
                 <Accordion.Header>
-                  Fluxo de Tratamento de Dados Pessoais
+                  4 - Fluxo de Tratamento de Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.descricaoFluxoTratamento}</p>
+                    </Col>
                     <OverlayTrigger
                       placement="right"
                       overlay={
@@ -1258,62 +707,103 @@ const CaseForm = (props: {
                         Esse campo é obrigatório
                       </Form.Control.Feedback>
                     </Col>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox item={CaseIndexDictionary.nome} />
+                      </Row>
+                    </Col>
                   </Row>
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="4">
                 <Accordion.Header>
-                  Escopo e Natureza dos Dados Pessoais
+                  5 - Escopo e Natureza dos Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.abrangenciaGeografica}</p>
+                    </Col>
                     <Form.Label as={Col}>
                       Abrangência da área geográfica do tratamento
                     </Form.Label>
                     <Col lg={8}>
-                      <Form.Control
+                      <Form.Select
                         disabled={!isEditing}
-                        type="text"
-                        name="abrangenciaGeografica"
-                        value={values.abrangenciaGeografica}
+                        name="abrangenciaGeografica.value"
+                        value={values.abrangenciaGeografica.value}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         isValid={
-                          touched.abrangenciaGeografica &&
-                          !errors.abrangenciaGeografica
+                          touched.abrangenciaGeografica?.value &&
+                          !errors.abrangenciaGeografica?.value
                         }
-                        isInvalid={!!errors.abrangenciaGeografica}
-                      />
+                        isInvalid={!!errors.abrangenciaGeografica?.value}
+                      >
+                        {Object.values(tipoAbrangenciaGeografica).map((tag) => (
+                          <option value={tag} key={tag}>
+                            {tag}
+                          </option>
+                        ))}
+                      </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
                       </Form.Control.Feedback>
                     </Col>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.abrangenciaGeografica}
+                        />
+                      </Row>
+                    </Col>
                   </Row>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.fonteDados}</p>
+                    </Col>
                     <Form.Label as={Col}>
                       Fonte de dados utilizada para obtenção dos dados pessoais
                     </Form.Label>
                     <Col lg={8}>
-                      <Form.Control
+                      {/* <Form.Select
                         disabled={!isEditing}
-                        type="text"
                         name="fonteDados"
                         value={values.fonteDados}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         isValid={touched.fonteDados && !errors.fonteDados}
                         isInvalid={!!errors.fonteDados}
-                      />
+                      >
+                        {Object.values(systems).map((s) => (
+                          <option value={s} key={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
-                      </Form.Control.Feedback>
+                      </Form.Control.Feedback> */}
+                      <Field
+                        component={SelectFieldSearch}
+                        name="fonteDados"
+                        options={systems.map((s) => ({ value: s, label: s }))}
+                        isDisabled={!isEditing}
+                      />
+                    </Col>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.fonteDados}
+                        />
+                      </Row>
                     </Col>
                   </Row>
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="5">
                 <Accordion.Header>
-                  Finalidade do Tratamento de Dados Pessoais
+                  6 - Finalidade do Tratamento de Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Section6FormRow
@@ -1333,9 +823,13 @@ const CaseForm = (props: {
                       </p>
                     }
                     disabled={!isEditing}
-                    name="finalidadeTratamento.hipoteseTratamento"
+                    name="finalidadeTratamento.hipoteseTratamento.value"
                     type="select"
                     invalid="Esse campo é obrigatório"
+                    itemRef={
+                      CaseIndexDictionary.finalidadeTratamento
+                        .hipoteseTratamento
+                    }
                   />
                   <Section6FormRow
                     label="Finalidade"
@@ -1348,10 +842,14 @@ const CaseForm = (props: {
                         titular dos dados.
                       </p>
                     }
-                    disabled={!isEditing}
+                    disabled
                     name="finalidadeTratamento.descricaoFinalidade"
                     type="text"
                     invalid="Esse campo é obrigatório"
+                    itemRef={
+                      CaseIndexDictionary.finalidadeTratamento
+                        .descricaoFinalidade
+                    }
                   />
                   <Section6FormRow
                     label="Previsão legal"
@@ -1370,49 +868,84 @@ const CaseForm = (props: {
                         institui o Programa de Localização de Desaparecidos.
                       </p>
                     }
-                    disabled={!isEditing}
+                    disabled={
+                      !isEditing ||
+                      values.finalidadeTratamento.hipoteseTratamento.value !==
+                        hipotesesTratamento.obrigacaoLegal
+                    }
                     name="finalidadeTratamento.previsaoLegal"
                     type="text"
                     invalid="Esse campo é obrigatório"
+                    itemRef={
+                      CaseIndexDictionary.finalidadeTratamento.previsaoLegal
+                    }
                   />
                   <Section6FormRow
                     label="Resultados pretendidos para o titular de dados"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="finalidadeTratamento.resultadosTitular"
                     type="text"
                     invalid="Esse campo é obrigatório"
+                    itemRef={
+                      CaseIndexDictionary.finalidadeTratamento.resultadosTitular
+                    }
                   />
                   <Section6FormRow
                     label="Benefícios esperados para o órgão, entidade ou para a
                     sociedade como um todo"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
                     name="finalidadeTratamento.beneficiosEsperados"
                     type="text"
                     invalid="Esse campo é obrigatório"
+                    itemRef={
+                      CaseIndexDictionary.finalidadeTratamento
+                        .beneficiosEsperados
+                    }
                   />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="6">
-                <Accordion.Header>Categoria de Dados Pessoais</Accordion.Header>
+                <Accordion.Header>
+                  7 - Categoria de Dados Pessoais
+                </Accordion.Header>
                 <Accordion.Body>
                   <Accordion>
                     <Accordion.Item eventKey="60">
                       <Accordion.Header>
-                        Dados de Identificação Pessoal
+                        7.1 - Dados de Identificação Pessoal
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1427,6 +960,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.identificacao.idPessoal"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .identificacao.idPessoal
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1442,6 +980,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.identificacao.idGov"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .identificacao.idGov
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1454,6 +997,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.identificacao.idEletronica"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .identificacao.idEletronica
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1467,22 +1015,50 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.identificacao.locEletronica"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .identificacao.locEletronica
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="61">
-                      <Accordion.Header>Dados Financeiros</Accordion.Header>
+                      <Accordion.Header>
+                        7.2 - Dados Financeiros
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1497,6 +1073,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.idFin"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.idFin
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1512,6 +1093,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.recursosFin"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.recursosFin
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1525,6 +1111,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.dividasDespesas"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.dividasDespesas
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1537,6 +1128,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.solvencia"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.solvencia
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1552,6 +1148,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.emprestimosHipotecaCredito"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.emprestimosHipotecaCredito
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1564,6 +1165,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.assistenciaFin"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.assistenciaFin
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1579,6 +1185,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.apoliceSeguro"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.apoliceSeguro
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1593,6 +1204,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.planoPensao"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.planoPensao
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1607,6 +1223,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.transacaoFin"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.transacaoFin
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1620,6 +1241,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.compensacao"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.compensacao
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1635,6 +1261,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.atividadeProfissional"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.atividadeProfissional
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1648,6 +1279,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.acordosAjustes"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.acordosAjustes
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1661,24 +1297,50 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.financeiros.autorizacoesConsentimentos"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .financeiros.autorizacoesConsentimentos
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="62">
                       <Accordion.Header>
-                        Características Pessoais
+                        7.3 - Características Pessoais
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1692,6 +1354,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.caracteristicas.detalhesPessoais"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .caracteristicas.detalhesPessoais
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1704,6 +1371,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.caracteristicas.detalhesMilitares"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .caracteristicas.detalhesMilitares
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1718,6 +1390,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.caracteristicas.situacaoImigracao"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .caracteristicas.situacaoImigracao
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1733,22 +1410,50 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.caracteristicas.descricaoFisica"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .caracteristicas.descricaoFisica
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="63">
-                      <Accordion.Header>Hábitos Pessoais</Accordion.Header>
+                      <Accordion.Header>
+                        7.4 - Hábitos Pessoais
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1761,7 +1466,12 @@ const CaseForm = (props: {
                             </p>
                           }
                           disabled={!isEditing}
-                          name="categoriaDadosPessoais.habitos.habitos"
+                          name="categoriaDadosPessoais.habitos.habitosPessoais"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .habitosPessoais
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1775,6 +1485,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.estiloVida"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .estiloVida
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1788,6 +1503,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.viagensDeslocamento"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .viagensDeslocamento
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1801,6 +1521,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.contatosSociais"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .contatosSociais
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1813,6 +1538,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.posses"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .posses
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1828,6 +1558,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.denunciasIncidentesAcidentes"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .denunciasIncAcidentes
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1840,6 +1575,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.distincoes"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .distincoes
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1853,24 +1593,50 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitos.usoMidia"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.habitos
+                              .usoMidia
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="64">
                       <Accordion.Header>
-                        Características Psicológicas
+                        7.5 - Características Psicológicas
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1882,23 +1648,51 @@ const CaseForm = (props: {
                             </p>
                           }
                           disabled={!isEditing}
-                          name="categoriaDadosPessoais.habitos.distincoes"
+                          name="categoriaDadosPessoais.caracteristicasPsicologicas.descricaoPsi"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .caracteristicasPsicologicas.descricaoPsi
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="65">
-                      <Accordion.Header>Composição Familiar</Accordion.Header>
+                      <Accordion.Header>
+                        7.6 - Composição Familiar
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1913,6 +1707,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.composicaoFamiliar.casamentoCoabitacao"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .composicaoFamiliar.casamentoCoabitacao
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -1926,6 +1725,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.composicaoFamiliar.historicoConjugal"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .composicaoFamiliar.historicoConjugal
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1939,22 +1743,50 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.composicaoFamiliar.membrosFamilia"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .composicaoFamiliar.membrosFamilia
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="66">
-                      <Accordion.Header>Interesses de lazer</Accordion.Header>
+                      <Accordion.Header>
+                        7.7 - Interesses de lazer
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1967,22 +1799,48 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.interessesLazer.atividadesInteressesLaz"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .interessesLazer.atividadesInteressesLaz
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="67">
-                      <Accordion.Header>Associações</Accordion.Header>
+                      <Accordion.Header>7.8 - Associações</Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -1995,25 +1853,51 @@ const CaseForm = (props: {
                             </p>
                           }
                           disabled={!isEditing}
-                          name="categoriaDadosPessoais.associacoes.outrasAssociacoesNaoSensiveis"
+                          name="categoriaDadosPessoais.associacoes.outrasAssNaoSensiveis"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .associacoes.outrasAssNaoSensiveis
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="68">
                       <Accordion.Header>
-                        Processo Judicial/Administrativo/Criminal
+                        7.9 - Processo Judicial/Administrativo/Criminal
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2029,6 +1913,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.processoJudAdmCrim.suspeitas"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .processoJudAdmCrim.suspeitas
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2041,6 +1930,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.processoJudAdmCrim.condenacoesSentencas"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .processoJudAdmCrim.condenacoesSentencas
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2054,6 +1948,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.processoJudAdmCrim.acoesJud"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .processoJudAdmCrim.acoesJud
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2069,22 +1968,50 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.processoJudAdmCrim.penalidadesAdm"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .processoJudAdmCrim.penalidadesAdm
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="69">
-                      <Accordion.Header>Hábitos de Consumo</Accordion.Header>
+                      <Accordion.Header>
+                        7.10 - Hábitos de Consumo
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2098,22 +2025,50 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.habitosConsumo.dadosBensServicos"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .habitosConsumo.dadosBensServicos
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="610">
-                      <Accordion.Header>Dados Residenciais</Accordion.Header>
+                      <Accordion.Header>
+                        7.11 - Dados Residenciais
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2130,24 +2085,50 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.residenciais.dadosResidencia"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .residenciais.dadosResidencia
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="611">
                       <Accordion.Header>
-                        Educação e Treinamento
+                        7.12 - Educação e Treinamento
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2162,6 +2143,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.educacaoTreinamento.academicosEscolares"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .educacaoTreinamento.academicosEscolares
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2175,6 +2161,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.educacaoTreinamento.registroFinanceiro"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .educacaoTreinamento.registroFinanceiro
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2189,22 +2180,50 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.educacaoTreinamento.qualificacaoExperienciaProf"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .educacaoTreinamento.qualificacaoExperienciaProf
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="612">
-                      <Accordion.Header>Profissão e emprego</Accordion.Header>
+                      <Accordion.Header>
+                        7.13 - Profissão e emprego
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2221,6 +2240,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.empregoAtual"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.empregoAtual
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2235,6 +2259,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.recrutamento"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.recrutamento
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2248,6 +2277,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.rescisao"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.rescisao
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2261,6 +2295,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.carreira"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.carreira
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2274,6 +2313,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.absenteismoDisciplina"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.absenteismoDisciplina
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2287,24 +2331,50 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.profissaoEmprego.avaliacaoDesempenho"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .profissaoEmprego.avaliacaoDesempenho
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="613">
                       <Accordion.Header>
-                        Registros/gravações de vídeo, imagem e voz
+                        7.14 - Registros/gravações de vídeo, imagem e voz
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2317,6 +2387,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.regVideoImgVoz.videoImagem"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .regVideoImgVoz.videoImagem
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
@@ -2329,6 +2404,11 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.regVideoImgVoz.imagemVigilancia"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .regVideoImgVoz.imagemVigilancia
+                          }
+                          systems={systems}
                         />
                         <Section7FormRow
                           className="mb-3 pt-2 pb-2"
@@ -2342,95 +2422,66 @@ const CaseForm = (props: {
                           }
                           disabled={!isEditing}
                           name="categoriaDadosPessoais.regVideoImgVoz.voz"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais
+                              .regVideoImgVoz.voz
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="614">
-                      <Accordion.Header>Outros</Accordion.Header>
+                      <Accordion.Header>7.15 - Outros</Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                          <Form.Label as={Col} lg={1}></Form.Label>
                           <Form.Label as={Col}></Form.Label>
+                          <Form.Label
+                            as={Col}
+                            className="d-grid justify-content-center"
+                          >
+                            Trata?
+                          </Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
-                          <Form.Label as={Col}>
-                            Tempo Retenção dos Dados
-                          </Form.Label>
+                          <OverlayTrigger
+                            placement="top"
+                            trigger={["click", "hover"]}
+                            overlay={
+                              <Tooltip className="text-muted">
+                                Para maiores informações visite o
+                                <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                  site da CADA
+                                </a>
+                              </Tooltip>
+                            }
+                          >
+                            <Form.Label as={Col}>
+                              Tempo Retenção dos Dados
+                            </Form.Label>
+                          </OverlayTrigger>
                           <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                          <Form.Label as={Col}>
-                            Caminho Rede e/ou Sistema CPTM
+                          <Form.Label as={Col} lg={2}>
+                            Local de Armazenamento
                           </Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
-                        <FieldArray
-                          name="categoriaDadosPessoais.outros.outros"
-                          render={(arrayHelpers) => (
-                            <React.Fragment>
-                              {values.categoriaDadosPessoais.outros.outros &&
-                              values.categoriaDadosPessoais.outros.outros
-                                .length > 0 ? (
-                                values.categoriaDadosPessoais.outros.outros.map(
-                                  (item, index) => (
-                                    <React.Fragment key={index}>
-                                      <Section7FormRow
-                                        className={`mb-3 pt-2 pb-2 ${
-                                          index % 2 === 0
-                                            ? "bg-primary bg-opacity-10"
-                                            : ""
-                                        }`}
-                                        label="Outros (Especificar)"
-                                        tooltip={<React.Fragment />}
-                                        disabled={!isEditing}
-                                        name={`categoriaDadosPessoais.outros.outros[${index}]`}
-                                      />
-                                      <Row className="justify-content-center">
-                                        <ButtonGroup
-                                          as={Col}
-                                          className="mt-1 mb-3"
-                                          lg={2}
-                                        >
-                                          <Button
-                                            variant="primary"
-                                            onClick={() =>
-                                              arrayHelpers.push(
-                                                emptyItemCategoriaDadosPessoais()
-                                              )
-                                            }
-                                          >
-                                            +
-                                          </Button>
-                                          <Button
-                                            variant="danger"
-                                            onClick={() =>
-                                              arrayHelpers.remove(index)
-                                            }
-                                          >
-                                            -
-                                          </Button>
-                                        </ButtonGroup>
-                                      </Row>
-                                    </React.Fragment>
-                                  )
-                                )
-                              ) : (
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(
-                                          emptyItemCategoriaDadosPessoais()
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              )}
-                            </React.Fragment>
-                          )}
+                        <Section7FormRow
+                          className="mb-3 pt-2 pb-2 bg-primary bg-opacity-10"
+                          label="Outros (Especificar)"
+                          tooltip={
+                            <p>
+                              Descrever se são tratadas fitas e arquivos
+                              digitais de voz, bem como outros registros de
+                              gravações de voz , etc
+                            </p>
+                          }
+                          disabled={!isEditing}
+                          name="categoriaDadosPessoais.outros.outrosItems"
+                          itemRef={
+                            CaseIndexDictionary.categoriaDadosPessoais.outros
+                              .outrosItems
+                          }
+                          systems={systems}
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -2439,97 +2490,159 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="7">
                 <Accordion.Header>
-                  Categorias de Dados Pessoais Sensíveis
+                  8 - Categorias de Dados Pessoais Sensíveis
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                    <Form.Label as={Col} lg={1}></Form.Label>
                     <Form.Label as={Col}></Form.Label>
-                    <Form.Label as={Col}>Descrição</Form.Label>
-                    <Form.Label as={Col}>Tempo Retenção dos Dados</Form.Label>
-                    <Form.Label as={Col}>Fonte Retenção</Form.Label>
-                    <Form.Label as={Col}>
-                      Caminho Rede e/ou Sistema CPTM
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Trata?
                     </Form.Label>
+                    <Form.Label as={Col}>Descrição</Form.Label>
+                    <OverlayTrigger
+                      placement="top"
+                      trigger={["click", "hover"]}
+                      overlay={
+                        <Tooltip className="text-muted">
+                          Para maiores informações visite o
+                          <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                            site da CADA
+                          </a>
+                        </Tooltip>
+                      }
+                    >
+                      <Form.Label as={Col}>Tempo Retenção dos Dados</Form.Label>
+                    </OverlayTrigger>
+                    <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                    <Form.Label as={Col} lg={2}>
+                      Local de Armazenamento
+                    </Form.Label>
+                    <Form.Label as={Col} lg={1}></Form.Label>
                   </Row>
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam origem racial ou étnica"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.origemRacialEtnica"
+                    name="catDadosPessoaisSensiveis.origemRacialEtnica"
+                    itemRef={
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
+                        .origemRacialEtnica
+                    }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam convicção religiosa"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.conviccaoReligiosa"
+                    name="catDadosPessoaisSensiveis.conviccaoReligiosa"
+                    itemRef={
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
+                        .conviccaoReligiosa
+                    }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam opinião política"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.opiniaoPolitica"
+                    name="catDadosPessoaisSensiveis.opiniaoPolitica"
+                    itemRef={
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
+                        .opiniaoPolitica
+                    }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam filiação a sindicato"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.filiacaoSindicato"
+                    name="catDadosPessoaisSensiveis.filiacaoSindicato"
+                    itemRef={
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
+                        .filiacaoSindicato
+                    }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam filiação a organização de caráter religioso"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.filiacaoOrganizacaoReligiosa"
+                    name="catDadosPessoaisSensiveis.filiacaoOrgReligiosa"
+                    itemRef={
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
+                        .filiacaoOrgReligiosa
+                    }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados que revelam filiação ou crença filosófica"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.filiacaoCrencaFilosofica"
+                    name="catDadosPessoaisSensiveis.filiacaoCrencaFilosofica"
+                    itemRef={
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
+                        .filiacaoCrencaFilosofica
+                    }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados que revelam filiação ou preferências política"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.filiacaoPreferenciaPolitica"
+                    name="catDadosPessoaisSensiveis.filiacaoPreferenciaPolitica"
+                    itemRef={
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
+                        .filiacaoPreferenciaPolitica
+                    }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados referentes à saúde ou à vida sexual"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.saudeVidaSexual"
+                    name="catDadosPessoaisSensiveis.saudeVidaSexual"
+                    itemRef={
+                      CaseIndexDictionary.catDadosPessoaisSensiveis
+                        .saudeVidaSexual
+                    }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 pt-2 pb-2"
                     label="Dados genéticos"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.geneticos"
+                    name="catDadosPessoaisSensiveis.geneticos"
+                    itemRef={
+                      CaseIndexDictionary.catDadosPessoaisSensiveis.geneticos
+                    }
+                    systems={systems}
                   />
                   <Section7FormRow
                     className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                     label="Dados biométricos"
-                    tooltip={<React.Fragment />}
                     disabled={!isEditing}
-                    name="categoriaDadosPessoaisSensiveis.biometricos"
+                    name="catDadosPessoaisSensiveis.biometricos"
+                    itemRef={
+                      CaseIndexDictionary.catDadosPessoaisSensiveis.biometricos
+                    }
+                    systems={systems}
                   />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="8">
                 <Accordion.Header>
-                  Frequência e totalização das categorias de dados pessoais
+                  9 - Frequência e totalização das categorias de dados pessoais
                   tratados
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
+                    <Col lg={1}>
+                      <p>{CaseIndexDictionary.frequenciaTratamento}</p>
+                    </Col>
                     <OverlayTrigger
                       placement="right"
                       overlay={
@@ -2555,90 +2668,70 @@ const CaseForm = (props: {
                       </Form.Label>
                     </OverlayTrigger>
                     <Col lg={8}>
-                      <Form.Control
+                      <Form.Select
                         disabled={!isEditing}
-                        type="text"
-                        name="frequenciaTratamento"
-                        value={values.frequenciaTratamento}
+                        name="frequenciaTratamento.value"
+                        value={values.frequenciaTratamento.value}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         isValid={
-                          touched.frequenciaTratamento &&
-                          !errors.frequenciaTratamento
+                          touched.frequenciaTratamento?.value &&
+                          !errors.frequenciaTratamento?.value
                         }
-                        isInvalid={!!errors.frequenciaTratamento}
-                      />
+                        isInvalid={!!errors.frequenciaTratamento?.value}
+                      >
+                        {Object.values(tipoFrequenciaTratamento).map((tft) => (
+                          <option value={tft} key={tft}>
+                            {tft}
+                          </option>
+                        ))}
+                      </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         Esse campo é obrigatório
                       </Form.Control.Feedback>
                     </Col>
-                  </Row>
-                  <Row className="mb-3">
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip className="text-muted">
-                          Informar a quantidade total de dados pessoais e dados
-                          pessoais sensíveis descritos no invetário.
-                          <br />
-                          <b>Exemplo:</b>
-                          <br />
-                          Tratamento de dados pessoais de detalhes pessoais como
-                          Idade, sexo, data de nascimento, local de nascimento,
-                          estado civil, nacionalidade.
-                          <br />
-                          Tratamento de dados pessoais de saúde como CID10 e
-                          data de último exame médico
-                          <br />A informação que deve ser preenchida no
-                          inventário é:
-                          <br />
-                          <b>
-                            São tratados 6 dados pessoais e 2 dados pessoais
-                            sensíveis, totalizando 8 dados pessoais tratados
-                            pelo serviço.
-                          </b>
-                        </Tooltip>
-                      }
-                    >
-                      <Form.Label as={Col}>
-                        Quantidade de dados pessoais e dados pessoais sensíveis
-                        tratados
-                      </Form.Label>
-                    </OverlayTrigger>
-                    <Col lg={8}>
-                      <Form.Control
-                        disabled={!isEditing}
-                        type="text"
-                        name="quantidadeDadosTratados"
-                        value={values.quantidadeDadosTratados}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        isValid={
-                          touched.quantidadeDadosTratados &&
-                          !errors.quantidadeDadosTratados
-                        }
-                        isInvalid={!!errors.quantidadeDadosTratados}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Esse campo é obrigatório
-                      </Form.Control.Feedback>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.frequenciaTratamento}
+                        />
+                      </Row>
                     </Col>
                   </Row>
+                  <Section9QuantityRow isEditing={isEditing} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="9">
                 <Accordion.Header>
-                  Categorias dos titulares de dados pessoais
+                  10 - Categorias dos titulares de dados pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Accordion>
                     <Accordion.Item eventKey="90">
-                      <Accordion.Header>Categorias gerais</Accordion.Header>
+                      <Accordion.Header>
+                        10.1 - Categorias gerais
+                      </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col}></Form.Label>
                           <Form.Label as={Col}>Tipo de Categoria</Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
+                        </Row>
+                        <Row>
+                          <Form.Label as={Col}></Form.Label>
+                          <Form.Label as={Col}></Form.Label>
+                          <Form.Label as={Col}></Form.Label>
+                          <Col lg={1}>
+                            <Row>
+                              <CreateCommentBox
+                                item={
+                                  CaseIndexDictionary.categoriasTitulares
+                                    .categorias
+                                }
+                              />
+                            </Row>
+                          </Col>
                         </Row>
                         <FieldArray
                           name="categoriasTitulares.categorias"
@@ -2656,9 +2749,14 @@ const CaseForm = (props: {
                                             ? "bg-primary bg-opacity-10"
                                             : ""
                                         }`}
-                                        label={`Categoria ${index + 1}`}
+                                        label={`Categoria`}
                                         disabled={!isEditing}
                                         name={`categoriasTitulares.categorias[${index}]`}
+                                        full={true}
+                                        itemRef={
+                                          CaseIndexDictionary
+                                            .categoriasTitulares.categorias
+                                        }
                                       />
                                       <Row className="justify-content-center">
                                         <ButtonGroup
@@ -2667,6 +2765,7 @@ const CaseForm = (props: {
                                           lg={2}
                                         >
                                           <Button
+                                            disabled={!isEditing}
                                             variant="primary"
                                             onClick={() =>
                                               arrayHelpers.push(
@@ -2677,6 +2776,7 @@ const CaseForm = (props: {
                                             +
                                           </Button>
                                           <Button
+                                            disabled={!isEditing}
                                             variant="danger"
                                             onClick={() =>
                                               arrayHelpers.remove(index)
@@ -2697,6 +2797,7 @@ const CaseForm = (props: {
                                     lg={2}
                                   >
                                     <Button
+                                      disabled={!isEditing}
                                       variant="primary"
                                       onClick={() =>
                                         arrayHelpers.push(
@@ -2716,175 +2817,54 @@ const CaseForm = (props: {
                     </Accordion.Item>
                     <Accordion.Item eventKey="91">
                       <Accordion.Header>
-                        Categorias que envolvam crianças e adolescentes
+                        10.3 - Categorias que envolvam crianças e adolescentes
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Tipo de Categoria</Form.Label>
+                          <Form.Label as={Col}>Trata?</Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
-                        <FieldArray
-                          name="categoriasTitulares.criancasAdolescentes"
-                          render={(arrayHelpers) => (
-                            <React.Fragment>
-                              {values.categoriasTitulares
-                                .criancasAdolescentes &&
-                              values.categoriasTitulares.criancasAdolescentes
-                                .length > 0 ? (
-                                values.categoriasTitulares.criancasAdolescentes.map(
-                                  (item, index) => (
-                                    <React.Fragment key={index}>
-                                      <Section10FormRow
-                                        className={`mb-3 pt-2 pb-2 ${
-                                          index % 2 === 0
-                                            ? "bg-primary bg-opacity-10"
-                                            : ""
-                                        }`}
-                                        label={`Categoria Crianças e Adolescentes ${
-                                          index + 1
-                                        }`}
-                                        disabled={!isEditing}
-                                        name={`categoriasTitulares.criancasAdolescentes[${index}]`}
-                                      />
-                                      <Row className="justify-content-center">
-                                        <ButtonGroup
-                                          as={Col}
-                                          className="mt-1 mb-3"
-                                          lg={2}
-                                        >
-                                          <Button
-                                            variant="primary"
-                                            onClick={() =>
-                                              arrayHelpers.push(
-                                                emptyItemCategoriaTitulares()
-                                              )
-                                            }
-                                          >
-                                            +
-                                          </Button>
-                                          <Button
-                                            variant="danger"
-                                            onClick={() =>
-                                              arrayHelpers.remove(index)
-                                            }
-                                          >
-                                            -
-                                          </Button>
-                                        </ButtonGroup>
-                                      </Row>
-                                    </React.Fragment>
-                                  )
-                                )
-                              ) : (
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(
-                                          emptyItemCategoriaTitulares()
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              )}
-                            </React.Fragment>
-                          )}
+                        <Section10FormRow
+                          className={"mb-3 pt-2 pb-2 bg-primary bg-opacity-10"}
+                          label={"Categoria Crianças e Adolescentes"}
+                          disabled={!isEditing}
+                          name={"categoriasTitulares.criancasAdolescentes"}
+                          full={false}
+                          itemRef={
+                            CaseIndexDictionary.categoriasTitulares
+                              .criancasAdolescentes
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="92">
                       <Accordion.Header>
-                        Categorias que envolvam outros grupos vulneráveis
+                        10.4 - Categorias que envolvam outros grupos vulneráveis
                       </Accordion.Header>
                       <Accordion.Body>
                         <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                           <Form.Label as={Col}></Form.Label>
-                          <Form.Label as={Col}>Tipo de Categoria</Form.Label>
+                          <Form.Label as={Col}>Trata?</Form.Label>
                           <Form.Label as={Col}>Descrição</Form.Label>
+                          <Form.Label as={Col} lg={1}></Form.Label>
                         </Row>
-                        <FieldArray
-                          name="categoriasTitulares.outrosGruposVulneraveis"
-                          render={(arrayHelpers) => (
-                            <React.Fragment>
-                              {values.categoriasTitulares
-                                .outrosGruposVulneraveis &&
-                              values.categoriasTitulares.outrosGruposVulneraveis
-                                .length > 0 ? (
-                                values.categoriasTitulares.outrosGruposVulneraveis.map(
-                                  (item, index) => (
-                                    <React.Fragment key={index}>
-                                      <Section10FormRow
-                                        className={`mb-3 pt-2 pb-2 ${
-                                          index % 2 === 0
-                                            ? "bg-primary bg-opacity-10"
-                                            : ""
-                                        }`}
-                                        label={`Categoria Outros Grupos Vulneráveis ${
-                                          index + 1
-                                        }`}
-                                        disabled={!isEditing}
-                                        name={`categoriasTitulares.outrosGruposVulneraveis[${index}]`}
-                                      />
-                                      <Row className="justify-content-center">
-                                        <ButtonGroup
-                                          as={Col}
-                                          className="mt-1 mb-3"
-                                          lg={2}
-                                        >
-                                          <Button
-                                            variant="primary"
-                                            onClick={() =>
-                                              arrayHelpers.push(
-                                                emptyItemCategoriaTitulares()
-                                              )
-                                            }
-                                          >
-                                            +
-                                          </Button>
-                                          <Button
-                                            variant="danger"
-                                            onClick={() =>
-                                              arrayHelpers.remove(index)
-                                            }
-                                          >
-                                            -
-                                          </Button>
-                                        </ButtonGroup>
-                                      </Row>
-                                    </React.Fragment>
-                                  )
-                                )
-                              ) : (
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(
-                                          emptyItemCategoriaTitulares()
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              )}
-                            </React.Fragment>
-                          )}
+                        <Section10FormRow
+                          className={
+                            "mb-3 pt-2 pb-2 $ bg-primary bg-opacity-10"
+                          }
+                          label={"Categoria Outros Grupos Vulneráveis"}
+                          disabled={!isEditing}
+                          name={"categoriasTitulares.outrosGruposVulneraveis"}
+                          full={false}
+                          tooltip={
+                            "Idoso, pessoa em situação de rua, pessoa com deficiência, entre outros"
+                          }
+                          itemRef={
+                            CaseIndexDictionary.categoriasTitulares
+                              .outrosGruposVulneraveis
+                          }
                         />
                       </Accordion.Body>
                     </Accordion.Item>
@@ -2893,87 +2873,33 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="10">
                 <Accordion.Header>
-                  Compartilhamento de Dados Pessoais
+                  11 - Compartilhamento de Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
-                    <Form.Label as={Col}>Nome da Instituição</Form.Label>
-                    <Form.Label as={Col}>
-                      Dados pessoais compartilhados
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Compartilha?
                     </Form.Label>
                     <Form.Label as={Col}>
-                      Finalidade do compartilhamento
+                      Nome da Instituição Receptora
                     </Form.Label>
+                    <Form.Label as={Col}>Público/Privado</Form.Label>
+                    <Form.Label as={Col}>Nível de Compartilhamento</Form.Label>
+                    <Form.Label as={Col}>Descrição do Nível</Form.Label>
+                    <Form.Label as={Col}>
+                      Finalidade do Compartilhamento
+                    </Form.Label>
+                    <Form.Label as={Col} lg={1}></Form.Label>
                   </Row>
-                  <FieldArray
-                    name="compartilhamentoDadosPessoais"
-                    render={(arrayHelpers) => (
-                      <React.Fragment>
-                        {values.compartilhamentoDadosPessoais &&
-                        values.compartilhamentoDadosPessoais.length > 0 ? (
-                          values.compartilhamentoDadosPessoais.map(
-                            (item, index) => (
-                              <React.Fragment key={index}>
-                                <Section11FormRow
-                                  className={`mb-3 pt-2 pb-2 ${
-                                    index % 2 === 0
-                                      ? "bg-primary bg-opacity-10"
-                                      : ""
-                                  }`}
-                                  disabled={!isEditing}
-                                  name={`compartilhamentoDadosPessoais[${index}]`}
-                                />
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(
-                                          emptyItemCompatilhamentoDados()
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                    <Button
-                                      variant="danger"
-                                      onClick={() => arrayHelpers.remove(index)}
-                                    >
-                                      -
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              </React.Fragment>
-                            )
-                          )
-                        ) : (
-                          <Row className="justify-content-center">
-                            <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
-                              <Button
-                                variant="primary"
-                                onClick={() =>
-                                  arrayHelpers.push(
-                                    emptyItemCompatilhamentoDados()
-                                  )
-                                }
-                              >
-                                +
-                              </Button>
-                            </ButtonGroup>
-                          </Row>
-                        )}
-                      </React.Fragment>
-                    )}
-                  />
+                  <Section11FormRow disabled={!isEditing} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="11">
                 <Accordion.Header>
-                  Medidas de Segurança/Privacidade
+                  12 - Medidas de Segurança/Privacidade
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
@@ -2984,6 +2910,19 @@ const CaseForm = (props: {
                     <Form.Label as={Col}>
                       Descrição do(s) Controle(s)
                     </Form.Label>
+                    <Form.Label as={Col} lg={1}></Form.Label>
+                  </Row>
+                  <Row>
+                    <Col></Col>
+                    <Col></Col>
+                    <Col></Col>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.medidasSegurancaPrivacidade}
+                        />
+                      </Row>
+                    </Col>
                   </Row>
                   <FieldArray
                     name="medidasSegurancaPrivacidade"
@@ -3013,6 +2952,7 @@ const CaseForm = (props: {
                                     lg={2}
                                   >
                                     <Button
+                                      disabled={!isEditing}
                                       variant="primary"
                                       onClick={() =>
                                         arrayHelpers.push(
@@ -3023,6 +2963,7 @@ const CaseForm = (props: {
                                       +
                                     </Button>
                                     <Button
+                                      disabled={!isEditing}
                                       variant="danger"
                                       onClick={() => arrayHelpers.remove(index)}
                                     >
@@ -3037,6 +2978,7 @@ const CaseForm = (props: {
                           <Row className="justify-content-center">
                             <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                               <Button
+                                disabled={!isEditing}
                                 variant="primary"
                                 onClick={() =>
                                   arrayHelpers.push(
@@ -3056,10 +2998,16 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="12">
                 <Accordion.Header>
-                  Transferência Internacional de Dados Pessoais
+                  13 - Transferência Internacional de Dados Pessoais
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Transfere?
+                    </Form.Label>
                     <Form.Label as={Col}>
                       Nome da Organização Receptora
                     </Form.Label>
@@ -3070,151 +3018,40 @@ const CaseForm = (props: {
                     <Form.Label as={Col}>
                       Tipo de garantia para transferência
                     </Form.Label>
+                    <Col lg={1}></Col>
                   </Row>
-                  <FieldArray
-                    name="transferenciaInternacional"
-                    render={(arrayHelpers) => (
-                      <React.Fragment>
-                        {values.transferenciaInternacional &&
-                        values.transferenciaInternacional.length > 0 ? (
-                          values.transferenciaInternacional.map(
-                            (item, index) => (
-                              <React.Fragment key={index}>
-                                <Section13FormRow
-                                  className={`mb-3 pt-2 pb-2 ${
-                                    index % 2 === 0
-                                      ? "bg-primary bg-opacity-10"
-                                      : ""
-                                  }`}
-                                  disabled={!isEditing}
-                                  name={`transferenciaInternacional[${index}]`}
-                                />
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(
-                                          emptyItemTransferenciaInternacional()
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                    <Button
-                                      variant="danger"
-                                      onClick={() => arrayHelpers.remove(index)}
-                                    >
-                                      -
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              </React.Fragment>
-                            )
-                          )
-                        ) : (
-                          <Row className="justify-content-center">
-                            <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
-                              <Button
-                                variant="primary"
-                                onClick={() =>
-                                  arrayHelpers.push(
-                                    emptyItemTransferenciaInternacional()
-                                  )
-                                }
-                              >
-                                +
-                              </Button>
-                            </ButtonGroup>
-                          </Row>
-                        )}
-                      </React.Fragment>
-                    )}
+                  <Section13FormRow
+                    countries={countries}
+                    disabled={!isEditing}
                   />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="13">
                 <Accordion.Header>
-                  Contrato(s) de serviços e/ou soluções de TI que trata(m) dados
-                  pessoais do serviço/processo de negócio
+                  14 - Contrato(s) de serviços e/ou soluções de TI que trata(m)
+                  dados pessoais do serviço/processo de negócio
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                    <Form.Label
+                      as={Col}
+                      className="d-grid justify-content-center"
+                    >
+                      Existe?
+                    </Form.Label>
                     <Form.Label as={Col}>Número do Contrato</Form.Label>
                     <Form.Label as={Col}>Nº Processo Contratação</Form.Label>
                     <Form.Label as={Col}>Objeto do Contrato</Form.Label>
                     <Form.Label as={Col}>
                       E-mail do Gestor do Contrato
                     </Form.Label>
+                    <Col lg={1}></Col>
                   </Row>
-                  <FieldArray
-                    name="contratoServicosTITratamentoDados"
-                    render={(arrayHelpers) => (
-                      <React.Fragment>
-                        {values.contratoServicosTITratamentoDados &&
-                        values.contratoServicosTITratamentoDados.length > 0 ? (
-                          values.contratoServicosTITratamentoDados.map(
-                            (item, index) => (
-                              <React.Fragment key={index}>
-                                <Section14FormRow
-                                  className={`mb-3 pt-2 pb-2 ${
-                                    index % 2 === 0
-                                      ? "bg-primary bg-opacity-10"
-                                      : ""
-                                  }`}
-                                  disabled={!isEditing}
-                                  name={`contratoServicosTITratamentoDados[${index}]`}
-                                />
-                                <Row className="justify-content-center">
-                                  <ButtonGroup
-                                    as={Col}
-                                    className="mt-1 mb-3"
-                                    lg={2}
-                                  >
-                                    <Button
-                                      variant="primary"
-                                      onClick={() =>
-                                        arrayHelpers.push(emptyItemContratoTI())
-                                      }
-                                    >
-                                      +
-                                    </Button>
-                                    <Button
-                                      variant="danger"
-                                      onClick={() => arrayHelpers.remove(index)}
-                                    >
-                                      -
-                                    </Button>
-                                  </ButtonGroup>
-                                </Row>
-                              </React.Fragment>
-                            )
-                          )
-                        ) : (
-                          <Row className="justify-content-center">
-                            <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
-                              <Button
-                                variant="primary"
-                                onClick={() =>
-                                  arrayHelpers.push(emptyItemContratoTI())
-                                }
-                              >
-                                +
-                              </Button>
-                            </ButtonGroup>
-                          </Row>
-                        )}
-                      </React.Fragment>
-                    )}
-                  />
+                  <Section14FormRow disabled={!isEditing} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="14">
-                <Accordion.Header>Risco de Privacidade</Accordion.Header>
+                <Accordion.Header>15 - Risco de Privacidade</Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                     <Form.Label as={Col}></Form.Label>
@@ -3222,6 +3059,19 @@ const CaseForm = (props: {
                       Tipo de Risco de Privacidade
                     </Form.Label>
                     <Form.Label as={Col}>Observações</Form.Label>
+                    <Col lg={1}></Col>
+                  </Row>
+                  <Row className="mb-3 pt-2 pb-2">
+                    <Form.Label as={Col}></Form.Label>
+                    <Form.Label as={Col}></Form.Label>
+                    <Form.Label as={Col}></Form.Label>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.riscosPrivacidade}
+                        />
+                      </Row>
+                    </Col>
                   </Row>
                   <FieldArray
                     name="riscosPrivacidade"
@@ -3248,6 +3098,7 @@ const CaseForm = (props: {
                                   lg={2}
                                 >
                                   <Button
+                                    disabled={!isEditing}
                                     variant="primary"
                                     onClick={() =>
                                       arrayHelpers.push(
@@ -3258,6 +3109,7 @@ const CaseForm = (props: {
                                     +
                                   </Button>
                                   <Button
+                                    disabled={!isEditing}
                                     variant="danger"
                                     onClick={() => arrayHelpers.remove(index)}
                                   >
@@ -3271,6 +3123,7 @@ const CaseForm = (props: {
                           <Row className="justify-content-center">
                             <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                               <Button
+                                disabled={!isEditing}
                                 variant="primary"
                                 onClick={() =>
                                   arrayHelpers.push(emptyItemRiscoPrivacidade())
@@ -3288,11 +3141,22 @@ const CaseForm = (props: {
               </Accordion.Item>
               <Accordion.Item eventKey="15">
                 <Accordion.Header>
-                  Observações sobre o Processo
+                  16 - Observações sobre o Processo
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
                     <Form.Label as={Col}>Observação</Form.Label>
+                    <Col lg={1}></Col>
+                  </Row>
+                  <Row className="mb-3 pt-2 pb-2">
+                    <Form.Label as={Col}></Form.Label>
+                    <Col lg={1}>
+                      <Row>
+                        <CreateCommentBox
+                          item={CaseIndexDictionary.observacoesProcesso}
+                        />
+                      </Row>
+                    </Col>
                   </Row>
                   <FieldArray
                     name="observacoesProcesso"
@@ -3319,6 +3183,7 @@ const CaseForm = (props: {
                                   lg={2}
                                 >
                                   <Button
+                                    disabled={!isEditing}
                                     variant="primary"
                                     onClick={() =>
                                       arrayHelpers.push(
@@ -3329,6 +3194,7 @@ const CaseForm = (props: {
                                     +
                                   </Button>
                                   <Button
+                                    disabled={!isEditing}
                                     variant="danger"
                                     onClick={() => arrayHelpers.remove(index)}
                                   >
@@ -3342,6 +3208,7 @@ const CaseForm = (props: {
                           <Row className="justify-content-center">
                             <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                               <Button
+                                disabled={!isEditing}
                                 variant="primary"
                                 onClick={() =>
                                   arrayHelpers.push(
@@ -3361,53 +3228,83 @@ const CaseForm = (props: {
               </Accordion.Item>
             </Accordion>
             {props.new && (
-              <Button
-                type="submit"
-                className="float-end mt-3"
-                disabled={!(isValid && dirty)}
-              >
-                Registrar Novo
-              </Button>
+              <Stack direction="horizontal" className="mt-3" gap={3}>
+                <Button
+                  type="button"
+                  disabled={!(isValid && dirty)}
+                  variant="secondary"
+                  className="ms-auto"
+                  onClick={() => handleSaveProgressClick(values)}
+                >
+                  Salvar Alterações
+                </Button>
+                <Button
+                  type="button"
+                  disabled={!(isValid && dirty)}
+                  variant="warning"
+                  onClick={() => handleSendToApprovalClick(values)}
+                >
+                  Encaminhar para encarregado de Dados
+                </Button>
+              </Stack>
             )}
             {props.approve && (
-              <Row className="float-end mt-3">
-                <ButtonGroup as={Col} lg={2}>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => onCancel()}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button type="submit">Aprovar</Button>
-                </ButtonGroup>
-              </Row>
+              <Stack direction="horizontal" className="mt-3" gap={0}>
+                <Button variant="light" onClick={() => onCancel()}>
+                  Cancelar
+                </Button>
+                <Button
+                  variant="danger"
+                  className="ms-auto"
+                  onClick={() => handleReprovalClick(values)}
+                >
+                  Reprovar
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => handleApprovalClick(values)}
+                >
+                  Aprovar
+                </Button>
+              </Stack>
             )}
             {props.edit && isEditing && isValid && (
-              <Button
-                type="submit"
-                className="float-end mt-3"
-                disabled={!(isValid && dirty)}
-              >
-                Salvar Alterações
-              </Button>
+              <Stack direction="horizontal" className="mt-3" gap={3}>
+                <Button
+                  type="button"
+                  disabled={!(isValid && dirty)}
+                  variant="secondary"
+                  className="ms-auto"
+                  onClick={() => handleSaveProgressClick(values)}
+                >
+                  Salvar Alterações
+                </Button>
+                <Button
+                  type="button"
+                  disabled={!(isValid && dirty)}
+                  variant="warning"
+                  onClick={() => handleSendToApprovalClick(values)}
+                >
+                  Encaminhar para encarregado de Dados
+                </Button>
+              </Stack>
             )}
             {props.edit && !isEditing && (
-              <Row className="float-end mt-3">
-                <ButtonGroup as={Col} lg={2}>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => onCancel()}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button variant="danger" onClick={handleShowDeleteModal}>
-                    Remover
-                  </Button>
-                  <Button variant="primary" onClick={() => onStartEditing()}>
-                    Editar
-                  </Button>
-                </ButtonGroup>
-              </Row>
+              <Stack direction="horizontal" className="mt-3" gap={0}>
+                <Button variant="light" onClick={() => onCancel()}>
+                  Cancelar
+                </Button>
+                <Button
+                  variant="danger"
+                  className="ms-auto"
+                  onClick={() => setShowDeleteModal(true)}
+                >
+                  Remover
+                </Button>
+                <Button variant="primary" onClick={() => onStartEditing()}>
+                  Editar
+                </Button>
+              </Stack>
             )}
           </Form>
         )}

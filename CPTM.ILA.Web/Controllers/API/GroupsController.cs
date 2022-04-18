@@ -37,8 +37,8 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
         /// </returns>
         [Route("")]
-        [Authorize]
-        [HttpPost]
+        [AllowAnonymous]
+        [HttpGet]
         public async Task<HttpResponseMessage> Get()
         {
             try
@@ -46,14 +46,22 @@ namespace CPTM.ILA.Web.Controllers.API
                 var diretorias = await _context.ILA_VW_ESTRUTURA_ORG.Where(os => os.FL_ATIVO == 1 && os.NR_NIVEL == 1)
                     .Select(os => os.DIR_SIGLA)
                     .Distinct()
+                    .OrderBy(s => s.Trim()
+                        .ToLower())
                     .ToListAsync();
                 var gerencias = await _context.ILA_VW_ESTRUTURA_ORG.Where(os => os.FL_ATIVO == 1 && os.NR_NIVEL == 3)
+                    .OrderBy(os => os.DIR_SIGLA)
                     .Select(os => os.GER_SIGLA)
                     .Distinct()
+                    .OrderBy(s => s.Trim()
+                        .ToLower())
                     .ToListAsync();
                 var deptos = await _context.ILA_VW_ESTRUTURA_ORG.Where(os => os.FL_ATIVO == 1 && os.NR_NIVEL == 4)
+                    .OrderBy(os => os.DIR_SIGLA)
                     .Select(os => os.DEP_SIGLA)
                     .Distinct()
+                    .OrderBy(s => s.Trim()
+                        .ToLower())
                     .ToListAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { diretorias, gerencias, deptos });

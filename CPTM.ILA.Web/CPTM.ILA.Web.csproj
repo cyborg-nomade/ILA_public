@@ -310,6 +310,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DTOs\AccessRequestDTO.cs" />
     <Compile Include="DTOs\CaseChange.cs" />
+    <Compile Include="DTOs\ComiteMember.cs" />
     <Compile Include="DTOs\CommentDTO.cs" />
     <Compile Include="DTOs\ExtensaoEncarregadoTotals.cs" />
     <Compile Include="DTOs\GroupTotals.cs" />
@@ -319,13 +320,13 @@
     <Compile Include="Migrations\202203312006350_Existing-Model.designer.cs">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202203312008172_FullModel.cs" />
-    <Compile Include="Migrations\202203312008172_FullModel.designer.cs">
-      <DependentUpon>202203312008172_FullModel.cs</DependentUpon>
+    <Compile Include="Migrations\202204111916447_FullModel.cs" />
+    <Compile Include="Migrations\202204111916447_FullModel.designer.cs">
+      <DependentUpon>202204111916447_FullModel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202203312202592_AddARFilePath.cs" />
-    <Compile Include="Migrations\202203312202592_AddARFilePath.designer.cs">
-      <DependentUpon>202203312202592_AddARFilePath.cs</DependentUpon>
+    <Compile Include="Migrations\202204122055590_RemoveCedilhaRetencao.cs" />
+    <Compile Include="Migrations\202204122055590_RemoveCedilhaRetencao.designer.cs">
+      <DependentUpon>202204122055590_RemoveCedilhaRetencao.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
@@ -497,11 +498,11 @@
     <EmbeddedResource Include="Migrations\202203312006350_Existing-Model.resx">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203312008172_FullModel.resx">
-      <DependentUpon>202203312008172_FullModel.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202204111916447_FullModel.resx">
+      <DependentUpon>202204111916447_FullModel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203312202592_AddARFilePath.resx">
-      <DependentUpon>202203312202592_AddARFilePath.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202204122055590_RemoveCedilhaRetencao.resx">
+      <DependentUpon>202204122055590_RemoveCedilhaRetencao.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

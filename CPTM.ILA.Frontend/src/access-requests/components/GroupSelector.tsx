@@ -4,11 +4,10 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useNavigate } from "react-router-dom";
-
-export const groups = ["GGDC", "HFPD", "XPTY", "ZYPD"];
+import Row from "react-bootstrap/Row";
 
 const GroupSelector = () => {
-  const { changeGroup } = useContext(AuthContext);
+  const { changeGroup, user } = useContext(AuthContext);
 
   let navigate = useNavigate();
 
@@ -18,28 +17,32 @@ const GroupSelector = () => {
 
   return (
     <React.Fragment>
-      <Card>
+      <Card className="justify-content-center">
         <Card.Body>
           <Card.Title className="mb-3 text-center">
             Selecione o grupo desejado
           </Card.Title>
           <hr></hr>
-          <Card.Text className="align-content-center text-center">
-            <ButtonGroup vertical className="d-block">
-              {groups.map((g) => (
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => changeGroup(g)}
-                >
-                  {g}
-                </Button>
-              ))}
-            </ButtonGroup>
-          </Card.Text>
+          <ButtonGroup
+            vertical
+            className="d-block align-content-center text-center"
+          >
+            {user.groups.map((g) => (
+              <Button
+                key={g.id}
+                variant="outline-secondary"
+                onClick={() => changeGroup(g)}
+              >
+                {g.nome}
+              </Button>
+            ))}
+          </ButtonGroup>
           <hr></hr>
-          <Button variant="success" onClick={requestGroupAccessHandler}>
-            Solicitar Acesso a Novo Grupo
-          </Button>
+          <Row>
+            <Button variant="success" onClick={requestGroupAccessHandler}>
+              Solicitar Acesso a Novo Grupo
+            </Button>
+          </Row>
         </Card.Body>
       </Card>
     </React.Fragment>

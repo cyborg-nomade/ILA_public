@@ -7,7 +7,7 @@ namespace CPTM.ILA.Web.Models.CaseHelpers
     public class ItemCategoriaTitularesExtra
     {
         public int Id { get; set; }
-        public bool TrataDados { get; set; }
+        public string TrataDados { get; set; }
         [MaxLength(250)] public string DescricaoDados { get; set; }
     }
 }

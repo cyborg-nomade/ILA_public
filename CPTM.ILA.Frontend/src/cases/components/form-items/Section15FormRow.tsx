@@ -5,7 +5,8 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { Case, tipoRiscoPrivacidade } from "../../../shared/models/cases.model";
+import { Case } from "../../../shared/models/cases.model";
+import { tipoRiscoPrivacidade } from "../../../shared/models/case-helpers/enums.model";
 
 const Section15FormRow = (props: {
   label: string;
@@ -36,15 +37,15 @@ const Section15FormRow = (props: {
       <Col>
         <Form.Select
           disabled={props.disabled}
-          name={`${props.name}.tipoRisco`}
-          value={getIn(values, `${props.name}.tipoRisco`)}
+          name={`${props.name}.tipoRisco.value`}
+          value={getIn(values, `${props.name}.tipoRisco.value`)}
           onChange={handleChange}
           onBlur={handleBlur}
           isValid={
-            getIn(touched, `${props.name}.tipoRisco`) &&
-            !getIn(errors, `${props.name}.tipoRisco`)
+            getIn(touched, `${props.name}.tipoRisco.value`) &&
+            !getIn(errors, `${props.name}.tipoRisco.value`)
           }
-          isInvalid={!!getIn(errors, `${props.name}.tipoRisco`)}
+          isInvalid={!!getIn(errors, `${props.name}.tipoRisco.value`)}
         >
           {Object.values(tipoRiscoPrivacidade).map((tip) => (
             <option value={tip} key={tip}>
@@ -68,6 +69,7 @@ const Section15FormRow = (props: {
           isInvalid={!!getIn(errors, `${props.name}.observacoes`)}
         />
       </Col>
+      <Col lg={1}></Col>
     </Row>
   );
 };

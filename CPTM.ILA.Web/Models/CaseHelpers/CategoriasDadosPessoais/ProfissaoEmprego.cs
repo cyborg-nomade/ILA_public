@@ -7,11 +7,11 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class ProfissaoEmprego
     {
         public int Id { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> EmpregoAtual { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> Recrutamento { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> Rescisao { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> Carreira { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> AbsenteismoDisciplina { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> AvaliacaoDesempenho { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> EmpregoAtual { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Recrutamento { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Rescisao { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Carreira { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> AbsenteismoDisciplina { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> AvaliacaoDesempenho { get; set; }
     }
 }
