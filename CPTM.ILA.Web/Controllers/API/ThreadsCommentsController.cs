@@ -739,6 +739,23 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        [Route("itsm")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostItsm([FromBody] CommentDTO commentDto)
+        {
+            var chamadoAberto = await ItsmUtil.AbrirChamado(commentDto.Author.Username,
+                "Item " + commentDto.RefItem + ": " + commentDto.Text);
+
+            if (!chamadoAberto)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = "Dúvida postada com sucesso!" });
+        }
+
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
