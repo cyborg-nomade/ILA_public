@@ -7,18 +7,18 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class Financeiros
     {
         public int Id { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> IdFin { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> RecursosFin { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> DividasDespesas { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> Solvencia { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> EmprestimosHipotecaCredito { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> AssistenciaFin { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> ApoliceSeguro { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> PlanoPensao { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> TransacaoFin { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> Compensacao { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> AtividadeProfissional { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> AcordosAjustes { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> AutorizacoesConsentimentos { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> IdFin { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> RecursosFin { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> DividasDespesas { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Solvencia { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> EmprestimosHipotecaCredito { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> AssistenciaFin { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> ApoliceSeguro { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> PlanoPensao { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> TransacaoFin { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Compensacao { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> AtividadeProfissional { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> AcordosAjustes { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> AutorizacoesConsentimentos { get; set; }
     }
 }

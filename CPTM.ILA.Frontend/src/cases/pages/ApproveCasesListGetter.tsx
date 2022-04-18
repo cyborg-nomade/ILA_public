@@ -3,23 +3,23 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { CaseListItem } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CasesList from "../components/CasesList";
+import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 
 const ApproveCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
 
-  const { token } = useContext(AuthContext);
+  const { token, currentGroup } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
 
   useEffect(() => {
-    const getAllCases = async () => {
+    const getCasesToApprove = async () => {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/`,
+        `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/false/true`,
         undefined,
         undefined,
         { Authorization: "Bearer " + token }
@@ -28,10 +28,10 @@ const ApproveCasesListGetter = () => {
       setCases(loadedCases);
     };
 
-    getAllCases().catch((error) => {
+    getCasesToApprove().catch((error) => {
       console.log(error);
     });
-  }, [sendRequest, token]);
+  }, [currentGroup.id, sendRequest, token]);
 
   if (isLoading) {
     return (
@@ -55,7 +55,7 @@ const ApproveCasesListGetter = () => {
           {error}
         </Alert>
       )}
-      <CasesList items={cases} />
+      <CasesList items={cases} redirect={true} />
     </React.Fragment>
   );
 };

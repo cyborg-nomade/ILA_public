@@ -10,9 +10,9 @@ namespace CPTM.ILA.Web.Models.ChangeLogging
     public class ChangeLog
     {
         public int Id { get; set; }
-        public User User { get; set; }
-        public Case Case { get; set; }
+        public int UserId { get; set; }
+        public int CaseId { get; set; }
         public DateTime ChangeDate { get; set; }
-        public ICollection<ItemIdentity> Items { get; set; }
+        public string CaseDiff { get; set; }
     }
 }

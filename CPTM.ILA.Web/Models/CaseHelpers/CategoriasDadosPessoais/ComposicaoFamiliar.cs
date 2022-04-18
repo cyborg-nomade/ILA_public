@@ -7,8 +7,8 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class ComposicaoFamiliar
     {
         public int Id { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> CasamentoCoabitacao { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> HistoricoConjugal { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> MembrosFamilia { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> CasamentoCoabitacao { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> HistoricoConjugal { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> MembrosFamilia { get; set; }
     }
 }

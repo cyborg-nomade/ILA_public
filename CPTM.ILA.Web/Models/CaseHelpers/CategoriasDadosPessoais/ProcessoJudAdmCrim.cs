@@ -7,9 +7,9 @@ namespace CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais
     public class ProcessoJudAdmCrim
     {
         public int Id { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> Suspeitas { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> CondenacoesSentencas { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> AcoesJud { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> PenalidadesAdm { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Suspeitas { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> CondenacoesSentencas { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> AcoesJud { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> PenalidadesAdm { get; set; }
     }
 }

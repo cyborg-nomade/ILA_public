@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -17,6 +18,7 @@ using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Util;
+using Microsoft.Ajax.Utilities;
 
 namespace CPTM.ILA.Web.Controllers.API
 {
@@ -58,7 +60,9 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var accessRequest = await _context.AccessRequests.FindAsync(arid);
+                var accessRequest = await _context.AccessRequests.Where(ar => ar.Id == arid)
+                    .Include(ar => ar.Groups)
+                    .SingleOrDefaultAsync();
 
                 if (accessRequest == null)
                 {
@@ -83,8 +87,10 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
+                var arDto = AccessRequest.ReduceToDto(accessRequest);
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { accessRequest });
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { accessRequest = arDto });
             }
             catch (Exception e)
             {
@@ -148,16 +154,24 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 var fileData = File.ReadAllBytes(filePath);
+                var fileName = Path.GetFileName(filePath);
 
-                var response = Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Arquivo recuperado com sucesso!" });
+                var utf8 = Encoding.UTF8;
+                var utfBytes = utf8.GetBytes(fileName);
+
+                var fileNameProper = utf8.GetString(utfBytes);
+
+                var response = Request.CreateResponse(HttpStatusCode.OK);
                 response.Content = new ByteArrayContent(fileData);
                 response.Content.Headers.ContentLength = fileData.LongLength;
                 response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
                 {
-                    FileName = Path.GetFileName(filePath)
+                    FileName = fileNameProper
                 };
                 response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                response.Headers.Add("Filename", fileNameProper);
+                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+
 
                 return response;
             }
@@ -205,18 +219,21 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var accessRequests = await _context.AccessRequests.Where(ar => ar.TipoSolicitacaoAcesso == tipo)
+                    .Include(ar => ar.Groups)
                     .ToListAsync();
+
+                var arDtos = accessRequests.ConvertAll<AccessRequestDTO>(AccessRequest.ReduceToDto);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new
                 {
-                    requests = accessRequests
+                    requests = arDtos
                 });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -240,7 +257,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
             }
 
-            if (!User.Identity.IsAuthenticated && tipo != TipoSolicitacaoAcesso.AcessoAoSistema)
+            if (!User.Identity.IsAuthenticated && tipo == TipoSolicitacaoAcesso.AcessoAGrupos)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
             }
@@ -259,8 +276,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     new { message = "Solicitação de tipo incorreto." });
             }
 
-            if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSolicitante) ||
-                !Seguranca.ExisteUsuario(accessRequestDto.UsernameSuperior))
+            if (accessRequestDto.UsernameSolicitante.IsNullOrWhiteSpace())
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, new
                 {
@@ -268,14 +284,104 @@ namespace CPTM.ILA.Web.Controllers.API
                 });
             }
 
+            if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSolicitante))
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new
+                {
+                    message = "Pelo menos um dos nomes de usuário fornecidos não existe. Verifique e tente novamente."
+                });
+            }
+
+            if (tipo != TipoSolicitacaoAcesso.AcessoComite)
+            {
+                if (accessRequestDto.UsernameSuperior.IsNullOrWhiteSpace())
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new
+                    {
+                        message =
+                            "Pelo menos um dos nomes de usuário fornecidos não existe. Verifique e tente novamente."
+                    });
+                }
+
+                if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSuperior))
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new
+                    {
+                        message =
+                            "Pelo menos um dos nomes de usuário fornecidos não existe. Verifique e tente novamente."
+                    });
+                }
+            }
+
             try
             {
-                var chamadoAberto = await AbrirChamadoItsm(accessRequestDto.UsernameSolicitante, tipo.ToString());
+                //var chamadoAberto = await AbrirChamadoItsm(accessRequestDto.UsernameSolicitante, tipo.ToString());
 
-                if (!chamadoAberto)
+                //if (!chamadoAberto)
+                //{
+                //    return Request.CreateResponse(HttpStatusCode.OK,
+                //        new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
+                //}
+
+                var usersInDb = await _context.Users.Include(u => u.Groups)
+                    .ToListAsync();
+                if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
+
+                var userInDb =
+                    usersInDb.SingleOrDefault(u => u.Username == accessRequestDto.UsernameSolicitante.ToUpper());
+
+                if (userInDb != null &&
+                    userInDb.IsComite &&
+                    accessRequestDto.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoComite)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK,
-                        new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        new { message = "Este usuário solicitante já tem o nível de acesso do Comite LGPD!" });
+                }
+
+                if (userInDb != null && accessRequestDto.TipoSolicitacaoAcesso != TipoSolicitacaoAcesso.AcessoAGrupos)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        new { message = "Este usuário solicitante já tem acesso ao sistema!" });
+                }
+
+                var arGroups = new List<Group>();
+
+                if (tipo == TipoSolicitacaoAcesso.AcessoAGrupos || tipo == TipoSolicitacaoAcesso.AcessoComite)
+                {
+                    foreach (var groupName in accessRequestDto.GroupNames)
+                    {
+                        var groups = await _context.Groups.ToListAsync();
+                        var selectedGroup = groups.SingleOrDefault(g => g.Nome == groupName);
+                        if (selectedGroup == null)
+                        {
+                            var newGroup = new Group()
+                            {
+                                Nome = groupName
+                            };
+                            _context.Groups.Add(newGroup);
+                            selectedGroup = newGroup;
+                        }
+
+                        arGroups.Add(selectedGroup);
+                    }
+                }
+
+                if (tipo == TipoSolicitacaoAcesso.AcessoAoSistema)
+                {
+                    var userAd = Seguranca.ObterUsuario(accessRequestDto.UsernameSolicitante);
+                    var groups = await _context.Groups.ToListAsync();
+                    var selectedGroup = groups.SingleOrDefault(g => g.Nome == userAd.Departamento);
+                    if (selectedGroup == null)
+                    {
+                        var newGroup = new Group()
+                        {
+                            Nome = userAd.Departamento
+                        };
+                        _context.Groups.Add(newGroup);
+                        selectedGroup = newGroup;
+                    }
+
+                    arGroups.Add(selectedGroup);
                 }
 
                 var accessRequest = new AccessRequest()
@@ -284,7 +390,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     UsernameSuperior = accessRequestDto.UsernameSuperior,
                     Justificativa = accessRequestDto.Justificativa,
                     TipoSolicitacaoAcesso = accessRequestDto.TipoSolicitacaoAcesso,
-                    Groups = accessRequestDto.Groups
+                    Groups = arGroups
                 };
 
                 _context.AccessRequests.Add(accessRequest);
@@ -297,7 +403,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", error = e });
             }
         }
 
@@ -388,30 +494,35 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
             }
 
-            var accessRequest = await _context.AccessRequests.FindAsync(arid);
-
-            if (accessRequest == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
-            }
-
-            if (User.Identity is ClaimsIdentity identity)
-            {
-                var claims = TokenUtil.GetTokenClaims(identity);
-
-                if (!claims.IsComite)
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
-                }
-
-                if (accessRequest.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoComite && !claims.IsDpo)
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
-                }
-            }
-
             try
             {
+                var accessRequest = await _context.AccessRequests.Where(ar => ar.Id == arid)
+                    .Include(ar => ar.Groups)
+                    .SingleOrDefaultAsync();
+
+                if (accessRequest == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    if (!claims.IsComite)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+
+                    if (accessRequest.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoComite && !claims.IsDpo)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+
                 if (!aprovado)
                 {
                     _context.AccessRequests.Remove(accessRequest);
@@ -420,66 +531,118 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Requisição de Acesso excluída com sucesso, após reprovação" });
                 }
 
-                var userAd = Seguranca.ObterUsuario(accessRequest.UsernameSolicitante);
+                var usersInDb = await _context.Users.Include(u => u.Groups)
+                    .ToListAsync();
+                if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
 
-                var newGroup = new Group()
+                var userInDb =
+                    usersInDb.SingleOrDefault(u => u.Username == accessRequest.UsernameSolicitante.ToUpper());
+
+                if (accessRequest.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoAGrupos)
                 {
-                    Nome = userAd.Departamento,
-                };
+                    if (userInDb == null)
+                    {
+                        throw new ArgumentNullException(nameof(userInDb));
+                    }
 
-                _context.Groups.Add(newGroup);
-
-                var newUser = new User()
-                {
-                    Username = userAd.Login,
-                    OriginGroup = newGroup,
-                    IsComite = false,
-                    IsDPO = false,
-                    IsSystem = false,
-                    Groups = new List<Group>() { newGroup }
-                };
-
-                switch (accessRequest.TipoSolicitacaoAcesso)
-                {
-                    case TipoSolicitacaoAcesso.AcessoAGrupos:
-                        foreach (var accessRequestGroup in accessRequest.Groups)
+                    foreach (var accessRequestGroup in accessRequest.Groups)
+                    {
+                        userInDb.Groups.Add(accessRequestGroup);
+                        if (!GroupExists(accessRequestGroup.Id))
                         {
-                            newUser.Groups.Add(accessRequestGroup);
-                            if (!GroupExists(accessRequestGroup.Id))
-                            {
-                                _context.Groups.Add(accessRequestGroup);
-                            }
+                            _context.Groups.Add(accessRequestGroup);
                         }
+                    }
 
-                        newUser.GroupAccessExpirationDate = DateTime.Now.AddDays(30);
+                    if (!userInDb.IsComite)
+                    {
+                        userInDb.GroupAccessExpirationDate = DateTime.Now.AddDays(30);
+                    }
 
-                        break;
-                    case TipoSolicitacaoAcesso.AcessoComite:
+                    _context.Entry(userInDb)
+                        .State = EntityState.Modified;
+                    foreach (var @group in userInDb.Groups)
+                    {
+                        _context.Entry(group)
+                            .State = EntityState.Modified;
+                    }
+
+                    _context.AccessRequests.Remove(accessRequest);
+                    await _context.SaveChangesAsync();
+
+
+                    return Request.CreateResponse(HttpStatusCode.OK,
+                        new { message = "Requisição de Acesso a Grupos aprovada", userInDb });
+                }
+
+                if (userInDb == null)
+                {
+                    var userAd = Seguranca.ObterUsuario(accessRequest.UsernameSolicitante);
+
+                    var groupsInDb = await _context.Groups.ToListAsync();
+
+                    var userOriginGroup = groupsInDb.SingleOrDefault(g => g.Nome == userAd.Departamento);
+
+                    if (userOriginGroup == null)
+                    {
+                        userOriginGroup = new Group()
+                        {
+                            Nome = userAd.Departamento,
+                        };
+
+                        _context.Groups.Add(userOriginGroup);
+                    }
+
+                    var newUser = new User()
+                    {
+                        Username = userAd.Login,
+                        OriginGroup = userOriginGroup,
+                        IsComite = false,
+                        IsDPO = false,
+                        IsSystem = false,
+                        Groups = new List<Group>() { userOriginGroup }
+                    };
+
+                    if (accessRequest.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoComite)
                     {
                         newUser.IsComite = true;
                         newUser.GroupAccessExpirationDate = DateTime.MaxValue;
-                        break;
                     }
-                    case TipoSolicitacaoAcesso.AcessoAoSistema:
-                        break;
-                    default:
-                        Console.WriteLine($@"TipoSolicitacaoAcesso está fora do range no AR ${accessRequest.Id}");
-                        return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                            new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+
+                    _context.Users.Add(newUser);
+                    _context.AccessRequests.Remove(accessRequest);
+                    await _context.SaveChangesAsync();
+
+
+                    return Request.CreateResponse(HttpStatusCode.OK,
+                        new { message = "Requisição de Acesso aprovada", newUser });
                 }
 
-                _context.Users.Add(newUser);
+                if (accessRequest.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoComite)
+                {
+                    userInDb.IsComite = true;
+                    userInDb.GroupAccessExpirationDate = DateTime.MaxValue;
+
+                    _context.Entry(userInDb)
+                        .State = EntityState.Modified;
+                    _context.AccessRequests.Remove(accessRequest);
+                    await _context.SaveChangesAsync();
+
+                    return Request.CreateResponse(HttpStatusCode.OK,
+                        new { message = "Requisição de Acesso ao Comite LGPD aprovada", userInDb });
+                }
+
                 _context.AccessRequests.Remove(accessRequest);
                 await _context.SaveChangesAsync();
 
-
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Requisição de Acesso aprovada" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Usuário já tem acesso ao sistema", userInDb });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -535,7 +698,9 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                var userInDb = await _context.Users.SingleOrDefaultAsync(u => u.Username == newDpoUsername);
+                var usersInDb = await _context.Users.ToListAsync();
+                if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
+                var userInDb = usersInDb.SingleOrDefault(u => u.Username == newDpoUsername.ToUpper());
 
                 if (userInDb == null)
                 {
@@ -575,7 +740,148 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        [Route("add-comite-member")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> AddUserToComite([FromBody] string newComiteMemberUsername)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            if (newComiteMemberUsername == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest,
+                    new { message = "Nome de usuário do novo membro do Comitê LGPD é inválido" });
+            }
+
+            try
+            {
+                if (!Seguranca.ExisteUsuario(newComiteMemberUsername))
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new
+                    {
+                        message = "Usuário fornecido não existe. Verifique e tente novamente."
+                    });
+                }
+
+                var usersInDb = await _context.Users.ToListAsync();
+
+                var userInDb = usersInDb.SingleOrDefault(u => u.Username == newComiteMemberUsername.ToUpper());
+
+                if (userInDb == null)
+                {
+                    var userAd = Seguranca.ObterUsuario(newComiteMemberUsername);
+
+                    var groupInDb = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento);
+
+                    if (groupInDb == null)
+                    {
+                        var newGroup = new Group()
+                        {
+                            Nome = userAd.Departamento,
+                        };
+                        _context.Groups.Add(newGroup);
+                        groupInDb = newGroup;
+                    }
+
+                    var newUser = new User()
+                    {
+                        Username = userAd.Login,
+                        OriginGroup = groupInDb,
+                        IsComite = true,
+                    };
+                    _context.Users.Add(newUser);
+
+                    await _context.SaveChangesAsync();
+
+                    return Request.CreateResponse(HttpStatusCode.OK,
+                        new { message = "Usuario criado e adicionado ao Comitê LGPD com sucesso" });
+                }
+
+                userInDb.IsComite = true;
+
+                _context.Entry(userInDb)
+                    .State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Membro adicionado ao Comitê LGPD com sucesso" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        [Route("remove-comite-member/{uid:int}")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> RemoveUserFromComite(int uid)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                if (uid <= 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        new { message = "Id de usuário inválido" });
+                }
+
+                var userInDb = await _context.Users.FindAsync(uid);
+
+                if (userInDb == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
+                }
+
+                var userAd = Seguranca.ExisteUsuario(userInDb.Username);
+
+                if (!userAd)
+                {
+                    _context.Users.Remove(userInDb);
+                    await _context.SaveChangesAsync();
+
+                    return Request.CreateResponse(HttpStatusCode.OK,
+                        new { message = "Usuário não existia mais no AD, removido com sucesso da aplicação" });
+                }
+
+                userInDb.IsComite = false;
+                userInDb.IsDPO = false;
+                _context.Entry(userInDb)
+                    .State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Usuário removido com sucesso do Comitê LGPD" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 

@@ -7,7 +7,12 @@
             Value = value;
         }
 
-        public string Value { get; private set; }
+        public TipoFrequenciaTratamento()
+        {
+            Value = "";
+        }
+
+        public string Value { get; set; }
 
         public static TipoFrequenciaTratamento Total24por7() => new TipoFrequenciaTratamento("27/7");
 

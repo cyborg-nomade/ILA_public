@@ -5,34 +5,67 @@ import Nav from "react-bootstrap/Nav";
 import { AuthContext } from "./../../context/auth-context";
 
 const NavLinks = () => {
-  const authContext = useContext(AuthContext);
+  const { user, isLoggedIn, logout } = useContext(AuthContext);
 
   return (
     <React.Fragment>
-      {authContext.isLoggedIn && (
-        <Nav.Link as={NavLink} to="/">
+      {isLoggedIn && !user.isComite && (
+        <Nav.Link as={NavLink} to={`/${user.id}/`}>
           Página Inicial
         </Nav.Link>
       )}
-      {authContext.isLoggedIn && !authContext.isComite && (
-        <Nav.Link as={NavLink} to={`${authContext.userId}/cases/new`}>
+      {isLoggedIn && user.isComite && !user.isDPO && (
+        <Nav.Link as={NavLink} to={`/comite/`}>
+          Página Inicial
+        </Nav.Link>
+      )}
+      {isLoggedIn && user.isComite && user.isDPO && (
+        <Nav.Link as={NavLink} to={`/dpo/`}>
+          Página Inicial
+        </Nav.Link>
+      )}
+      {isLoggedIn && !user.isComite && (
+        <Nav.Link as={NavLink} to={`${user.id}/cases/`}>
+          Meus Processos
+        </Nav.Link>
+      )}
+      {isLoggedIn && user.isComite && !user.isDPO && (
+        <Nav.Link as={NavLink} to={`comite/cases/`}>
+          Meus Processos
+        </Nav.Link>
+      )}
+      {isLoggedIn && user.isComite && user.isDPO && (
+        <Nav.Link as={NavLink} to={`dpo/cases/`}>
+          Processos Pendentes
+        </Nav.Link>
+      )}
+      {isLoggedIn && !user.isComite && (
+        <Nav.Link as={NavLink} to={`${user.id}/cases/register/`}>
           Formulário
         </Nav.Link>
       )}
-      {authContext.isLoggedIn && authContext.isComite && (
-        <Nav.Link as={NavLink} to={`comite/cases/approve`}>
-          Aprovar Registros
+      {isLoggedIn && user.isComite && !user.isDPO && (
+        <Nav.Link as={NavLink} to={`comite/cases/approve/`}>
+          Aprovar Processos
         </Nav.Link>
       )}
-      {authContext.isLoggedIn && authContext.isComite && (
-        <Nav.Link as={NavLink} to={`/comite/access-requests/approve`}>
+      {isLoggedIn && user.isComite && !user.isDPO && (
+        <Nav.Link as={NavLink} to={`/comite/access-requests/approve/`}>
           Aprovar Requisições de Acesso
         </Nav.Link>
       )}
-      {authContext.isLoggedIn && (
-        <Nav.Link onClick={authContext.logout}>Sair</Nav.Link>
+      {isLoggedIn && user.isComite && user.isDPO && (
+        <Nav.Link as={NavLink} to={`/dpo/access-requests/approve/`}>
+          Aprovar Requisições de Acesso
+        </Nav.Link>
       )}
-      {!authContext.isLoggedIn && (
+      {isLoggedIn && user.isComite && user.isDPO && (
+        <Nav.Link as={NavLink} to={`/dpo/alter-comite-members`}>
+          Alterar Membros Comitê
+        </Nav.Link>
+      )}
+      {isLoggedIn && <Nav.Link onClick={logout}>Sair</Nav.Link>}
+      {!isLoggedIn && (
         <Nav.Link as={NavLink} to="/login">
           Login
         </Nav.Link>

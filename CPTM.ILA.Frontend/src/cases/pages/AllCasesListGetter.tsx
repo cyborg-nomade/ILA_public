@@ -3,10 +3,10 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { CaseListItem } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CasesList from "../components/CasesList";
+import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 
 const AllCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
@@ -29,7 +29,7 @@ const AllCasesListGetter = () => {
       console.log(loadedCases);
 
       const filteredCases = loadedCases.filter(
-        (c) => c.grupoCriador === currentGroup
+        (c) => c.grupoCriador === currentGroup.nome
       );
 
       setCases(filteredCases);
@@ -62,7 +62,7 @@ const AllCasesListGetter = () => {
           {error}
         </Alert>
       )}
-      <CasesList items={cases} />
+      <CasesList items={cases} redirect={false} />
     </React.Fragment>
   );
 };

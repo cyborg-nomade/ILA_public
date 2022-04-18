@@ -16,6 +16,7 @@ using CPTM.ILA.Web.Models.Messaging;
 using CPTM.ILA.Web.Util;
 using CPTM.GNU.Library;
 using CPTM.ILA.Web.Models.AccessControl;
+using CPTM.ILA.Web.Models.CaseHelpers;
 
 
 namespace CPTM.ILA.Web.Controllers.API
@@ -58,7 +59,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var cases = await _context.Cases.ToListAsync();
+                var cases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .ToListAsync();
 
                 var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
 
@@ -108,7 +110,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
 
 
-                var cases = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
+                var cases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.GrupoCriadorId == gid)
                     .ToListAsync();
 
                 var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
@@ -119,7 +122,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -155,20 +158,29 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
+                var userGroupIds = userGroups.Select(g => g.Id)
+                    .ToList();
 
-                var totals = await _context.Cases.Where(c => userGroups.Contains(c.GrupoCriador))
-                    .GroupBy(c => c.GrupoCriador)
+                var totals = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
+                    .GroupBy(c => c.GrupoCriadorId)
                     .Select(c => new GroupTotals()
                     {
-                        GroupId = c.First()
-                            .GrupoCriador.Id,
-                        GroupName = c.First()
-                            .GrupoCriador.Nome,
+                        GroupId = c.FirstOrDefault()
+                            .GrupoCriadorId,
+                        GroupName = "",
                         QuantityInGroup = c.Count()
                     })
                     .ToListAsync();
 
-                var totalQuantity = await _context.Cases.Where(c => userGroups.Contains(c.GrupoCriador))
+                foreach (var total in totals)
+                {
+                    total.GroupName = await GetGroupName(total.GroupId);
+                }
+
+                totals = totals.OrderBy(t => t.GroupName)
+                    .ToList();
+
+                var totalQuantity = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
                     .CountAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
@@ -217,16 +229,18 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 if (gid <= 0)
-                    Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+                }
 
-
-                var cases = await _context.Cases.Where(c =>
-                        c.GrupoCriador.Id == gid &&
-                        c.Aprovado == aprovado &&
-                        c.EncaminhadoAprovacao == encaminhadoAprovacao)
+                var groupCasesInDb = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.GrupoCriadorId == gid)
                     .ToListAsync();
+                var filteredCases = groupCasesInDb.Where(c => c.Aprovado == aprovado &&
+                                                              c.EncaminhadoAprovacao == encaminhadoAprovacao)
+                    .ToList();
 
-                var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+                var caseListItems = filteredCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
             }
@@ -234,7 +248,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -272,7 +286,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
 
-                var totals = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
+                var totals = await _context.Cases.Where(c => c.GrupoCriadorId == gid)
                     .GroupBy(c => new
                     {
                         c.Aprovado,
@@ -280,22 +294,22 @@ namespace CPTM.ILA.Web.Controllers.API
                     })
                     .Select(c => new StatusTotals()
                     {
-                        Nome = c.First()
+                        Nome = c.FirstOrDefault()
                             .Aprovado
                             ? "Concluído"
-                            : (c.First()
+                            : (c.FirstOrDefault()
                                 .EncaminhadoAprovacao
                                 ? "Pendente Aprovação"
                                 : "Em Preenchimento"),
-                        Aprovado = c.First()
+                        Aprovado = c.FirstOrDefault()
                             .Aprovado,
-                        EncaminhadoAprovacao = c.First()
+                        EncaminhadoAprovacao = c.FirstOrDefault()
                             .EncaminhadoAprovacao,
                         QuantidadeByStatus = c.Count(),
                     })
                     .ToListAsync();
 
-                var totalQuantity = await _context.Cases.Where(c => c.GrupoCriador.Id == gid)
+                var totalQuantity = await _context.Cases.Where(c => c.GrupoCriadorId == gid)
                     .CountAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
@@ -339,15 +353,22 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var comiteMember = await _context.Users.FindAsync(uid);
+                var comiteMember = await _context.Users.Where(u => u.Id == uid)
+                    .Include(u => u.Groups)
+                    .SingleOrDefaultAsync();
                 if (comiteMember == null)
                     return Request.CreateResponse(HttpStatusCode.NotFound, new
                     {
                         message = "Usuário não encontrado."
                     });
 
-                var pendingCases = await _context.Cases
-                    .Where(c => comiteMember.Groups.Contains(c.GrupoCriador) && !c.Aprovado)
+                var comiteMemberGroupsIds = comiteMember.Groups.Select(g => g.Id)
+                    .ToList();
+
+                var pendingCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId) &&
+                                !c.Aprovado &&
+                                c.EncaminhadoAprovacao)
                     .ToListAsync();
 
                 var caseListItems = pendingCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
@@ -389,6 +410,7 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var comiteMembers = await _context.Users.Where(u => u.IsComite)
+                    .Include(g => g.Groups)
                     .ToListAsync();
 
                 var totals = new List<ExtensaoEncarregadoTotals>();
@@ -396,8 +418,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 foreach (var comiteMember in comiteMembers)
                 {
+                    var comiteMemberGroupsIds = comiteMember.Groups.Select(g => g.Id)
+                        .ToList();
+
                     var pendingCases = await _context.Cases.CountAsync(c =>
-                        comiteMember.Groups.Contains(c.GrupoCriador) && !c.Aprovado);
+                        comiteMemberGroupsIds.Contains(c.GrupoCriadorId) && !c.Aprovado && c.EncaminhadoAprovacao);
 
 
                     totals.Add(new ExtensaoEncarregadoTotals()
@@ -417,7 +442,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -443,12 +468,58 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var uniqueCase = await _context.Cases.FindAsync(cid);
+                var uniqueCase = await _context.Cases.Where(c => c.Id == cid)
+                    .Include(c => c.Controlador)
+                    .Include(c => c.Encarregado)
+                    .Include(c => c.ExtensaoEncarregado)
+                    .Include(c => c.AreaTratamentoDados)
+                    .Include(c => c.Operador)
+                    .Include(c => c.FasesCicloTratamento)
+                    .Include(c => c.FinalidadeTratamento)
+                    .Include(c => c.CategoriaDadosPessoais)
+                    .Include(c => c.CategoriaDadosPessoais.Associacoes)
+                    .Include(c => c.CategoriaDadosPessoais.Caracteristicas)
+                    .Include(c => c.CategoriaDadosPessoais.CaracteristicasPsicologicas)
+                    .Include(c => c.CategoriaDadosPessoais.ComposicaoFamiliar)
+                    .Include(c => c.CategoriaDadosPessoais.EducacaoTreinamento)
+                    .Include(c => c.CategoriaDadosPessoais.Financeiros)
+                    .Include(c => c.CategoriaDadosPessoais.Habitos)
+                    .Include(c => c.CategoriaDadosPessoais.HabitosConsumo)
+                    .Include(c => c.CategoriaDadosPessoais.Identificacao)
+                    .Include(c => c.CategoriaDadosPessoais.InteressesLazer)
+                    .Include(c => c.CategoriaDadosPessoais.Outros)
+                    .Include(c => c.CategoriaDadosPessoais.ProcessoJudAdmCrim)
+                    .Include(c => c.CategoriaDadosPessoais.ProfissaoEmprego)
+                    .Include(c => c.CategoriaDadosPessoais.RegVideoImgVoz)
+                    .Include(c => c.CategoriaDadosPessoais.Residenciais)
+                    .Include(c => c.CatDadosPessoaisSensiveis)
+                    .Include(c => c.CatDadosPessoaisSensiveis.OpiniaoPolitica)
+                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica)
+                    .Include(c => c.CatDadosPessoaisSensiveis.ConviccaoReligiosa)
+                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoPreferenciaPolitica)
+                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoSindicato)
+                    .Include(c => c.CatDadosPessoaisSensiveis.Geneticos)
+                    .Include(c => c.CatDadosPessoaisSensiveis.OrigemRacialEtnica)
+                    .Include(c => c.CatDadosPessoaisSensiveis.SaudeVidaSexual)
+                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoOrgReligiosa)
+                    .Include(c => c.CatDadosPessoaisSensiveis.Biometricos)
+                    .Include(c => c.CategoriasTitulares)
+                    .Include(c => c.CategoriasTitulares.Categorias)
+                    .Include(c => c.CategoriasTitulares.CriancasAdolescentes)
+                    .Include(c => c.CategoriasTitulares.OutrosGruposVulneraveis)
+                    .Include(c => c.CompartilhamentoDadosPessoais)
+                    .Include(c => c.MedidasSegurancaPrivacidade)
+                    .Include(c => c.TransferenciaInternacional)
+                    .Include(c => c.ContratoServicosTi)
+                    .Include(c => c.RiscosPrivacidade)
+                    .Include(c => c.ObservacoesProcesso)
+                    .SingleOrDefaultAsync();
 
                 if (uniqueCase == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
+
 
                 if (User.Identity is ClaimsIdentity identity)
                 {
@@ -458,9 +529,12 @@ namespace CPTM.ILA.Web.Controllers.API
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
 
-                    var caseGroup = uniqueCase.GrupoCriador;
+                    var userGroupsId = userGroups.Select(g => g.Id)
+                        .ToList();
 
-                    if (!(userGroups.Contains(caseGroup) || claims.IsDpo || claims.IsDeveloper))
+                    var caseGroupId = uniqueCase.GrupoCriadorId;
+
+                    if (!(userGroupsId.Contains(caseGroupId) || claims.IsDpo || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -499,7 +573,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var caseGroup = caseChange.Case.GrupoCriador;
+                    var caseGroup = await _context.Groups.FindAsync(caseChange.Case.GrupoCriadorId);
 
                     if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
                     {
@@ -520,16 +594,20 @@ namespace CPTM.ILA.Web.Controllers.API
                 caseToSave.RectifyCase();
 
                 _context.Cases.Add(caseToSave);
+                await _context.SaveChangesAsync();
+
+                newChangeLog.CaseId = caseToSave.Id;
                 _context.ChangeLogs.Add(newChangeLog);
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso registrado com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Caso registrado com sucesso!", caseToSave });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -556,10 +634,14 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var caseGroup = caseChange.Case.GrupoCriador;
+
+                    var userGroupsId = userGroups.Select(g => g.Id)
+                        .ToList();
+
+                    var caseGroupId = caseChange.Case.GrupoCriadorId;
 
 
-                    if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
+                    if (!(userGroupsId.Contains(caseGroupId) && !claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -584,6 +666,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 var caseInDb = await _context.Cases.FindAsync(cid);
+
                 if (caseInDb == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
@@ -595,18 +678,19 @@ namespace CPTM.ILA.Web.Controllers.API
                 caseToSave.RectifyCase();
 
                 _context.ChangeLogs.Add(newChangeLog);
-                _context.Entry(caseToSave)
-                    .State = EntityState.Modified;
+                _context.Cases.Remove(caseInDb);
+                _context.Cases.Add(caseToSave);
 
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso registrado com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Caso registrado com sucesso!", caseToSave });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -618,9 +702,9 @@ namespace CPTM.ILA.Web.Controllers.API
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
         /// </returns>
-        [Route("{cid:int}")]
+        [Route("delete/{cid:int}")]
         [Authorize]
-        [HttpDelete]
+        [HttpPost]
         public async Task<HttpResponseMessage> Delete(int cid)
         {
             if (cid <= 0)
@@ -645,11 +729,15 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var caseGroup = caseToDelete.GrupoCriador;
+
+                    var userGroupsId = userGroups.Select(g => g.Id)
+                        .ToList();
+
+                    var caseGroupId = caseToDelete.GrupoCriadorId;
 
                     userDeleting = await _context.Users.FindAsync(claims.UserId);
 
-                    if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
+                    if (!(userGroupsId.Contains(caseGroupId) && !claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -658,17 +746,14 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var deleteChangeLog = new ChangeLog()
                 {
-                    Case = caseToDelete,
+                    CaseId = caseToDelete.Id,
                     ChangeDate = DateTime.Now,
-                    User = userDeleting,
-                    Items = new List<ItemIdentity>()
-                    {
-                        new ItemIdentity()
+                    UserId = userDeleting.Id,
+                    CaseDiff = @"
                         {
-                            Name = "Remoção",
-                            Identifier = "0.0.2"
-                        }
-                    }
+                            Name = ""Remoção"",
+                            Identifier = ""0.0.2""
+                        }"
                 };
 
                 _context.ChangeLogs.Add(deleteChangeLog);
@@ -724,10 +809,12 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var caseGroup = caseToApprove.GrupoCriador;
+                    var userGroupsId = userGroups.Select(g => g.Id)
+                        .ToList();
+                    var caseGroupId = caseToApprove.GrupoCriadorId;
 
 
-                    if (!(claims.IsComite && userGroups.Contains(caseGroup) || claims.IsDpo || claims.IsDeveloper))
+                    if (!(claims.IsComite && userGroupsId.Contains(caseGroupId) || claims.IsDpo || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -736,9 +823,9 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var changeLog = new ChangeLog()
                 {
-                    Case = caseToApprove,
+                    CaseId = caseToApprove.Id,
                     ChangeDate = DateTime.Now,
-                    User = await _context.Users.FindAsync(userId),
+                    UserId = userId,
                 };
 
 
@@ -746,13 +833,10 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     caseToApprove.ReproveCase();
 
-                    changeLog.Items = new List<ItemIdentity>()
-                    {
-                        new ItemIdentity()
+                    changeLog.CaseDiff = @"
                         {
-                            Identifier = "0.0", Name = "Reprovação"
-                        }
-                    };
+                            Identifier = ""0.0"", Name = ""Reprovação""
+                        }";
 
                     _context.ChangeLogs.Add(changeLog);
                     _context.Entry(caseToApprove)
@@ -764,13 +848,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 caseToApprove.ApproveCase();
 
-                changeLog.Items = new List<ItemIdentity>()
-                {
-                    new ItemIdentity()
+                changeLog.CaseDiff = @"
                     {
-                        Identifier = "0.1", Name = "Aprovado"
+                        Identifier = ""0.1"", Name = ""Aprovado""
                     }
-                };
+                ";
 
                 _context.ChangeLogs.Add(changeLog);
                 _context.Entry(caseToApprove)
@@ -807,7 +889,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var caseToRequestApproval = await _context.Cases.FindAsync(cid);
+                var caseToRequestApproval = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .SingleOrDefaultAsync(c => c.Id == cid);
 
                 if (caseToRequestApproval == null)
                 {
@@ -825,29 +908,38 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var caseGroup = caseToRequestApproval.GrupoCriador;
+                    var userGroupsId = userGroups.Select(g => g.Id)
+                        .ToList();
+                    var caseGroupId = caseToRequestApproval.GrupoCriadorId;
 
-                    if (!(userGroups.Contains(caseGroup) && !claims.IsComite || claims.IsDeveloper))
+                    if (!(userGroupsId.Contains(caseGroupId) && !claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
                     }
                 }
 
-                caseToRequestApproval.SendCaseToApproval();
+                var usuarioCriador = await _context.Users.FindAsync(caseToRequestApproval.UsuarioCriadorId);
+                if (usuarioCriador == null)
+                {
+                    throw new ArgumentNullException(nameof(usuarioCriador));
+                }
+
+                var userEmailId = _context.ILA_VW_USUARIO.Where(u => u.TX_USERNAME == usuarioCriador.Username)
+                    .Select(u => u.ID_CODUSUARIO)
+                    .SingleOrDefault();
+
+                caseToRequestApproval.SendCaseToApproval(usuarioCriador.Username, userEmailId);
 
                 var changeLog = new ChangeLog()
                 {
-                    Case = caseToRequestApproval,
+                    CaseId = caseToRequestApproval.Id,
                     ChangeDate = DateTime.Now,
-                    User = await _context.Users.FindAsync(userId),
-                    Items = new List<ItemIdentity>()
-                    {
-                        new ItemIdentity()
+                    UserId = userId,
+                    CaseDiff = @"
                         {
-                            Identifier = "0.0.1", Name = "Encaminhado para aprovação"
-                        }
-                    }
+                            Identifier = ""0.0.1"", Name = ""Encaminhado para aprovação""
+                        }"
                 };
 
                 _context.ChangeLogs.Add(changeLog);
@@ -855,13 +947,14 @@ namespace CPTM.ILA.Web.Controllers.API
                     .State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Caso enviado para aprovação com sucesso!" });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -874,6 +967,12 @@ namespace CPTM.ILA.Web.Controllers.API
             }
 
             base.Dispose(disposing);
+        }
+
+        private async Task<string> GetGroupName(int gid)
+        {
+            var groupInDb = await _context.Groups.FindAsync(gid);
+            return (groupInDb != null) ? groupInDb.Nome : "";
         }
     }
 }

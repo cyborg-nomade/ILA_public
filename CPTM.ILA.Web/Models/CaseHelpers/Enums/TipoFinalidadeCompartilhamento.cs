@@ -7,7 +7,12 @@
             Value = value;
         }
 
-        public string Value { get; private set; }
+        public TipoFinalidadeCompartilhamento()
+        {
+            Value = "";
+        }
+
+        public string Value { get; set; }
 
         public static TipoFinalidadeCompartilhamento ExecuçãoDescentralizadaAtividadePublica() =>
             new TipoFinalidadeCompartilhamento(

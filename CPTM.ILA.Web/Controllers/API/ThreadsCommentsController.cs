@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -106,7 +105,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
                 }
 
-                var threads = await _context.Threads.Where(t => t.AuthorGroup.Id == gid)
+                var threads = await _context.Threads.Where(t => t.GroupId == gid)
                     .ToListAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { threads });
@@ -216,15 +215,15 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                var totals = await _context.Threads.Where(t => t.AuthorGroup.Id == gid)
+                var totals = await _context.Threads.Where(t => t.GroupId == gid)
                     .GroupBy(t => isComite ? t.ComiteStatus : t.AuthorStatus)
                     .Select(g => new ThreadStatusTotals()
                     {
                         QuantityInStatus = g.Count(),
                         Status = isComite
-                            ? g.First()
+                            ? g.FirstOrDefault()
                                 .ComiteStatus
-                            : g.First()
+                            : g.FirstOrDefault()
                                 .AuthorStatus,
                     })
                     .ToListAsync();
@@ -235,7 +234,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -274,9 +273,11 @@ namespace CPTM.ILA.Web.Controllers.API
                 var userGroups = await _context.Users.Where(u => u.Id == uid)
                     .SelectMany(u => u.Groups)
                     .ToListAsync();
+                var userGroupsId = userGroups.Select(g => g.Id)
+                    .ToList();
 
                 var threads = await _context.Threads
-                    .Where(t => userGroups.Contains(t.AuthorGroup) && t.ComiteStatus == sid)
+                    .Where(t => userGroupsId.Contains(t.GroupId) && t.ComiteStatus == sid)
                     .ToListAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { threads });
@@ -324,7 +325,10 @@ namespace CPTM.ILA.Web.Controllers.API
                     .SelectMany(u => u.Groups)
                     .ToListAsync();
 
-                var totals = await _context.Threads.Where(t => userGroups.Contains(t.AuthorGroup))
+                var userGroupsId = userGroups.Select(g => g.Id)
+                    .ToList();
+
+                var totals = await _context.Threads.Where(t => userGroupsId.Contains(t.GroupId))
                     .GroupBy(t => t.ComiteStatus)
                     .Select(g => new ThreadStatusTotals()
                     {
@@ -380,7 +384,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
 
-                    var threadGroup = thread.AuthorGroup;
+                    var threadGroup = await _context.Groups.FindAsync(thread.GroupId);
 
                     if (!(userGroups.Contains(threadGroup) || claims.IsDpo || claims.IsDeveloper))
                     {
@@ -411,7 +415,7 @@ namespace CPTM.ILA.Web.Controllers.API
         [Route("comments/{tid:int}")]
         [Authorize]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetCommentsinThread(int tid)
+        public async Task<HttpResponseMessage> GetCommentsInThread(int tid)
         {
             if (tid <= 0)
             {
@@ -434,7 +438,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var threadGroup = thread.AuthorGroup;
+                    var threadGroup = await _context.Groups.FindAsync(thread.GroupId);
 
                     if (!(userGroups.Contains(threadGroup) || claims.IsDeveloper || claims.IsDpo))
                     {
@@ -443,7 +447,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                var comments = await _context.Comments.Where(c => c.Thread == thread)
+                var comments = await _context.Comments.Where(c => c.ThreadId == thread.Id)
                     .ToListAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { comments });
@@ -469,13 +473,10 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> Post([FromBody] CommentDTO commentDto)
         {
-            var groupId = 0;
-
             if (User.Identity is ClaimsIdentity identity)
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                groupId = claims.GroupId;
 
                 if (claims.IsComite)
                 {
@@ -491,7 +492,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                if (ThreadExists(commentDto.Thread.Id))
+                if (commentDto.Thread != null && ThreadExists(commentDto.Thread.Id))
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new
                     {
@@ -502,7 +503,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var comment = new Comment()
                 {
-                    Author = commentDto.Author,
+                    UserId = commentDto.Author.Id,
                     DataCriacao = DateTime.Now,
                     RefItem = commentDto.RefItem,
                     Text = commentDto.Text
@@ -510,16 +511,15 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var thread = new Thread
                 {
-                    AuthorGroup = await _context.Groups.FindAsync(groupId),
+                    GroupId = commentDto.GroupId,
                     AuthorStatus = ThreadStatus.Pendente,
-                    ComiteStatus = ThreadStatus.Novo,
-                    Comments = new List<Comment>() { comment }
+                    ComiteStatus = ThreadStatus.Novo
                 };
 
                 _context.Threads.Add(thread);
                 await _context.SaveChangesAsync();
 
-                comment.Thread = thread;
+                comment.ThreadId = thread.Id;
 
                 _context.Comments.Add(comment);
                 await _context.SaveChangesAsync();
@@ -579,7 +579,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.Groups)
                         .ToListAsync();
-                    var threadGroup = thread.AuthorGroup;
+                    var threadGroup = await _context.Groups.FindAsync(thread.GroupId);
 
                     if (!(userGroups.Contains(threadGroup) || claims.IsDpo || claims.IsDeveloper))
                     {
@@ -605,11 +605,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var comment = new Comment()
                 {
-                    Author = commentDto.Author,
+                    UserId = commentDto.Author.Id,
                     DataCriacao = DateTime.Now,
                     RefItem = commentDto.RefItem,
                     Text = commentDto.Text,
-                    Thread = commentDto.Thread
+                    ThreadId = commentDto.Thread.Id
                 };
 
                 _context.Comments.Add(comment);
@@ -617,6 +617,74 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 return Request.CreateResponse(HttpStatusCode.OK,
                     new { message = "Comentário registrado com sucesso!" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+            }
+        }
+
+        /// <summary>
+        /// Registra a leitura de uma Thread existente.
+        /// Endpoint disponibilizado para o DPO e membros do grupo autor.
+        /// </summary>
+        /// <param name="tid">Id da thread</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro da leitura, ou indicando o erro ocorrido
+        /// </returns>
+        [Route("reply/{tid:int}")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> ReadThread(int tid)
+        {
+            if (tid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+            }
+
+            try
+            {
+                var thread = await _context.Threads.FindAsync(tid);
+
+                if (thread == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+
+                var isComite = false;
+
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    isComite = claims.IsComite;
+
+                    var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                        .SelectMany(u => u.Groups)
+                        .ToListAsync();
+                    var threadGroup = await _context.Groups.FindAsync(thread.GroupId);
+
+                    if (!(userGroups.Contains(threadGroup) || claims.IsDpo || claims.IsDeveloper))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+                if (isComite)
+                {
+                    thread.ReadReplyComite();
+                }
+                else
+                {
+                    thread.ReadReplyAuthor();
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Leitura registrada com sucesso!" });
             }
             catch (Exception e)
             {

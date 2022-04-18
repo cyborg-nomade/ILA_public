@@ -11,11 +11,13 @@ import Table from "react-bootstrap/Table";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
 
 import {
   AccessRequest,
   headersAccessRequestsList,
-} from "../../shared/models/access-request.model";
+} from "../../shared/models/access-control/access-request.model";
+import { AccessRequestDTO } from "../../shared/models/DTOs/access-request-dto.model";
 
 const headers: {
   title: string;
@@ -44,7 +46,7 @@ const headers: {
   },
 ];
 
-const AccessRequestsList = (props: { items: AccessRequest[] }) => {
+const AccessRequestsList = (props: { items: AccessRequestDTO[] }) => {
   let navigate = useNavigate();
 
   if (props.items.length === 0) {
@@ -64,54 +66,56 @@ const AccessRequestsList = (props: { items: AccessRequest[] }) => {
   };
 
   return (
-    <DatatableWrapper
-      body={props.items}
-      headers={headers}
-      paginationOptionsProps={{
-        initialState: {
-          rowsPerPage: 10,
-          options: [5, 10, 15, 20],
-        },
-      }}
-    >
-      <Row className="mb-4">
-        <Col
-          xs={12}
-          lg={4}
-          className="d-flex flex-col justify-content-end align-items-end"
-        >
-          <Filter placeholder="Entre sua busca" />
-        </Col>
-        <Col
-          xs={12}
-          sm={6}
-          lg={4}
-          className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0 my-auto"
-        >
-          <PaginationOpts labels={{ beforeSelect: "Linhas por página" }} />
-        </Col>
-        <Col
-          xs={12}
-          md={2}
-          sm={6}
-          lg={4}
-          className="d-flex flex-col justify-content-end align-items-end"
-        >
-          <Pagination
-            labels={{
-              firstPage: "Primeira",
-              lastPage: "Última",
-              nextPage: "Próxima",
-              prevPage: "Anterior",
-            }}
-          />
-        </Col>
-      </Row>
-      <Table>
-        <TableHeader tableHeaders={headers} />
-        <TableBody onRowClick={handleRowClick} />
-      </Table>
-    </DatatableWrapper>
+    <Card>
+      <DatatableWrapper
+        body={props.items}
+        headers={headers}
+        paginationOptionsProps={{
+          initialState: {
+            rowsPerPage: 10,
+            options: [5, 10, 15, 20],
+          },
+        }}
+      >
+        <Row className="mb-4">
+          <Col
+            xs={12}
+            lg={4}
+            className="d-flex flex-col justify-content-end align-items-end"
+          >
+            <Filter placeholder="Entre sua busca" />
+          </Col>
+          <Col
+            xs={12}
+            sm={6}
+            lg={4}
+            className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0 my-auto"
+          >
+            <PaginationOpts labels={{ beforeSelect: "Linhas por página" }} />
+          </Col>
+          <Col
+            xs={12}
+            md={2}
+            sm={6}
+            lg={4}
+            className="d-flex flex-col justify-content-end align-items-end"
+          >
+            <Pagination
+              labels={{
+                firstPage: "Primeira",
+                lastPage: "Última",
+                nextPage: "Próxima",
+                prevPage: "Anterior",
+              }}
+            />
+          </Col>
+        </Row>
+        <Table>
+          <TableHeader tableHeaders={headers} />
+          <TableBody onRowClick={handleRowClick} />
+        </Table>
+      </DatatableWrapper>
+    </Card>
   );
 };
 

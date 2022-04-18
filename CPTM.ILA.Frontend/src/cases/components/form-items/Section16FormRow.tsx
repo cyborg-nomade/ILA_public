@@ -50,6 +50,7 @@ const Section16FormRow = (props: {
           isInvalid={!!getIn(errors, `${props.name}.descricaoObs`)}
         />
       </Col>
+      <Col lg={1}></Col>
     </Row>
   );
 };

@@ -7,18 +7,18 @@ namespace CPTM.ILA.Web.Models.CaseHelpers
     public class CatDadosPessoaisSensiveis
     {
         public int Id { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> OrigemRacialEtnica { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> ConviccaoReligiosa { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> OpiniaoPolitica { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> FiliacaoSindicato { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> OrigemRacialEtnica { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> ConviccaoReligiosa { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> OpiniaoPolitica { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> FiliacaoSindicato { get; set; }
 
 
-        public ICollection<ItemCategoriaDadosPessoais> FiliacaoOrgReligiosa { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> FiliacaoOrgReligiosa { get; set; }
 
-        public ICollection<ItemCategoriaDadosPessoais> FiliacaoCrencaFilosofica { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> FiliacaoPreferenciaPolitica { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> SaudeVidaSexual { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> Geneticos { get; set; }
-        public ICollection<ItemCategoriaDadosPessoais> Biometricos { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> FiliacaoCrencaFilosofica { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> FiliacaoPreferenciaPolitica { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> SaudeVidaSexual { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Geneticos { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoais> Biometricos { get; set; }
     }
 }

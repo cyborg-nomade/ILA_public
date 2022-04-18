@@ -1,49 +1,61 @@
 import { useCallback, useEffect, useState } from "react";
+import { Group } from "../models/access-control/group.model";
+import { emptyGroup } from "./../models/access-control/group.model";
+import {
+  AgenteTratamento,
+  emptyAgenteTratamento,
+} from "../models/case-helpers/case-helpers.model";
+import { emptyUser, User } from "../models/access-control/users.model";
+import { ComiteMember, emptyComiteMember } from "../models/DTOs/comite-member";
 
 let logoutTimer: NodeJS.Timeout;
 
 interface storageObject {
+  user: User;
+  isDeveloper: boolean;
   token: string;
-  uid: string;
-  username: string;
-  isComite: boolean;
-  currentGroup: string;
-  expirationDate: string;
+  tokenExpirationDate: string;
+  currentGroup: Group;
+  areaTratamentoDados: AgenteTratamento;
 }
 
 export const useAuth = () => {
+  const [user, setUser] = useState<User>(emptyUser());
+  const [isDeveloper, setIsDeveloper] = useState(false);
   const [token, setToken] = useState("");
-  const [isComite, setIsComite] = useState(false);
-  const [userId, setUserId] = useState("");
-  const [username, setUsername] = useState("");
   const [tokenExpirationDate, setTokenExpirationDate] = useState<Date>();
-  const [currentGroup, setCurrentGroup] = useState("");
+  const [currentGroup, setCurrentGroup] = useState<Group>(emptyGroup());
+  const [currentComiteMember, setCurrentComiteMember] = useState<ComiteMember>(
+    emptyComiteMember()
+  );
+  const [areaTratamentoDados, setAreaTratamentoDados] =
+    useState<AgenteTratamento>(emptyAgenteTratamento());
 
   const login = useCallback(
     (
-      uid: string,
-      username: string,
-      ic: boolean,
+      user: User,
+      isDeveloper: boolean,
       token: string,
-      currentGroup: string,
-      expirationDate?: Date
+      currentGroup: Group,
+      areaTratamentoDados: AgenteTratamento,
+      tokenExpirationDate?: Date
     ) => {
+      setUser(user);
+      setIsDeveloper(isDeveloper);
       setToken(token);
-      setUserId(uid);
-      setIsComite(ic);
-      setUsername(username);
       setCurrentGroup(currentGroup);
+      setAreaTratamentoDados(areaTratamentoDados);
       const expDate =
-        expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
+        tokenExpirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
       setTokenExpirationDate(expDate);
 
       const userToStore: storageObject = {
-        token,
-        uid,
-        username,
-        isComite: ic,
+        user,
+        isDeveloper,
         currentGroup,
-        expirationDate: expDate.toISOString(),
+        areaTratamentoDados,
+        token,
+        tokenExpirationDate: expDate.toISOString(),
       };
 
       localStorage.setItem("userData", JSON.stringify(userToStore));
@@ -53,15 +65,20 @@ export const useAuth = () => {
 
   const logout = useCallback(() => {
     setToken("");
-    setIsComite(false);
-    setUserId("");
-    setUsername("");
-    setCurrentGroup("");
+    setIsDeveloper(false);
+    setUser(emptyUser());
+    setCurrentGroup(emptyGroup());
+    setCurrentComiteMember(emptyComiteMember());
+    setAreaTratamentoDados(emptyAgenteTratamento());
     localStorage.removeItem("userData");
   }, []);
 
-  const changeGroup = (g: string) => {
+  const changeGroup = (g: Group) => {
     setCurrentGroup(g);
+  };
+
+  const changeComiteMember = (cm: ComiteMember) => {
+    setCurrentComiteMember(cm);
   };
 
   //handle token expiration & auto-logout
@@ -73,7 +90,9 @@ export const useAuth = () => {
     } else {
       clearTimeout(logoutTimer);
     }
-    return () => {};
+    return () => {
+      clearTimeout(logoutTimer);
+    };
   }, [token, logout, tokenExpirationDate]);
 
   // auto-login
@@ -83,7 +102,7 @@ export const useAuth = () => {
       ? JSON.parse(userData)
       : null;
     const storedExpirationDate = userDataObject
-      ? new Date(userDataObject.expirationDate)
+      ? new Date(userDataObject.tokenExpirationDate)
       : undefined;
     if (
       userDataObject &&
@@ -92,24 +111,26 @@ export const useAuth = () => {
       storedExpirationDate > new Date()
     ) {
       login(
-        userDataObject.uid,
-        userDataObject.username,
-        userDataObject.isComite,
+        userDataObject.user,
+        userDataObject.isDeveloper,
         userDataObject.token,
         userDataObject.currentGroup,
+        userDataObject.areaTratamentoDados,
         storedExpirationDate
       );
     }
   }, [login]);
 
   return {
+    user,
+    isDeveloper,
     token,
+    currentGroup,
+    currentComiteMember,
+    areaTratamentoDados,
     login,
     logout,
-    userId,
-    username,
-    isComite,
-    currentGroup,
     changeGroup,
+    changeComiteMember,
   };
 };

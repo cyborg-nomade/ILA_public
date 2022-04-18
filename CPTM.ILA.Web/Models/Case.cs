@@ -20,8 +20,8 @@ namespace CPTM.ILA.Web.Models
         public string Area { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public Group GrupoCriador { get; set; }
-        public User UsuarioCriador { get; set; }
+        public int GrupoCriadorId { get; set; }
+        public int UsuarioCriadorId { get; set; }
         public bool Aprovado { get; set; }
         public bool EncaminhadoAprovacao { get; set; }
         public bool DadosPessoaisSensiveis { get; set; }
@@ -54,21 +54,19 @@ namespace CPTM.ILA.Web.Models
         public ICollection<ItemRiscoPrivacidade> RiscosPrivacidade { get; set; }
         public ICollection<ItemObservacoesProcesso> ObservacoesProcesso { get; set; }
 
-        public static CaseListItem ReduceToListItem(Case fullCase)
-        {
-            return new CaseListItem()
+        public static CaseListItem ReduceToListItem(Case fullCase) =>
+            new CaseListItem()
             {
                 Area = fullCase.Area,
                 DadosPessoaisSensiveis = fullCase.DadosPessoaisSensiveis ? "SIM" : "NÃO",
                 DataAtualizacao = fullCase.DataAtualizacao.ToString("d", CultureInfo.GetCultureInfo("pt-BR")),
                 DataCriacao = fullCase.DataAtualizacao.ToString("d", CultureInfo.GetCultureInfo("pt-BR")),
                 DescricaoFinalidade = fullCase.FinalidadeTratamento.DescricaoFinalidade,
-                HipotesesTratamento = fullCase.FinalidadeTratamento.HipoteseTratamento,
+                HipotesesTratamento = fullCase.FinalidadeTratamento.HipoteseTratamento.Value,
                 Id = fullCase.Id,
                 Nome = fullCase.Nome,
-                GrupoCriador = fullCase.GrupoCriador.Nome
+                GrupoCriadorId = fullCase.GrupoCriadorId
             };
-        }
 
         public Case FillStandardValues()
         {
@@ -81,11 +79,8 @@ namespace CPTM.ILA.Web.Models
                 Nome = "Olivia Shibata Nishiyama", Area = "Encarregado de Dados (DPO)",
                 Telefone = "+ 55 11 3117 – 7001", Email = "encarregado.dados@cptm.sp.gov.br"
             };
-            FinalidadeTratamento = new FinalidadeTratamento()
-            {
-                DescricaoFinalidade =
-                    "Atendimento de finalidade pública, na persecução do interesse público, com o objetivo de executar as competências legais ou cumprir as atribuições legais do serviço público."
-            };
+            FinalidadeTratamento.DescricaoFinalidade =
+                "Atendimento de finalidade pública, na persecução do interesse público, com o objetivo de executar as competências legais ou cumprir as atribuições legais do serviço público.";
             return this;
         }
 
@@ -102,9 +97,11 @@ namespace CPTM.ILA.Web.Models
                 itemTransferenciaInternacional.Rectify();
             }
 
-            if (FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.ObrigacaoLegal)
+            if (FinalidadeTratamento.HipoteseTratamento.Value !=
+                HipotesesTratamento.ObrigacaoLegal()
+                    .Value)
             {
-                FinalidadeTratamento.PrevisaoLegal = null;
+                FinalidadeTratamento.PrevisaoLegal = "";
             }
 
             return this;
@@ -123,21 +120,26 @@ namespace CPTM.ILA.Web.Models
             return this;
         }
 
-        public Case SendCaseToApproval()
+        public Case SendCaseToApproval(string usernameCriador, int idUsuario)
         {
             EncaminhadoAprovacao = true;
 
-            if (FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.Consentimento &&
-                FinalidadeTratamento.HipoteseTratamento != HipotesesTratamento.InteressesLegitimosControlador)
+            if (FinalidadeTratamento.HipoteseTratamento.Value !=
+                HipotesesTratamento.Consentimento()
+                    .Value &&
+                FinalidadeTratamento.HipoteseTratamento.Value !=
+                HipotesesTratamento.InteressesLegitimosControlador()
+                    .Value)
                 return this;
-            var userAd = Seguranca.ObterUsuario(UsuarioCriador.Username);
+            var userAd = Seguranca.ObterUsuario(usernameCriador);
             var assunto = $"Processo LGPD {Nome} - ID {Id}";
             var mensagem =
                 $@"O processo {Nome} acabou de ser enviado para aprovação pelo Comitê LGPD, e sua Hipótese de Tratamento foi declarada como {FinalidadeTratamento.HipoteseTratamento}";
             var erro = "Algo deu errado no envio do e-mail. Contate o suporte técnico";
             //send email
-            Email.Enviar("ILA", userAd.Nome, userAd.Email, new List<string>() { "uriel.fiori@cptm.sp.gov.br" }, assunto,
-                mensagem, DateTime.Now, 1, ref erro);
+            var enviado = Email.Enviar("ILA", userAd.Nome, userAd.Email,
+                new List<string>() { "uriel.fiori@cptm.sp.gov.br" }, assunto, mensagem, DateTime.Now, idUsuario,
+                ref erro);
 
             return this;
         }

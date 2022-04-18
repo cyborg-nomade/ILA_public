@@ -11,9 +11,9 @@ namespace CPTM.ILA.Web.Models.Messaging
     {
         public int Id { get; set; }
         [MaxLength(250)] public string Text { get; set; }
-        public User Author { get; set; }
-        public Thread Thread { get; set; }
+        public int UserId { get; set; }
+        public int ThreadId { get; set; }
         public DateTime DataCriacao { get; set; }
-        public ItemIdentity RefItem { get; set; }
+        public string RefItem { get; set; }
     }
 }

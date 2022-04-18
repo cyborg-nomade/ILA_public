@@ -7,7 +7,12 @@
             Value = value;
         }
 
-        public string Value { get; private set; }
+        public TipoTempoRetencao()
+        {
+            Value = "";
+        }
+
+        public string Value { get; set; }
 
         public static TipoTempoRetencao Ano1() => new TipoTempoRetencao("1 ano");
         public static TipoTempoRetencao Ano5() => new TipoTempoRetencao("5 anos");

@@ -10,32 +10,31 @@ import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
-import { BaseUser, User } from "./../../shared/models/users.model";
+import { User } from "./../../shared/models/access-control/users.model";
+import { AuthUser } from "../../shared/models/DTOs/auth-user.model";
 import { AuthContext } from "./../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
-import { groups } from "../../access-requests/components/GroupSelector";
+import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
+import { ComiteMember } from "../../shared/models/DTOs/comite-member";
 
 const schema = yup.object().shape({
   username: yup.string().required(),
-  password: yup
-    .string()
-    .required()
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/),
+  password: yup.string().required(),
 });
 
-const initialValues: BaseUser = {
+const initialValues: AuthUser = {
   username: "",
   password: "",
 };
 
 const Login = () => {
-  const authContext = useContext(AuthContext);
+  const { login, user, changeComiteMember } = useContext(AuthContext);
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   let navigate = useNavigate();
 
-  const submitLoginHandler = async (user: BaseUser) => {
+  const submitLoginHandler = async (user: AuthUser) => {
     try {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/users/login`,
@@ -47,17 +46,35 @@ const Login = () => {
       );
 
       const receivedUser: User = responseData.user;
+      const receivedAreaTratamentoDados: AgenteTratamento =
+        responseData.areaTratamentoDados;
+      const isDeveloper = responseData.isDeveloper;
       console.log(receivedUser);
 
-      authContext.login(
-        receivedUser.id,
-        receivedUser.username,
-        receivedUser.isComite,
+      login(
+        receivedUser,
+        isDeveloper,
         responseData.token,
-        groups[1]
+        receivedUser.originGroup,
+        receivedAreaTratamentoDados
       );
 
-      navigate(`/${receivedUser.id}/cases`);
+      const responseDataComiteMembers = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/users/comite-members`,
+        undefined,
+        undefined,
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + responseData.token,
+        }
+      );
+
+      const loadedMembers: ComiteMember[] =
+        responseDataComiteMembers.comiteMembers;
+
+      changeComiteMember(loadedMembers[0]);
+
+      navigate(`/${receivedUser.id}/`);
     } catch (error) {
       console.log(error);
     }
@@ -128,8 +145,7 @@ const Login = () => {
                       isInvalid={!!errors.password}
                     />
                     <Form.Control.Feedback type="invalid">
-                      A senha deve ter pelo menos 8 caracteres, um caracter
-                      especial, uma letra maiúscula e um número
+                      Esse campo é obrigatório
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Row>
