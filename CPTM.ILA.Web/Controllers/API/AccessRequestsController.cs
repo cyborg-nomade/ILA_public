@@ -315,13 +315,13 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                //var chamadoAberto = await AbrirChamadoItsm(accessRequestDto.UsernameSolicitante, tipo.ToString());
+                var chamadoAberto = await ItsmUtil.AbrirChamado(accessRequestDto.UsernameSolicitante, tipo.ToString());
 
-                //if (!chamadoAberto)
-                //{
-                //    return Request.CreateResponse(HttpStatusCode.OK,
-                //        new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
-                //}
+                if (!chamadoAberto)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK,
+                        new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
+                }
 
                 var usersInDb = await _context.Users.Include(u => u.Groups)
                     .ToListAsync();
@@ -888,42 +888,6 @@ namespace CPTM.ILA.Web.Controllers.API
         private bool GroupExists(int id)
         {
             return _context.Groups.Count(g => g.Id == id) > 0;
-        }
-
-        private async Task<bool> AbrirChamadoItsm(string username, string descricaoIncidente)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(ItsmUrl);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                var loginRes = await client.PostAsJsonAsync(ItsmUrl + "jwt/login",
-                    new { username = ApiLogin, password = ApiPass });
-
-                if (!loginRes.IsSuccessStatusCode)
-                {
-                    return false;
-                }
-
-                var jwt = loginRes.Content.ReadAsStringAsync()
-                    .Result;
-
-                client.DefaultRequestHeaders.Add("Authorization", $"AR-JWT {jwt}");
-
-                var chamadoRes = await client.PostAsJsonAsync(ItsmUrl + "", new
-                {
-                    values = new
-                    {
-                        PDP_chrLoginUsuario = username.ToUpper(),
-                        PDP_chrTemplateDeIncidente = "INC AUT LGPD SERVICO",
-                        PDP_ddlFormatoDeAbertura = "UNICO",
-                        PDP_chrDescricao = descricaoIncidente
-                    }
-                });
-
-                return chamadoRes.IsSuccessStatusCode;
-            }
         }
     }
 }

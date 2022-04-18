@@ -134,7 +134,7 @@ namespace CPTM.ILA.Web.Models
             var userAd = Seguranca.ObterUsuario(usernameCriador);
             var assunto = $"Processo LGPD {Nome} - ID {Id}";
             var mensagem =
-                $@"O processo {Nome} acabou de ser enviado para aprovação pelo Comitê LGPD, e sua Hipótese de Tratamento foi declarada como {FinalidadeTratamento.HipoteseTratamento}";
+                $@"O processo {Nome} acabou de ser enviado para aprovação pelo Comitê LGPD, e sua Hipótese de Tratamento foi declarada como {FinalidadeTratamento.HipoteseTratamento.Value}";
             var erro = "Algo deu errado no envio do e-mail. Contate o suporte técnico";
             //send email
             var enviado = Email.Enviar("ILA", userAd.Nome, userAd.Email,
