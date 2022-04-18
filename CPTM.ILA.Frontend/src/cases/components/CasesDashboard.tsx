@@ -161,14 +161,14 @@ const CasesDashboard = () => {
             label={({ x, y, dx, dy, dataEntry, dataIndex }) => (
               <text
                 key={dataIndex}
-                x={x}
-                y={y}
+                x={x + 5}
+                y={y + 9}
                 dx={dx}
                 dy={dy}
-                dominantBaseline="middle"
+                dominantBaseline="auto"
                 textAnchor="middle"
                 style={{
-                  fontSize: "5px",
+                  fontSize: "4px",
                   fontFamily: "sans-serif",
                 }}
               >
@@ -179,7 +179,7 @@ const CasesDashboard = () => {
               </text>
             )}
             radius={20}
-            labelPosition={250}
+            labelPosition={200}
             onClick={(event, index) => {
               console.log("CLICK", { event, index });
               setSelected(index === selected ? undefined : index);
