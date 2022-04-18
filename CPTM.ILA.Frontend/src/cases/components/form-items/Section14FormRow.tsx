@@ -1,155 +1,119 @@
 import React, { useState } from "react";
 
-import { useFormikContext, getIn } from "formik";
+import { useFormikContext, getIn, FieldArray } from "formik";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { FullCaseObject } from "../../../shared/models/cases.model";
+import { Case } from "../../../shared/models/cases.model";
+import Section14FormRowSub from "./Section14FormRowSub";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Button from "react-bootstrap/Button";
+import { emptyItemContratoTI } from "../../../shared/models/case-helpers/case-helpers.model";
+import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
+import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 
-const Section14FormRow = (props: {
-  disabled: boolean;
-  name: string;
-  className: string;
-}) => {
-  const { values, touched, errors, handleBlur, setFieldValue } =
-    useFormikContext<FullCaseObject>();
+const Section14FormRow = (props: { disabled: boolean }) => {
+  const { values, setFieldValue } = useFormikContext<Case>();
 
-  const [numeroContrato, setNumeroContrato] = useState(
-    getIn(values, `${props.name}.numeroContrato`)
-  );
-  const [numeroProcessoContratacao, setNumeroProcessoContratacao] = useState(
-    getIn(values, `${props.name}.numeroProcessoContratacao`)
-  );
-  const [objetoContrato, setObjetoContrato] = useState(
-    getIn(values, `${props.name}.objetoContrato`)
-  );
-  const [emailGestorContrato, setEmailGestorContrato] = useState(
-    getIn(values, `${props.name}.emailGestorContrato`)
-  );
+  const [trata, setTrata] = useState(false);
 
-  const handleChangeNumeroContrato = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setNumeroContrato(event.currentTarget.value);
-  };
-  const handleBlurNumeroContrato = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(`${props.name}.numeroContrato`, numeroContrato, true);
-  };
-
-  const handleChangeNumeroProcessoContratacao = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setNumeroProcessoContratacao(event.currentTarget.value);
-  };
-  const handleBlurNumeroProcessoContratacao = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(
-      `${props.name}.numeroProcessoContratacao`,
-      numeroProcessoContratacao,
-      true
-    );
-  };
-
-  const handleChangeObjetoContrato = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setObjetoContrato(event.currentTarget.value);
-  };
-  const handleBlurObjetoContrato = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(`${props.name}.objetoContrato`, objetoContrato, true);
-  };
-
-  const handleChangeEmailGestorContrato = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setEmailGestorContrato(event.currentTarget.value);
-  };
-  const handleBlurEmailGestorContrato = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(
-      `${props.name}.emailGestorContrato`,
-      emailGestorContrato,
-      true
-    );
+  const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.value === "SIM") {
+      setTrata(true);
+    } else {
+      setTrata(false);
+      setFieldValue("contratoServicosTITratamentoDados", []);
+    }
   };
 
   return (
-    <Row className={props.className}>
-      <Col>
-        <Form.Control
-          disabled={props.disabled}
-          type="text"
-          name={`${props.name}.numeroContrato`}
-          value={numeroContrato}
-          onChange={handleChangeNumeroContrato}
-          onBlur={handleBlurNumeroContrato}
-          isValid={
-            getIn(touched, `${props.name}.numeroContrato`) &&
-            !getIn(errors, `${props.name}.numeroContrato`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.numeroContrato`)}
-        />
-      </Col>
-      <Col>
-        <Form.Control
-          disabled={props.disabled}
-          type="text"
-          name={`${props.name}.numeroProcessoContratacao`}
-          value={numeroProcessoContratacao}
-          onChange={handleChangeNumeroProcessoContratacao}
-          onBlur={handleBlurNumeroProcessoContratacao}
-          isValid={
-            getIn(touched, `${props.name}.numeroProcessoContratacao`) &&
-            !getIn(errors, `${props.name}.numeroProcessoContratacao`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.numeroProcessoContratacao`)}
-        />
-      </Col>
-      <Col>
-        <Form.Control
-          disabled={props.disabled}
-          type="text"
-          name={`${props.name}.objetoContrato`}
-          value={objetoContrato}
-          onChange={handleChangeObjetoContrato}
-          onBlur={handleBlurObjetoContrato}
-          isValid={
-            getIn(touched, `${props.name}.objetoContrato`) &&
-            !getIn(errors, `${props.name}.objetoContrato`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.objetoContrato`)}
-        />
-      </Col>
-      <Col>
-        <Form.Control
-          disabled={props.disabled}
-          type="email"
-          name={`${props.name}.emailGestorContrato`}
-          value={emailGestorContrato}
-          onChange={handleChangeEmailGestorContrato}
-          onBlur={handleBlurEmailGestorContrato}
-          isValid={
-            getIn(touched, `${props.name}.emailGestorContrato`) &&
-            !getIn(errors, `${props.name}.emailGestorContrato`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.emailGestorContrato`)}
-        />
-        <Form.Control.Feedback type="invalid">
-          Utilize um e-mail válido.
-        </Form.Control.Feedback>
-      </Col>
-    </Row>
+    <React.Fragment>
+      <Row>
+        <Col className="d-grid justify-content-center">
+          <Form.Check
+            type="radio"
+            name="trata"
+            required
+            label="Sim"
+            value="SIM"
+            checked={trata}
+            disabled={props.disabled}
+            onChange={handleTrataRadio}
+          />
+          <Form.Check
+            type="radio"
+            name="trata"
+            required
+            inline
+            label="Não"
+            value="NÃO"
+            checked={!trata}
+            disabled={props.disabled}
+            onChange={handleTrataRadio}
+          />
+        </Col>
+        <Col></Col>
+        <Col></Col>
+        <Col></Col>
+        <Col></Col>
+        <Col lg={1}>
+          <Row>
+            <CreateCommentBox
+              item={CaseIndexDictionary.contratoServicosTITratamentoDados}
+            />
+          </Row>
+        </Col>
+      </Row>
+      <FieldArray
+        name="contratoServicosTITratamentoDados"
+        render={(arrayHelpers) => (
+          <React.Fragment>
+            {values.contratoServicosTITratamentoDados &&
+            values.contratoServicosTITratamentoDados.length > 0 ? (
+              values.contratoServicosTITratamentoDados.map((item, index) => (
+                <React.Fragment key={index}>
+                  <Section14FormRowSub
+                    className={`mb-3 pt-2 pb-2 ${
+                      index % 2 === 0 ? "bg-primary bg-opacity-10" : ""
+                    }`}
+                    name={`contratoServicosTITratamentoDados[${index}]`}
+                  />
+                  <Row className="justify-content-center">
+                    <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                      <Button
+                        variant="primary"
+                        onClick={() => arrayHelpers.push(emptyItemContratoTI())}
+                      >
+                        +
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={() => arrayHelpers.remove(index)}
+                      >
+                        -
+                      </Button>
+                    </ButtonGroup>
+                  </Row>
+                </React.Fragment>
+              ))
+            ) : (
+              <Row className="justify-content-center">
+                <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                  <Button
+                    variant="primary"
+                    disabled={!trata}
+                    onClick={() => arrayHelpers.push(emptyItemContratoTI())}
+                  >
+                    +
+                  </Button>
+                </ButtonGroup>
+              </Row>
+            )}
+          </React.Fragment>
+        )}
+      />
+    </React.Fragment>
   );
 };
 

@@ -5,10 +5,8 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import {
-  FullCaseObject,
-  tipoMedidaSegurancaPrivacidade,
-} from "../../../shared/models/cases.model";
+import { Case } from "../../../shared/models/cases.model";
+import { tipoMedidaSegurancaPrivacidade } from "../../../shared/models/case-helpers/enums.model";
 
 const Section12FormRow = (props: {
   label: string;
@@ -17,7 +15,7 @@ const Section12FormRow = (props: {
   className: string;
 }) => {
   const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
-    useFormikContext<FullCaseObject>();
+    useFormikContext<Case>();
 
   const [descricaoControles, setDescricaoControles] = useState(
     getIn(values, `${props.name}.descricaoControles`)
@@ -73,6 +71,7 @@ const Section12FormRow = (props: {
           isInvalid={!!getIn(errors, `${props.name}.descricaoControles`)}
         />
       </Col>
+      <Col lg={1}></Col>
     </Row>
   );
 };

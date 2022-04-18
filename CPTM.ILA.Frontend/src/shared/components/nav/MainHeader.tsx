@@ -5,34 +5,34 @@ import Nav from "react-bootstrap/Nav";
 
 import NavLinks from "./NavLinks";
 
-import logo from "../../assets/logo_cptm.png";
-
 const MainHeader = () => {
   return (
-    <header>
-      <Navbar bg="light" expand={"md"} collapseOnSelect>
-        <Container fluid>
-          <Navbar.Brand as={Link} to="/">
-            {/* <img
+    <Navbar
+      bg="transparent"
+      variant="dark"
+      expand={"md"}
+      collapseOnSelect
+      style={{ background: "none" }}
+      className="swiss721"
+    >
+      <Container fluid>
+        <Navbar.Brand as={Link} to="/">
+          {/* <img
               src={logo}
               alt="logo-cptm"
               width="30%"
               className="d-inline-block align-top"
             /> */}
-            Inventário LGPD
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav
-              className="justify-content-end flex-grow-1 pe-3"
-              variant="tabs"
-            >
-              <NavLinks />
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </header>
+          Inventário LGPD
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="justify-content-end flex-grow-1 pe-3" variant="pills">
+            <NavLinks />
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 
