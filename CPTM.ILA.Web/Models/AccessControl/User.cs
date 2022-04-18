@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
 
@@ -25,7 +26,7 @@ namespace CPTM.ILA.Web.Models.AccessControl
             return new ComiteMember()
             {
                 Id = user.Id,
-                Nome = userAd.Nome
+                Nome = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(userAd.Nome.ToLower())
             };
         }
     }

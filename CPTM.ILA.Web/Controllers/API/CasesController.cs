@@ -353,7 +353,9 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var comiteMember = await _context.Users.FindAsync(uid);
+                var comiteMember = await _context.Users.Where(u => u.Id == uid)
+                    .Include(u => u.Groups)
+                    .SingleOrDefaultAsync();
                 if (comiteMember == null)
                     return Request.CreateResponse(HttpStatusCode.NotFound, new
                     {
@@ -408,6 +410,7 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var comiteMembers = await _context.Users.Where(u => u.IsComite)
+                    .Include(g => g.Groups)
                     .ToListAsync();
 
                 var totals = new List<ExtensaoEncarregadoTotals>();
@@ -439,7 +442,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 

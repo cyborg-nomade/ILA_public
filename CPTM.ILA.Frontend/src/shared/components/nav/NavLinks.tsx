@@ -14,12 +14,12 @@ const NavLinks = () => {
           Página Inicial
         </Nav.Link>
       )}
-      {isLoggedIn && user.isComite && !user.isDpo && (
+      {isLoggedIn && user.isComite && !user.isDPO && (
         <Nav.Link as={NavLink} to={`/comite/`}>
           Página Inicial
         </Nav.Link>
       )}
-      {isLoggedIn && user.isComite && user.isDpo && (
+      {isLoggedIn && user.isComite && user.isDPO && (
         <Nav.Link as={NavLink} to={`/dpo/`}>
           Página Inicial
         </Nav.Link>
@@ -29,12 +29,12 @@ const NavLinks = () => {
           Meus Processos
         </Nav.Link>
       )}
-      {isLoggedIn && user.isComite && !user.isDpo && (
+      {isLoggedIn && user.isComite && !user.isDPO && (
         <Nav.Link as={NavLink} to={`comite/cases/`}>
           Meus Processos
         </Nav.Link>
       )}
-      {isLoggedIn && user.isComite && user.isDpo && (
+      {isLoggedIn && user.isComite && user.isDPO && (
         <Nav.Link as={NavLink} to={`dpo/cases/`}>
           Processos Pendentes
         </Nav.Link>
@@ -44,23 +44,23 @@ const NavLinks = () => {
           Formulário
         </Nav.Link>
       )}
-      {isLoggedIn && user.isComite && !user.isDpo && (
+      {isLoggedIn && user.isComite && !user.isDPO && (
         <Nav.Link as={NavLink} to={`comite/cases/approve/`}>
           Aprovar Processos
         </Nav.Link>
       )}
-      {isLoggedIn && user.isComite && !user.isDpo && (
+      {isLoggedIn && user.isComite && !user.isDPO && (
         <Nav.Link as={NavLink} to={`/comite/access-requests/approve/`}>
           Aprovar Requisições de Acesso
         </Nav.Link>
       )}
-      {isLoggedIn && user.isComite && user.isDpo && (
+      {isLoggedIn && user.isComite && user.isDPO && (
         <Nav.Link as={NavLink} to={`/dpo/access-requests/approve/`}>
           Aprovar Requisições de Acesso
         </Nav.Link>
       )}
-      {isLoggedIn && user.isComite && user.isDpo && (
-        <Nav.Link as={NavLink} to={`/dpo/change-members/`}>
+      {isLoggedIn && user.isComite && user.isDPO && (
+        <Nav.Link as={NavLink} to={`/dpo/alter-comite-members`}>
           Alterar Membros Comitê
         </Nav.Link>
       )}

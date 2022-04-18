@@ -15,6 +15,7 @@ import { AuthUser } from "../../shared/models/DTOs/auth-user.model";
 import { AuthContext } from "./../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
 import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
+import { ComiteMember } from "../../shared/models/DTOs/comite-member";
 
 const schema = yup.object().shape({
   username: yup.string().required(),
@@ -27,7 +28,7 @@ const initialValues: AuthUser = {
 };
 
 const Login = () => {
-  const { login, user } = useContext(AuthContext);
+  const { login, user, changeComiteMember } = useContext(AuthContext);
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
@@ -57,6 +58,21 @@ const Login = () => {
         receivedUser.originGroup,
         receivedAreaTratamentoDados
       );
+
+      const responseDataComiteMembers = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/users/comite-members`,
+        undefined,
+        undefined,
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + responseData.token,
+        }
+      );
+
+      const loadedMembers: ComiteMember[] =
+        responseDataComiteMembers.comiteMembers;
+
+      changeComiteMember(loadedMembers[0]);
 
       navigate(`/${receivedUser.id}/`);
     } catch (error) {

@@ -97,6 +97,7 @@ const CasesDashboard = () => {
         setPieChartData(transformedData);
       }
     };
+
     const getDpoCasesTotals = async () => {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/totals`,
@@ -129,11 +130,11 @@ const CasesDashboard = () => {
       }
     };
 
-    if (user.isComite && user.isDpo) {
+    if (user.isComite && user.isDPO) {
       getDpoCasesTotals().catch((error) => {
         console.log(error);
       });
-    } else if (user.isComite && !user.isDpo) {
+    } else if (user.isComite && !user.isDPO) {
       getComiteCasesTotals().catch((error) => {
         console.log(error);
       });
@@ -146,7 +147,7 @@ const CasesDashboard = () => {
     return () => {
       setPieChartData([]);
     };
-  }, [sendRequest, token, currentGroup.id, user.isComite]);
+  }, [sendRequest, token, currentGroup.id, user.isComite, user.isDPO]);
 
   return (
     <React.Fragment>
