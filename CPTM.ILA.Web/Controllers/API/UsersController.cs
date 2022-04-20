@@ -332,7 +332,10 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var userToDelete = await _context.Users.FindAsync(uid);
+                var userToDelete = await _context.Users.Where(u => u.Id == uid)
+                    .Include(u => u.Groups)
+                    .Include(u => u.OriginGroup)
+                    .SingleOrDefaultAsync();
                 if (userToDelete == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound,

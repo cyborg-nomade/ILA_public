@@ -834,19 +834,23 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                var deleteChangeLog = new ChangeLog()
+                if (userDeleting != null)
                 {
-                    CaseId = caseToDelete.Id,
-                    ChangeDate = DateTime.Now,
-                    UserId = userDeleting.Id,
-                    CaseDiff = @"
+                    var deleteChangeLog = new ChangeLog()
+                    {
+                        CaseId = caseToDelete.Id,
+                        ChangeDate = DateTime.Now,
+                        UserId = userDeleting.Id,
+                        CaseDiff = @"
                         {
                             Name = ""Remoção"",
                             Identifier = ""0.0.2""
                         }"
-                };
+                    };
 
-                _context.ChangeLogs.Add(deleteChangeLog);
+                    _context.ChangeLogs.Add(deleteChangeLog);
+                }
+
                 _context.Cases.Remove(caseToDelete);
                 await _context.SaveChangesAsync();
 

@@ -24,9 +24,6 @@ const RequestGroupAccess = () => {
 
   const submitRegisterHandler = async (accessRequest: AccessRequestDTO) => {
     try {
-      accessRequest.groupNames = accessRequest.groupNames.map(
-        (g: any) => g.value
-      );
       accessRequest.usernameSolicitante = user.username;
       console.log(accessRequest);
 
