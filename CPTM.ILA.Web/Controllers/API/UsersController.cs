@@ -194,10 +194,10 @@ namespace CPTM.ILA.Web.Controllers.API
                         message = "Nenhum usuário do Comitê LGPD é responsável por este grupo",
                         comiteMember = new AgenteTratamento()
                         {
-                            Area = "DFIS",
-                            Email = "teste@teste.com",
-                            Nome = "Tuba",
-                            Telefone = "11954719466"
+                            Nome = "Olivia Shibata Nishiyama",
+                            Area = "Encarregado de Dados (DPO)",
+                            Telefone = "+ 55 11 3117 – 7001",
+                            Email = "encarregado.dados@cptm.sp.gov.br"
                         }
                     });
                 }
