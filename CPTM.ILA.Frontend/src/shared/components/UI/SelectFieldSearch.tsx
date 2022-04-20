@@ -31,7 +31,7 @@ const SelectFieldSearch = (props: FieldAttributes<any>) => {
       value={convertValue(state.value)}
       isSearchable
       onChange={onChange}
-      onBlur={onChange}
+      onBlur={setTouched}
     />
   );
 };
