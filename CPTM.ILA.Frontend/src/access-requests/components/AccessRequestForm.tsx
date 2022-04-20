@@ -303,7 +303,7 @@ const AccessRequestForm = (props: {
           <Card className="mx-auto" style={{ width: "28rem" }}>
             <Card.Title className="pt-3 px-3">Solicitação de Acesso</Card.Title>
             <Card.Body>
-              {props.register && (
+              {/* {props.register && (
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik00">
                     <Form.Check
@@ -315,7 +315,7 @@ const AccessRequestForm = (props: {
                     />
                   </Form.Group>
                 </Row>
-              )}
+              )} */}
               {(props.register || props.approve) && (
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik01">
@@ -377,7 +377,7 @@ const AccessRequestForm = (props: {
                 </Row>
               )}
               <Row className="mb-3">
-                <Form.Group as={Col} controlId="validationFormik03">
+                <Form.Group as={Col} controlId="validationFormik04">
                   <Form.Label>Justificativa de acesso</Form.Label>
                   <Form.Control
                     as="textarea"

@@ -358,7 +358,6 @@ namespace CPTM.ILA.Web.Controllers.API
                             {
                                 Nome = groupName
                             };
-                            _context.Groups.Add(newGroup);
                             selectedGroup = newGroup;
                         }
 
@@ -377,7 +376,6 @@ namespace CPTM.ILA.Web.Controllers.API
                         {
                             Nome = userAd.Departamento
                         };
-                        _context.Groups.Add(newGroup);
                         selectedGroup = newGroup;
                     }
 
@@ -545,14 +543,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         throw new ArgumentNullException(nameof(userInDb));
                     }
 
-                    foreach (var accessRequestGroup in accessRequest.Groups)
-                    {
-                        userInDb.Groups.Add(accessRequestGroup);
-                        if (!GroupExists(accessRequestGroup.Id))
-                        {
-                            _context.Groups.Add(accessRequestGroup);
-                        }
-                    }
+                    userInDb.Groups = accessRequest.Groups;
 
                     if (!userInDb.IsComite)
                     {
@@ -589,8 +580,6 @@ namespace CPTM.ILA.Web.Controllers.API
                         {
                             Nome = userAd.Departamento,
                         };
-
-                        _context.Groups.Add(userOriginGroup);
                     }
 
                     var newUser = new User()
@@ -709,7 +698,6 @@ namespace CPTM.ILA.Web.Controllers.API
                     {
                         Nome = userAd.Departamento,
                     };
-                    _context.Groups.Add(newGroup);
 
                     var newUser = new User()
                     {
@@ -717,6 +705,8 @@ namespace CPTM.ILA.Web.Controllers.API
                         OriginGroup = newGroup,
                         IsComite = true,
                         IsDPO = true,
+                        IsSystem = false,
+                        Groups = new List<Group>() { newGroup }
                     };
                     _context.Users.Add(newUser);
 
@@ -793,8 +783,9 @@ namespace CPTM.ILA.Web.Controllers.API
                         {
                             Nome = userAd.Departamento,
                         };
-                        _context.Groups.Add(newGroup);
                         groupInDb = newGroup;
+                        _context.Groups.Add(groupInDb);
+                        await _context.SaveChangesAsync();
                     }
 
                     var newUser = new User()
@@ -802,8 +793,16 @@ namespace CPTM.ILA.Web.Controllers.API
                         Username = userAd.Login,
                         OriginGroup = groupInDb,
                         IsComite = true,
+                        IsDPO = false,
+                        IsSystem = false,
+                        Groups = new List<Group>() { groupInDb }
                     };
                     _context.Users.Add(newUser);
+                    foreach (var @group in newUser.Groups)
+                    {
+                        _context.Entry(group)
+                            .State = EntityState.Modified;
+                    }
 
                     await _context.SaveChangesAsync();
 
