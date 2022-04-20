@@ -18,7 +18,7 @@ namespace CPTM.ILA.Web
             // Web API configuration and services
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
-            var corsAttr = new EnableCorsAttribute("http://localhost:3000",
+            var corsAttr = new EnableCorsAttribute("*",
                 "Origin,X-Requested-With,Content-Type,Accept,Authorization", "*") { SupportsCredentials = true };
             config.EnableCors(corsAttr);
 

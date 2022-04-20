@@ -17,6 +17,8 @@ const Section9QuantityRow = (props: { isEditing: boolean }) => {
       let totalDadosTratados = 0;
       let totalDadosSensiveisTratados = 0;
 
+      console.log(values);
+
       for (const categoria of Object.values(values.categoriaDadosPessoais)) {
         for (const item of Object.values(categoria)) {
           if (Array.isArray(item)) {

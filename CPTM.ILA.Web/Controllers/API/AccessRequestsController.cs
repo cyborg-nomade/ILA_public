@@ -783,7 +783,9 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     var userAd = Seguranca.ObterUsuario(newComiteMemberUsername);
 
-                    var groupInDb = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento);
+                    var groupsInDb = await _context.Groups.ToListAsync();
+
+                    var groupInDb = groupsInDb.SingleOrDefault(g => g.Nome == userAd.Departamento);
 
                     if (groupInDb == null)
                     {
