@@ -21,7 +21,6 @@ namespace CPTM.ILA.Web.Models
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
         public int GrupoCriadorId { get; set; }
-        public int UsuarioCriadorId { get; set; }
         public bool Aprovado { get; set; }
         public bool EncaminhadoAprovacao { get; set; }
         public bool DadosPessoaisSensiveis { get; set; }

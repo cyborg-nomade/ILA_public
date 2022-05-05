@@ -1013,17 +1013,17 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                var usuarioCriador = await _context.Users.FindAsync(caseToRequestApproval.UsuarioCriadorId);
-                if (usuarioCriador == null)
+                var usuarioChamadoItsm = await _context.Users.FindAsync(userId);
+                if (usuarioChamadoItsm == null)
                 {
-                    throw new ArgumentNullException(nameof(usuarioCriador));
+                    throw new ArgumentNullException(nameof(usuarioChamadoItsm));
                 }
 
-                var userEmailId = _context.ILA_VW_USUARIO.Where(u => u.TX_USERNAME == usuarioCriador.Username)
+                var userEmailId = _context.ILA_VW_USUARIO.Where(u => u.TX_USERNAME == usuarioChamadoItsm.Username)
                     .Select(u => u.ID_CODUSUARIO)
                     .SingleOrDefault();
 
-                caseToRequestApproval.SendCaseToApproval(usuarioCriador.Username, userEmailId);
+                caseToRequestApproval.SendCaseToApproval(usuarioChamadoItsm.Username, userEmailId);
 
                 var changeLog = new ChangeLog()
                 {
