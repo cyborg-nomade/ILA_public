@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using CPTM.ActiveDirectory;
@@ -16,8 +15,7 @@ namespace CPTM.ILA.Web.Models.AccessControl
         public bool IsDPO { get; set; }
         public bool IsSystem { get; set; }
         public Group OriginGroup { get; set; }
-        public ICollection<Group> Groups { get; set; }
-        public DateTime GroupAccessExpirationDate { get; set; }
+        public ICollection<GroupAccessExpiration> GroupAccessExpirations { get; set; }
 
         public static ComiteMember ReduceToComiteMember(User user)
         {

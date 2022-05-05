@@ -94,7 +94,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var claims = TokenUtil.GetTokenClaims(identity);
 
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.Groups)
+                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                         .ToListAsync();
 
                     var searchedGroup = await _context.Groups.FindAsync(gid);
@@ -148,7 +148,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var claims = TokenUtil.GetTokenClaims(identity);
 
                     userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.Groups)
+                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                         .ToListAsync();
 
                     if (!(claims.IsComite || claims.IsDeveloper))
@@ -216,7 +216,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var claims = TokenUtil.GetTokenClaims(identity);
 
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.Groups)
+                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                         .ToListAsync();
 
                     var searchedGroup = await _context.Groups.FindAsync(gid);
@@ -273,7 +273,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var claims = TokenUtil.GetTokenClaims(identity);
 
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.Groups)
+                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                         .ToListAsync();
 
                     var searchedGroup = await _context.Groups.FindAsync(gid);
@@ -354,7 +354,7 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var comiteMember = await _context.Users.Where(u => u.Id == uid)
-                    .Include(u => u.Groups)
+                    .Include(u => u.GroupAccessExpirations)
                     .SingleOrDefaultAsync();
                 if (comiteMember == null)
                     return Request.CreateResponse(HttpStatusCode.NotFound, new
@@ -362,7 +362,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         message = "Usuário não encontrado."
                     });
 
-                var comiteMemberGroupsIds = comiteMember.Groups.Select(g => g.Id)
+                var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Id)
                     .ToList();
 
                 var pendingCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
@@ -410,7 +410,7 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var comiteMembers = await _context.Users.Where(u => u.IsComite)
-                    .Include(g => g.Groups)
+                    .Include(g => g.GroupAccessExpirations)
                     .ToListAsync();
 
                 var totals = new List<ExtensaoEncarregadoTotals>();
@@ -418,7 +418,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 foreach (var comiteMember in comiteMembers)
                 {
-                    var comiteMemberGroupsIds = comiteMember.Groups.Select(g => g.Id)
+                    var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Id)
                         .ToList();
 
                     var pendingCases = await _context.Cases.CountAsync(c =>
@@ -526,7 +526,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var claims = TokenUtil.GetTokenClaims(identity);
 
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.Groups)
+                        .SelectMany(u => u.GroupAccessExpirations)
                         .ToListAsync();
 
                     var userGroupsId = userGroups.Select(g => g.Id)
@@ -571,7 +571,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var claims = TokenUtil.GetTokenClaims(identity);
 
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.Groups)
+                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                         .ToListAsync();
                     var caseGroup = await _context.Groups.FindAsync(caseChange.Case.GrupoCriadorId);
 
@@ -632,7 +632,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var claims = TokenUtil.GetTokenClaims(identity);
 
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.Groups)
+                        .SelectMany(u => u.GroupAccessExpirations)
                         .ToListAsync();
 
                     var userGroupsId = userGroups.Select(g => g.Id)
@@ -817,7 +817,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var claims = TokenUtil.GetTokenClaims(identity);
 
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.Groups)
+                        .SelectMany(u => u.GroupAccessExpirations)
                         .ToListAsync();
 
                     var userGroupsId = userGroups.Select(g => g.Id)
@@ -901,7 +901,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     userId = claims.UserId;
 
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.Groups)
+                        .SelectMany(u => u.GroupAccessExpirations)
                         .ToListAsync();
                     var userGroupsId = userGroups.Select(g => g.Id)
                         .ToList();
@@ -1000,7 +1000,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     userId = claims.UserId;
 
                     var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.Groups)
+                        .SelectMany(u => u.GroupAccessExpirations)
                         .ToListAsync();
                     var userGroupsId = userGroups.Select(g => g.Id)
                         .ToList();
