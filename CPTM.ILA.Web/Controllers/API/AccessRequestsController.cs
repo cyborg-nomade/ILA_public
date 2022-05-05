@@ -323,7 +323,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
                 }
 
-                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations)
+                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .ToListAsync();
                 if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
 
