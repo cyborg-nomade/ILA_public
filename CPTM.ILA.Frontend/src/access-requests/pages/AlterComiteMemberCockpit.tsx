@@ -28,7 +28,7 @@ const AlterComiteMemberCockpit = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const getGroups = async () => {
+    const getComiteMembers = async () => {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/users/comite-members`,
         undefined,
@@ -44,7 +44,7 @@ const AlterComiteMemberCockpit = () => {
       setComiteMembers(loadedMembers);
     };
 
-    getGroups().catch((error) => {
+    getComiteMembers().catch((error) => {
       console.log(error);
     });
 
@@ -75,6 +75,21 @@ const AlterComiteMemberCockpit = () => {
 
       console.log(responseData);
       setMessage(responseData.message);
+
+      const responseDataComiteMembers = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/users/comite-members`,
+        undefined,
+        undefined,
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        }
+      );
+
+      const loadedMembers: ComiteMember[] =
+        responseDataComiteMembers.comiteMembers;
+
+      setComiteMembers(loadedMembers);
     } catch (err) {
       console.log(err);
     }
@@ -96,6 +111,21 @@ const AlterComiteMemberCockpit = () => {
 
       console.log(responseData);
       setMessage(responseData.message);
+
+      const responseDataComiteMembers = await sendRequest(
+        `${process.env.REACT_APP_CONNSTR}/users/comite-members`,
+        undefined,
+        undefined,
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        }
+      );
+
+      const loadedMembers: ComiteMember[] =
+        responseDataComiteMembers.comiteMembers;
+
+      setComiteMembers(loadedMembers);
     } catch (err) {
       console.log(err);
     }
@@ -157,7 +187,7 @@ const AlterComiteMemberCockpit = () => {
         <Card.Body>
           <ListGroup>
             {comiteMembers.map((cm) => (
-              <ListGroup.Item className="p-0">
+              <ListGroup.Item className="p-0" key={cm.id}>
                 <InputGroup>
                   <InputGroup.Text key={cm.id} as={Col} lg={9}>
                     {cm.nome}

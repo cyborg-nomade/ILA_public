@@ -20,6 +20,7 @@ const SelectFieldSearch = (props: FieldAttributes<any>) => {
     console.log(deconvertValue(option));
 
     setValue(deconvertValue(option));
+    setTouched(true);
 
     console.log(state);
   };

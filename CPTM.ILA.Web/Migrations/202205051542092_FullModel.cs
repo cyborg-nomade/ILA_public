@@ -27,13 +27,10 @@
                         Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
                         Nome = c.String(),
                         AccessRequest_Id = c.Decimal(precision: 9, scale: 0),
-                        User_Id = c.Decimal(precision: 9, scale: 0),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("ILA.ILA_ACCESS_REQUESTS", t => t.AccessRequest_Id)
-                .ForeignKey("ILA.ILA_USERS", t => t.User_Id)
-                .Index(t => t.AccessRequest_Id)
-                .Index(t => t.User_Id);
+                .Index(t => t.AccessRequest_Id);
             
             CreateTable(
                 "ILA.ILA_CASES",
@@ -45,7 +42,6 @@
                         DataCriacao = c.DateTime(nullable: false),
                         DataAtualizacao = c.DateTime(nullable: false),
                         GrupoCriadorId = c.Decimal(nullable: false, precision: 9, scale: 0),
-                        UsuarioCriadorId = c.Decimal(nullable: false, precision: 9, scale: 0),
                         Aprovado = c.Decimal(nullable: false, precision: 1, scale: 0),
                         EncaminhadoAprovacao = c.Decimal(nullable: false, precision: 1, scale: 0),
                         DadosPessoaisSensiveis = c.Decimal(nullable: false, precision: 1, scale: 0),
@@ -115,7 +111,7 @@
                         Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
                         Descricao = c.String(),
                         TempoRetencao_Value = c.String(),
-                        FonteRetenção_Value = c.String(),
+                        FonteRetencao_Value = c.String(),
                         LocalArmazenamento = c.String(),
                         CatDadosPessoaisSensiveis_Id = c.Decimal(precision: 9, scale: 0),
                         CatDadosPessoaisSensiveis_Id1 = c.Decimal(precision: 9, scale: 0),
@@ -646,30 +642,6 @@
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
-                "ILA.ILA_COMMENTS",
-                c => new
-                    {
-                        Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
-                        Text = c.String(maxLength: 250),
-                        UserId = c.Decimal(nullable: false, precision: 9, scale: 0),
-                        ThreadId = c.Decimal(nullable: false, precision: 9, scale: 0),
-                        DataCriacao = c.DateTime(nullable: false),
-                        RefItem = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "ILA.ILA_THREADS",
-                c => new
-                    {
-                        Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
-                        GroupId = c.Decimal(nullable: false, precision: 9, scale: 0),
-                        AuthorStatus = c.Decimal(nullable: false, precision: 9, scale: 0),
-                        ComiteStatus = c.Decimal(nullable: false, precision: 9, scale: 0),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
                 "ILA.ILA_USERS",
                 c => new
                     {
@@ -678,19 +650,34 @@
                         IsComite = c.Decimal(nullable: false, precision: 1, scale: 0),
                         IsDPO = c.Decimal(nullable: false, precision: 1, scale: 0),
                         IsSystem = c.Decimal(nullable: false, precision: 1, scale: 0),
-                        GroupAccessExpirationDate = c.DateTime(nullable: false),
                         OriginGroup_Id = c.Decimal(precision: 9, scale: 0),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("ILA.ILA_GROUPS", t => t.OriginGroup_Id)
                 .Index(t => t.OriginGroup_Id);
             
+            CreateTable(
+                "ILA.ILA_GROUP_ACCESS_REQUESTS",
+                c => new
+                    {
+                        Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
+                        ExpirationDate = c.DateTime(nullable: false),
+                        Group_Id = c.Decimal(precision: 9, scale: 0),
+                        User_Id = c.Decimal(precision: 9, scale: 0),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("ILA.ILA_GROUPS", t => t.Group_Id)
+                .ForeignKey("ILA.ILA_USERS", t => t.User_Id)
+                .Index(t => t.Group_Id)
+                .Index(t => t.User_Id);
+            
         }
         
         public override void Down()
         {
             DropForeignKey("ILA.ILA_USERS", "OriginGroup_Id", "ILA.ILA_GROUPS");
-            DropForeignKey("ILA.ILA_GROUPS", "User_Id", "ILA.ILA_USERS");
+            DropForeignKey("ILA.ILA_GROUP_ACCESS_REQUESTS", "User_Id", "ILA.ILA_USERS");
+            DropForeignKey("ILA.ILA_GROUP_ACCESS_REQUESTS", "Group_Id", "ILA.ILA_GROUPS");
             DropForeignKey("ILA.ILA_ITEM_TRANSF_INTERNACIONAL", "Case_Id", "ILA.ILA_CASES");
             DropForeignKey("ILA.ILA_ITEM_RISCO_PRIVACIDADE", "Case_Id", "ILA.ILA_CASES");
             DropForeignKey("ILA.ILA_CASES", "Operador_Id", "ILA.ILA_AGENTE_TRATAMENTO");
@@ -790,6 +777,8 @@
             DropForeignKey("ILA.ILA_ITEM_CAT_DADOS_PESSOAIS", "CatDadosPessoaisSensiveis_Id", "ILA.ILA_CAT_DADOS_PESSOAIS_SENS");
             DropForeignKey("ILA.ILA_CASES", "AreaTratamentoDados_Id", "ILA.ILA_AGENTE_TRATAMENTO");
             DropForeignKey("ILA.ILA_GROUPS", "AccessRequest_Id", "ILA.ILA_ACCESS_REQUESTS");
+            DropIndex("ILA.ILA_GROUP_ACCESS_REQUESTS", new[] { "User_Id" });
+            DropIndex("ILA.ILA_GROUP_ACCESS_REQUESTS", new[] { "Group_Id" });
             DropIndex("ILA.ILA_USERS", new[] { "OriginGroup_Id" });
             DropIndex("ILA.ILA_ITEM_TRANSF_INTERNACIONAL", new[] { "Case_Id" });
             DropIndex("ILA.ILA_ITEM_RISCO_PRIVACIDADE", new[] { "Case_Id" });
@@ -889,11 +878,9 @@
             DropIndex("ILA.ILA_CASES", new[] { "CategoriaDadosPessoais_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "CatDadosPessoaisSensiveis_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "AreaTratamentoDados_Id" });
-            DropIndex("ILA.ILA_GROUPS", new[] { "User_Id" });
             DropIndex("ILA.ILA_GROUPS", new[] { "AccessRequest_Id" });
+            DropTable("ILA.ILA_GROUP_ACCESS_REQUESTS");
             DropTable("ILA.ILA_USERS");
-            DropTable("ILA.ILA_THREADS");
-            DropTable("ILA.ILA_COMMENTS");
             DropTable("ILA.ILA_CHANGELOGS");
             DropTable("ILA.ILA_ITEM_TRANSF_INTERNACIONAL");
             DropTable("ILA.ILA_ITEM_RISCO_PRIVACIDADE");

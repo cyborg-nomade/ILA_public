@@ -1,39 +1,48 @@
-import { useField, FormikProps, FieldAttributes } from "formik";
-import React from "react";
+import {
+  useField,
+  FormikProps,
+  FieldAttributes,
+  useFormikContext,
+} from "formik";
+import React, { useState } from "react";
 import Select from "react-select";
 import {
   GroupedOption,
   Options,
 } from "../../../access-requests/components/AccessRequestForm";
+import { Case } from "../../models/cases.model";
 
 const convertValue = (s: string) => ({ value: s, label: s });
 const converValueArray = (sArray: string[]) => {
-  if (!sArray) {
-    return console.log("hi");
-  }
-
   return sArray.map((s) => convertValue(s));
 };
 const deconvertValue = (v: { value: string; label: string }) => v.value;
 const deconvertValueArray = (vArray: { value: string; label: string }[]) => {
-  console.log(vArray);
-
   return vArray.map((v) => deconvertValue(v));
 };
 
 const SelectFieldMulti = (props: FieldAttributes<any>) => {
   const [field, state, { setValue, setTouched }] = useField(props.field.name);
+  const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
 
-  // value is an array now
   const onChange = (options: { value: string; label: string }[]) => {
-    console.log("select field multi");
+    console.log(
+      "these are the deconverted options: " + deconvertValueArray(options)
+    );
 
-    console.log(options);
-    console.log(deconvertValueArray(options));
-
+    setSelectedGroups(deconvertValueArray(options));
     setValue(deconvertValueArray(options));
 
-    console.log(state);
+    setTouched(true);
+    console.log("state.value, on change: ");
+    console.log(state.value);
+    console.log(field);
+  };
+
+  const onBlur = () => {
+    setValue(selectedGroups);
+    setTouched(true);
+    console.log("state.value, on blur: " + state.value);
   };
 
   // use value to make this a  controlled component
@@ -41,10 +50,10 @@ const SelectFieldMulti = (props: FieldAttributes<any>) => {
   return (
     <Select
       {...props}
-      value={converValueArray(state?.value)}
+      value={converValueArray(state.value)}
       isMulti
       onChange={onChange}
-      onBlur={setTouched}
+      onBlur={onBlur}
     />
   );
 };

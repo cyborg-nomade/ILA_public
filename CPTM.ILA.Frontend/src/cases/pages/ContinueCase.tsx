@@ -37,6 +37,7 @@ const ContinueCase = () => {
         { Authorization: "Bearer " + token }
       );
       let loadedCase: Case = responseData.uniqueCase;
+      console.log(loadedCase);
       loadedCase.dataCriacao = new Date(
         loadedCase.dataCriacao
       ).toLocaleDateString();
