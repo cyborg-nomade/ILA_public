@@ -54,7 +54,6 @@ const NewCase = () => {
   const saveProgressHandler = async (item: Case) => {
     console.log("Initial item: ", item);
 
-    item.usuarioCriadorId = user.id;
     item.grupoCriadorId = currentGroup.id;
     const dateCriacaoParts = item.dataCriacao.split("/");
     const dateAtualizacaoParts = item.dataAtualizacao.split("/");
@@ -118,7 +117,6 @@ const NewCase = () => {
   const sendToApprovalHandler = async (item: Case) => {
     console.log("sah, Initial item: ", item);
 
-    item.usuarioCriadorId = user.id;
     item.grupoCriadorId = currentGroup.id;
     item.area = currentGroup.nome;
     const dateCriacaoParts = item.dataCriacao.split("/");
