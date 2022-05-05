@@ -1,5 +1,4 @@
 ﻿using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -53,11 +52,6 @@ namespace CPTM.ILA.Web.Controllers.API
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool ThreadExists(int id)
-        {
-            return _context.Threads.Count(t => t.Id == id) > 0;
         }
     }
 }
