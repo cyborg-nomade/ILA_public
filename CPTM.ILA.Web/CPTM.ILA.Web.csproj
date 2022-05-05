@@ -324,6 +324,7 @@
     <Compile Include="DTOs\GroupTotals.cs" />
     <Compile Include="DTOs\StatusTotals.cs" />
     <Compile Include="DTOs\ThreadStatusTotals.cs" />
+    <Compile Include="DTOs\UserDto.cs" />
     <Compile Include="Migrations\202203312006350_Existing-Model.cs" />
     <Compile Include="Migrations\202203312006350_Existing-Model.designer.cs">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>

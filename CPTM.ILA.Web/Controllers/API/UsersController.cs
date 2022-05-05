@@ -7,16 +7,9 @@ using System.Net.Http;
 using System.Web.Http;
 using CPTM.ILA.Web.Models;
 using CPTM.ActiveDirectory;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using CPTM.ILA.Web.Models.AccessControl;
-using CPTM.CasisLibrary.MVC;
-using CPTM.Comum;
-using CPTM.Comum.Web;
-using CPTM.GNU.Library;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.CaseHelpers;
 using CPTM.ILA.Web.Util;
@@ -75,7 +68,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     Telefone = userAd.TelefoneComercial
                 };
 
-                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations)
+                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .Include(u => u.OriginGroup)
                     .ToListAsync();
                 var userInDb = usersInDb.SingleOrDefault(u =>
@@ -103,10 +96,6 @@ namespace CPTM.ILA.Web.Controllers.API
                                               Nome = userAd.Departamento,
                                           };
 
-                    _context.Groups.Add(userOriginGroup);
-                    await _context.SaveChangesAsync();
-
-
                     userInDb.OriginGroup = userOriginGroup;
                     userInDb.GroupAccessExpirations = new List<GroupAccessExpiration>()
                         { new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = userOriginGroup } };
@@ -131,11 +120,6 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 _context.Entry(userInDb)
                     .State = EntityState.Modified;
-                foreach (var @group in userInDb.GroupAccessExpirations)
-                {
-                    _context.Entry(@group)
-                        .State = EntityState.Modified;
-                }
 
                 await _context.SaveChangesAsync();
 
@@ -143,7 +127,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 return Request.CreateResponse(HttpStatusCode.OK, new
                 {
-                    user = userInDb,
+                    user = Models.AccessControl.User.ReduceToUserDto(userInDb),
                     areaTratamentoDados,
                     isDeveloper,
                     token = jwtToken,

@@ -529,7 +529,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Requisição de Acesso excluída com sucesso, após reprovação" });
                 }
 
-                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations)
+                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .ToListAsync();
                 if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
 
@@ -558,11 +558,6 @@ namespace CPTM.ILA.Web.Controllers.API
 
                     _context.Entry(userInDb)
                         .State = EntityState.Modified;
-                    foreach (var @group in userInDb.GroupAccessExpirations)
-                    {
-                        _context.Entry(group)
-                            .State = EntityState.Modified;
-                    }
 
                     _context.AccessRequests.Remove(accessRequest);
                     await _context.SaveChangesAsync();
@@ -803,11 +798,6 @@ namespace CPTM.ILA.Web.Controllers.API
                             { new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = groupInDb } }
                     };
                     _context.Users.Add(newUser);
-                    foreach (var @group in newUser.GroupAccessExpirations)
-                    {
-                        _context.Entry(group)
-                            .State = EntityState.Modified;
-                    }
 
                     await _context.SaveChangesAsync();
 
