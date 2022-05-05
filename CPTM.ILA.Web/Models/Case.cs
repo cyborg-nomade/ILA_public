@@ -21,7 +21,6 @@ namespace CPTM.ILA.Web.Models
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
         public int GrupoCriadorId { get; set; }
-        public int UsuarioCriadorId { get; set; }
         public bool Aprovado { get; set; }
         public bool EncaminhadoAprovacao { get; set; }
         public bool DadosPessoaisSensiveis { get; set; }
@@ -138,7 +137,7 @@ namespace CPTM.ILA.Web.Models
             var erro = "Algo deu errado no envio do e-mail. Contate o suporte técnico";
             //send email
             var enviado = Email.Enviar("ILA", userAd.Nome, userAd.Email,
-                new List<string>() { "uriel.fiori@cptm.sp.gov.br" }, assunto, mensagem, DateTime.Now, idUsuario,
+                new List<string>() { "encarregado.dados@cptm.sp.gov.br" }, assunto, mensagem, DateTime.Now, idUsuario,
                 ref erro);
 
             return this;

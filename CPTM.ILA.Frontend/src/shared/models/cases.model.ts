@@ -26,7 +26,6 @@ export interface BaseCase {
   dataCriacao: string;
   dataAtualizacao: string;
   grupoCriadorId: number;
-  usuarioCriadorId: number;
   aprovado: boolean;
   encaminhadoAprovacao: boolean;
   dadosPessoaisSensiveis: boolean;
@@ -64,7 +63,6 @@ export const emptyBaseCase = (): BaseCase => ({
   dataCriacao: new Date().toISOString(),
   dataAtualizacao: new Date().toISOString(),
   grupoCriadorId: 0,
-  usuarioCriadorId: 0,
   aprovado: false,
   encaminhadoAprovacao: false,
   dadosPessoaisSensiveis: false,
@@ -99,7 +97,6 @@ export const emptyCase = (currentAreaTratamento?: AgenteTratamento): Case => ({
   dataCriacao: new Date().toLocaleDateString(),
   dataAtualizacao: new Date().toLocaleDateString(),
   grupoCriadorId: 0,
-  usuarioCriadorId: 0,
   aprovado: false,
   encaminhadoAprovacao: false,
   dadosPessoaisSensiveis: false,

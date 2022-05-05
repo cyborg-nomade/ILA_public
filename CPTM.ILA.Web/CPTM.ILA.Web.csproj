@@ -35,7 +35,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>App_Data/XmlDocument.xml</DocumentationFile>
+    <DocumentationFile>bin\CPTM.ILA.Web.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,6 +45,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\CPTM.ILA.Web.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
@@ -323,21 +324,23 @@
     <Compile Include="DTOs\GroupTotals.cs" />
     <Compile Include="DTOs\StatusTotals.cs" />
     <Compile Include="DTOs\ThreadStatusTotals.cs" />
+    <Compile Include="DTOs\UserDto.cs" />
     <Compile Include="Migrations\202203312006350_Existing-Model.cs" />
     <Compile Include="Migrations\202203312006350_Existing-Model.designer.cs">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202204111916447_FullModel.cs" />
-    <Compile Include="Migrations\202204111916447_FullModel.designer.cs">
-      <DependentUpon>202204111916447_FullModel.cs</DependentUpon>
+    <Compile Include="Migrations\202205051542092_FullModel.cs" />
+    <Compile Include="Migrations\202205051542092_FullModel.designer.cs">
+      <DependentUpon>202205051542092_FullModel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202204122055590_RemoveCedilhaRetencao.cs" />
-    <Compile Include="Migrations\202204122055590_RemoveCedilhaRetencao.designer.cs">
-      <DependentUpon>202204122055590_RemoveCedilhaRetencao.cs</DependentUpon>
+    <Compile Include="Migrations\202205051545038_CorrectGroupAccessExpirationsTableName.cs" />
+    <Compile Include="Migrations\202205051545038_CorrectGroupAccessExpirationsTableName.designer.cs">
+      <DependentUpon>202205051545038_CorrectGroupAccessExpirationsTableName.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
     <Compile Include="DTOs\AuthUser.cs" />
+    <Compile Include="Models\AccessControl\GroupAccessExpiration.cs" />
     <Compile Include="Models\CaseHelpers\AgenteTratamento.cs" />
     <Compile Include="Models\Case.cs" />
     <Compile Include="DTOs\CaseListItem.cs" />
@@ -506,11 +509,11 @@
     <EmbeddedResource Include="Migrations\202203312006350_Existing-Model.resx">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204111916447_FullModel.resx">
-      <DependentUpon>202204111916447_FullModel.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202205051542092_FullModel.resx">
+      <DependentUpon>202205051542092_FullModel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204122055590_RemoveCedilhaRetencao.resx">
-      <DependentUpon>202204122055590_RemoveCedilhaRetencao.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202205051545038_CorrectGroupAccessExpirationsTableName.resx">
+      <DependentUpon>202205051545038_CorrectGroupAccessExpirationsTableName.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
@@ -531,7 +534,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>58600</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/ILA</IISUrl>
+          <IISUrl>http://localhost:7000/ILA</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
           <IISAppRootUrl>http://localhost/ILA</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
