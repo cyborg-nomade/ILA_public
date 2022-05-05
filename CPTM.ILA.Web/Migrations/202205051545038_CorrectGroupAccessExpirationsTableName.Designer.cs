@@ -7,13 +7,13 @@ namespace CPTM.ILA.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class RemoveCedilhaRetencao : IMigrationMetadata
+    public sealed partial class CorrectGroupAccessExpirationsTableName : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RemoveCedilhaRetencao));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(CorrectGroupAccessExpirationsTableName));
         
         string IMigrationMetadata.Id
         {
-            get { return "202204122055590_RemoveCedilhaRetencao"; }
+            get { return "202205051545038_CorrectGroupAccessExpirationsTableName"; }
         }
         
         string IMigrationMetadata.Source

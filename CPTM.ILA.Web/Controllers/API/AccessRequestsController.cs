@@ -80,7 +80,7 @@ namespace CPTM.ILA.Web.Controllers.API
                             new { message = "Recurso não encontrado" });
                     }
 
-                    if (!(claims.IsComite))
+                    if (!(claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
@@ -323,7 +323,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
                 }
 
-                var usersInDb = await _context.Users.Include(u => u.Groups)
+                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .ToListAsync();
                 if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
 
@@ -529,7 +529,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Requisição de Acesso excluída com sucesso, após reprovação" });
                 }
 
-                var usersInDb = await _context.Users.Include(u => u.Groups)
+                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .ToListAsync();
                 if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
 
@@ -543,20 +543,21 @@ namespace CPTM.ILA.Web.Controllers.API
                         throw new ArgumentNullException(nameof(userInDb));
                     }
 
-                    userInDb.Groups = accessRequest.Groups;
-
-                    if (!userInDb.IsComite)
+                    foreach (var @group in accessRequest.Groups)
                     {
-                        userInDb.GroupAccessExpirationDate = DateTime.Now.AddDays(30);
+                        if (!userInDb.GroupAccessExpirations.Select(gae => gae.Group)
+                                .Contains(group))
+                        {
+                            userInDb.GroupAccessExpirations.Add(new GroupAccessExpiration()
+                            {
+                                ExpirationDate = userInDb.IsComite ? DateTime.MaxValue : DateTime.Now.AddDays(30),
+                                Group = group
+                            });
+                        }
                     }
 
                     _context.Entry(userInDb)
                         .State = EntityState.Modified;
-                    foreach (var @group in userInDb.Groups)
-                    {
-                        _context.Entry(group)
-                            .State = EntityState.Modified;
-                    }
 
                     _context.AccessRequests.Remove(accessRequest);
                     await _context.SaveChangesAsync();
@@ -572,15 +573,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                     var groupsInDb = await _context.Groups.ToListAsync();
 
-                    var userOriginGroup = groupsInDb.SingleOrDefault(g => g.Nome == userAd.Departamento);
-
-                    if (userOriginGroup == null)
-                    {
-                        userOriginGroup = new Group()
-                        {
-                            Nome = userAd.Departamento,
-                        };
-                    }
+                    var userOriginGroup = groupsInDb.SingleOrDefault(g => g.Nome == userAd.Departamento) ??
+                                          new Group()
+                                          {
+                                              Nome = userAd.Departamento,
+                                          };
 
                     var newUser = new User()
                     {
@@ -589,13 +586,15 @@ namespace CPTM.ILA.Web.Controllers.API
                         IsComite = false,
                         IsDPO = false,
                         IsSystem = false,
-                        Groups = new List<Group>() { userOriginGroup }
+                        GroupAccessExpirations = new List<GroupAccessExpiration>()
+                        {
+                            new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = userOriginGroup }
+                        }
                     };
 
                     if (accessRequest.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoComite)
                     {
                         newUser.IsComite = true;
-                        newUser.GroupAccessExpirationDate = DateTime.MaxValue;
                     }
 
                     _context.Users.Add(newUser);
@@ -610,7 +609,6 @@ namespace CPTM.ILA.Web.Controllers.API
                 if (accessRequest.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoComite)
                 {
                     userInDb.IsComite = true;
-                    userInDb.GroupAccessExpirationDate = DateTime.MaxValue;
 
                     _context.Entry(userInDb)
                         .State = EntityState.Modified;
@@ -706,7 +704,8 @@ namespace CPTM.ILA.Web.Controllers.API
                         IsComite = true,
                         IsDPO = true,
                         IsSystem = false,
-                        Groups = new List<Group>() { newGroup }
+                        GroupAccessExpirations = new List<GroupAccessExpiration>()
+                            { new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = newGroup } }
                     };
                     _context.Users.Add(newUser);
 
@@ -795,14 +794,10 @@ namespace CPTM.ILA.Web.Controllers.API
                         IsComite = true,
                         IsDPO = false,
                         IsSystem = false,
-                        Groups = new List<Group>() { groupInDb }
+                        GroupAccessExpirations = new List<GroupAccessExpiration>()
+                            { new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = groupInDb } }
                     };
                     _context.Users.Add(newUser);
-                    foreach (var @group in newUser.Groups)
-                    {
-                        _context.Entry(group)
-                            .State = EntityState.Modified;
-                    }
 
                     await _context.SaveChangesAsync();
 

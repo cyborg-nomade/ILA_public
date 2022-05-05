@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using System.Linq;
 using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
 
@@ -16,8 +16,7 @@ namespace CPTM.ILA.Web.Models.AccessControl
         public bool IsDPO { get; set; }
         public bool IsSystem { get; set; }
         public Group OriginGroup { get; set; }
-        public ICollection<Group> Groups { get; set; }
-        public DateTime GroupAccessExpirationDate { get; set; }
+        public ICollection<GroupAccessExpiration> GroupAccessExpirations { get; set; }
 
         public static ComiteMember ReduceToComiteMember(User user)
         {
@@ -28,6 +27,19 @@ namespace CPTM.ILA.Web.Models.AccessControl
                 Id = user.Id,
                 Nome = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(userAd.Nome.ToLower())
             };
+        }
+
+        public static UserDto ReduceToUserDto(User user)
+        {
+            var userDto = new UserDto()
+            {
+                Id = user.Id, Username = user.Username, IsComite = user.IsComite, IsDPO = user.IsDPO,
+                IsSystem = user.IsSystem, OriginGroup = user.OriginGroup, Groups = user.GroupAccessExpirations
+                    .Select(gae => gae.Group)
+                    .ToList()
+            };
+
+            return userDto;
         }
     }
 }

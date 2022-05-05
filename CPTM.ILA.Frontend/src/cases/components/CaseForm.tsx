@@ -3272,7 +3272,7 @@ const CaseForm = (props: {
               <Stack direction="horizontal" className="mt-3" gap={3}>
                 <Button
                   type="button"
-                  disabled={!(isValid && dirty)}
+                  disabled={!dirty}
                   variant="secondary"
                   className="ms-auto"
                   onClick={() => handleSaveProgressClick(values)}
