@@ -75,7 +75,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     Telefone = userAd.TelefoneComercial
                 };
 
-                var usersInDb = await _context.Users.Include(u => u.Groups)
+                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations)
                     .Include(u => u.OriginGroup)
                     .ToListAsync();
                 var userInDb = usersInDb.SingleOrDefault(u =>
@@ -89,8 +89,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         Username = userAd.Login,
                         IsComite = false,
                         IsDPO = false,
-                        IsSystem = true,
-                        GroupAccessExpirationDate = DateTime.MaxValue
+                        IsSystem = true
                     };
 
                     _context.Users.Add(userInDb);
@@ -109,7 +108,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
 
                     userInDb.OriginGroup = userOriginGroup;
-                    userInDb.Groups = new List<Group>() { userOriginGroup };
+                    userInDb.GroupAccessExpirations = new List<GroupAccessExpiration>()
+                        { new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = userOriginGroup } };
                     _context.Entry(userInDb)
                         .State = EntityState.Modified;
                     await _context.SaveChangesAsync();
@@ -121,14 +121,17 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Seu usuário ainda não tem acesso a este sistema. Solicite acesso." });
                 }
 
-                if (userInDb.GroupAccessExpirationDate <= DateTime.Now && !isDeveloper)
+                foreach (var groupAccessExpiration in userInDb.GroupAccessExpirations)
                 {
-                    userInDb.Groups = new List<Group>() { userInDb.OriginGroup };
+                    if (groupAccessExpiration.ExpirationDate <= DateTime.Now && !isDeveloper)
+                    {
+                        userInDb.GroupAccessExpirations.Remove(groupAccessExpiration);
+                    }
                 }
 
                 _context.Entry(userInDb)
                     .State = EntityState.Modified;
-                foreach (var @group in userInDb.Groups)
+                foreach (var @group in userInDb.GroupAccessExpirations)
                 {
                     _context.Entry(@group)
                         .State = EntityState.Modified;
@@ -185,7 +188,9 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var comiteMembers = await _context.Users.Where(u => u.IsComite == true)
                     .ToListAsync();
-                var selectedComiteMember = comiteMembers.FirstOrDefault(cm => cm.Groups.Contains(selectedGroup));
+                var selectedComiteMember = comiteMembers.FirstOrDefault(cm => cm.GroupAccessExpirations
+                    .Select(gae => gae.Group)
+                    .Contains(selectedGroup));
 
                 if (selectedComiteMember == null)
                 {
@@ -295,7 +300,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Usuário não encontrado.", username });
                 }
 
-                var groups = user.Groups;
+                var groups = user.GroupAccessExpirations;
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { groups });
             }
@@ -333,7 +338,7 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var userToDelete = await _context.Users.Where(u => u.Id == uid)
-                    .Include(u => u.Groups)
+                    .Include(u => u.GroupAccessExpirations)
                     .Include(u => u.OriginGroup)
                     .SingleOrDefaultAsync();
                 if (userToDelete == null)
