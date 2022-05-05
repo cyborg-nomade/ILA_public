@@ -170,7 +170,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
                 }
 
-                var comiteMembers = await _context.Users.Where(u => u.IsComite == true)
+                var comiteMembers = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .Where(u => u.IsComite == true)
                     .ToListAsync();
                 var selectedComiteMember = comiteMembers.FirstOrDefault(cm => cm.GroupAccessExpirations
                     .Select(gae => gae.Group)
