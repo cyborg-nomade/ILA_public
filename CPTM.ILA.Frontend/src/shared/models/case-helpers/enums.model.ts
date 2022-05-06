@@ -49,7 +49,7 @@ export enum tipoFontesRetencao {
 }
 
 export enum tipoFrequenciaTratamento {
-  total24por7 = "27/7",
+  total24por7 = "24/7",
   horarioOperacional = "Horário Operacional",
   horarioComercial = "Horário Comercial",
 }
