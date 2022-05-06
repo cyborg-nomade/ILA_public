@@ -14,7 +14,7 @@
 
         public string Value { get; set; }
 
-        public static TipoFrequenciaTratamento Total24por7() => new TipoFrequenciaTratamento("27/7");
+        public static TipoFrequenciaTratamento Total24por7() => new TipoFrequenciaTratamento("24/7");
 
         public static TipoFrequenciaTratamento HorarioOperacional() =>
             new TipoFrequenciaTratamento("Horário Operacional");
