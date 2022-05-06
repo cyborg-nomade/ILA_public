@@ -3281,7 +3281,7 @@ const CaseForm = (props: {
                 </Button>
                 <Button
                   type="button"
-                  disabled={!(isValid && dirty)}
+                  disabled={!isValid}
                   variant="warning"
                   onClick={() => handleSendToApprovalClick(values)}
                 >
