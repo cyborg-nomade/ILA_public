@@ -3,7 +3,7 @@ import {
   DatatableWrapper,
   Filter,
   Pagination,
-  PaginationOpts,
+  PaginationOptions,
   TableBody,
   TableHeader,
 } from "react-bs-datatable";
@@ -91,7 +91,7 @@ const AccessRequestsList = (props: { items: AccessRequestDTO[] }) => {
             lg={4}
             className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0 my-auto"
           >
-            <PaginationOpts labels={{ beforeSelect: "Linhas por página" }} />
+            <PaginationOptions labels={{ beforeSelect: "Linhas por página" }} />
           </Col>
           <Col
             xs={12}
@@ -111,8 +111,11 @@ const AccessRequestsList = (props: { items: AccessRequestDTO[] }) => {
           </Col>
         </Row>
         <Table>
-          <TableHeader tableHeaders={headers} />
-          <TableBody onRowClick={handleRowClick} />
+          <TableHeader />
+          <TableBody
+            onRowClick={handleRowClick}
+            labels={{ noResults: "Nenhum resultado encontrado" }}
+          />
         </Table>
       </DatatableWrapper>
     </Card>
