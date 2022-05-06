@@ -424,6 +424,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     var pendingCases = await _context.Cases.CountAsync(c =>
                         comiteMemberGroupsIds.Contains(c.GrupoCriadorId) && !c.Aprovado && c.EncaminhadoAprovacao);
 
+                    if (pendingCases == 0) continue;
 
                     totals.Add(new ExtensaoEncarregadoTotals()
                     {
