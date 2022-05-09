@@ -768,6 +768,67 @@ const NewForm = (props: {
                 <NewSection3FormRow disabled={!isEditing} />
               </Accordion.Body>
             </Accordion.Item>
+            <Accordion.Item eventKey="3">
+              <Accordion.Header>
+                4 - Fluxo de Tratamento de Dados Pessoais
+              </Accordion.Header>
+              <Accordion.Body>
+                <Row className="mb-3">
+                  <Col lg={1}>
+                    <p>{CaseIndexDictionary.descricaoFluxoTratamento}</p>
+                  </Col>
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={
+                      <Tooltip className="text-muted">
+                        Descrever como (de que forma) os dados pessoais são
+                        coletados, retidos/armazenados, processados/ usados e
+                        eliminados. Nessa seção, pode até ser colocado um
+                        desenho com um fluxo de dados. Abaixo, segue exemplo de
+                        descrição do fluxo de dados.
+                      </Tooltip>
+                    }
+                  >
+                    <Form.Label as={Col}>Descrição do Fluxo</Form.Label>
+                  </OverlayTrigger>
+                  <Col lg={8}>
+                    <Controller
+                      rules={{ required: true, maxLength: 250 }}
+                      control={methods.control}
+                      name="descricaoFluxoTratamento"
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <Form.Control
+                          disabled={!isEditing}
+                          as="textarea"
+                          rows={5}
+                          type="text"
+                          onChange={onChange}
+                          onBlur={onBlur}
+                          value={value}
+                          ref={ref}
+                          isInvalid={
+                            methods.formState.errors.descricaoFluxoTratamento
+                              ? true
+                              : false
+                          }
+                          placeholder="Descreva o fluxo de tratamento..."
+                        />
+                      )}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Esse campo é obrigatório
+                    </Form.Control.Feedback>
+                  </Col>
+                  <Col lg={1}>
+                    <Row>
+                      <CreateCommentBox
+                        item={CaseIndexDictionary.descricaoFluxoTratamento}
+                      />
+                    </Row>
+                  </Col>
+                </Row>
+              </Accordion.Body>
+            </Accordion.Item>
           </Accordion>
           {props.new && (
             <Stack direction="horizontal" className="mt-3" gap={3}>
