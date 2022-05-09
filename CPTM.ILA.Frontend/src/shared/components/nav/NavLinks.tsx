@@ -44,6 +44,11 @@ const NavLinks = () => {
           Formulário
         </Nav.Link>
       )}
+      {isLoggedIn && !user.isComite && (
+        <Nav.Link as={NavLink} to={`${user.id}/cases/register/new-new-form`}>
+          New Form
+        </Nav.Link>
+      )}
       {isLoggedIn && user.isComite && !user.isDPO && (
         <Nav.Link as={NavLink} to={`comite/cases/approve/`}>
           Aprovar Processos
