@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, Controller, FormProvider } from "react-hook-form";
+import Select from "react-select";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -824,6 +825,93 @@ const NewForm = (props: {
                       <CreateCommentBox
                         item={CaseIndexDictionary.descricaoFluxoTratamento}
                       />
+                    </Row>
+                  </Col>
+                </Row>
+              </Accordion.Body>
+            </Accordion.Item>
+            <Accordion.Item eventKey="4">
+              <Accordion.Header>
+                5 - Escopo e Natureza dos Dados Pessoais
+              </Accordion.Header>
+              <Accordion.Body>
+                <Row className="mb-3">
+                  <Col lg={1}>
+                    <p>{CaseIndexDictionary.abrangenciaGeografica}</p>
+                  </Col>
+                  <Form.Label as={Col}>
+                    Abrangência da área geográfica do tratamento
+                  </Form.Label>
+                  <Col lg={8}>
+                    <Controller
+                      rules={{ required: true }}
+                      control={methods.control}
+                      name="abrangenciaGeografica.value"
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <Form.Select
+                          disabled={!isEditing}
+                          onChange={onChange}
+                          onBlur={onBlur}
+                          value={value}
+                          ref={ref}
+                          isInvalid={
+                            methods.formState.errors.abrangenciaGeografica
+                              ?.value
+                              ? true
+                              : false
+                          }
+                          placeholder="Insira o nome do processo"
+                        >
+                          {Object.values(tipoAbrangenciaGeografica).map(
+                            (tag) => (
+                              <option value={tag} key={tag}>
+                                {tag}
+                              </option>
+                            )
+                          )}
+                        </Form.Select>
+                      )}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Esse campo é obrigatório
+                    </Form.Control.Feedback>
+                  </Col>
+                  <Col lg={1}>
+                    <Row>
+                      <CreateCommentBox
+                        item={CaseIndexDictionary.abrangenciaGeografica}
+                      />
+                    </Row>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col lg={1}>
+                    <p>{CaseIndexDictionary.fonteDados}</p>
+                  </Col>
+                  <Form.Label as={Col}>
+                    Fonte de dados utilizada para obtenção dos dados pessoais
+                  </Form.Label>
+                  <Col lg={8}>
+                    <Controller
+                      rules={{ required: true }}
+                      control={methods.control}
+                      name="fonteDados"
+                      render={({ field: { onChange, value, name, ref } }) => (
+                        <Select
+                          ref={ref}
+                          options={systems.map((s) => ({ value: s, label: s }))}
+                          value={systems
+                            .map((s) => ({ value: s, label: s }))
+                            .find((c) => c.value === value)}
+                          onChange={(val) => onChange(val?.value)}
+                          isSearchable
+                        />
+                      )}
+                    />
+                  </Col>
+                  <Col lg={1}>
+                    <Row>
+                      <CreateCommentBox item={CaseIndexDictionary.fonteDados} />
                     </Row>
                   </Col>
                 </Row>
