@@ -8,6 +8,7 @@ import { AuthContext } from "./shared/context/auth-context";
 import { useAuth } from "./shared/hooks/auth-hook";
 import MainHeader from "./shared/components/nav/MainHeader";
 import "./App.css";
+import NewCaseNewForm from "./cases/pages/NewCaseNewForm";
 
 const AllCasesListGetter = React.lazy(
   () => import("./cases/pages/AllCasesListGetter")
@@ -105,6 +106,10 @@ const App = () => {
           </Route>
         </Route>
         <Route path="/:uid/cases/register/new" element={<NewCase />} />
+        <Route
+          path="/:uid/cases/register/new-new-form"
+          element={<NewCaseNewForm />}
+        />
         <Route path="/:uid/cases/continue/:cid" element={<ContinueCase />} />
         <Route path="/:uid/cases/edit/:cid" element={<EditCase />} />
         <Route path="/request-group-access" element={<RequestGroupAccess />} />
