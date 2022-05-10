@@ -249,84 +249,55 @@ const NewForm = (props: {
           Ocorreu um erro ao enviar o processo: {error}
         </Alert>
       )}
-      <FormProvider {...methods}>
-        <Form>
-          <Accordion defaultActiveKey="0">
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>1 - Identificação</Accordion.Header>
-              <Accordion.Body>
-                <Row className="mb-3 align-items-center">
-                  <Col lg={1}>
-                    <p>{CaseIndexDictionary.nome}</p>
-                  </Col>
-                  <Form.Group as={Col} controlId="validationFormik01">
-                    <Form.Label>Nome</Form.Label>
-                    <Controller
-                      rules={{ required: true, maxLength: 250 }}
-                      control={methods.control}
-                      name="nome"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          isInvalid={
-                            methods.formState.errors.nome ? true : false
-                          }
-                          placeholder="Insira o nome do processo"
-                        />
-                      )}
-                    />
-                    <Form.Text className="text-muted">
-                      Informar nome do serviço ofertado à sociedade ou nome do
-                      processo de negócio que realiza tratamento dos dados
-                      pessoais. Exemplo: Avaliações de Alimentos; Cancelamento e
-                      Renovação de Registros de Alimentos; e etc..
-                    </Form.Text>
-                    <Form.Control.Feedback type="invalid">
-                      Esse campo é obrigatório
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Row>
-                {!props.new && (
-                  <Row className="mb-3">
-                    <Col lg={1}>
-                      <p>{CaseIndexDictionary.id}</p>
-                    </Col>
-                    <Form.Group as={Col} controlId="validationFormik02">
-                      <Form.Label>ID</Form.Label>
-                      <Controller
-                        control={methods.control}
-                        name="id"
-                        render={({
-                          field: { onChange, onBlur, value, ref },
-                        }) => (
-                          <Form.Control
-                            disabled
-                            type="text"
-                            onChange={onChange}
-                            onBlur={onBlur}
-                            value={value}
-                            ref={ref}
-                            readOnly
-                          />
-                        )}
+      <Form>
+        <Accordion defaultActiveKey="0">
+          <Accordion.Item eventKey="0">
+            <Accordion.Header>1 - Identificação</Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3 align-items-center">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.nome}</p>
+                </Col>
+                <Form.Group as={Col} controlId="validationFormik01">
+                  <Form.Label>Nome</Form.Label>
+                  <Controller
+                    rules={{ required: true, maxLength: 250 }}
+                    control={methods.control}
+                    name="nome"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        isInvalid={methods.formState.errors.nome ? true : false}
+                        placeholder="Insira o nome do processo"
                       />
-                    </Form.Group>
-                  </Row>
-                )}
+                    )}
+                  />
+                  <Form.Text className="text-muted">
+                    Informar nome do serviço ofertado à sociedade ou nome do
+                    processo de negócio que realiza tratamento dos dados
+                    pessoais. Exemplo: Avaliações de Alimentos; Cancelamento e
+                    Renovação de Registros de Alimentos; e etc..
+                  </Form.Text>
+                  <Form.Control.Feedback type="invalid">
+                    Esse campo é obrigatório
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+              {!props.new && (
                 <Row className="mb-3">
                   <Col lg={1}>
-                    <p>{CaseIndexDictionary.dataCriacao}</p>
+                    <p>{CaseIndexDictionary.id}</p>
                   </Col>
-                  <Form.Group as={Col} controlId="validationFormik03">
-                    <Form.Label>Data de Criação do Inventário</Form.Label>
+                  <Form.Group as={Col} controlId="validationFormik02">
+                    <Form.Label>ID</Form.Label>
                     <Controller
                       control={methods.control}
-                      name="dataCriacao"
+                      name="id"
                       render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Form.Control
                           disabled
@@ -341,722 +312,721 @@ const NewForm = (props: {
                     />
                   </Form.Group>
                 </Row>
-                <Row className="mb-3">
-                  <Col lg={1}>
-                    <p>{CaseIndexDictionary.dataAtualizacao}</p>
-                  </Col>
-                  <Form.Group as={Col} controlId="validationFormik04">
-                    <Form.Label>Data Atualização do Inventário</Form.Label>
-                    <Controller
-                      control={methods.control}
-                      name="dataAtualizacao"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Form.Group>
-                </Row>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>
-                2 - Agentes de Tratamento e Encarregado
-              </Accordion.Header>
-              <Accordion.Body>
-                <Row className="mb-3">
-                  <Form.Label as={Col}></Form.Label>
-                  <Form.Label as={Col}>Nome</Form.Label>
-                  <Form.Label as={Col}>Área</Form.Label>
-                  <Form.Label as={Col}>Telefone</Form.Label>
-                  <Form.Label as={Col}>E-mail</Form.Label>
-                </Row>
-                <Row className="mb-3">
-                  <Col lg={1}>
-                    <p>{CaseIndexDictionary.controlador}</p>
-                  </Col>
-                  <Col>
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip className="text-muted">
-                          Pessoa natural ou jurídica, de direito público ou
-                          privado, a quem competem as decisões referentes ao
-                          tratamento de dados pessoais (LGPD, art. 5º, IV).
-                          Informar o nome do órgão ou entidade.
-                        </Tooltip>
-                      }
-                    >
-                      <Form.Label>Controlador</Form.Label>
-                    </OverlayTrigger>
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="controlador.nome"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Control disabled />
-                  </Col>
-                  <Col>
-                    <Form.Control disabled />
-                  </Col>
-                  <Col>
-                    <Form.Control disabled />
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col lg={1}>
-                    <p>{CaseIndexDictionary.encarregado}</p>
-                  </Col>
-                  <Col>
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip className="text-muted">
-                          Pessoa indicada pelo controlador e operador para atuar
-                          como canal de comunicação entre o controlador, os
-                          titulares dos dados e a Autoridade Nacional de
-                          Proteção de Dados - ANPD (LGPD, art. 5º, VIII)
-                        </Tooltip>
-                      }
-                    >
-                      <Form.Label>Encarregado</Form.Label>
-                    </OverlayTrigger>
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="encarregado.nome"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="encarregado.area"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="encarregado.telefone"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="encarregado.email"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col lg={1}>
-                    <p>{CaseIndexDictionary.extensaoEncarregado}</p>
-                  </Col>
-                  <Col>
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip className="text-muted">
-                          Pessoa indicada pelo controlador e operador para atuar
-                          como canal de comunicação entre o controlador, os
-                          titulares dos dados e a Autoridade Nacional de
-                          Proteção de Dados - ANPD (LGPD, art. 5º, VIII)
-                        </Tooltip>
-                      }
-                    >
-                      <Form.Label>Extensão Encarregado</Form.Label>
-                    </OverlayTrigger>
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="extensaoEncarregado.nome"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="extensaoEncarregado.area"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="extensaoEncarregado.telefone"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="extensaoEncarregado.email"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col lg={1}>
-                    <p>{CaseIndexDictionary.areaTratamentoDados}</p>
-                  </Col>
-                  <Col>
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip className="text-muted">
-                          Pessoa indicada pelo controlador e operador para atuar
-                          como canal de comunicação entre o controlador, os
-                          titulares dos dados e a Autoridade Nacional de
-                          Proteção de Dados - ANPD (LGPD, art. 5º, VIII)
-                        </Tooltip>
-                      }
-                    >
-                      <Form.Label>Área Tratamento Dados</Form.Label>
-                    </OverlayTrigger>
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="areaTratamentoDados.nome"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="areaTratamentoDados.area"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="areaTratamentoDados.telefone"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col>
-                    <Controller
-                      control={methods.control}
-                      name="areaTratamentoDados.email"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          readOnly
-                        />
-                      )}
-                    />
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col lg={1}>
-                    <p>{CaseIndexDictionary.operador}</p>
-                  </Col>
-                  <Col>
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip className="text-muted">
-                          Pessoa natural ou jurídica, de direito público ou
-                          privado, que realiza o tratamento de dados pessoais em
-                          nome do controlador; (LGPD, art. 5º, VII)
-                        </Tooltip>
-                      }
-                    >
-                      <Form.Label>Operador</Form.Label>
-                    </OverlayTrigger>
-                  </Col>
-                  <Col>
-                    <Form.Control disabled />
-                  </Col>
-                  <Col>
-                    <Form.Control disabled />
-                  </Col>
-                  <Col>
-                    <Form.Control disabled />
-                  </Col>
-                  <Col>
-                    <Form.Control disabled />
-                  </Col>
-                </Row>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>
-                3 - Fases do Ciclo de Vida do Tratamento de Dados Pessoais
-              </Accordion.Header>
-              <Accordion.Body>
-                <Row className="mb-3">
-                  <Form.Label as={Col} lg={1}></Form.Label>
-                  <Form.Label as={Col}></Form.Label>
-                  <Form.Label
-                    as={Col}
-                    className="d-grid justify-content-center"
-                  >
-                    Atua?
-                  </Form.Label>
-                  <Form.Label
-                    as={Col}
-                    className="d-grid justify-content-center"
-                  >
-                    Coleta
-                  </Form.Label>
-                  <Form.Label
-                    as={Col}
-                    className="d-grid justify-content-center"
-                  >
-                    Retenção
-                  </Form.Label>
-                  <Form.Label
-                    as={Col}
-                    className="d-grid justify-content-center"
-                  >
-                    Processamento
-                  </Form.Label>
-                  <Form.Label
-                    as={Col}
-                    className="d-grid justify-content-center"
-                  >
-                    Compartilhamento
-                  </Form.Label>
-                  <Form.Label
-                    as={Col}
-                    className="d-grid justify-content-center"
-                  >
-                    Eliminação
-                  </Form.Label>
-                  <Form.Label as={Col} lg={1}></Form.Label>
-                </Row>
-                <NewSection3FormRow disabled={!isEditing} />
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="3">
-              <Accordion.Header>
-                4 - Fluxo de Tratamento de Dados Pessoais
-              </Accordion.Header>
-              <Accordion.Body>
-                <Row className="mb-3">
-                  <Col lg={1}>
-                    <p>{CaseIndexDictionary.descricaoFluxoTratamento}</p>
-                  </Col>
+              )}
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.dataCriacao}</p>
+                </Col>
+                <Form.Group as={Col} controlId="validationFormik03">
+                  <Form.Label>Data de Criação do Inventário</Form.Label>
+                  <Controller
+                    control={methods.control}
+                    name="dataCriacao"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Form.Group>
+              </Row>
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.dataAtualizacao}</p>
+                </Col>
+                <Form.Group as={Col} controlId="validationFormik04">
+                  <Form.Label>Data Atualização do Inventário</Form.Label>
+                  <Controller
+                    control={methods.control}
+                    name="dataAtualizacao"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Form.Group>
+              </Row>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="1">
+            <Accordion.Header>
+              2 - Agentes de Tratamento e Encarregado
+            </Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3">
+                <Form.Label as={Col}></Form.Label>
+                <Form.Label as={Col}>Nome</Form.Label>
+                <Form.Label as={Col}>Área</Form.Label>
+                <Form.Label as={Col}>Telefone</Form.Label>
+                <Form.Label as={Col}>E-mail</Form.Label>
+              </Row>
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.controlador}</p>
+                </Col>
+                <Col>
                   <OverlayTrigger
                     placement="right"
                     overlay={
                       <Tooltip className="text-muted">
-                        Descrever como (de que forma) os dados pessoais são
-                        coletados, retidos/armazenados, processados/ usados e
-                        eliminados. Nessa seção, pode até ser colocado um
-                        desenho com um fluxo de dados. Abaixo, segue exemplo de
-                        descrição do fluxo de dados.
+                        Pessoa natural ou jurídica, de direito público ou
+                        privado, a quem competem as decisões referentes ao
+                        tratamento de dados pessoais (LGPD, art. 5º, IV).
+                        Informar o nome do órgão ou entidade.
                       </Tooltip>
                     }
                   >
-                    <Form.Label as={Col}>Descrição do Fluxo</Form.Label>
+                    <Form.Label>Controlador</Form.Label>
                   </OverlayTrigger>
-                  <Col lg={8}>
-                    <Controller
-                      rules={{ required: true, maxLength: 250 }}
-                      control={methods.control}
-                      name="descricaoFluxoTratamento"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Control
-                          disabled={!isEditing}
-                          as="textarea"
-                          rows={5}
-                          type="text"
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          isInvalid={
-                            methods.formState.errors.descricaoFluxoTratamento
-                              ? true
-                              : false
-                          }
-                          placeholder="Descreva o fluxo de tratamento..."
-                        />
-                      )}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Esse campo é obrigatório
-                    </Form.Control.Feedback>
-                  </Col>
-                  <Col lg={1}>
-                    <Row>
-                      <CreateCommentBox
-                        item={CaseIndexDictionary.descricaoFluxoTratamento}
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="controlador.nome"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
                       />
-                    </Row>
-                  </Col>
-                </Row>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="4">
-              <Accordion.Header>
-                5 - Escopo e Natureza dos Dados Pessoais
-              </Accordion.Header>
-              <Accordion.Body>
-                <Row className="mb-3">
-                  <Col lg={1}>
-                    <p>{CaseIndexDictionary.abrangenciaGeografica}</p>
-                  </Col>
-                  <Form.Label as={Col}>
-                    Abrangência da área geográfica do tratamento
-                  </Form.Label>
-                  <Col lg={8}>
-                    <Controller
-                      rules={{ required: true }}
-                      control={methods.control}
-                      name="abrangenciaGeografica.value"
-                      render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <Form.Select
-                          disabled={!isEditing}
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          ref={ref}
-                          isInvalid={
-                            methods.formState.errors.abrangenciaGeografica
-                              ?.value
-                              ? true
-                              : false
-                          }
-                          placeholder="Insira o nome do processo"
-                        >
-                          {Object.values(tipoAbrangenciaGeografica).map(
-                            (tag) => (
-                              <option value={tag} key={tag}>
-                                {tag}
-                              </option>
-                            )
-                          )}
-                        </Form.Select>
-                      )}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Esse campo é obrigatório
-                    </Form.Control.Feedback>
-                  </Col>
-                  <Col lg={1}>
-                    <Row>
-                      <CreateCommentBox
-                        item={CaseIndexDictionary.abrangenciaGeografica}
+                    )}
+                  />
+                </Col>
+                <Col>
+                  <Form.Control disabled />
+                </Col>
+                <Col>
+                  <Form.Control disabled />
+                </Col>
+                <Col>
+                  <Form.Control disabled />
+                </Col>
+              </Row>
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.encarregado}</p>
+                </Col>
+                <Col>
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={
+                      <Tooltip className="text-muted">
+                        Pessoa indicada pelo controlador e operador para atuar
+                        como canal de comunicação entre o controlador, os
+                        titulares dos dados e a Autoridade Nacional de Proteção
+                        de Dados - ANPD (LGPD, art. 5º, VIII)
+                      </Tooltip>
+                    }
+                  >
+                    <Form.Label>Encarregado</Form.Label>
+                  </OverlayTrigger>
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="encarregado.nome"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
                       />
-                    </Row>
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col lg={1}>
-                    <p>{CaseIndexDictionary.fonteDados}</p>
-                  </Col>
-                  <Form.Label as={Col}>
-                    Fonte de dados utilizada para obtenção dos dados pessoais
-                  </Form.Label>
-                  <Col lg={8}>
-                    <Controller
-                      rules={{ required: true }}
-                      control={methods.control}
-                      name="fonteDados"
-                      render={({ field: { onChange, value, name, ref } }) => (
-                        <Select
-                          ref={ref}
-                          options={systems.map((s) => ({ value: s, label: s }))}
-                          value={systems
-                            .map((s) => ({ value: s, label: s }))
-                            .find((c) => c.value === value)}
-                          onChange={(val) => onChange(val?.value)}
-                          isSearchable
-                        />
-                      )}
+                    )}
+                  />
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="encarregado.area"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="encarregado.telefone"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="encarregado.email"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+              </Row>
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.extensaoEncarregado}</p>
+                </Col>
+                <Col>
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={
+                      <Tooltip className="text-muted">
+                        Pessoa indicada pelo controlador e operador para atuar
+                        como canal de comunicação entre o controlador, os
+                        titulares dos dados e a Autoridade Nacional de Proteção
+                        de Dados - ANPD (LGPD, art. 5º, VIII)
+                      </Tooltip>
+                    }
+                  >
+                    <Form.Label>Extensão Encarregado</Form.Label>
+                  </OverlayTrigger>
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="extensaoEncarregado.nome"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="extensaoEncarregado.area"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="extensaoEncarregado.telefone"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="extensaoEncarregado.email"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+              </Row>
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.areaTratamentoDados}</p>
+                </Col>
+                <Col>
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={
+                      <Tooltip className="text-muted">
+                        Pessoa indicada pelo controlador e operador para atuar
+                        como canal de comunicação entre o controlador, os
+                        titulares dos dados e a Autoridade Nacional de Proteção
+                        de Dados - ANPD (LGPD, art. 5º, VIII)
+                      </Tooltip>
+                    }
+                  >
+                    <Form.Label>Área Tratamento Dados</Form.Label>
+                  </OverlayTrigger>
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="areaTratamentoDados.nome"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="areaTratamentoDados.area"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="areaTratamentoDados.telefone"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+                <Col>
+                  <Controller
+                    control={methods.control}
+                    name="areaTratamentoDados.email"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        readOnly
+                      />
+                    )}
+                  />
+                </Col>
+              </Row>
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.operador}</p>
+                </Col>
+                <Col>
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={
+                      <Tooltip className="text-muted">
+                        Pessoa natural ou jurídica, de direito público ou
+                        privado, que realiza o tratamento de dados pessoais em
+                        nome do controlador; (LGPD, art. 5º, VII)
+                      </Tooltip>
+                    }
+                  >
+                    <Form.Label>Operador</Form.Label>
+                  </OverlayTrigger>
+                </Col>
+                <Col>
+                  <Form.Control disabled />
+                </Col>
+                <Col>
+                  <Form.Control disabled />
+                </Col>
+                <Col>
+                  <Form.Control disabled />
+                </Col>
+                <Col>
+                  <Form.Control disabled />
+                </Col>
+              </Row>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="2">
+            <Accordion.Header>
+              3 - Fases do Ciclo de Vida do Tratamento de Dados Pessoais
+            </Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3">
+                <Form.Label as={Col} lg={1}></Form.Label>
+                <Form.Label as={Col}></Form.Label>
+                <Form.Label as={Col} className="d-grid justify-content-center">
+                  Atua?
+                </Form.Label>
+                <Form.Label as={Col} className="d-grid justify-content-center">
+                  Coleta
+                </Form.Label>
+                <Form.Label as={Col} className="d-grid justify-content-center">
+                  Retenção
+                </Form.Label>
+                <Form.Label as={Col} className="d-grid justify-content-center">
+                  Processamento
+                </Form.Label>
+                <Form.Label as={Col} className="d-grid justify-content-center">
+                  Compartilhamento
+                </Form.Label>
+                <Form.Label as={Col} className="d-grid justify-content-center">
+                  Eliminação
+                </Form.Label>
+                <Form.Label as={Col} lg={1}></Form.Label>
+              </Row>
+              <NewSection3FormRow disabled={!isEditing} methods={methods} />
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="3">
+            <Accordion.Header>
+              4 - Fluxo de Tratamento de Dados Pessoais
+            </Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.descricaoFluxoTratamento}</p>
+                </Col>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip className="text-muted">
+                      Descrever como (de que forma) os dados pessoais são
+                      coletados, retidos/armazenados, processados/ usados e
+                      eliminados. Nessa seção, pode até ser colocado um desenho
+                      com um fluxo de dados. Abaixo, segue exemplo de descrição
+                      do fluxo de dados.
+                    </Tooltip>
+                  }
+                >
+                  <Form.Label as={Col}>Descrição do Fluxo</Form.Label>
+                </OverlayTrigger>
+                <Col lg={8}>
+                  <Controller
+                    rules={{ required: true, maxLength: 250 }}
+                    control={methods.control}
+                    name="descricaoFluxoTratamento"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        disabled={!isEditing}
+                        as="textarea"
+                        rows={5}
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        isInvalid={
+                          methods.formState.errors.descricaoFluxoTratamento
+                            ? true
+                            : false
+                        }
+                        placeholder="Descreva o fluxo de tratamento..."
+                      />
+                    )}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Esse campo é obrigatório
+                  </Form.Control.Feedback>
+                </Col>
+                <Col lg={1}>
+                  <Row>
+                    <CreateCommentBox
+                      item={CaseIndexDictionary.descricaoFluxoTratamento}
                     />
-                  </Col>
-                  <Col lg={1}>
-                    <Row>
-                      <CreateCommentBox item={CaseIndexDictionary.fonteDados} />
-                    </Row>
-                  </Col>
-                </Row>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="5">
-              <Accordion.Header>
-                6 - Finalidade do Tratamento de Dados Pessoais
-              </Accordion.Header>
-              <Accordion.Body>
-                <NewSection6FormRow
-                  label="Hipótese de Tratamento"
-                  tooltip={
-                    <p>
-                      As hipóteses de tratamento estão descritas nos arts. 7º e
-                      11 da LGPD.
-                      <br />
-                      <b>
-                        Os órgãos e entidades da administração pública tem a
-                        prerrogativa de tratar os dados pessoais para o
-                        exercício de suas competências legais ou execução de
-                        políticas públicas sem a necessidade de obter
-                        consentimento do titular dos dados pessoais.
-                      </b>
-                    </p>
-                  }
-                  disabled={!isEditing}
-                  name="finalidadeTratamento.hipoteseTratamento.value"
-                  type="select"
-                  invalid="Esse campo é obrigatório"
-                  itemRef={
-                    CaseIndexDictionary.finalidadeTratamento.hipoteseTratamento
-                  }
-                  methods={methods}
-                  rules={{ required: true }}
-                />
-                <NewSection6FormRow
-                  label="Finalidade"
-                  tooltip={
-                    <p>
-                      Razão ou motivo pela qual se deseja tratar os dados
-                      pessoais. É importantíssimo estabelecer claramente a
-                      finalidade, pois é ela que justifica o tratamento de dados
-                      pessoais e fornece os elementos para informar o titular
-                      dos dados.
-                    </p>
-                  }
-                  disabled
-                  name="finalidadeTratamento.descricaoFinalidade"
-                  type="text"
-                  invalid="Esse campo é obrigatório"
-                  itemRef={
-                    CaseIndexDictionary.finalidadeTratamento.descricaoFinalidade
-                  }
-                  methods={methods}
-                  rules={{ required: true }}
-                />
-                <NewSection6FormRow
-                  label="Previsão legal"
-                  tooltip={
-                    <p>
-                      Informar Lei, Decreto, normativo ou regulamento que
-                      respalda a finalidade do tratamento de dados pessoais
-                      realizado.
-                      <br />
-                      <br />
-                      <b>
-                        Exemplo fícitício de previsão legal considerando o
-                        Programa de Localização de Desaparecidos:
-                      </b>
-                      <br />• Decreto nº 8.956, de 25 de janeiro de 2218,
-                      institui o Programa de Localização de Desaparecidos.
-                    </p>
-                  }
-                  disabled={
-                    !isEditing ||
-                    methods.getValues().finalidadeTratamento.hipoteseTratamento
-                      .value !== hipotesesTratamento.obrigacaoLegal
-                  }
-                  name="finalidadeTratamento.previsaoLegal"
-                  type="text"
-                  invalid="Esse campo é obrigatório"
-                  itemRef={
-                    CaseIndexDictionary.finalidadeTratamento.previsaoLegal
-                  }
-                  methods={methods}
-                  rules={
-                    methods.getValues().finalidadeTratamento.hipoteseTratamento
-                      .value === hipotesesTratamento.obrigacaoLegal
-                      ? { required: true }
-                      : { required: false }
-                  }
-                />
-                <NewSection6FormRow
-                  label="Resultados pretendidos para o titular de dados"
-                  disabled={!isEditing}
-                  name="finalidadeTratamento.resultadosTitular"
-                  type="text"
-                  invalid="Esse campo é obrigatório"
-                  itemRef={
-                    CaseIndexDictionary.finalidadeTratamento.resultadosTitular
-                  }
-                  methods={methods}
-                  rules={{ required: true }}
-                />
-                <NewSection6FormRow
-                  label="Benefícios esperados para o órgão, entidade ou para a
+                  </Row>
+                </Col>
+              </Row>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="4">
+            <Accordion.Header>
+              5 - Escopo e Natureza dos Dados Pessoais
+            </Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.abrangenciaGeografica}</p>
+                </Col>
+                <Form.Label as={Col}>
+                  Abrangência da área geográfica do tratamento
+                </Form.Label>
+                <Col lg={8}>
+                  <Controller
+                    rules={{ required: true }}
+                    control={methods.control}
+                    name="abrangenciaGeografica.value"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Select
+                        disabled={!isEditing}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        isInvalid={
+                          methods.formState.errors.abrangenciaGeografica?.value
+                            ? true
+                            : false
+                        }
+                        placeholder="Insira o nome do processo"
+                      >
+                        {Object.values(tipoAbrangenciaGeografica).map((tag) => (
+                          <option value={tag} key={tag}>
+                            {tag}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    )}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Esse campo é obrigatório
+                  </Form.Control.Feedback>
+                </Col>
+                <Col lg={1}>
+                  <Row>
+                    <CreateCommentBox
+                      item={CaseIndexDictionary.abrangenciaGeografica}
+                    />
+                  </Row>
+                </Col>
+              </Row>
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.fonteDados}</p>
+                </Col>
+                <Form.Label as={Col}>
+                  Fonte de dados utilizada para obtenção dos dados pessoais
+                </Form.Label>
+                <Col lg={8}>
+                  <Controller
+                    rules={{ required: true }}
+                    control={methods.control}
+                    name="fonteDados"
+                    render={({ field: { onChange, value, name, ref } }) => (
+                      <Select
+                        ref={ref}
+                        options={systems.map((s) => ({ value: s, label: s }))}
+                        value={systems
+                          .map((s) => ({ value: s, label: s }))
+                          .find((c) => c.value === value)}
+                        onChange={(val) => onChange(val?.value)}
+                        isSearchable
+                      />
+                    )}
+                  />
+                </Col>
+                <Col lg={1}>
+                  <Row>
+                    <CreateCommentBox item={CaseIndexDictionary.fonteDados} />
+                  </Row>
+                </Col>
+              </Row>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="5">
+            <Accordion.Header>
+              6 - Finalidade do Tratamento de Dados Pessoais
+            </Accordion.Header>
+            <Accordion.Body>
+              <NewSection6FormRow
+                label="Hipótese de Tratamento"
+                tooltip={
+                  <p>
+                    As hipóteses de tratamento estão descritas nos arts. 7º e 11
+                    da LGPD.
+                    <br />
+                    <b>
+                      Os órgãos e entidades da administração pública tem a
+                      prerrogativa de tratar os dados pessoais para o exercício
+                      de suas competências legais ou execução de políticas
+                      públicas sem a necessidade de obter consentimento do
+                      titular dos dados pessoais.
+                    </b>
+                  </p>
+                }
+                disabled={!isEditing}
+                name="finalidadeTratamento.hipoteseTratamento.value"
+                type="select"
+                invalid="Esse campo é obrigatório"
+                itemRef={
+                  CaseIndexDictionary.finalidadeTratamento.hipoteseTratamento
+                }
+                methods={methods}
+                rules={{ required: true }}
+              />
+              <NewSection6FormRow
+                label="Finalidade"
+                tooltip={
+                  <p>
+                    Razão ou motivo pela qual se deseja tratar os dados
+                    pessoais. É importantíssimo estabelecer claramente a
+                    finalidade, pois é ela que justifica o tratamento de dados
+                    pessoais e fornece os elementos para informar o titular dos
+                    dados.
+                  </p>
+                }
+                disabled
+                name="finalidadeTratamento.descricaoFinalidade"
+                type="text"
+                invalid="Esse campo é obrigatório"
+                itemRef={
+                  CaseIndexDictionary.finalidadeTratamento.descricaoFinalidade
+                }
+                methods={methods}
+                rules={{ required: true }}
+              />
+              <NewSection6FormRow
+                label="Previsão legal"
+                tooltip={
+                  <p>
+                    Informar Lei, Decreto, normativo ou regulamento que respalda
+                    a finalidade do tratamento de dados pessoais realizado.
+                    <br />
+                    <br />
+                    <b>
+                      Exemplo fícitício de previsão legal considerando o
+                      Programa de Localização de Desaparecidos:
+                    </b>
+                    <br />• Decreto nº 8.956, de 25 de janeiro de 2218, institui
+                    o Programa de Localização de Desaparecidos.
+                  </p>
+                }
+                disabled={
+                  !isEditing ||
+                  methods.getValues().finalidadeTratamento.hipoteseTratamento
+                    .value !== hipotesesTratamento.obrigacaoLegal
+                }
+                name="finalidadeTratamento.previsaoLegal"
+                type="text"
+                invalid="Esse campo é obrigatório"
+                itemRef={CaseIndexDictionary.finalidadeTratamento.previsaoLegal}
+                methods={methods}
+                rules={
+                  methods.getValues().finalidadeTratamento.hipoteseTratamento
+                    .value === hipotesesTratamento.obrigacaoLegal
+                    ? { required: true }
+                    : { required: false }
+                }
+              />
+              <NewSection6FormRow
+                label="Resultados pretendidos para o titular de dados"
+                disabled={!isEditing}
+                name="finalidadeTratamento.resultadosTitular"
+                type="text"
+                invalid="Esse campo é obrigatório"
+                itemRef={
+                  CaseIndexDictionary.finalidadeTratamento.resultadosTitular
+                }
+                methods={methods}
+                rules={{ required: true }}
+              />
+              <NewSection6FormRow
+                label="Benefícios esperados para o órgão, entidade ou para a
                     sociedade como um todo"
-                  disabled={!isEditing}
-                  name="finalidadeTratamento.beneficiosEsperados"
-                  type="text"
-                  invalid="Esse campo é obrigatório"
-                  itemRef={
-                    CaseIndexDictionary.finalidadeTratamento.beneficiosEsperados
-                  }
-                  methods={methods}
-                  rules={{ required: true }}
-                />
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-          {props.new && (
-            <Stack direction="horizontal" className="mt-3" gap={3}>
-              <Button
-                type="button"
-                disabled={!methods.formState.isDirty}
-                variant="secondary"
-                className="ms-auto"
-                onClick={() => handleSaveProgressClick(methods.getValues())}
-              >
-                Salvar Alterações
-              </Button>
-              <Button
-                type="button"
-                disabled={!methods.formState.isDirty}
-                variant="warning"
-                onClick={() => handleSendToApprovalClick(methods.getValues())}
-              >
-                Encaminhar para encarregado de Dados
-              </Button>
-            </Stack>
-          )}
-        </Form>
-      </FormProvider>
+                disabled={!isEditing}
+                name="finalidadeTratamento.beneficiosEsperados"
+                type="text"
+                invalid="Esse campo é obrigatório"
+                itemRef={
+                  CaseIndexDictionary.finalidadeTratamento.beneficiosEsperados
+                }
+                methods={methods}
+                rules={{ required: true }}
+              />
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+        {props.new && (
+          <Stack direction="horizontal" className="mt-3" gap={3}>
+            <Button
+              type="button"
+              disabled={!methods.formState.isDirty}
+              variant="secondary"
+              className="ms-auto"
+              onClick={() => handleSaveProgressClick(methods.getValues())}
+            >
+              Salvar Alterações
+            </Button>
+            <Button
+              type="button"
+              disabled={!methods.formState.isDirty}
+              variant="warning"
+              onClick={() => handleSendToApprovalClick(methods.getValues())}
+            >
+              Encaminhar para encarregado de Dados
+            </Button>
+          </Stack>
+        )}
+      </Form>
     </React.Fragment>
   );
 };
