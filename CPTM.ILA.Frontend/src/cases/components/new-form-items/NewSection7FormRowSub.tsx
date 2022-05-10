@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-
-import { useFormikContext, getIn, Field } from "formik";
+import {
+  Controller,
+  UseFormReturn,
+  FieldPath,
+  RegisterOptions,
+} from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -11,34 +15,17 @@ import {
   tipoTempoRetencao,
 } from "../../../shared/models/case-helpers/enums.model";
 import { Options } from "../../../access-requests/components/AccessRequestForm";
-import Select from "react-select";
 import SelectFieldSearch from "../../../shared/components/UI/SelectFieldSearch";
-import SelectFieldMulti from "../../../shared/components/UI/SelectFieldMulti";
+import _ from "lodash";
 
 const NewSection7FormRowSub = (props: {
-  name: string;
+  name: FieldPath<Case>;
   className: string;
   systems: string[];
   disabled: boolean;
+  methods: UseFormReturn<Case, any>;
 }) => {
-  const { values, touched, errors, handleChange, handleBlur, setFieldValue } =
-    useFormikContext<Case>();
-
   const [isSystemSelect, setIsSystemSelect] = useState(false);
-
-  const [descricao, setDescricao] = useState(
-    getIn(values, `${props.name}.descricao`)
-  );
-
-  const handleChangeDescricao = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setDescricao(event.currentTarget.value);
-  };
-  const handleBlurDescricao = (event: React.FocusEvent<HTMLInputElement>) => {
-    handleBlur(event);
-    setFieldValue(`${props.name}.descricao`, descricao, true);
-  };
 
   const handleChangeFonteRetencao = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -62,42 +49,60 @@ const NewSection7FormRowSub = (props: {
       <Col></Col>
       <Col></Col>
       <Col>
-        <Form.Control
-          type="text"
-          name={`${props.name}.descricao`}
-          value={descricao}
-          onChange={handleChangeDescricao}
-          onBlur={handleBlurDescricao}
-          isValid={
-            getIn(touched, `${props.name}.descricao`) &&
-            !getIn(errors, `${props.name}.descricao`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.descricao`)}
-          disabled={props.disabled}
+        <Controller
+          rules={{ required: true }}
+          control={props.methods.control}
+          name={`${props.name}.descricao` as FieldPath<Case>}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Control
+              type="text"
+              value={value as string}
+              onChange={onChange}
+              onBlur={onBlur}
+              isInvalid={
+                _.get(props.methods.formState.errors, `${props.name}.descricao`)
+                  ? true
+                  : false
+              }
+              disabled={props.disabled}
+              ref={ref}
+            />
+          )}
         />
+
         <Form.Control.Feedback type="invalid">
           Esse campo é obrigatório
         </Form.Control.Feedback>
       </Col>
       <Col>
-        <Form.Select
-          name={`${props.name}.tempoRetencao.value`}
-          value={getIn(values, `${props.name}.tempoRetencao.value`)}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          isValid={
-            getIn(touched, `${props.name}.tempoRetencao.value`) &&
-            !getIn(errors, `${props.name}.tempoRetencao.value`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.tempoRetencao.value`)}
-          disabled={props.disabled}
-        >
-          {Object.values(tipoTempoRetencao).map((ttr) => (
-            <option value={ttr} key={ttr}>
-              {ttr}
-            </option>
-          ))}
-        </Form.Select>
+        <Controller
+          rules={{ required: true }}
+          control={props.methods.control}
+          name={`${props.name}.tempoRetencao.value` as FieldPath<Case>}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Select
+              disabled={props.disabled}
+              value={value as string}
+              onChange={onChange}
+              onBlur={onBlur}
+              ref={ref}
+              isInvalid={
+                _.get(
+                  props.methods.formState.errors,
+                  `${props.name}.tempoRetencao.value`
+                )
+                  ? true
+                  : false
+              }
+            >
+              {Object.values(tipoTempoRetencao).map((ttr) => (
+                <option value={ttr} key={ttr}>
+                  {ttr}
+                </option>
+              ))}
+            </Form.Select>
+          )}
+        />
       </Col>
       <Col>
         <Form.Select

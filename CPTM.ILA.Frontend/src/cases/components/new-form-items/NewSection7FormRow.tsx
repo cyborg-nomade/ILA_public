@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Controller, UseFormReturn, FieldPath } from "react-hook-form";
+import {
+  UseFormReturn,
+  FieldPath,
+  FieldArrayPath,
+  useFieldArray,
+} from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -27,16 +32,18 @@ const NewSection7FormRow = (props: {
   methods: UseFormReturn<Case, any>;
 }) => {
   const { getValues } = props.methods;
-  const [trata, setTrata] = useState(false);
 
-  const categoriaArray: itemCategoriaDadosPessoais[] = getValues(
-    props.name
-  ) as itemCategoriaDadosPessoais[];
+  const { fields, append, remove } = useFieldArray({
+    control: props.methods.control, // control props comes from useForm
+    name: props.name as FieldArrayPath<Case>, // unique name for your Field Array
+  });
+
+  const [trata, setTrata] = useState(false);
 
   useEffect(() => {
     const categoriaArrayUseEffect: itemCategoriaDadosPessoais[] = getValues(
       props.name
-    );
+    ) as itemCategoriaDadosPessoais[];
 
     if (categoriaArrayUseEffect && categoriaArrayUseEffect.length > 0) {
       setTrata(true);
@@ -104,57 +111,46 @@ const NewSection7FormRow = (props: {
           </Row>
         </Col>
       </Row>
-      <FieldArray
-        name={props.name}
-        render={(arrayHelpers) => (
-          <React.Fragment>
-            {categoriaArray && categoriaArray.length > 0 ? (
-              categoriaArray.map((item, index) => (
-                <React.Fragment key={index}>
-                  <NewSection7FormRowSub
-                    systems={props.systems}
-                    className={props.className}
-                    name={`${props.name}[${index}]`}
-                    disabled={props.disabled}
-                  />
-                  <Row className="justify-content-center">
-                    <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
-                      <Button
-                        variant="primary"
-                        onClick={() =>
-                          arrayHelpers.push(emptyItemCategoriaDadosPessoais())
-                        }
-                      >
-                        +
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => arrayHelpers.remove(index)}
-                      >
-                        -
-                      </Button>
-                    </ButtonGroup>
-                  </Row>
-                </React.Fragment>
-              ))
-            ) : (
+      <React.Fragment>
+        {fields && fields.length > 0 ? (
+          fields.map((field, index) => (
+            <React.Fragment key={field.id}>
+              <NewSection7FormRowSub
+                systems={props.systems}
+                className={props.className}
+                name={`${props.name}[${index}]`}
+                disabled={props.disabled}
+                methods={props.methods}
+              />
               <Row className="justify-content-center">
                 <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                   <Button
                     variant="primary"
-                    disabled={!trata}
-                    onClick={() =>
-                      arrayHelpers.push(emptyItemCategoriaDadosPessoais())
-                    }
+                    onClick={() => append(emptyItemCategoriaDadosPessoais())}
                   >
                     +
                   </Button>
+                  <Button variant="danger" onClick={() => remove(index)}>
+                    -
+                  </Button>
                 </ButtonGroup>
               </Row>
-            )}
-          </React.Fragment>
+            </React.Fragment>
+          ))
+        ) : (
+          <Row className="justify-content-center">
+            <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+              <Button
+                variant="primary"
+                disabled={!trata}
+                onClick={() => append(emptyItemCategoriaDadosPessoais())}
+              >
+                +
+              </Button>
+            </ButtonGroup>
+          </Row>
         )}
-      />
+      </React.Fragment>
     </React.Fragment>
   );
 };
