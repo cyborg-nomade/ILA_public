@@ -1004,6 +1004,1565 @@ const NewForm = (props: {
               />
             </Accordion.Body>
           </Accordion.Item>
+          <Accordion.Item eventKey="6">
+            <Accordion.Header>7 - Categoria de Dados Pessoais</Accordion.Header>
+            <Accordion.Body>
+              <Accordion>
+                <Accordion.Item eventKey="60">
+                  <Accordion.Header>
+                    7.1 - Dados de Identificação Pessoal
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Informações de identificação pessoal"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Nome, endereço
+                          residencia, histórico de endereços anteriores, número
+                          de telefone fixo residencial, número celular pessoal,
+                          e-mail pessoal, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.identificacao.idPessoal"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.identificacao
+                          .idPessoal
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Informações de identificação atribuídas por
+                            instituições governamentais"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: CPF, RG, número do
+                          passaporte, número da carteira de motorista, número da
+                          placa, número de registro em conselho profissional,
+                          etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.identificacao.idGov"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.identificacao
+                          .idGov
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Dados de identificação eletrônica"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Endereços IP,
+                          cookies, momentos de conexão etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.identificacao.idEletronica"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.identificacao
+                          .idEletronica
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Dados de localização eletrônica"
+                      tooltip={
+                        <p>
+                          Informar se são tratados dados: dados de comunicação
+                          de torres de celulares (ex: GSM), dados de GPS etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.identificacao.locEletronica"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.identificacao
+                          .locEletronica
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="61">
+                  <Accordion.Header>7.2 - Dados Financeiros</Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Dados de identificação financeira"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Números de
+                          identificação, números de contas bancárias, números de
+                          cartões de crédito ou débito, códigos secretos.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.idFin"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .idFin
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Recursos financeiros"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Renda, posses,
+                          investimentos, renda total, renda profissional,
+                          poupança, datas de início e término dos investimentos,
+                          receita de investimento, dívidas sobre ativos.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.recursosFin"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .recursosFin
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Dívidas e despesas"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Total de despesas,
+                          aluguel, empréstimos, hipotecas e outras formas de
+                          crédito.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.dividasDespesas"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .dividasDespesas
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Situação financeira (Solvência)"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Avaliação do
+                          rendimento e avaliação de capacidade de pagamento.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.solvencia"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .solvencia
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Empréstimos, hipotecas, linhas de crédito"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Natureza do
+                          empréstimo, valor emprestado, saldo remanescente, data
+                          de início, período do empréstimo, taxa de juros, visão
+                          geral do pagamento, detalhes sobre as garantias.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.emprestimosHipotecaCredito"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .emprestimosHipotecaCredito
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Assistência financeira"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Benefícios,
+                          assistência, bonificações, subsídios, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.assistenciaFin"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .assistenciaFin
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Detalhes da apólice de seguro"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Natureza da apólice
+                          de seguro, detalhes sobre os riscos cobertos, valores
+                          segurados, período segurado, data de rescisão,
+                          pagamentos feitos, recebidos ou perdidos, situação do
+                          contrato, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.apoliceSeguro"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .apoliceSeguro
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Detalhes do plano de pensão"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Data efetiva do plano
+                          de pensão, natureza do plano, data de término do
+                          plano, pagamentos recebidos e efetuados, opções,
+                          beneficiários, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.planoPensao"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .planoPensao
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Transações financeiras"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Valores pagos e a
+                          pagar pelo titular dos dados, linhas de crédito
+                          concedidas, avais, forma de pagamento, visão geral do
+                          pagamento, depósitos e outras garantias, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.transacaoFin"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .transacaoFin
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Compensação"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Detalhes sobre
+                          compensações reivindicadas, valores pagos ou outros
+                          tipos de compensação, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.compensacao"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .compensacao
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Atividades profissionais"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dado de atividades
+                          profissionais executadas pelo titular dos dados:
+                          natureza da atividade, natureza dos bens ou serviços
+                          utilizados ou entregues pela pessoa no registro,
+                          relações comerciais, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.atividadeProfissional"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .atividadeProfissional
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Acordos e ajustes"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Detalhes sobre
+                          acordos ou ajustes comerciais; acordos sobre
+                          representação ou acordos legais, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.acordosAjustes"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .acordosAjustes
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Autorizações ou consentimentos"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados de: Autorizações ou
+                          consentimentos realizados pelo titular de dados, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.financeiros.autorizacoesConsentimentos"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.financeiros
+                          .autorizacoesConsentimentos
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="62">
+                  <Accordion.Header>
+                    7.3 - Características Pessoais
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Detalhes pessoais"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Idade, sexo, data de
+                          nascimento, local de nascimento, estado civil,
+                          nacionalidade.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.caracteristicas.detalhesPessoais"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .caracteristicas.detalhesPessoais
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Detalhes militares"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Situação militar,
+                          patente militar, distinções militares, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.caracteristicas.detalhesMilitares"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .caracteristicas.detalhesMilitares
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Situação de Imigração"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Detalhes sobre o
+                          visto, autorização de trabalho, limitações de
+                          residência ou movimentação, condições especiais
+                          relacionadas à autorização de residência, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.caracteristicas.situacaoImigracao"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .caracteristicas.situacaoImigracao
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Descrição Física"
+                      tooltip={
+                        <p>
+                          Dados de descrição física são informações físicas de
+                          uma pessoa com possibilidade de serem visivelmente
+                          indetificadas. Descrever se são tratados: Altura,
+                          peso, cor do cabelo, cor dos olhos, características
+                          distintivas, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.caracteristicas.descricaoFisica"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .caracteristicas.descricaoFisica
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="63">
+                  <Accordion.Header>7.4 - Hábitos Pessoais</Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Hábitos"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Uso de tabaco, uso de
+                          álcool , hábito alimentar, dieta alimentar etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.habitos.habitosPessoais"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.habitos
+                          .habitosPessoais
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Estilo de vida"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Informações sobre o
+                          uso de bens ou serviços, comportamento dos titulares
+                          dos dados, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.habitos.estiloVida"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.habitos
+                          .estiloVida
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Viagens e deslocamentos"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: sobre antigas
+                          residências e deslocamentos, visto de viagem,
+                          autorizações de trabalho, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.habitos.viagensDeslocamento"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.habitos
+                          .viagensDeslocamento
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Contatos sociais"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Amigos, parceiros de
+                          negócios, relacionamentos com pessoas que não sejam
+                          familiares próximos; etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.habitos.contatosSociais"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.habitos
+                          .contatosSociais
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Posses"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Terra, propriedade ou
+                          outros bens.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.habitos.posses"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.habitos
+                          .posses
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Denúncias, incidentes ou acidentes"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Informações sobre um
+                          acidente, incidente ou denúncia na qual o titular dos
+                          dados está envolvido, a natureza dos danos ou
+                          ferimentos, pessoas envolvidas, testemunhas, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.habitos.denunciasIncidentesAcidentes"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.habitos
+                          .denunciasIncAcidentes
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Distinções"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Distinções civis,
+                          administrativas ou militares.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.habitos.distincoes"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.habitos
+                          .distincoes
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Uso de mídia"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: que definem o
+                          comportamento de uso de mídias e meios de comunicação.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.habitos.usoMidia"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.habitos
+                          .usoMidia
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="64">
+                  <Accordion.Header>
+                    7.5 - Características Psicológicas
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Descrição Psicológica"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre personalidade ou
+                          caráter.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.caracteristicasPsicologicas.descricaoPsi"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .caracteristicasPsicologicas.descricaoPsi
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="65">
+                  <Accordion.Header>7.6 - Composição Familiar</Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Casamento ou forma atual de coabitação"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados: Nome do cônjuge ou
+                          companheiro(a), nome de solteira do cônjuge ou
+                          companheira, data do casamento, data do contrato de
+                          coabitação, número de filhos, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.composicaoFamiliar.casamentoCoabitacao"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .composicaoFamiliar.casamentoCoabitacao
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Histórico conjugal"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre casamentos ou
+                          parcerias anteriores, divórcios, separações, nomes de
+                          parceiros anteriores.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.composicaoFamiliar.historicoConjugal"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .composicaoFamiliar.historicoConjugal
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Familiares ou membros da família"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre Detalhes de
+                          outros familiares ou membros da família do titular de
+                          dados.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.composicaoFamiliar.membrosFamilia"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .composicaoFamiliar.membrosFamilia
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="66">
+                  <Accordion.Header>7.7 - Interesses de lazer</Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Atividades e interesses de lazer"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre hobbies,
+                          esportes, outros interesses.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.interessesLazer.atividadesInteressesLaz"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .interessesLazer.atividadesInteressesLaz
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="67">
+                  <Accordion.Header>7.8 - Associações</Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Associações (exceto profissionais, políticas, em sindicatos ou qualquer outra associação que se enquadre em dados pessoais sensíveis)"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre participação em
+                          organizações de caridade ou benevolentes, clubes,
+                          parcerias, organizações, grupos, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.associacoes.outrasAssNaoSensiveis"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.associacoes
+                          .outrasAssNaoSensiveis
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="68">
+                  <Accordion.Header>
+                    7.9 - Processo Judicial/Administrativo/Criminal
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Suspeitas"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre suspeitas de
+                          violações, conexões conspiratórias com criminosos
+                          conhecidos. Inquéritos ou ações judiciais (civis ou
+                          criminais) empreendidas por ou contra o titular dos
+                          dados, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.processoJudAdmCrim.suspeitas"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .processoJudAdmCrim.suspeitas
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Condenações e sentenças"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre condenações e
+                          sentenças, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.processoJudAdmCrim.condenacoesSentencas"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .processoJudAdmCrim.condenacoesSentencas
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Ações judiciais"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre tutela, guarda
+                          temporária ou definitiva, interdição, adoção, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.processoJudAdmCrim.acoesJud"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .processoJudAdmCrim.acoesJud
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Penalidades Administrativas"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre multas, processo
+                          disciplinar, advertências, bem como qualquer outro
+                          tipo de penalidade ou sanção administrativa prevista
+                          em leis, normas e regulamentos.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.processoJudAdmCrim.penalidadesAdm"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .processoJudAdmCrim.penalidadesAdm
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="69">
+                  <Accordion.Header>7.10 - Hábitos de Consumo</Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Dados de bens e serviços"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre bens e serviços
+                          vendidos, alugados ou emprestados ao titular dos
+                          dados.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.habitosConsumo.dadosBensServicos"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .habitosConsumo.dadosBensServicos
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="610">
+                  <Accordion.Header>7.11 - Dados Residenciais</Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Residência"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre natureza da
+                          residência, propriedade própria ou alugada, duração da
+                          residência nesse endereço, aluguel, custos,
+                          classificação da residência, detalhes sobre a
+                          avaliação, nomes das pessoas que possuem as chaves.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.residenciais.dadosResidencia"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.residenciais
+                          .dadosResidencia
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="611">
+                  <Accordion.Header>
+                    7.12 - Educação e Treinamento
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Dados acadêmicos/escolares"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre diplomas,
+                          certificados obtidos, resultados de exames, avaliação
+                          do progresso dos estudos, histórico escolar, grau de
+                          formação, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.educacaoTreinamento.academicosEscolares"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .educacaoTreinamento.academicosEscolares
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Registros financeiros do curso/treinamento"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre taxas de
+                          inscrição e custos pagos, financiamento, formas de
+                          pagamento, registros de pagamento, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.educacaoTreinamento.registroFinanceiro"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .educacaoTreinamento.registroFinanceiro
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Qualificação e experiência profissional"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre certificações
+                          profissionais, interesses profissionais, interesses
+                          acadêmicos, interesses de pesquisam experiência de
+                          ensino, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.educacaoTreinamento.qualificacaoExperienciaProf"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .educacaoTreinamento.qualificacaoExperienciaProf
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="612">
+                  <Accordion.Header>
+                    7.13 - Profissão e emprego
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Emprego atual"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre empregador,
+                          descrição do cargo e função, antiguidade, data de
+                          recrutamento, local de trabalho, especialização ou
+                          tipo de empresa, modos e condições de trabalho, cargos
+                          anteriores e experiência anterior de trabalho no mesmo
+                          empregador, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.profissaoEmprego.empregoAtual"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .profissaoEmprego.empregoAtual
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Recrutamento"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre data de
+                          recrutamento, método de recrutamento, fonte de
+                          recrutamento, referências, detalhes relacionados com o
+                          período de estágio, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.profissaoEmprego.recrutamento"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .profissaoEmprego.recrutamento
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Rescisão de trabalho"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre data de
+                          rescisão, motivo, período de notificação, condições de
+                          rescisão, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.profissaoEmprego.rescisao"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .profissaoEmprego.rescisao
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Carreira"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre emprego anterior
+                          e empregadores, períodos sem emprego, serviço militar,
+                          etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.profissaoEmprego.carreira"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .profissaoEmprego.carreira
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Absentismo e disciplina"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre registos de
+                          absentismo, motivos de ausência, medidas
+                          disciplinares, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.profissaoEmprego.absenteismoDisciplina"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .profissaoEmprego.absenteismoDisciplina
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Avaliação de Desempenho"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados dados sobre avaliação de
+                          desempenho ou qualquer outro tipo de análise de
+                          qualificação ou habilidades profissionais, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.profissaoEmprego.avaliacaoDesempenho"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .profissaoEmprego.avaliacaoDesempenho
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="613">
+                  <Accordion.Header>
+                    7.14 - Registros/gravações de vídeo, imagem e voz
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Vídeo e imagem"
+                      tooltip={
+                        <p>
+                          Descrever se são tratados arquivos de vídeos, fotos
+                          digitais, fitas de vídeo, etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.regVideoImgVoz.videoImagem"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .regVideoImgVoz.videoImagem
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                      label="Imagem de Vigilância"
+                      tooltip={
+                        <p>
+                          Descrever se são tratadas imagens e/ou vídeos de
+                          câmeras de segurança/vigilância (ex: CFTV), etc.
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.regVideoImgVoz.imagemVigilancia"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .regVideoImgVoz.imagemVigilancia
+                      }
+                      systems={systems}
+                    />
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2"
+                      label="Voz"
+                      tooltip={
+                        <p>
+                          Descrever se são tratadas fitas e arquivos digitais de
+                          voz, bem como outros registros de gravações de voz ,
+                          etc
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.regVideoImgVoz.voz"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais
+                          .regVideoImgVoz.voz
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="614">
+                  <Accordion.Header>7.15 - Outros</Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label
+                        as={Col}
+                        className="d-grid justify-content-center"
+                      >
+                        Trata?
+                      </Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <OverlayTrigger
+                        placement="top"
+                        trigger={["click", "hover"]}
+                        overlay={
+                          <Tooltip className="text-muted">
+                            Para maiores informações visite o
+                            <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                              site da CADA
+                            </a>
+                          </Tooltip>
+                        }
+                      >
+                        <Form.Label as={Col}>
+                          Tempo Retenção dos Dados
+                        </Form.Label>
+                      </OverlayTrigger>
+                      <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                      <Form.Label as={Col} lg={2}>
+                        Local de Armazenamento
+                      </Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Section7FormRow
+                      className="mb-3 pt-2 pb-2 bg-primary bg-opacity-10"
+                      label="Outros (Especificar)"
+                      tooltip={
+                        <p>
+                          Descrever se são tratadas fitas e arquivos digitais de
+                          voz, bem como outros registros de gravações de voz ,
+                          etc
+                        </p>
+                      }
+                      disabled={!isEditing}
+                      name="categoriaDadosPessoais.outros.outrosItems"
+                      itemRef={
+                        CaseIndexDictionary.categoriaDadosPessoais.outros
+                          .outrosItems
+                      }
+                      systems={systems}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </Accordion.Body>
+          </Accordion.Item>
         </Accordion>
         {props.new && (
           <Stack direction="horizontal" className="mt-3" gap={3}>
