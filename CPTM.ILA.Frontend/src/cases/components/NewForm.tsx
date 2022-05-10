@@ -45,6 +45,7 @@ import Section9QuantityRow from "./form-items/Section9QuantityRow";
 import { useUtilities } from "../../shared/hooks/utilities-hook";
 import SelectFieldSearch from "../../shared/components/UI/SelectFieldSearch";
 import NewSection3FormRow from "./new-form-items/NewSection3FormRow";
+import NewSection6FormRow from "./new-form-items/NewSection6FormRow";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -915,6 +916,121 @@ const NewForm = (props: {
                     </Row>
                   </Col>
                 </Row>
+              </Accordion.Body>
+            </Accordion.Item>
+            <Accordion.Item eventKey="5">
+              <Accordion.Header>
+                6 - Finalidade do Tratamento de Dados Pessoais
+              </Accordion.Header>
+              <Accordion.Body>
+                <NewSection6FormRow
+                  label="Hipótese de Tratamento"
+                  tooltip={
+                    <p>
+                      As hipóteses de tratamento estão descritas nos arts. 7º e
+                      11 da LGPD.
+                      <br />
+                      <b>
+                        Os órgãos e entidades da administração pública tem a
+                        prerrogativa de tratar os dados pessoais para o
+                        exercício de suas competências legais ou execução de
+                        políticas públicas sem a necessidade de obter
+                        consentimento do titular dos dados pessoais.
+                      </b>
+                    </p>
+                  }
+                  disabled={!isEditing}
+                  name="finalidadeTratamento.hipoteseTratamento.value"
+                  type="select"
+                  invalid="Esse campo é obrigatório"
+                  itemRef={
+                    CaseIndexDictionary.finalidadeTratamento.hipoteseTratamento
+                  }
+                  methods={methods}
+                  rules={{ required: true }}
+                />
+                <NewSection6FormRow
+                  label="Finalidade"
+                  tooltip={
+                    <p>
+                      Razão ou motivo pela qual se deseja tratar os dados
+                      pessoais. É importantíssimo estabelecer claramente a
+                      finalidade, pois é ela que justifica o tratamento de dados
+                      pessoais e fornece os elementos para informar o titular
+                      dos dados.
+                    </p>
+                  }
+                  disabled
+                  name="finalidadeTratamento.descricaoFinalidade"
+                  type="text"
+                  invalid="Esse campo é obrigatório"
+                  itemRef={
+                    CaseIndexDictionary.finalidadeTratamento.descricaoFinalidade
+                  }
+                  methods={methods}
+                  rules={{ required: true }}
+                />
+                <NewSection6FormRow
+                  label="Previsão legal"
+                  tooltip={
+                    <p>
+                      Informar Lei, Decreto, normativo ou regulamento que
+                      respalda a finalidade do tratamento de dados pessoais
+                      realizado.
+                      <br />
+                      <br />
+                      <b>
+                        Exemplo fícitício de previsão legal considerando o
+                        Programa de Localização de Desaparecidos:
+                      </b>
+                      <br />• Decreto nº 8.956, de 25 de janeiro de 2218,
+                      institui o Programa de Localização de Desaparecidos.
+                    </p>
+                  }
+                  disabled={
+                    !isEditing ||
+                    methods.getValues().finalidadeTratamento.hipoteseTratamento
+                      .value !== hipotesesTratamento.obrigacaoLegal
+                  }
+                  name="finalidadeTratamento.previsaoLegal"
+                  type="text"
+                  invalid="Esse campo é obrigatório"
+                  itemRef={
+                    CaseIndexDictionary.finalidadeTratamento.previsaoLegal
+                  }
+                  methods={methods}
+                  rules={
+                    methods.getValues().finalidadeTratamento.hipoteseTratamento
+                      .value === hipotesesTratamento.obrigacaoLegal
+                      ? { required: true }
+                      : { required: false }
+                  }
+                />
+                <NewSection6FormRow
+                  label="Resultados pretendidos para o titular de dados"
+                  disabled={!isEditing}
+                  name="finalidadeTratamento.resultadosTitular"
+                  type="text"
+                  invalid="Esse campo é obrigatório"
+                  itemRef={
+                    CaseIndexDictionary.finalidadeTratamento.resultadosTitular
+                  }
+                  methods={methods}
+                  rules={{ required: true }}
+                />
+                <NewSection6FormRow
+                  label="Benefícios esperados para o órgão, entidade ou para a
+                    sociedade como um todo"
+                  disabled={!isEditing}
+                  name="finalidadeTratamento.beneficiosEsperados"
+                  type="text"
+                  invalid="Esse campo é obrigatório"
+                  itemRef={
+                    CaseIndexDictionary.finalidadeTratamento.beneficiosEsperados
+                  }
+                  methods={methods}
+                  rules={{ required: true }}
+                />
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
