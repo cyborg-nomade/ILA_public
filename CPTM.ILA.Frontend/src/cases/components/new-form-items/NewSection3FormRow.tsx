@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useFormContext, Controller } from "react-hook-form";
+import { Controller, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,31 +10,32 @@ import { Case } from "../../../shared/models/cases.model";
 import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
 
-const NewSection3FormRow = (props: { disabled: boolean }) => {
-  const { getValues, setValue, formState, control } = useFormContext<Case>();
-
+const NewSection3FormRow = (props: {
+  disabled: boolean;
+  methods: UseFormReturn<Case, any>;
+}) => {
   const [trata, setTrata] = useState(false);
 
   useEffect(() => {
-    const values = getValues();
+    const values = props.methods.getValues();
     for (const value of Object.values(values.fasesCicloTratamento)) {
       if (value) {
         setTrata(true);
       }
     }
     return () => {};
-  }, [getValues]);
+  }, [props.methods.getValues]);
 
   const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.value === "SIM") {
       setTrata(true);
     } else {
       setTrata(false);
-      setValue("fasesCicloTratamento.coleta", false);
-      setValue("fasesCicloTratamento.retencao", false);
-      setValue("fasesCicloTratamento.processamento", false);
-      setValue("fasesCicloTratamento.compartilhamento", false);
-      setValue("fasesCicloTratamento.eliminacao", false);
+      props.methods.setValue("fasesCicloTratamento.coleta", false);
+      props.methods.setValue("fasesCicloTratamento.retencao", false);
+      props.methods.setValue("fasesCicloTratamento.processamento", false);
+      props.methods.setValue("fasesCicloTratamento.compartilhamento", false);
+      props.methods.setValue("fasesCicloTratamento.eliminacao", false);
     }
   };
 
@@ -85,7 +86,7 @@ const NewSection3FormRow = (props: { disabled: boolean }) => {
       </Col>
       <Col className="d-grid justify-content-center">
         <Controller
-          control={control}
+          control={props.methods.control}
           name="fasesCicloTratamento.coleta"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Check
@@ -96,7 +97,9 @@ const NewSection3FormRow = (props: { disabled: boolean }) => {
               checked={value}
               ref={ref}
               isInvalid={
-                formState.errors.fasesCicloTratamento?.coleta ? true : false
+                props.methods.formState.errors.fasesCicloTratamento?.coleta
+                  ? true
+                  : false
               }
             />
           )}
@@ -104,7 +107,7 @@ const NewSection3FormRow = (props: { disabled: boolean }) => {
       </Col>
       <Col className="d-grid justify-content-center">
         <Controller
-          control={control}
+          control={props.methods.control}
           name="fasesCicloTratamento.retencao"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Check
@@ -115,7 +118,9 @@ const NewSection3FormRow = (props: { disabled: boolean }) => {
               checked={value}
               ref={ref}
               isInvalid={
-                formState.errors.fasesCicloTratamento?.coleta ? true : false
+                props.methods.formState.errors.fasesCicloTratamento?.coleta
+                  ? true
+                  : false
               }
             />
           )}
@@ -123,7 +128,7 @@ const NewSection3FormRow = (props: { disabled: boolean }) => {
       </Col>
       <Col className="d-grid justify-content-center">
         <Controller
-          control={control}
+          control={props.methods.control}
           name="fasesCicloTratamento.processamento"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Check
@@ -134,7 +139,9 @@ const NewSection3FormRow = (props: { disabled: boolean }) => {
               checked={value}
               ref={ref}
               isInvalid={
-                formState.errors.fasesCicloTratamento?.coleta ? true : false
+                props.methods.formState.errors.fasesCicloTratamento?.coleta
+                  ? true
+                  : false
               }
             />
           )}
@@ -142,7 +149,7 @@ const NewSection3FormRow = (props: { disabled: boolean }) => {
       </Col>
       <Col className="d-grid justify-content-center">
         <Controller
-          control={control}
+          control={props.methods.control}
           name="fasesCicloTratamento.compartilhamento"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Check
@@ -153,7 +160,9 @@ const NewSection3FormRow = (props: { disabled: boolean }) => {
               checked={value}
               ref={ref}
               isInvalid={
-                formState.errors.fasesCicloTratamento?.coleta ? true : false
+                props.methods.formState.errors.fasesCicloTratamento?.coleta
+                  ? true
+                  : false
               }
             />
           )}
@@ -161,7 +170,7 @@ const NewSection3FormRow = (props: { disabled: boolean }) => {
       </Col>
       <Col className="d-grid justify-content-center">
         <Controller
-          control={control}
+          control={props.methods.control}
           name="fasesCicloTratamento.eliminacao"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Check
@@ -172,7 +181,9 @@ const NewSection3FormRow = (props: { disabled: boolean }) => {
               checked={value}
               ref={ref}
               isInvalid={
-                formState.errors.fasesCicloTratamento?.coleta ? true : false
+                props.methods.formState.errors.fasesCicloTratamento?.coleta
+                  ? true
+                  : false
               }
             />
           )}
