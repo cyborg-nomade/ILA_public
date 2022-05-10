@@ -14,17 +14,18 @@ const NewSection3FormRow = (props: {
   disabled: boolean;
   methods: UseFormReturn<Case, any>;
 }) => {
+  const { getValues } = props.methods;
   const [trata, setTrata] = useState(false);
 
   useEffect(() => {
-    const values = props.methods.getValues();
+    const values = getValues();
     for (const value of Object.values(values.fasesCicloTratamento)) {
       if (value) {
         setTrata(true);
       }
     }
     return () => {};
-  }, [props.methods.getValues]);
+  }, [getValues]);
 
   const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.value === "SIM") {

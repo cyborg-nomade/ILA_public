@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
+import _ from "lodash";
 import {
-  useFormContext,
   Controller,
   UseFormReturn,
   FieldPath,
@@ -15,9 +15,6 @@ import Tooltip from "react-bootstrap/Tooltip";
 import { Case } from "../../../shared/models/cases.model";
 import { hipotesesTratamento } from "../../../shared/models/case-helpers/enums.model";
 import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
-import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
-import { FinalidadeTratamento } from "../../../shared/models/case-helpers/case-helpers.model";
-import _ from "lodash";
 
 const NewSection6FormRow = (props: {
   tooltip?: JSX.Element;
