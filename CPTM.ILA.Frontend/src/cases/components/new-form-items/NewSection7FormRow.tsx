@@ -81,7 +81,7 @@ const NewSection7FormRow = (props: {
         <Col className="d-grid justify-content-center">
           <Form.Check
             type="radio"
-            name="trata"
+            name={`trata-${props.itemRef}`}
             required
             label="Sim"
             value="SIM"
@@ -91,7 +91,7 @@ const NewSection7FormRow = (props: {
           />
           <Form.Check
             type="radio"
-            name="trata"
+            name={`trata-${props.itemRef}`}
             required
             inline
             label="Não"
@@ -118,7 +118,7 @@ const NewSection7FormRow = (props: {
               <NewSection7FormRowSub
                 systems={props.systems}
                 className={props.className}
-                name={`${props.name}[${index}]`}
+                name={`${props.name}[${index}]` as FieldPath<Case>}
                 disabled={props.disabled}
                 methods={props.methods}
               />

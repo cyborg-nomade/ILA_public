@@ -24,7 +24,7 @@ import {
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import Section6FormRow from "./form-items/Section6FormRow";
-import Section7FormRow from "./form-items/Section7FormRow";
+import NewSection7FormRow from "./new-form-items/NewSection7FormRow";
 import Section10FormRow from "./form-items/Section10FormRow";
 import Section11FormRow from "./form-items/Section11FormRow";
 import Section12FormRow from "./form-items/Section12FormRow";
@@ -880,6 +880,7 @@ const NewForm = (props: {
                           .find((c) => c.value === value)}
                         onChange={(val) => onChange(val?.value)}
                         isSearchable
+                        isDisabled={!isEditing}
                       />
                     )}
                   />
@@ -1045,7 +1046,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Informações de identificação pessoal"
                       tooltip={
@@ -1063,8 +1064,9 @@ const NewForm = (props: {
                           .idPessoal
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Informações de identificação atribuídas por
                             instituições governamentais"
@@ -1083,8 +1085,9 @@ const NewForm = (props: {
                           .idGov
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Dados de identificação eletrônica"
                       tooltip={
@@ -1100,8 +1103,9 @@ const NewForm = (props: {
                           .idEletronica
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Dados de localização eletrônica"
                       tooltip={
@@ -1117,6 +1121,7 @@ const NewForm = (props: {
                           .locEletronica
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -1155,7 +1160,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Dados de identificação financeira"
                       tooltip={
@@ -1172,8 +1177,9 @@ const NewForm = (props: {
                           .idFin
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Recursos financeiros"
                       tooltip={
@@ -1191,8 +1197,9 @@ const NewForm = (props: {
                           .recursosFin
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Dívidas e despesas"
                       tooltip={
@@ -1209,8 +1216,9 @@ const NewForm = (props: {
                           .dividasDespesas
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Situação financeira (Solvência)"
                       tooltip={
@@ -1226,8 +1234,9 @@ const NewForm = (props: {
                           .solvencia
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Empréstimos, hipotecas, linhas de crédito"
                       tooltip={
@@ -1245,8 +1254,9 @@ const NewForm = (props: {
                           .emprestimosHipotecaCredito
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Assistência financeira"
                       tooltip={
@@ -1262,8 +1272,9 @@ const NewForm = (props: {
                           .assistenciaFin
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Detalhes da apólice de seguro"
                       tooltip={
@@ -1282,8 +1293,9 @@ const NewForm = (props: {
                           .apoliceSeguro
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Detalhes do plano de pensão"
                       tooltip={
@@ -1301,8 +1313,9 @@ const NewForm = (props: {
                           .planoPensao
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Transações financeiras"
                       tooltip={
@@ -1320,8 +1333,9 @@ const NewForm = (props: {
                           .transacaoFin
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Compensação"
                       tooltip={
@@ -1338,8 +1352,9 @@ const NewForm = (props: {
                           .compensacao
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Atividades profissionais"
                       tooltip={
@@ -1358,8 +1373,9 @@ const NewForm = (props: {
                           .atividadeProfissional
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Acordos e ajustes"
                       tooltip={
@@ -1376,8 +1392,9 @@ const NewForm = (props: {
                           .acordosAjustes
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Autorizações ou consentimentos"
                       tooltip={
@@ -1393,6 +1410,7 @@ const NewForm = (props: {
                           .autorizacoesConsentimentos
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -1433,7 +1451,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Detalhes pessoais"
                       tooltip={
@@ -1450,8 +1468,9 @@ const NewForm = (props: {
                           .caracteristicas.detalhesPessoais
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Detalhes militares"
                       tooltip={
@@ -1467,8 +1486,9 @@ const NewForm = (props: {
                           .caracteristicas.detalhesMilitares
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Situação de Imigração"
                       tooltip={
@@ -1486,8 +1506,9 @@ const NewForm = (props: {
                           .caracteristicas.situacaoImigracao
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Descrição Física"
                       tooltip={
@@ -1506,6 +1527,7 @@ const NewForm = (props: {
                           .caracteristicas.descricaoFisica
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -1544,7 +1566,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Hábitos"
                       tooltip={
@@ -1560,8 +1582,9 @@ const NewForm = (props: {
                           .habitosPessoais
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Estilo de vida"
                       tooltip={
@@ -1578,8 +1601,9 @@ const NewForm = (props: {
                           .estiloVida
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Viagens e deslocamentos"
                       tooltip={
@@ -1596,8 +1620,9 @@ const NewForm = (props: {
                           .viagensDeslocamento
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Contatos sociais"
                       tooltip={
@@ -1614,8 +1639,9 @@ const NewForm = (props: {
                           .contatosSociais
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Posses"
                       tooltip={
@@ -1631,8 +1657,9 @@ const NewForm = (props: {
                           .posses
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Denúncias, incidentes ou acidentes"
                       tooltip={
@@ -1644,14 +1671,15 @@ const NewForm = (props: {
                         </p>
                       }
                       disabled={!isEditing}
-                      name="categoriaDadosPessoais.habitos.denunciasIncidentesAcidentes"
+                      name="categoriaDadosPessoais.habitos.denunciasIncAcidentes"
                       itemRef={
                         CaseIndexDictionary.categoriaDadosPessoais.habitos
                           .denunciasIncAcidentes
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Distinções"
                       tooltip={
@@ -1667,8 +1695,9 @@ const NewForm = (props: {
                           .distincoes
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Uso de mídia"
                       tooltip={
@@ -1684,6 +1713,7 @@ const NewForm = (props: {
                           .usoMidia
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -1724,7 +1754,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Descrição Psicológica"
                       tooltip={
@@ -1740,6 +1770,7 @@ const NewForm = (props: {
                           .caracteristicasPsicologicas.descricaoPsi
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -1778,7 +1809,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Casamento ou forma atual de coabitação"
                       tooltip={
@@ -1796,8 +1827,9 @@ const NewForm = (props: {
                           .composicaoFamiliar.casamentoCoabitacao
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Histórico conjugal"
                       tooltip={
@@ -1814,8 +1846,9 @@ const NewForm = (props: {
                           .composicaoFamiliar.historicoConjugal
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Familiares ou membros da família"
                       tooltip={
@@ -1832,6 +1865,7 @@ const NewForm = (props: {
                           .composicaoFamiliar.membrosFamilia
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -1870,7 +1904,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Atividades e interesses de lazer"
                       tooltip={
@@ -1886,6 +1920,7 @@ const NewForm = (props: {
                           .interessesLazer.atividadesInteressesLaz
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -1924,7 +1959,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Associações (exceto profissionais, políticas, em sindicatos ou qualquer outra associação que se enquadre em dados pessoais sensíveis)"
                       tooltip={
@@ -1941,6 +1976,7 @@ const NewForm = (props: {
                           .outrasAssNaoSensiveis
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -1981,7 +2017,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Suspeitas"
                       tooltip={
@@ -2000,8 +2036,9 @@ const NewForm = (props: {
                           .processoJudAdmCrim.suspeitas
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Condenações e sentenças"
                       tooltip={
@@ -2017,8 +2054,9 @@ const NewForm = (props: {
                           .processoJudAdmCrim.condenacoesSentencas
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Ações judiciais"
                       tooltip={
@@ -2034,8 +2072,9 @@ const NewForm = (props: {
                           .processoJudAdmCrim.acoesJud
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Penalidades Administrativas"
                       tooltip={
@@ -2053,6 +2092,7 @@ const NewForm = (props: {
                           .processoJudAdmCrim.penalidadesAdm
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -2091,7 +2131,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Dados de bens e serviços"
                       tooltip={
@@ -2108,6 +2148,7 @@ const NewForm = (props: {
                           .habitosConsumo.dadosBensServicos
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -2146,7 +2187,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Residência"
                       tooltip={
@@ -2165,6 +2206,7 @@ const NewForm = (props: {
                           .dadosResidencia
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -2205,7 +2247,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Dados acadêmicos/escolares"
                       tooltip={
@@ -2223,8 +2265,9 @@ const NewForm = (props: {
                           .educacaoTreinamento.academicosEscolares
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Registros financeiros do curso/treinamento"
                       tooltip={
@@ -2241,8 +2284,9 @@ const NewForm = (props: {
                           .educacaoTreinamento.registroFinanceiro
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Qualificação e experiência profissional"
                       tooltip={
@@ -2260,6 +2304,7 @@ const NewForm = (props: {
                           .educacaoTreinamento.qualificacaoExperienciaProf
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -2300,7 +2345,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Emprego atual"
                       tooltip={
@@ -2320,8 +2365,9 @@ const NewForm = (props: {
                           .profissaoEmprego.empregoAtual
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Recrutamento"
                       tooltip={
@@ -2339,8 +2385,9 @@ const NewForm = (props: {
                           .profissaoEmprego.recrutamento
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Rescisão de trabalho"
                       tooltip={
@@ -2357,8 +2404,9 @@ const NewForm = (props: {
                           .profissaoEmprego.rescisao
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Carreira"
                       tooltip={
@@ -2375,8 +2423,9 @@ const NewForm = (props: {
                           .profissaoEmprego.carreira
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Absentismo e disciplina"
                       tooltip={
@@ -2393,8 +2442,9 @@ const NewForm = (props: {
                           .profissaoEmprego.absenteismoDisciplina
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Avaliação de Desempenho"
                       tooltip={
@@ -2411,6 +2461,7 @@ const NewForm = (props: {
                           .profissaoEmprego.avaliacaoDesempenho
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -2451,7 +2502,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Vídeo e imagem"
                       tooltip={
@@ -2467,8 +2518,9 @@ const NewForm = (props: {
                           .regVideoImgVoz.videoImagem
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
                       label="Imagem de Vigilância"
                       tooltip={
@@ -2484,8 +2536,9 @@ const NewForm = (props: {
                           .regVideoImgVoz.imagemVigilancia
                       }
                       systems={systems}
+                      methods={methods}
                     />
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2"
                       label="Voz"
                       tooltip={
@@ -2502,6 +2555,7 @@ const NewForm = (props: {
                           .regVideoImgVoz.voz
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
@@ -2540,7 +2594,7 @@ const NewForm = (props: {
                       </Form.Label>
                       <Form.Label as={Col} lg={1}></Form.Label>
                     </Row>
-                    <Section7FormRow
+                    <NewSection7FormRow
                       className="mb-3 pt-2 pb-2 bg-primary bg-opacity-10"
                       label="Outros (Especificar)"
                       tooltip={
@@ -2557,6 +2611,7 @@ const NewForm = (props: {
                           .outrosItems
                       }
                       systems={systems}
+                      methods={methods}
                     />
                   </Accordion.Body>
                 </Accordion.Item>
