@@ -27,8 +27,6 @@ const NewSection6FormRow = (props: {
   methods: UseFormReturn<Case, any>;
   rules: RegisterOptions;
 }) => {
-  console.log(props);
-
   return (
     <Row className="mb-3">
       <Col lg={1}>

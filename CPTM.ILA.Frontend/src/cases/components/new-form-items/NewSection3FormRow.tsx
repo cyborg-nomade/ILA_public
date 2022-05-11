@@ -15,13 +15,13 @@ const NewSection3FormRow = (props: {
   methods: UseFormReturn<Case, any>;
 }) => {
   const { getValues } = props.methods;
-  const [trata, setTrata] = useState(false);
+  const [atua, setAtua] = useState(false);
 
   useEffect(() => {
     const values = getValues();
     for (const value of Object.values(values.fasesCicloTratamento)) {
       if (value) {
-        setTrata(true);
+        setAtua(true);
       }
     }
     return () => {};
@@ -29,9 +29,9 @@ const NewSection3FormRow = (props: {
 
   const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.value === "SIM") {
-      setTrata(true);
+      setAtua(true);
     } else {
-      setTrata(false);
+      setAtua(false);
       props.methods.setValue("fasesCicloTratamento.coleta", false);
       props.methods.setValue("fasesCicloTratamento.retencao", false);
       props.methods.setValue("fasesCicloTratamento.processamento", false);
@@ -65,22 +65,22 @@ const NewSection3FormRow = (props: {
       <Col className="d-grid justify-content-center">
         <Form.Check
           type="radio"
-          name="trata"
+          name="atua"
           required
           label="Sim"
           value="SIM"
-          checked={trata}
+          checked={atua}
           disabled={props.disabled}
           onChange={handleTrataRadio}
         />
         <Form.Check
           type="radio"
-          name="trata"
+          name="atua"
           required
           inline
           label="Não"
           value="NÃO"
-          checked={!trata}
+          checked={!atua}
           disabled={props.disabled}
           onChange={handleTrataRadio}
         />
@@ -91,7 +91,7 @@ const NewSection3FormRow = (props: {
           name="fasesCicloTratamento.coleta"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Check
-              disabled={!trata || props.disabled}
+              disabled={!atua || props.disabled}
               type="checkbox"
               onChange={onChange}
               onBlur={onBlur}
@@ -112,7 +112,7 @@ const NewSection3FormRow = (props: {
           name="fasesCicloTratamento.retencao"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Check
-              disabled={!trata || props.disabled}
+              disabled={!atua || props.disabled}
               type="checkbox"
               onChange={onChange}
               onBlur={onBlur}
@@ -133,7 +133,7 @@ const NewSection3FormRow = (props: {
           name="fasesCicloTratamento.processamento"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Check
-              disabled={!trata || props.disabled}
+              disabled={!atua || props.disabled}
               type="checkbox"
               onChange={onChange}
               onBlur={onBlur}
@@ -154,7 +154,7 @@ const NewSection3FormRow = (props: {
           name="fasesCicloTratamento.compartilhamento"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Check
-              disabled={!trata || props.disabled}
+              disabled={!atua || props.disabled}
               type="checkbox"
               onChange={onChange}
               onBlur={onBlur}
@@ -175,7 +175,7 @@ const NewSection3FormRow = (props: {
           name="fasesCicloTratamento.eliminacao"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Check
-              disabled={!trata || props.disabled}
+              disabled={!atua || props.disabled}
               type="checkbox"
               onChange={onChange}
               onBlur={onBlur}

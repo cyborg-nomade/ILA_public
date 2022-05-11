@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import {
-  Controller,
-  UseFormReturn,
-  FieldPath,
-  RegisterOptions,
-} from "react-hook-form";
+import { Controller, UseFormReturn, FieldPath } from "react-hook-form";
+import _ from "lodash";
+import Select from "react-select";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -14,9 +11,6 @@ import {
   tipoFontesRetencao,
   tipoTempoRetencao,
 } from "../../../shared/models/case-helpers/enums.model";
-import { Options } from "../../../access-requests/components/AccessRequestForm";
-import SelectFieldSearch from "../../../shared/components/UI/SelectFieldSearch";
-import _ from "lodash";
 
 const NewSection7FormRowSub = (props: {
   name: FieldPath<Case>;
@@ -35,13 +29,7 @@ const NewSection7FormRowSub = (props: {
     } else {
       setIsSystemSelect(false);
     }
-    handleChange(event);
   };
-
-  const selectOptions: Options[] = props.systems.map((s) => ({
-    value: s,
-    label: s,
-  }));
 
   return (
     <Row className={props.className}>
@@ -69,7 +57,6 @@ const NewSection7FormRowSub = (props: {
             />
           )}
         />
-
         <Form.Control.Feedback type="invalid">
           Esse campo é obrigatório
         </Form.Control.Feedback>
@@ -105,64 +92,81 @@ const NewSection7FormRowSub = (props: {
         />
       </Col>
       <Col>
-        <Form.Select
-          name={`${props.name}.fonteRetencao.value`}
-          value={getIn(values, `${props.name}.fonteRetencao.value`)}
-          onChange={handleChangeFonteRetencao}
-          onBlur={handleBlur}
-          isValid={
-            getIn(touched, `${props.name}.fonteRetencao.value`) &&
-            !getIn(errors, `${props.name}.fonteRetencao.value`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.fonteRetencao.value`)}
-          disabled={props.disabled}
-        >
-          {Object.values(tipoFontesRetencao).map((tfr) => (
-            <option value={tfr} key={tfr}>
-              {tfr}
-            </option>
-          ))}
-        </Form.Select>
+        <Controller
+          rules={{ required: true }}
+          control={props.methods.control}
+          name={`${props.name}.fonteRetencao.value` as FieldPath<Case>}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Select
+              disabled={props.disabled}
+              value={value as string}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                handleChangeFonteRetencao(e);
+                onChange(e.target.value);
+              }}
+              onBlur={onBlur}
+              ref={ref}
+              isInvalid={
+                _.get(
+                  props.methods.formState.errors,
+                  `${props.name}.fonteRetencao.value`
+                )
+                  ? true
+                  : false
+              }
+            >
+              {Object.values(tipoFontesRetencao).map((tfr) => (
+                <option value={tfr} key={tfr}>
+                  {tfr}
+                </option>
+              ))}
+            </Form.Select>
+          )}
+        />
       </Col>
       <Col lg={2}>
         {!isSystemSelect ? (
-          <Form.Control
-            type="text"
-            name={`${props.name}.localArmazenamento`}
-            value={getIn(values, `${props.name}.localArmazenamento`)}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            isValid={
-              getIn(touched, `${props.name}.localArmazenamento`) &&
-              !getIn(errors, `${props.name}.localArmazenamento`)
-            }
-            isInvalid={!!getIn(errors, `${props.name}.localArmazenamento`)}
-            disabled={props.disabled}
+          <Controller
+            rules={{ required: true }}
+            control={props.methods.control}
+            name={`${props.name}.localArmazenamento` as FieldPath<Case>}
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Form.Control
+                type="text"
+                value={value as string}
+                onChange={onChange}
+                onBlur={onBlur}
+                isInvalid={
+                  _.get(
+                    props.methods.formState.errors,
+                    `${props.name}.localArmazenamento`
+                  )
+                    ? true
+                    : false
+                }
+                disabled={props.disabled}
+                ref={ref}
+              />
+            )}
           />
         ) : (
           <React.Fragment>
-            {/* <Form.Select
-              name={`${props.name}.localArmazenamento`}
-              value={getIn(values, `${props.name}.localArmazenamento`)}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              isValid={
-                getIn(touched, `${props.name}.localArmazenamento`) &&
-                !getIn(errors, `${props.name}.localArmazenamento`)
-              }
-              isInvalid={!!getIn(errors, `${props.name}.localArmazenamento`)}
-            >
-              {Object.values(props.systems).map((s) => (
-                <option value={s} key={s}>
-                  {s}
-                </option>
-              ))}
-            </Form.Select> */}
-            <Field
-              component={SelectFieldSearch}
-              name={`${props.name}.localArmazenamento`}
-              options={selectOptions}
-              disabled={props.disabled}
+            <Controller
+              rules={{ required: true }}
+              control={props.methods.control}
+              name={`${props.name}.localArmazenamento` as FieldPath<Case>}
+              render={({ field: { onChange, value, name, ref } }) => (
+                <Select
+                  ref={ref}
+                  options={props.systems.map((s) => ({ value: s, label: s }))}
+                  value={props.systems
+                    .map((s) => ({ value: s, label: s }))
+                    .find((c) => c.value === value)}
+                  onChange={(val) => onChange(val?.value)}
+                  isSearchable
+                  isDisabled={props.disabled}
+                />
+              )}
             />
           </React.Fragment>
         )}
