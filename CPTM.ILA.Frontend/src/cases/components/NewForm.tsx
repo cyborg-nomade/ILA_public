@@ -1,6 +1,12 @@
 import React, { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useForm, Controller, FormProvider } from "react-hook-form";
+import {
+  useForm,
+  Controller,
+  useFieldArray,
+  FieldPath,
+  FieldArrayPath,
+} from "react-hook-form";
 import Select from "react-select";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -47,6 +53,7 @@ import SelectFieldSearch from "../../shared/components/UI/SelectFieldSearch";
 import NewSection3FormRow from "./new-form-items/NewSection3FormRow";
 import NewSection6FormRow from "./new-form-items/NewSection6FormRow";
 import NewSection9QuantityRow from "./new-form-items/NewSection9QuantityRow";
+import NewSection10FormRow from "./new-form-items/NewSection10FormRow";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -73,6 +80,10 @@ const NewForm = (props: {
   const { token } = useContext(AuthContext);
 
   const methods = useForm<Case>({ defaultValues: props.item });
+  const categoriasTitularesCategorias = useFieldArray({
+    control: methods.control, // control props comes from useForm
+    name: "categoriasTitulares.categorias", // unique name for your Field Array
+  });
 
   const { sendRequest, error, clearError, isLoading } = useHttpClient();
 
@@ -94,9 +105,8 @@ const NewForm = (props: {
   const handleSaveProgressClick = async (item: Case) => {
     setItemValues(item);
     const valid = await methods.trigger();
-    if (valid) {
-      setShowSaveProgressModal(true);
-    }
+
+    setShowSaveProgressModal(true);
   };
   const handleSendToApprovalClick = async (item: Case) => {
     setItemValues(item);
@@ -2843,6 +2853,168 @@ const NewForm = (props: {
                 </Col>
               </Row>
               <NewSection9QuantityRow isEditing={isEditing} methods={methods} />
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="9">
+            <Accordion.Header>
+              10 - Categorias dos titulares de dados pessoais
+            </Accordion.Header>
+            <Accordion.Body>
+              <Accordion>
+                <Accordion.Item eventKey="90">
+                  <Accordion.Header>10.1 - Categorias gerais</Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label as={Col}>Tipo de Categoria</Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <Row>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label as={Col}></Form.Label>
+                      <Col lg={1}>
+                        <Row>
+                          <CreateCommentBox
+                            item={
+                              CaseIndexDictionary.categoriasTitulares.categorias
+                            }
+                          />
+                        </Row>
+                      </Col>
+                    </Row>
+                    <React.Fragment>
+                      {categoriasTitularesCategorias.fields &&
+                      categoriasTitularesCategorias.fields.length > 0 ? (
+                        categoriasTitularesCategorias.fields.map(
+                          (field, index) => (
+                            <React.Fragment key={field.id}>
+                              <NewSection10FormRow
+                                className={`mb-3 pt-2 pb-2 ${
+                                  index % 2 === 0
+                                    ? "bg-primary bg-opacity-10"
+                                    : ""
+                                }`}
+                                label={`Categoria`}
+                                disabled={!isEditing}
+                                name={
+                                  `categoriasTitulares.categorias[${index}]` as const
+                                }
+                                full={true}
+                                itemRef={
+                                  CaseIndexDictionary.categoriasTitulares
+                                    .categorias
+                                }
+                                methods={methods}
+                              />
+                              <Row className="justify-content-center">
+                                <ButtonGroup
+                                  as={Col}
+                                  className="mt-1 mb-3"
+                                  lg={2}
+                                >
+                                  <Button
+                                    disabled={!isEditing}
+                                    variant="primary"
+                                    onClick={() =>
+                                      categoriasTitularesCategorias.append(
+                                        emptyItemCategoriaTitulares()
+                                      )
+                                    }
+                                  >
+                                    +
+                                  </Button>
+                                  <Button
+                                    disabled={!isEditing}
+                                    variant="danger"
+                                    onClick={() =>
+                                      categoriasTitularesCategorias.remove(
+                                        index
+                                      )
+                                    }
+                                  >
+                                    -
+                                  </Button>
+                                </ButtonGroup>
+                              </Row>
+                            </React.Fragment>
+                          )
+                        )
+                      ) : (
+                        <Row className="justify-content-center">
+                          <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                            <Button
+                              disabled={!isEditing}
+                              variant="primary"
+                              onClick={() =>
+                                categoriasTitularesCategorias.append(
+                                  emptyItemCategoriaTitulares()
+                                )
+                              }
+                            >
+                              +
+                            </Button>
+                          </ButtonGroup>
+                        </Row>
+                      )}
+                    </React.Fragment>
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="91">
+                  <Accordion.Header>
+                    10.3 - Categorias que envolvam crianças e adolescentes
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label as={Col}>Trata?</Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <NewSection10FormRow
+                      className={"mb-3 pt-2 pb-2 bg-primary bg-opacity-10"}
+                      label={"Categoria Crianças e Adolescentes"}
+                      disabled={!isEditing}
+                      name={"categoriasTitulares.criancasAdolescentes"}
+                      full={false}
+                      itemRef={
+                        CaseIndexDictionary.categoriasTitulares
+                          .criancasAdolescentes
+                      }
+                      methods={methods}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="92">
+                  <Accordion.Header>
+                    10.4 - Categorias que envolvam outros grupos vulneráveis
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                      <Form.Label as={Col}></Form.Label>
+                      <Form.Label as={Col}>Trata?</Form.Label>
+                      <Form.Label as={Col}>Descrição</Form.Label>
+                      <Form.Label as={Col} lg={1}></Form.Label>
+                    </Row>
+                    <NewSection10FormRow
+                      className={"mb-3 pt-2 pb-2 $ bg-primary bg-opacity-10"}
+                      label={"Categoria Outros Grupos Vulneráveis"}
+                      disabled={!isEditing}
+                      name={"categoriasTitulares.outrosGruposVulneraveis"}
+                      full={false}
+                      tooltip={
+                        "Idoso, pessoa em situação de rua, pessoa com deficiência, entre outros"
+                      }
+                      itemRef={
+                        CaseIndexDictionary.categoriasTitulares
+                          .outrosGruposVulneraveis
+                      }
+                      methods={methods}
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
