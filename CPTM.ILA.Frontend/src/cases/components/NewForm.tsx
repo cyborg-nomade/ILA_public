@@ -46,6 +46,7 @@ import { useUtilities } from "../../shared/hooks/utilities-hook";
 import SelectFieldSearch from "../../shared/components/UI/SelectFieldSearch";
 import NewSection3FormRow from "./new-form-items/NewSection3FormRow";
 import NewSection6FormRow from "./new-form-items/NewSection6FormRow";
+import NewSection9QuantityRow from "./new-form-items/NewSection9QuantityRow";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -930,9 +931,10 @@ const NewForm = (props: {
                   <p>
                     Razão ou motivo pela qual se deseja tratar os dados
                     pessoais. É importantíssimo estabelecer claramente a
-                    finalidade, pois é ela que justifica o tratamento de dados
-                    pessoais e fornece os elementos para informar o titular dos
-                    dados.
+                    finalidade, import NewSection9QuantityRow from
+                    './new-form-items/NewSection9QuantityRow'; pois é ela que
+                    justifica o tratamento de dados pessoais e fornece os
+                    elementos para informar o titular dos dados.
                   </p>
                 }
                 disabled
@@ -2766,6 +2768,81 @@ const NewForm = (props: {
                 systems={systems}
                 methods={methods}
               />
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="8">
+            <Accordion.Header>
+              9 - Frequência e totalização das categorias de dados pessoais
+              tratados
+            </Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3">
+                <Col lg={1}>
+                  <p>{CaseIndexDictionary.frequenciaTratamento}</p>
+                </Col>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip className="text-muted">
+                      Descrever em que frequência os dados são tratados. Isso
+                      representa a disponibilidade e horário de funcionamento do
+                      sistema automatizado ou processo manual que trata os dados
+                      pessoais. Abaixo segue exemplo fictício de descrição do
+                      Sistema Nacional de Desaparecidos -SND a ser preenchido no
+                      inventário.
+                      <br />
+                      <br />
+                      <b>Exemplo:</b> O SND está disponível no regime 24x7 (24
+                      horas por dia nos 7 dias da semana) para comunicação
+                      (coleta) dos dados do desaparecimentos e as demais fases e
+                      operações de tratamento são realizadas no horário
+                      comercial em dias úteis.
+                    </Tooltip>
+                  }
+                >
+                  <Form.Label as={Col}>
+                    Frequência de tratamento dos dados pessoais
+                  </Form.Label>
+                </OverlayTrigger>
+                <Col lg={8}>
+                  <Controller
+                    rules={{ required: true }}
+                    control={methods.control}
+                    name="frequenciaTratamento.value"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Select
+                        disabled={!isEditing}
+                        value={value as string}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        ref={ref}
+                        isInvalid={
+                          methods.formState.errors.frequenciaTratamento?.value
+                            ? true
+                            : false
+                        }
+                      >
+                        {Object.values(tipoFrequenciaTratamento).map((tft) => (
+                          <option value={tft} key={tft}>
+                            {tft}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    )}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Esse campo é obrigatório
+                  </Form.Control.Feedback>
+                </Col>
+                <Col lg={1}>
+                  <Row>
+                    <CreateCommentBox
+                      item={CaseIndexDictionary.frequenciaTratamento}
+                    />
+                  </Row>
+                </Col>
+              </Row>
+              <NewSection9QuantityRow isEditing={isEditing} methods={methods} />
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
