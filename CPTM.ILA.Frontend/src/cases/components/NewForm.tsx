@@ -2618,6 +2618,156 @@ const NewForm = (props: {
               </Accordion>
             </Accordion.Body>
           </Accordion.Item>
+          <Accordion.Item eventKey="7">
+            <Accordion.Header>
+              8 - Categorias de Dados Pessoais Sensíveis
+            </Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                <Form.Label as={Col} lg={1}></Form.Label>
+                <Form.Label as={Col}></Form.Label>
+                <Form.Label as={Col} className="d-grid justify-content-center">
+                  Trata?
+                </Form.Label>
+                <Form.Label as={Col}>Descrição</Form.Label>
+                <OverlayTrigger
+                  placement="top"
+                  trigger={["click", "hover"]}
+                  overlay={
+                    <Tooltip className="text-muted">
+                      Para maiores informações visite o
+                      <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                        site da CADA
+                      </a>
+                    </Tooltip>
+                  }
+                >
+                  <Form.Label as={Col}>Tempo Retenção dos Dados</Form.Label>
+                </OverlayTrigger>
+                <Form.Label as={Col}>Fonte Retenção</Form.Label>
+                <Form.Label as={Col} lg={2}>
+                  Local de Armazenamento
+                </Form.Label>
+                <Form.Label as={Col} lg={1}></Form.Label>
+              </Row>
+              <NewSection7FormRow
+                className="mb-3 pt-2 pb-2"
+                label="Dados que revelam origem racial ou étnica"
+                disabled={!isEditing}
+                name="catDadosPessoaisSensiveis.origemRacialEtnica"
+                itemRef={
+                  CaseIndexDictionary.catDadosPessoaisSensiveis
+                    .origemRacialEtnica
+                }
+                systems={systems}
+                methods={methods}
+              />
+              <NewSection7FormRow
+                className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                label="Dados que revelam convicção religiosa"
+                disabled={!isEditing}
+                name="catDadosPessoaisSensiveis.conviccaoReligiosa"
+                itemRef={
+                  CaseIndexDictionary.catDadosPessoaisSensiveis
+                    .conviccaoReligiosa
+                }
+                systems={systems}
+                methods={methods}
+              />
+              <NewSection7FormRow
+                className="mb-3 pt-2 pb-2"
+                label="Dados que revelam opinião política"
+                disabled={!isEditing}
+                name="catDadosPessoaisSensiveis.opiniaoPolitica"
+                itemRef={
+                  CaseIndexDictionary.catDadosPessoaisSensiveis.opiniaoPolitica
+                }
+                systems={systems}
+                methods={methods}
+              />
+              <NewSection7FormRow
+                className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                label="Dados que revelam filiação a sindicato"
+                disabled={!isEditing}
+                name="catDadosPessoaisSensiveis.filiacaoSindicato"
+                itemRef={
+                  CaseIndexDictionary.catDadosPessoaisSensiveis
+                    .filiacaoSindicato
+                }
+                systems={systems}
+                methods={methods}
+              />
+              <NewSection7FormRow
+                className="mb-3 pt-2 pb-2"
+                label="Dados que revelam filiação a organização de caráter religioso"
+                disabled={!isEditing}
+                name="catDadosPessoaisSensiveis.filiacaoOrgReligiosa"
+                itemRef={
+                  CaseIndexDictionary.catDadosPessoaisSensiveis
+                    .filiacaoOrgReligiosa
+                }
+                systems={systems}
+                methods={methods}
+              />
+              <NewSection7FormRow
+                className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                label="Dados que revelam filiação ou crença filosófica"
+                disabled={!isEditing}
+                name="catDadosPessoaisSensiveis.filiacaoCrencaFilosofica"
+                itemRef={
+                  CaseIndexDictionary.catDadosPessoaisSensiveis
+                    .filiacaoCrencaFilosofica
+                }
+                systems={systems}
+                methods={methods}
+              />
+              <NewSection7FormRow
+                className="mb-3 pt-2 pb-2"
+                label="Dados que revelam filiação ou preferências política"
+                disabled={!isEditing}
+                name="catDadosPessoaisSensiveis.filiacaoPreferenciaPolitica"
+                itemRef={
+                  CaseIndexDictionary.catDadosPessoaisSensiveis
+                    .filiacaoPreferenciaPolitica
+                }
+                systems={systems}
+                methods={methods}
+              />
+              <NewSection7FormRow
+                className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                label="Dados referentes à saúde ou à vida sexual"
+                disabled={!isEditing}
+                name="catDadosPessoaisSensiveis.saudeVidaSexual"
+                itemRef={
+                  CaseIndexDictionary.catDadosPessoaisSensiveis.saudeVidaSexual
+                }
+                systems={systems}
+                methods={methods}
+              />
+              <NewSection7FormRow
+                className="mb-3 pt-2 pb-2"
+                label="Dados genéticos"
+                disabled={!isEditing}
+                name="catDadosPessoaisSensiveis.geneticos"
+                itemRef={
+                  CaseIndexDictionary.catDadosPessoaisSensiveis.geneticos
+                }
+                systems={systems}
+                methods={methods}
+              />
+              <NewSection7FormRow
+                className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
+                label="Dados biométricos"
+                disabled={!isEditing}
+                name="catDadosPessoaisSensiveis.biometricos"
+                itemRef={
+                  CaseIndexDictionary.catDadosPessoaisSensiveis.biometricos
+                }
+                systems={systems}
+                methods={methods}
+              />
+            </Accordion.Body>
+          </Accordion.Item>
         </Accordion>
         {props.new && (
           <Stack direction="horizontal" className="mt-3" gap={3}>
