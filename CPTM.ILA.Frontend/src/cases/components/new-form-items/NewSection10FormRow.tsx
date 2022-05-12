@@ -33,20 +33,14 @@ const NewSection10FormRow = (props: {
   );
 
   const toggleEnableDescricao = (value: string) => {
-    console.log(props.name, value);
-
     if (value === "NÃO") {
-      console.log(props.name, value, "NÃO IF");
       setIsDescricaoEnabled(false);
       props.methods.setValue(
         `${props.name}.descricaoDados` as FieldPath<Case>,
         ""
       );
-      console.log(props.methods.getValues(), "NÃO IF");
     } else {
-      console.log(props.name, value, "ELSE IF");
       setIsDescricaoEnabled(true);
-      console.log(props.methods.getValues(), "ELSE IF");
     }
   };
 

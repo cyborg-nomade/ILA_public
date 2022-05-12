@@ -54,6 +54,7 @@ import NewSection3FormRow from "./new-form-items/NewSection3FormRow";
 import NewSection6FormRow from "./new-form-items/NewSection6FormRow";
 import NewSection9QuantityRow from "./new-form-items/NewSection9QuantityRow";
 import NewSection10FormRow from "./new-form-items/NewSection10FormRow";
+import NewSection11FormRow from "./new-form-items/NewSection11FormRow";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -942,9 +943,11 @@ const NewForm = (props: {
                     Razão ou motivo pela qual se deseja tratar os dados
                     pessoais. É importantíssimo estabelecer claramente a
                     finalidade, import NewSection9QuantityRow from
-                    './new-form-items/NewSection9QuantityRow'; pois é ela que
-                    justifica o tratamento de dados pessoais e fornece os
-                    elementos para informar o titular dos dados.
+                    './new-form-import NewSection11FormRow from
+                    './new-form-items/NewSection11FormRow';
+                    items/NewSection9QuantityRow'; pois é ela que justifica o
+                    tratamento de dados pessoais e fornece os elementos para
+                    informar o titular dos dados.
                   </p>
                 }
                 disabled
@@ -3015,6 +3018,25 @@ const NewForm = (props: {
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="10">
+            <Accordion.Header>
+              11 - Compartilhamento de Dados Pessoais
+            </Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                <Form.Label as={Col} className="d-grid justify-content-center">
+                  Compartilha?
+                </Form.Label>
+                <Form.Label as={Col}>Nome da Instituição Receptora</Form.Label>
+                <Form.Label as={Col}>Público/Privado</Form.Label>
+                <Form.Label as={Col}>Nível de Compartilhamento</Form.Label>
+                <Form.Label as={Col}>Descrição do Nível</Form.Label>
+                <Form.Label as={Col}>Finalidade do Compartilhamento</Form.Label>
+                <Form.Label as={Col} lg={1}></Form.Label>
+              </Row>
+              <NewSection11FormRow disabled={!isEditing} methods={methods} />
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
