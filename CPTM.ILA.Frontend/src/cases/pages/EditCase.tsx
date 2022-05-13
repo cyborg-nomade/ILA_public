@@ -4,18 +4,13 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import {
-  BaseCase,
-  Case,
-  emptyBaseCase,
-  emptyCase,
-} from "../../shared/models/cases.model";
+import { Case, emptyCase } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
-import CaseForm from "../components/CaseForm";
 import { diff } from "deep-object-diff";
 import { ChangeLog } from "../../shared/models/change-logging/change-log.model";
 import { CaseChange } from "../../shared/models/DTOs/case-change.model";
+import CaseForm from "../components/CaseForm";
 
 const EditCase = () => {
   const [fullCase, setFullCase] = useState<Case>(emptyCase());

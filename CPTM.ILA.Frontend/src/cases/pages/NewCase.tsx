@@ -1,22 +1,22 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
 import {
-  emptyBaseCase,
   Case,
+  emptyBaseCase,
   emptyCase,
 } from "./../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "./../../shared/hooks/http-hook";
-import CaseForm from "../components/CaseForm";
 import { diff } from "deep-object-diff";
 import { ChangeLog } from "../../shared/models/change-logging/change-log.model";
 import { CaseChange } from "../../shared/models/DTOs/case-change.model";
 
 import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
+import CaseForm from "../components/CaseForm";
 
 const NewCase = () => {
   const { token, user, currentGroup, areaTratamentoDados } =
