@@ -1,29 +1,25 @@
 import React, { useState } from "react";
-import {
-  UseFormReturn,
-  FieldPath,
-  FieldArrayPath,
-  useFieldArray,
-} from "react-hook-form";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { Case } from "../../../shared/models/cases.model";
-import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
-import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
-import { emptyItemCompatilhamentoDados } from "../../../shared/models/case-helpers/case-helpers.model";
-import NewSection11FormRowSub from "./NewSection11FormRowSub";
+import { emptyItemTransferenciaInternacional } from "../../../shared/models/case-helpers/case-helpers.model";
+import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
+import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
+import NewSection13FormRowSub from "./NewSection13FormRowSub";
 
-const NewSection11FormRow = (props: {
+const NewSection13FormRow = (props: {
+  countries: string[];
   disabled: boolean;
   methods: UseFormReturn<Case, any>;
 }) => {
   const { fields, append, remove } = useFieldArray({
     control: props.methods.control, // control props comes from useForm
-    name: "compartilhamentoDadosPessoais" as const, // unique name for your Field Array
+    name: "transferenciaInternacional" as const, // unique name for your Field Array
   });
 
   const [trata, setTrata] = useState(false);
@@ -33,7 +29,7 @@ const NewSection11FormRow = (props: {
       setTrata(true);
     } else {
       setTrata(false);
-      props.methods.setValue("compartilhamentoDadosPessoais", []);
+      props.methods.setValue("transferenciaInternacional", []);
     }
   };
 
@@ -43,7 +39,7 @@ const NewSection11FormRow = (props: {
         <Col className="d-grid justify-content-center">
           <Form.Check
             type="radio"
-            name={`trata-compartilhamentoDadosPessoais`}
+            name={`trata-transferenciaInternacional`}
             required
             label="Sim"
             value="SIM"
@@ -53,7 +49,7 @@ const NewSection11FormRow = (props: {
           />
           <Form.Check
             type="radio"
-            name={`trata-compartilhamentoDadosPessoais`}
+            name={`trata-transferenciaInternacional`}
             required
             inline
             label="Não"
@@ -63,15 +59,14 @@ const NewSection11FormRow = (props: {
             onChange={handleTrataRadio}
           />
         </Col>
-        <Form.Label as={Col}></Form.Label>
-        <Form.Label as={Col}></Form.Label>
-        <Form.Label as={Col}></Form.Label>
-        <Form.Label as={Col}></Form.Label>
-        <Form.Label as={Col}></Form.Label>
+        <Col></Col>
+        <Col></Col>
+        <Col></Col>
+        <Col></Col>
         <Col lg={1}>
           <Row>
             <CreateCommentBox
-              item={CaseIndexDictionary.compartilhamentoDadosPessoais}
+              item={CaseIndexDictionary.transferenciaInternacional}
             />
           </Row>
         </Col>
@@ -80,19 +75,21 @@ const NewSection11FormRow = (props: {
         {fields && fields.length > 0 ? (
           fields.map((field, index) => (
             <React.Fragment key={field.id}>
-              <NewSection11FormRowSub
+              <NewSection13FormRowSub
                 className={`mb-3 pt-2 pb-2 ${
                   index % 2 === 0 ? "bg-primary bg-opacity-10" : ""
                 }`}
-                disabled={props.disabled}
-                name={`compartilhamentoDadosPessoais[${index}]`}
+                name={`transferenciaInternacional[${index}]`}
+                countries={props.countries}
                 methods={props.methods}
               />
               <Row className="justify-content-center">
                 <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                   <Button
                     variant="primary"
-                    onClick={() => append(emptyItemCompatilhamentoDados())}
+                    onClick={() =>
+                      append(emptyItemTransferenciaInternacional())
+                    }
                   >
                     +
                   </Button>
@@ -108,8 +105,8 @@ const NewSection11FormRow = (props: {
             <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
               <Button
                 variant="primary"
-                onClick={() => append(emptyItemCompatilhamentoDados())}
                 disabled={!trata}
+                onClick={() => append(emptyItemTransferenciaInternacional())}
               >
                 +
               </Button>
@@ -121,4 +118,4 @@ const NewSection11FormRow = (props: {
   );
 };
 
-export default NewSection11FormRow;
+export default NewSection13FormRow;

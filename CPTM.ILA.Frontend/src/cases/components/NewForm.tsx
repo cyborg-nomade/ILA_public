@@ -56,6 +56,7 @@ import NewSection9QuantityRow from "./new-form-items/NewSection9QuantityRow";
 import NewSection10FormRow from "./new-form-items/NewSection10FormRow";
 import NewSection11FormRow from "./new-form-items/NewSection11FormRow";
 import NewSection12FormRow from "./new-form-items/NewSection12FormRow";
+import NewSection13FormRow from "./new-form-items/NewSection13FormRow";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -3127,6 +3128,30 @@ const NewForm = (props: {
                   </Row>
                 )}
               </React.Fragment>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="12">
+            <Accordion.Header>
+              13 - Transferência Internacional de Dados Pessoais
+            </Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                <Form.Label as={Col} className="d-grid justify-content-center">
+                  Transfere?
+                </Form.Label>
+                <Form.Label as={Col}>Nome da Organização Receptora</Form.Label>
+                <Form.Label as={Col}>País</Form.Label>
+                <Form.Label as={Col}>Dados pessoais transferidos</Form.Label>
+                <Form.Label as={Col}>
+                  Tipo de garantia para transferência
+                </Form.Label>
+                <Col lg={1}></Col>
+              </Row>
+              <NewSection13FormRow
+                countries={countries}
+                disabled={!isEditing}
+                methods={methods}
+              />
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
