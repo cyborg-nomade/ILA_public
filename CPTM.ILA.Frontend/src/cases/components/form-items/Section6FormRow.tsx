@@ -1,6 +1,11 @@
-import React, { useState } from "react";
-
-import { useFormikContext, getIn } from "formik";
+import React from "react";
+import _ from "lodash";
+import {
+  Controller,
+  FieldPath,
+  RegisterOptions,
+  UseFormReturn,
+} from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -9,31 +14,19 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 import { Case } from "../../../shared/models/cases.model";
 import { hipotesesTratamento } from "../../../shared/models/case-helpers/enums.model";
-import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
-import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
+import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
 
 const Section6FormRow = (props: {
   tooltip?: JSX.Element;
   label: string;
   disabled: boolean;
-  name: string;
+  name: FieldPath<Case>;
   type: string;
   invalid: string;
   itemRef: string;
+  methods: UseFormReturn<Case, any>;
+  rules: RegisterOptions;
 }) => {
-  const { values, touched, errors, setFieldValue, handleChange, handleBlur } =
-    useFormikContext<Case>();
-
-  const [propNameState, setPropNameState] = useState(getIn(values, props.name));
-
-  const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPropNameState(event.currentTarget.value);
-  };
-  const handleBlurInput = (event: React.FocusEvent<HTMLInputElement>) => {
-    handleBlur(event);
-    setFieldValue(props.name, propNameState, true);
-  };
-
   return (
     <Row className="mb-3">
       <Col lg={1}>
@@ -51,32 +44,52 @@ const Section6FormRow = (props: {
       )}
       <Col lg={8}>
         {props.type === "select" && (
-          <Form.Select
-            disabled={props.disabled}
+          <Controller
+            rules={props.rules}
+            control={props.methods.control}
             name={props.name}
-            value={getIn(values, props.name)}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            isValid={getIn(touched, props.name) && !getIn(errors, props.name)}
-            isInvalid={!!getIn(errors, props.name)}
-          >
-            {Object.values(hipotesesTratamento).map((hip) => (
-              <option value={hip} key={hip}>
-                {hip}
-              </option>
-            ))}
-          </Form.Select>
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Form.Select
+                disabled={props.disabled}
+                value={value as string}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={ref}
+                isInvalid={
+                  _.get(props.methods.formState.errors, props.name)
+                    ? true
+                    : false
+                }
+              >
+                {Object.values(hipotesesTratamento).map((hip) => (
+                  <option value={hip} key={hip}>
+                    {hip}
+                  </option>
+                ))}
+              </Form.Select>
+            )}
+          />
         )}
         {props.type === "text" && (
-          <Form.Control
-            disabled={props.disabled}
-            type="text"
+          <Controller
+            rules={props.rules}
+            control={props.methods.control}
             name={props.name}
-            value={propNameState}
-            onChange={handleChangeInput}
-            onBlur={handleBlurInput}
-            isValid={getIn(touched, props.name) && !getIn(errors, props.name)}
-            isInvalid={!!getIn(errors, props.name)}
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Form.Control
+                disabled={props.disabled}
+                type="text"
+                value={value as string}
+                onChange={onChange}
+                onBlur={onBlur}
+                isInvalid={
+                  _.get(props.methods.formState.errors, props.name)
+                    ? true
+                    : false
+                }
+                ref={ref}
+              />
+            )}
           />
         )}
         <Form.Control.Feedback type="invalid">

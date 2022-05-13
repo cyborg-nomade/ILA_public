@@ -1,5 +1,5 @@
-import { useFormikContext } from "formik";
 import React, { useEffect } from "react";
+import { Controller, UseFormReturn, useWatch } from "react-hook-form";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -7,19 +7,31 @@ import Row from "react-bootstrap/Row";
 import Tooltip from "react-bootstrap/Tooltip";
 import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 import { Case } from "../../../shared/models/cases.model";
-import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
+import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
 
-const Section9QuantityRow = (props: { isEditing: boolean }) => {
-  const { values, setFieldValue } = useFormikContext<Case>();
+const Section9QuantityRow = (props: {
+  isEditing: boolean;
+  methods: UseFormReturn<Case, any>;
+}) => {
+  const { getValues, setValue, watch } = props.methods;
+  const categoriaDadosPessoaisWatch = useWatch({
+    control: props.methods.control,
+    name: "categoriaDadosPessoais",
+  });
+  const catDadosPessoaisSensiveisWatch = useWatch({
+    control: props.methods.control,
+    name: "catDadosPessoaisSensiveis",
+  });
 
   useEffect(() => {
     if (props.isEditing) {
       let totalDadosTratados = 0;
       let totalDadosSensiveisTratados = 0;
 
-      console.log(values);
+      console.log(catDadosPessoaisSensiveisWatch);
+      console.log(categoriaDadosPessoaisWatch);
 
-      for (const categoria of Object.values(values.categoriaDadosPessoais)) {
+      for (const categoria of Object.values(watch("categoriaDadosPessoais"))) {
         for (const item of Object.values(categoria)) {
           if (Array.isArray(item)) {
             totalDadosTratados += item.length;
@@ -27,7 +39,7 @@ const Section9QuantityRow = (props: { isEditing: boolean }) => {
         }
       }
 
-      for (const item of Object.values(values.catDadosPessoaisSensiveis)) {
+      for (const item of Object.values(watch("catDadosPessoaisSensiveis"))) {
         if (Array.isArray(item)) {
           totalDadosSensiveisTratados += item.length;
         }
@@ -35,12 +47,19 @@ const Section9QuantityRow = (props: { isEditing: boolean }) => {
 
       totalDadosTratados += totalDadosSensiveisTratados;
 
-      setFieldValue("qtdeDadosSensiveisTratados", totalDadosSensiveisTratados);
-      setFieldValue("qtdeDadosTratados", totalDadosTratados);
+      setValue("qtdeDadosSensiveisTratados", totalDadosSensiveisTratados);
+      setValue("qtdeDadosTratados", totalDadosTratados);
     }
 
     return () => {};
-  }, [props.isEditing, setFieldValue, values]);
+  }, [
+    catDadosPessoaisSensiveisWatch,
+    categoriaDadosPessoaisWatch,
+    getValues,
+    props.isEditing,
+    setValue,
+    watch,
+  ]);
 
   return (
     <React.Fragment>
@@ -77,12 +96,21 @@ const Section9QuantityRow = (props: { isEditing: boolean }) => {
           </Form.Label>
         </OverlayTrigger>
         <Col lg={8}>
-          <Form.Control
-            disabled
-            type="text"
+          <Controller
+            rules={{ required: true }}
+            control={props.methods.control}
             name="qtdeDadosTratados"
-            value={values.qtdeDadosTratados}
-            readOnly
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Form.Control
+                disabled
+                type="text"
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={ref}
+                readOnly
+              />
+            )}
           />
         </Col>
         <Col lg={1}>
@@ -124,12 +152,21 @@ const Section9QuantityRow = (props: { isEditing: boolean }) => {
           </Form.Label>
         </OverlayTrigger>
         <Col lg={8}>
-          <Form.Control
-            disabled
-            type="text"
+          <Controller
+            rules={{ required: true }}
+            control={props.methods.control}
             name="qtdeDadosSensiveisTratados"
-            value={values.qtdeDadosSensiveisTratados}
-            readOnly
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Form.Control
+                disabled
+                type="text"
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={ref}
+                readOnly
+              />
+            )}
           />
         </Col>
         <Col lg={1}>

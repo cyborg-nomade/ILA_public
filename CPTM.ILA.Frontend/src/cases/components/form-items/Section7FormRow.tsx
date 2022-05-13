@@ -1,61 +1,64 @@
 import React, { useEffect, useState } from "react";
-
-import { useFormikContext, getIn, FieldArray } from "formik";
+import {
+  FieldArrayPath,
+  FieldPath,
+  useFieldArray,
+  UseFormReturn,
+} from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-
-import { Case } from "../../../shared/models/cases.model";
-import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
-import { tipoFontesRetencao } from "../../../shared/models/case-helpers/enums.model";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
+
+import { Case } from "../../../shared/models/cases.model";
 import {
   emptyItemCategoriaDadosPessoais,
   itemCategoriaDadosPessoais,
 } from "../../../shared/models/case-helpers/case-helpers.model";
+import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
 import Section7FormRowSub from "./Section7FormRowSub";
 
 const Section7FormRow = (props: {
   tooltip?: JSX.Element;
   label: string;
   disabled: boolean;
-  name: string;
+  name: FieldPath<Case>;
   className: string;
   itemRef: string;
   systems: string[];
+  methods: UseFormReturn<Case, any>;
 }) => {
-  const { values, setFieldValue } = useFormikContext<Case>();
+  const { getValues } = props.methods;
+
+  const { fields, append, remove } = useFieldArray({
+    control: props.methods.control, // control props comes from useForm
+    name: props.name as FieldArrayPath<Case>, // unique name for your Field Array
+  });
 
   const [trata, setTrata] = useState(false);
 
-  const categoriaAray: itemCategoriaDadosPessoais[] = getIn(
-    values,
-    `${props.name}`
-  );
-
   useEffect(() => {
-    const categoriaArayUseEffect: itemCategoriaDadosPessoais[] = getIn(
-      values,
-      `${props.name}`
-    );
+    const categoriaArrayUseEffect: itemCategoriaDadosPessoais[] = getValues(
+      props.name
+    ) as itemCategoriaDadosPessoais[];
 
-    if (categoriaArayUseEffect && categoriaArayUseEffect.length > 0) {
+    if (categoriaArrayUseEffect && categoriaArrayUseEffect.length > 0) {
       setTrata(true);
     } else {
       setTrata(false);
     }
     return () => {};
-  }, [props.name, values]);
+  }, [getValues, props.name]);
 
   const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.value === "SIM") {
       setTrata(true);
     } else {
       setTrata(false);
-      setFieldValue(`${props.name}`, []);
+      props.methods.setValue(props.name, []);
     }
   };
 
@@ -78,7 +81,7 @@ const Section7FormRow = (props: {
         <Col className="d-grid justify-content-center">
           <Form.Check
             type="radio"
-            name="trata"
+            name={`trata-${props.itemRef}`}
             required
             label="Sim"
             value="SIM"
@@ -88,7 +91,7 @@ const Section7FormRow = (props: {
           />
           <Form.Check
             type="radio"
-            name="trata"
+            name={`trata-${props.itemRef}`}
             required
             inline
             label="Não"
@@ -108,57 +111,46 @@ const Section7FormRow = (props: {
           </Row>
         </Col>
       </Row>
-      <FieldArray
-        name={props.name}
-        render={(arrayHelpers) => (
-          <React.Fragment>
-            {categoriaAray && categoriaAray.length > 0 ? (
-              categoriaAray.map((item, index) => (
-                <React.Fragment key={index}>
-                  <Section7FormRowSub
-                    systems={props.systems}
-                    className={props.className}
-                    name={`${props.name}[${index}]`}
-                    disabled={props.disabled}
-                  />
-                  <Row className="justify-content-center">
-                    <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
-                      <Button
-                        variant="primary"
-                        onClick={() =>
-                          arrayHelpers.push(emptyItemCategoriaDadosPessoais())
-                        }
-                      >
-                        +
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => arrayHelpers.remove(index)}
-                      >
-                        -
-                      </Button>
-                    </ButtonGroup>
-                  </Row>
-                </React.Fragment>
-              ))
-            ) : (
+      <React.Fragment>
+        {fields && fields.length > 0 ? (
+          fields.map((field, index) => (
+            <React.Fragment key={field.id}>
+              <Section7FormRowSub
+                systems={props.systems}
+                className={props.className}
+                name={`${props.name}[${index}]` as FieldPath<Case>}
+                disabled={props.disabled}
+                methods={props.methods}
+              />
               <Row className="justify-content-center">
                 <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                   <Button
                     variant="primary"
-                    disabled={!trata}
-                    onClick={() =>
-                      arrayHelpers.push(emptyItemCategoriaDadosPessoais())
-                    }
+                    onClick={() => append(emptyItemCategoriaDadosPessoais())}
                   >
                     +
                   </Button>
+                  <Button variant="danger" onClick={() => remove(index)}>
+                    -
+                  </Button>
                 </ButtonGroup>
               </Row>
-            )}
-          </React.Fragment>
+            </React.Fragment>
+          ))
+        ) : (
+          <Row className="justify-content-center">
+            <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+              <Button
+                variant="primary"
+                disabled={!trata}
+                onClick={() => append(emptyItemCategoriaDadosPessoais())}
+              >
+                +
+              </Button>
+            </ButtonGroup>
+          </Row>
         )}
-      />
+      </React.Fragment>
     </React.Fragment>
   );
 };

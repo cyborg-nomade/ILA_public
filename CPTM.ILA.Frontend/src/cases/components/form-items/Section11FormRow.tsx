@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-
-import { useFormikContext, getIn, FieldArray } from "formik";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -11,10 +10,16 @@ import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionar
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import { emptyItemCompatilhamentoDados } from "../../../shared/models/case-helpers/case-helpers.model";
-import Section11FormRowSub from "./Section11FormRowSub";
+import NewSection11FormRowSub from "./Section11FormRowSub";
 
-const Section11FormRow = (props: { disabled: boolean }) => {
-  const { values, setFieldValue } = useFormikContext<Case>();
+const Section11FormRow = (props: {
+  disabled: boolean;
+  methods: UseFormReturn<Case, any>;
+}) => {
+  const { fields, append, remove } = useFieldArray({
+    control: props.methods.control, // control props comes from useForm
+    name: "compartilhamentoDadosPessoais" as const, // unique name for your Field Array
+  });
 
   const [trata, setTrata] = useState(false);
 
@@ -23,7 +28,7 @@ const Section11FormRow = (props: { disabled: boolean }) => {
       setTrata(true);
     } else {
       setTrata(false);
-      setFieldValue("compartilhamentoDadosPessoais", []);
+      props.methods.setValue("compartilhamentoDadosPessoais", []);
     }
   };
 
@@ -33,7 +38,7 @@ const Section11FormRow = (props: { disabled: boolean }) => {
         <Col className="d-grid justify-content-center">
           <Form.Check
             type="radio"
-            name="trata"
+            name={`trata-compartilhamentoDadosPessoais`}
             required
             label="Sim"
             value="SIM"
@@ -43,7 +48,7 @@ const Section11FormRow = (props: { disabled: boolean }) => {
           />
           <Form.Check
             type="radio"
-            name="trata"
+            name={`trata-compartilhamentoDadosPessoais`}
             required
             inline
             label="Não"
@@ -66,59 +71,47 @@ const Section11FormRow = (props: { disabled: boolean }) => {
           </Row>
         </Col>
       </Row>
-      <FieldArray
-        name="compartilhamentoDadosPessoais"
-        render={(arrayHelpers) => (
-          <React.Fragment>
-            {values.compartilhamentoDadosPessoais &&
-            values.compartilhamentoDadosPessoais.length > 0 ? (
-              values.compartilhamentoDadosPessoais.map((item, index) => (
-                <React.Fragment key={index}>
-                  <Section11FormRowSub
-                    className={`mb-3 pt-2 pb-2 ${
-                      index % 2 === 0 ? "bg-primary bg-opacity-10" : ""
-                    }`}
-                    disabled={props.disabled}
-                    name={`compartilhamentoDadosPessoais[${index}]`}
-                  />
-                  <Row className="justify-content-center">
-                    <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
-                      <Button
-                        variant="primary"
-                        onClick={() =>
-                          arrayHelpers.push(emptyItemCompatilhamentoDados())
-                        }
-                      >
-                        +
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => arrayHelpers.remove(index)}
-                      >
-                        -
-                      </Button>
-                    </ButtonGroup>
-                  </Row>
-                </React.Fragment>
-              ))
-            ) : (
+      <React.Fragment>
+        {fields && fields.length > 0 ? (
+          fields.map((field, index) => (
+            <React.Fragment key={field.id}>
+              <NewSection11FormRowSub
+                className={`mb-3 pt-2 pb-2 ${
+                  index % 2 === 0 ? "bg-primary bg-opacity-10" : ""
+                }`}
+                disabled={props.disabled}
+                name={`compartilhamentoDadosPessoais[${index}]`}
+                methods={props.methods}
+              />
               <Row className="justify-content-center">
                 <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                   <Button
                     variant="primary"
-                    onClick={() =>
-                      arrayHelpers.push(emptyItemCompatilhamentoDados())
-                    }
-                    disabled={!trata}
+                    onClick={() => append(emptyItemCompatilhamentoDados())}
                   >
                     +
                   </Button>
+                  <Button variant="danger" onClick={() => remove(index)}>
+                    -
+                  </Button>
                 </ButtonGroup>
               </Row>
-            )}
-          </React.Fragment>
+            </React.Fragment>
+          ))
+        ) : (
+          <Row className="justify-content-center">
+            <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+              <Button
+                variant="primary"
+                onClick={() => append(emptyItemCompatilhamentoDados())}
+                disabled={!trata}
+              >
+                +
+              </Button>
+            </ButtonGroup>
+          </Row>
         )}
-      />
+      </React.Fragment>
     </React.Fragment>
   );
 };

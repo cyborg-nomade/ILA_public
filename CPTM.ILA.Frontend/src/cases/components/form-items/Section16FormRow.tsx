@@ -1,53 +1,43 @@
-import React, { useState } from "react";
-
-import { useFormikContext, getIn } from "formik";
+import React from "react";
+import { Controller, FieldPath, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { Case } from "../../../shared/models/cases.model";
+import _ from "lodash";
 
 const Section16FormRow = (props: {
   label: string;
   disabled: boolean;
   name: string;
   className: string;
+  methods: UseFormReturn<Case, any>;
 }) => {
-  const { values, touched, errors, handleBlur, setFieldValue } =
-    useFormikContext<Case>();
-
-  const [descricaoObs, setDescricaoObs] = useState(
-    getIn(values, `${props.name}.descricaoObs`)
-  );
-
-  const handleChangeDescricaoObs = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setDescricaoObs(event.currentTarget.value);
-  };
-  const handleBlurDescricaoObs = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(`${props.name}.descricaoObs`, descricaoObs, true);
-  };
-
   return (
     <Row className={props.className}>
       <Form.Label as={Col}>{props.label}</Form.Label>
       <Col lg={8}>
-        <Form.Control
-          disabled={props.disabled}
-          type="text"
-          name={`${props.name}.descricaoObs`}
-          value={descricaoObs}
-          onChange={handleChangeDescricaoObs}
-          onBlur={handleBlurDescricaoObs}
-          isValid={
-            getIn(touched, `${props.name}.descricaoObs`) &&
-            !getIn(errors, `${props.name}descricaoObs`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.descricaoObs`)}
+        <Controller
+          rules={{ required: true }}
+          control={props.methods.control}
+          name={`${props.name}.descricaoObs` as FieldPath<Case>}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Control
+              type="text"
+              value={value as string}
+              onChange={onChange}
+              onBlur={onBlur}
+              isInvalid={
+                !!_.get(
+                  props.methods.formState.errors,
+                  `${props.name}.descricaoObs`
+                )
+              }
+              disabled={props.disabled}
+              ref={ref}
+            />
+          )}
         />
       </Col>
       <Col lg={1}></Col>
