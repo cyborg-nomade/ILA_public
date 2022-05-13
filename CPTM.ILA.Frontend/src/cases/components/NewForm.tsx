@@ -18,6 +18,7 @@ import Stack from "react-bootstrap/Stack";
 import {
   emptyItemCategoriaTitulares,
   emptyItemMedidaSegurancaPrivacidade,
+  emptyItemRiscoPrivacidade,
 } from "../../shared/models/case-helpers/case-helpers.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
@@ -39,6 +40,7 @@ import NewSection11FormRow from "./new-form-items/NewSection11FormRow";
 import NewSection12FormRow from "./new-form-items/NewSection12FormRow";
 import NewSection13FormRow from "./new-form-items/NewSection13FormRow";
 import NewSection14FormRow from "./new-form-items/NewSection14FormRow";
+import NewSection15FormRow from "./new-form-items/NewSection15FormRow";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -72,6 +74,10 @@ const NewForm = (props: {
   const medidasSegurancaPrivacidade = useFieldArray({
     control: methods.control, // control props comes from useForm
     name: "medidasSegurancaPrivacidade", // unique name for your Field Array
+  });
+  const riscosPrivacidade = useFieldArray({
+    control: methods.control, // control props comes from useForm
+    name: "riscosPrivacidade", // unique name for your Field Array
   });
 
   const { sendRequest, error, clearError, isLoading } = useHttpClient();
@@ -3153,6 +3159,83 @@ const NewForm = (props: {
                 <Col lg={1}></Col>
               </Row>
               <NewSection14FormRow disabled={!isEditing} methods={methods} />
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="14">
+            <Accordion.Header>15 - Risco de Privacidade</Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                <Form.Label as={Col}></Form.Label>
+                <Form.Label as={Col}>Tipo de Risco de Privacidade</Form.Label>
+                <Form.Label as={Col}>Observações</Form.Label>
+                <Col lg={1}></Col>
+              </Row>
+              <Row className="mb-3 pt-2 pb-2">
+                <Form.Label as={Col}></Form.Label>
+                <Form.Label as={Col}></Form.Label>
+                <Form.Label as={Col}></Form.Label>
+                <Col lg={1}>
+                  <Row>
+                    <CreateCommentBox
+                      item={CaseIndexDictionary.riscosPrivacidade}
+                    />
+                  </Row>
+                </Col>
+              </Row>
+              <React.Fragment>
+                {riscosPrivacidade.fields &&
+                riscosPrivacidade.fields.length > 0 ? (
+                  riscosPrivacidade.fields.map((field, index) => (
+                    <React.Fragment key={field.id}>
+                      <NewSection15FormRow
+                        className={`mb-3 pt-2 pb-2 ${
+                          index % 2 === 0 ? "bg-primary bg-opacity-10" : ""
+                        }`}
+                        label={`Risco ${index + 1}`}
+                        disabled={!isEditing}
+                        name={`riscosPrivacidade[${index}]`}
+                        methods={methods}
+                      />
+                      <Row className="justify-content-center">
+                        <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                          <Button
+                            disabled={!isEditing}
+                            variant="primary"
+                            onClick={() =>
+                              riscosPrivacidade.append(
+                                emptyItemRiscoPrivacidade()
+                              )
+                            }
+                          >
+                            +
+                          </Button>
+                          <Button
+                            disabled={!isEditing}
+                            variant="danger"
+                            onClick={() => riscosPrivacidade.remove(index)}
+                          >
+                            -
+                          </Button>
+                        </ButtonGroup>
+                      </Row>
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <Row className="justify-content-center">
+                    <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                      <Button
+                        disabled={!isEditing}
+                        variant="primary"
+                        onClick={() =>
+                          riscosPrivacidade.append(emptyItemRiscoPrivacidade())
+                        }
+                      >
+                        +
+                      </Button>
+                    </ButtonGroup>
+                  </Row>
+                )}
+              </React.Fragment>
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
