@@ -1,12 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  useForm,
-  Controller,
-  useFieldArray,
-  FieldPath,
-  FieldArrayPath,
-} from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import Select from "react-select";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -24,32 +18,19 @@ import Stack from "react-bootstrap/Stack";
 import {
   emptyItemCategoriaTitulares,
   emptyItemMedidaSegurancaPrivacidade,
-  emptyItemObservacoesProcesso,
-  emptyItemRiscoPrivacidade,
 } from "../../shared/models/case-helpers/case-helpers.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import Section6FormRow from "./form-items/Section6FormRow";
 import NewSection7FormRow from "./new-form-items/NewSection7FormRow";
-import Section10FormRow from "./form-items/Section10FormRow";
-import Section11FormRow from "./form-items/Section11FormRow";
-import Section12FormRow from "./form-items/Section12FormRow";
-import Section13FormRow from "./form-items/Section13FormRow";
-import Section14FormRow from "./form-items/Section14FormRow";
-import Section15FormRow from "./form-items/Section15FormRow";
-import Section16FormRow from "./form-items/Section16FormRow";
 import { Case, emptyCase } from "../../shared/models/cases.model";
 import CreateCommentBox from "../../threads-comments/components/CreateCommentBox";
 import { CaseIndexDictionary } from "./../../shared/models/case-index.dictionary";
-import Section3FormRow from "./form-items/Section3FormRow";
 import {
   hipotesesTratamento,
   tipoAbrangenciaGeografica,
   tipoFrequenciaTratamento,
 } from "../../shared/models/case-helpers/enums.model";
-import Section9QuantityRow from "./form-items/Section9QuantityRow";
 import { useUtilities } from "../../shared/hooks/utilities-hook";
-import SelectFieldSearch from "../../shared/components/UI/SelectFieldSearch";
 import NewSection3FormRow from "./new-form-items/NewSection3FormRow";
 import NewSection6FormRow from "./new-form-items/NewSection6FormRow";
 import NewSection9QuantityRow from "./new-form-items/NewSection9QuantityRow";
@@ -57,6 +38,7 @@ import NewSection10FormRow from "./new-form-items/NewSection10FormRow";
 import NewSection11FormRow from "./new-form-items/NewSection11FormRow";
 import NewSection12FormRow from "./new-form-items/NewSection12FormRow";
 import NewSection13FormRow from "./new-form-items/NewSection13FormRow";
+import NewSection14FormRow from "./new-form-items/NewSection14FormRow";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -3152,6 +3134,25 @@ const NewForm = (props: {
                 disabled={!isEditing}
                 methods={methods}
               />
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="13">
+            <Accordion.Header>
+              14 - Contrato(s) de serviços e/ou soluções de TI que trata(m)
+              dados pessoais do serviço/processo de negócio
+            </Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                <Form.Label as={Col} className="d-grid justify-content-center">
+                  Existe?
+                </Form.Label>
+                <Form.Label as={Col}>Número do Contrato</Form.Label>
+                <Form.Label as={Col}>Nº Processo Contratação</Form.Label>
+                <Form.Label as={Col}>Objeto do Contrato</Form.Label>
+                <Form.Label as={Col}>E-mail do Gestor do Contrato</Form.Label>
+                <Col lg={1}></Col>
+              </Row>
+              <NewSection14FormRow disabled={!isEditing} methods={methods} />
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
