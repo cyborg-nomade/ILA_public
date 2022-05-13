@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 import { Controller, FieldPath, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
@@ -6,7 +7,6 @@ import Col from "react-bootstrap/Col";
 
 import { Case } from "../../../shared/models/cases.model";
 import { tipoRiscoPrivacidade } from "../../../shared/models/case-helpers/enums.model";
-import _ from "lodash";
 
 const NewSection15FormRow = (props: {
   label: string;

@@ -18,6 +18,7 @@ import Stack from "react-bootstrap/Stack";
 import {
   emptyItemCategoriaTitulares,
   emptyItemMedidaSegurancaPrivacidade,
+  emptyItemObservacoesProcesso,
   emptyItemRiscoPrivacidade,
 } from "../../shared/models/case-helpers/case-helpers.model";
 import { AuthContext } from "../../shared/context/auth-context";
@@ -41,6 +42,7 @@ import NewSection12FormRow from "./new-form-items/NewSection12FormRow";
 import NewSection13FormRow from "./new-form-items/NewSection13FormRow";
 import NewSection14FormRow from "./new-form-items/NewSection14FormRow";
 import NewSection15FormRow from "./new-form-items/NewSection15FormRow";
+import NewSection16FormRow from "./new-form-items/NewSection16FormRow";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -78,6 +80,10 @@ const NewForm = (props: {
   const riscosPrivacidade = useFieldArray({
     control: methods.control, // control props comes from useForm
     name: "riscosPrivacidade", // unique name for your Field Array
+  });
+  const observacoesProcesso = useFieldArray({
+    control: methods.control, // control props comes from useForm
+    name: "observacoesProcesso", // unique name for your Field Array
   });
 
   const { sendRequest, error, clearError, isLoading } = useHttpClient();
@@ -3228,6 +3234,83 @@ const NewForm = (props: {
                         variant="primary"
                         onClick={() =>
                           riscosPrivacidade.append(emptyItemRiscoPrivacidade())
+                        }
+                      >
+                        +
+                      </Button>
+                    </ButtonGroup>
+                  </Row>
+                )}
+              </React.Fragment>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="15">
+            <Accordion.Header>
+              16 - Observações sobre o Processo
+            </Accordion.Header>
+            <Accordion.Body>
+              <Row className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2">
+                <Form.Label as={Col}>Observação</Form.Label>
+                <Col lg={1}></Col>
+              </Row>
+              <Row className="mb-3 pt-2 pb-2">
+                <Form.Label as={Col}></Form.Label>
+                <Col lg={1}>
+                  <Row>
+                    <CreateCommentBox
+                      item={CaseIndexDictionary.observacoesProcesso}
+                    />
+                  </Row>
+                </Col>
+              </Row>
+              <React.Fragment>
+                {observacoesProcesso.fields &&
+                observacoesProcesso.fields.length > 0 ? (
+                  observacoesProcesso.fields.map((field, index) => (
+                    <React.Fragment key={field.id}>
+                      <NewSection16FormRow
+                        className={`mb-3 pt-2 pb-2 ${
+                          index % 2 === 0 ? "bg-primary bg-opacity-10" : ""
+                        }`}
+                        label={`Observação ${index + 1}`}
+                        disabled={!isEditing}
+                        name={`observacoesProcesso[${index}]`}
+                        methods={methods}
+                      />
+                      <Row className="justify-content-center">
+                        <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                          <Button
+                            disabled={!isEditing}
+                            variant="primary"
+                            onClick={() =>
+                              observacoesProcesso.append(
+                                emptyItemObservacoesProcesso()
+                              )
+                            }
+                          >
+                            +
+                          </Button>
+                          <Button
+                            disabled={!isEditing}
+                            variant="danger"
+                            onClick={() => observacoesProcesso.remove(index)}
+                          >
+                            -
+                          </Button>
+                        </ButtonGroup>
+                      </Row>
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <Row className="justify-content-center">
+                    <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+                      <Button
+                        disabled={!isEditing}
+                        variant="primary"
+                        onClick={() =>
+                          observacoesProcesso.append(
+                            emptyItemObservacoesProcesso()
+                          )
                         }
                       >
                         +
