@@ -1,13 +1,14 @@
-import _ from "lodash";
+import React from "react";
 import { Controller, FieldPath, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { Case } from "../../../shared/models/cases.model";
-import { tipoMedidaSegurancaPrivacidade } from "../../../shared/models/case-helpers/enums.model";
+import { tipoRiscoPrivacidade } from "../../../shared/models/case-helpers/enums.model";
+import _ from "lodash";
 
-const NewSection12FormRow = (props: {
+const NewSection15FormRow = (props: {
   label: string;
   disabled: boolean;
   name: string;
@@ -21,7 +22,7 @@ const NewSection12FormRow = (props: {
         <Controller
           rules={{ required: true }}
           control={props.methods.control}
-          name={`${props.name}.tipo` as FieldPath<Case>}
+          name={`${props.name}.tipoRisco.value` as FieldPath<Case>}
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Select
               disabled={props.disabled}
@@ -30,12 +31,15 @@ const NewSection12FormRow = (props: {
               onBlur={onBlur}
               ref={ref}
               isInvalid={
-                !!_.get(props.methods.formState.errors, `${props.name}.tipo`)
+                !!_.get(
+                  props.methods.formState.errors,
+                  `${props.name}.tipoRisco.value`
+                )
               }
             >
-              {Object.values(tipoMedidaSegurancaPrivacidade).map((mdd) => (
-                <option value={mdd} key={mdd}>
-                  {mdd}
+              {Object.values(tipoRiscoPrivacidade).map((tip) => (
+                <option value={tip} key={tip}>
+                  {tip}
                 </option>
               ))}
             </Form.Select>
@@ -46,7 +50,7 @@ const NewSection12FormRow = (props: {
         <Controller
           rules={{ required: true }}
           control={props.methods.control}
-          name={`${props.name}.descricaoControles` as FieldPath<Case>}
+          name={`${props.name}.observacoes` as FieldPath<Case>}
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Form.Control
               type="text"
@@ -56,7 +60,7 @@ const NewSection12FormRow = (props: {
               isInvalid={
                 !!_.get(
                   props.methods.formState.errors,
-                  `${props.name}.descricaoControles`
+                  `${props.name}.observacoes`
                 )
               }
               disabled={props.disabled}
@@ -70,4 +74,4 @@ const NewSection12FormRow = (props: {
   );
 };
 
-export default NewSection12FormRow;
+export default NewSection15FormRow;
