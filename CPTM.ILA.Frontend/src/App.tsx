@@ -8,6 +8,7 @@ import { AuthContext } from "./shared/context/auth-context";
 import { useAuth } from "./shared/hooks/auth-hook";
 import MainHeader from "./shared/components/nav/MainHeader";
 import "./App.css";
+import Footer from "./shared/components/footer/Footer";
 
 const ApproveCasesListGetter = React.lazy(
   () => import("./cases/pages/ApproveCasesListGetter")
@@ -67,6 +68,7 @@ const App = () => {
     user,
     isDeveloper,
     token,
+    tokenExpirationDate,
     currentGroup,
     currentComiteMember,
     areaTratamentoDados,
@@ -170,6 +172,7 @@ const App = () => {
         currentComiteMember,
         areaTratamentoDados,
         isLoggedIn: !!token,
+        tokenExpirationDate,
         login,
         logout,
         changeGroup,
@@ -190,6 +193,7 @@ const App = () => {
           <Routes>{routes}</Routes>
         </Suspense>
       </Container>
+      <Footer />
     </AuthContext.Provider>
   );
 };
