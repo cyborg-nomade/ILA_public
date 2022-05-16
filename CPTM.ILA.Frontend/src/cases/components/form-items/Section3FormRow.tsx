@@ -43,7 +43,7 @@ const Section3FormRow = (props: {
   return (
     <Row className="mb-3 align-items-center bg-primary bg-opacity-10">
       <Col lg={1}>
-        <p>{CaseIndexDictionary.fasesCicloTratamento}</p>
+        <p>{CaseIndexDictionary.fasesCicloTratamento.number}</p>
       </Col>
       <Col>
         <OverlayTrigger
@@ -58,7 +58,7 @@ const Section3FormRow = (props: {
           }
         >
           <Form.Label>
-            Em qual fase do ciclo de vida o Operador atua?
+            {CaseIndexDictionary.fasesCicloTratamento.title}
           </Form.Label>
         </OverlayTrigger>
       </Col>

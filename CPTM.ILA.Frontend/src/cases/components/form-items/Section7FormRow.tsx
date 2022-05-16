@@ -23,11 +23,10 @@ import Section7FormRowSub from "./Section7FormRowSub";
 
 const Section7FormRow = (props: {
   tooltip?: JSX.Element;
-  label: string;
   disabled: boolean;
   name: FieldPath<Case>;
   className: string;
-  itemRef: string;
+  itemRef: { number: string; title: string };
   systems: string[];
   methods: UseFormReturn<Case>;
 }) => {
@@ -66,17 +65,17 @@ const Section7FormRow = (props: {
     <React.Fragment>
       <Row className={props.className}>
         <Col lg={1}>
-          <p>{props.itemRef}</p>
+          <p>{props.itemRef.number}</p>
         </Col>
         {props.tooltip ? (
           <OverlayTrigger
             placement="right"
             overlay={<Tooltip className="text-muted">{props.tooltip}</Tooltip>}
           >
-            <Form.Label as={Col}>{props.label}</Form.Label>
+            <Form.Label as={Col}>{props.itemRef.title}</Form.Label>
           </OverlayTrigger>
         ) : (
-          <Form.Label as={Col}>{props.label}</Form.Label>
+          <Form.Label as={Col}>{props.itemRef.title}</Form.Label>
         )}
         <Col className="d-grid justify-content-center">
           <Form.Check

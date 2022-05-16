@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { diff } from "deep-object-diff";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
@@ -8,14 +9,12 @@ import {
   Case,
   emptyBaseCase,
   emptyCase,
-} from "./../../shared/models/cases.model";
-import { AuthContext } from "../../shared/context/auth-context";
-import { useHttpClient } from "./../../shared/hooks/http-hook";
-import { diff } from "deep-object-diff";
+} from "../../shared/models/cases.model";
 import { ChangeLog } from "../../shared/models/change-logging/change-log.model";
 import { CaseChange } from "../../shared/models/DTOs/case-change.model";
-
 import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
+import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
 
 const NewCase = () => {

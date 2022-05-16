@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { diff } from "deep-object-diff";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
 import { Case, emptyCase } from "../../shared/models/cases.model";
-import { AuthContext } from "../../shared/context/auth-context";
-import { useHttpClient } from "./../../shared/hooks/http-hook";
-import { diff } from "deep-object-diff";
 import { ChangeLog } from "../../shared/models/change-logging/change-log.model";
 import { CaseChange } from "../../shared/models/DTOs/case-change.model";
+import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
 
 const EditCase = () => {

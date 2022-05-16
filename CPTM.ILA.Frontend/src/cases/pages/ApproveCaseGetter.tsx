@@ -22,8 +22,6 @@ const ApproveCaseGetter = () => {
 
   useEffect(() => {
     const getCaseToApprove = async () => {
-      console.log(token);
-
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
         undefined,

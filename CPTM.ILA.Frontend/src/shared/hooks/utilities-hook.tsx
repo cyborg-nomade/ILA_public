@@ -45,12 +45,18 @@ export const useUtilities = () => {
   }, [sendRequest, token]);
 
   useEffect(() => {
-    try {
-      getSystems();
-      getCountries();
-    } catch (error) {
+    const runUtilities = async () => {
+      try {
+        await getSystems();
+        await getCountries();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    runUtilities().catch((error) => {
       console.log(error);
-    }
+    });
 
     return () => {
       setCountries([]);

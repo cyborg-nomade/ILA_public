@@ -5,14 +5,16 @@ import Form from "react-bootstrap/Form";
 import { AiFillCaretDown } from "react-icons/ai";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import { CommentDTO } from "./../../shared/models/DTOs/comment-dto";
+import { CommentDTO } from "../../shared/models/DTOs/comment-dto";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 
-const CreateCommentBox = (props: { item: string }) => {
+const CreateCommentBox = (props: {
+  item: { number: string; title: string };
+}) => {
   const [text, setText] = useState("");
   const [overlayOpen, setOverlayOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -43,7 +45,7 @@ const CreateCommentBox = (props: { item: string }) => {
     const commentDto: CommentDTO = {
       author: user,
       groupId: currentGroup.id,
-      refItem: props.item,
+      refItem: `${props.item.number}: ${props.item.title}`,
       text,
     };
 

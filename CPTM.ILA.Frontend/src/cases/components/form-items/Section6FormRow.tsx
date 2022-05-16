@@ -18,29 +18,28 @@ import CreateCommentBox from "../../../threads-comments/components/CreateComment
 
 const Section6FormRow = (props: {
   tooltip?: JSX.Element;
-  label: string;
   disabled: boolean;
   name: FieldPath<Case>;
   type: string;
   invalid: string;
-  itemRef: string;
+  itemRef: { number: string; title: string };
   methods: UseFormReturn<Case>;
   rules: RegisterOptions;
 }) => {
   return (
     <Row className="mb-3">
       <Col lg={1}>
-        <p>{props.itemRef}</p>
+        <p>{props.itemRef.number}</p>
       </Col>
       {props.tooltip ? (
         <OverlayTrigger
           placement="right"
           overlay={<Tooltip className="text-muted">{props.tooltip}</Tooltip>}
         >
-          <Form.Label as={Col}>{props.label}</Form.Label>
+          <Form.Label as={Col}>{props.itemRef.title}</Form.Label>
         </OverlayTrigger>
       ) : (
-        <Form.Label as={Col}>{props.label}</Form.Label>
+        <Form.Label as={Col}>{props.itemRef.title}</Form.Label>
       )}
       <Col lg={8}>
         {props.type === "select" && (

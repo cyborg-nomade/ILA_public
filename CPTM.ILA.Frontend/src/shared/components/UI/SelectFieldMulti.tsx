@@ -1,16 +1,6 @@
-import {
-  useField,
-  FormikProps,
-  FieldAttributes,
-  useFormikContext,
-} from "formik";
 import React, { useState } from "react";
+import { FieldAttributes, useField } from "formik";
 import Select from "react-select";
-import {
-  GroupedOption,
-  Options,
-} from "../../../access-requests/components/AccessRequestForm";
-import { Case } from "../../models/cases.model";
 
 const convertValue = (s: string) => ({ value: s, label: s });
 const converValueArray = (sArray: string[]) => {

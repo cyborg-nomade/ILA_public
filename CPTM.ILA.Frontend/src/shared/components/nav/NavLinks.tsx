@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 
-import { AuthContext } from "./../../context/auth-context";
+import { AuthContext } from "../../context/auth-context";
 
 const NavLinks = () => {
   const { user, isLoggedIn, logout } = useContext(AuthContext);
