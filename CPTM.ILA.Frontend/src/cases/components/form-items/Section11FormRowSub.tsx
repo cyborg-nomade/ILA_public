@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-
-import { useFormikContext, getIn } from "formik";
+import _ from "lodash";
+import { Controller, FieldPath, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -16,177 +16,198 @@ const Section11FormRowSub = (props: {
   disabled: boolean;
   name: string;
   className: string;
+  methods: UseFormReturn<Case>;
 }) => {
-  const { values, touched, errors, handleBlur, handleChange, setFieldValue } =
-    useFormikContext<Case>();
+  const [isCompartilhamentoParcial, setIsCompartilhamentoParcial] =
+    useState(false);
 
-  const [nomeInstituicao, setNomeInstituicao] = useState(
-    getIn(values, `${props.name}.nomeInstituicao`)
-  );
-  const [descricaoDadosCompartilhados, setDescricaoDadosCompartilhados] =
-    useState(getIn(values, `${props.name}.descricaoDadosCompartilhados`));
-  const [descricaoFinalidadeComp, setDescricaoFinalidadeComp] = useState(
-    getIn(values, `${props.name}.descricaoFinalidadeComp`)
-  );
+  const [isCompatilhamentoPrivado, setIsCompartilhamentoPrivado] =
+    useState(false);
 
-  const handleChangeNomeInstituicao = (
-    event: React.ChangeEvent<HTMLInputElement>
+  const handleChangeNivelCompartilhamento = (
+    event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setNomeInstituicao(event.currentTarget.value);
-  };
-  const handleBlurNomeInstituicao = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(`${props.name}.nomeInstituicao`, nomeInstituicao, true);
+    if (event.target.value === tipoNivelCompartilhamento.parcial) {
+      setIsCompartilhamentoParcial(true);
+    } else {
+      setIsCompartilhamentoParcial(false);
+    }
   };
 
-  const handleChangeDescricaoDadosCompartilhados = (
-    event: React.ChangeEvent<HTMLInputElement>
+  const handleChangeTipoCompatilhamento = (
+    event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setDescricaoDadosCompartilhados(event.currentTarget.value);
-  };
-  const handleBlurDescricaoDadosCompartilhados = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(
-      `${props.name}.descricaoDadosCompartilhados`,
-      descricaoDadosCompartilhados,
-      true
-    );
-  };
-
-  const handleChangeDescricaoFinalidadeComp = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setDescricaoFinalidadeComp(event.currentTarget.value);
-  };
-  const handleBlurDescricaoFinalidadeComp = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
-    handleBlur(event);
-    setFieldValue(
-      `${props.name}.descricaoFinalidadeComp`,
-      descricaoFinalidadeComp,
-      true
-    );
+    if (event.target.value === tipoCompartilhamentoDados.privado) {
+      setIsCompartilhamentoPrivado(true);
+    } else {
+      setIsCompartilhamentoPrivado(false);
+    }
   };
 
   return (
     <Row className={props.className}>
       <Col></Col>
       <Col>
-        <Form.Control
-          disabled={props.disabled}
-          type="text"
-          name={`${props.name}.nomeInstituicao`}
-          value={nomeInstituicao}
-          onChange={handleChangeNomeInstituicao}
-          onBlur={handleBlurNomeInstituicao}
-          isValid={
-            getIn(touched, `${props.name}.nomeInstituicao`) &&
-            !getIn(errors, `${props.name}.nomeInstituicao`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.nomeInstituicao`)}
+        <Controller
+          rules={{ required: true }}
+          control={props.methods.control}
+          name={`${props.name}.nomeInstituicao` as FieldPath<Case>}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Control
+              type="text"
+              value={value as string}
+              onChange={onChange}
+              onBlur={onBlur}
+              isInvalid={
+                !!_.get(
+                  props.methods.formState.errors,
+                  `${props.name}.nomeInstituicao`
+                )
+              }
+              disabled={props.disabled}
+              ref={ref}
+            />
+          )}
         />
       </Col>
       <Col>
-        <Form.Select
-          name={`${props.name}.tipoCompDados.value`}
-          value={getIn(values, `${props.name}.tipoCompDados.value`)}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          isValid={
-            getIn(touched, `${props.name}.tipoCompDados.value`) &&
-            !getIn(errors, `${props.name}.tipoCompDados.value`)
-          }
-          isInvalid={!!getIn(errors, `${props.name}.tipoCompDados.value`)}
-        >
-          {Object.values(tipoCompartilhamentoDados).map((tcd) => (
-            <option value={tcd} key={tcd}>
-              {tcd}
-            </option>
-          ))}
-        </Form.Select>
-      </Col>
-      <Col>
-        <Form.Select
-          name={`${props.name}.nivelCompartilhamento.value`}
-          value={getIn(values, `${props.name}.nivelCompartilhamento.value`)}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          isValid={
-            getIn(touched, `${props.name}.nivelCompartilhamento.value`) &&
-            !getIn(errors, `${props.name}.nivelCompartilhamento.value`)
-          }
-          isInvalid={
-            !!getIn(errors, `${props.name}.nivelCompartilhamento.value`)
-          }
-        >
-          {Object.values(tipoNivelCompartilhamento).map((tnc) => (
-            <option value={tnc} key={tnc}>
-              {tnc}
-            </option>
-          ))}
-        </Form.Select>
-      </Col>
-      <Col>
-        <Form.Control
-          disabled={
-            props.disabled ||
-            getIn(values, `${props.name}.nivelCompartilhamento.value`) !==
-              tipoNivelCompartilhamento.parcial
-          }
-          type="text"
-          name={`${props.name}.descricaoDadosCompartilhados`}
-          value={descricaoDadosCompartilhados}
-          onChange={handleChangeDescricaoDadosCompartilhados}
-          onBlur={handleBlurDescricaoDadosCompartilhados}
-          isValid={
-            getIn(touched, `${props.name}.descricaoDadosCompartilhados`) &&
-            !getIn(errors, `${props.name}.descricaoDadosCompartilhados`)
-          }
-          isInvalid={
-            !!getIn(errors, `${props.name}.descricaoDadosCompartilhados`)
-          }
+        <Controller
+          rules={{ required: true }}
+          control={props.methods.control}
+          name={`${props.name}.tipoCompDados.value` as FieldPath<Case>}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Select
+              disabled={props.disabled}
+              value={value as string}
+              onChange={(e) => {
+                handleChangeTipoCompatilhamento(e);
+                onChange(e);
+              }}
+              onBlur={onBlur}
+              ref={ref}
+              isInvalid={
+                !!_.get(
+                  props.methods.formState.errors,
+                  `${props.name}.tipoCompDados.value`
+                )
+              }
+            >
+              {Object.values(tipoCompartilhamentoDados).map((tcd) => (
+                <option value={tcd} key={tcd}>
+                  {tcd}
+                </option>
+              ))}
+            </Form.Select>
+          )}
         />
       </Col>
-      {getIn(values, `${props.name}.tipoCompDados.value`) ===
-      tipoCompartilhamentoDados.privado ? (
+      <Col>
+        <Controller
+          rules={{ required: true }}
+          control={props.methods.control}
+          name={`${props.name}.nivelCompartilhamento.value` as FieldPath<Case>}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Select
+              disabled={props.disabled}
+              value={value as string}
+              onChange={(e) => {
+                handleChangeNivelCompartilhamento(e);
+                onChange(e.target.value);
+              }}
+              onBlur={onBlur}
+              ref={ref}
+              isInvalid={
+                !!_.get(
+                  props.methods.formState.errors,
+                  `${props.name}.nivelCompartilhamento.value`
+                )
+              }
+            >
+              {Object.values(tipoNivelCompartilhamento).map((tnc) => (
+                <option value={tnc} key={tnc}>
+                  {tnc}
+                </option>
+              ))}
+            </Form.Select>
+          )}
+        />
+      </Col>
+      <Col>
+        <Controller
+          rules={
+            isCompartilhamentoParcial ? { required: true } : { required: false }
+          }
+          control={props.methods.control}
+          name={`${props.name}.descricaoDadosCompartilhados` as FieldPath<Case>}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Control
+              type="text"
+              value={value as string}
+              onChange={onChange}
+              onBlur={onBlur}
+              isInvalid={
+                !!_.get(
+                  props.methods.formState.errors,
+                  `${props.name}.descricaoDadosCompartilhados`
+                )
+              }
+              disabled={props.disabled || !isCompartilhamentoParcial}
+              ref={ref}
+            />
+          )}
+        />
+      </Col>
+      {isCompatilhamentoPrivado ? (
         <Col>
-          <Form.Select
-            name={`${props.name}.finalidadeComp.value`}
-            value={getIn(values, `${props.name}.finalidadeComp.value`)}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            isValid={
-              getIn(touched, `${props.name}.finalidadeComp.value`) &&
-              !getIn(errors, `${props.name}.finalidadeComp.value`)
-            }
-            isInvalid={!!getIn(errors, `${props.name}.finalidadeComp.value`)}
-          >
-            {Object.values(tipoFinalidadeCompartilhamento).map((tfc) => (
-              <option value={tfc} key={tfc}>
-                {tfc}
-              </option>
-            ))}
-          </Form.Select>
+          <Controller
+            rules={{ required: true }}
+            control={props.methods.control}
+            name={`${props.name}.finalidadeComp.value` as FieldPath<Case>}
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Form.Select
+                disabled={props.disabled}
+                value={value as string}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={ref}
+                isInvalid={
+                  !!_.get(
+                    props.methods.formState.errors,
+                    `${props.name}.finalidadeComp.value`
+                  )
+                }
+              >
+                {Object.values(tipoFinalidadeCompartilhamento).map((tfc) => (
+                  <option value={tfc} key={tfc}>
+                    {tfc}
+                  </option>
+                ))}
+              </Form.Select>
+            )}
+          />
         </Col>
       ) : (
         <Col>
-          <Form.Control
-            disabled={props.disabled}
-            type="text"
-            name={`${props.name}.descricaoFinalidadeComp`}
-            value={descricaoFinalidadeComp}
-            onChange={handleChangeDescricaoFinalidadeComp}
-            onBlur={handleBlurDescricaoFinalidadeComp}
-            isValid={
-              getIn(touched, `${props.name}.descricaoFinalidadeComp`) &&
-              !getIn(errors, `${props.name}.descricaoFinalidadeComp`)
-            }
-            isInvalid={!!getIn(errors, `${props.name}.descricaoFinalidadeComp`)}
+          <Controller
+            rules={{ required: true }}
+            control={props.methods.control}
+            name={`${props.name}.descricaoFinalidadeComp` as FieldPath<Case>}
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Form.Control
+                type="text"
+                value={value as string}
+                onChange={onChange}
+                onBlur={onBlur}
+                isInvalid={
+                  !!_.get(
+                    props.methods.formState.errors,
+                    `${props.name}.descricaoFinalidadeComp`
+                  )
+                }
+                disabled={props.disabled}
+                ref={ref}
+              />
+            )}
           />
         </Col>
       )}

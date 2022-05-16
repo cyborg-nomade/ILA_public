@@ -1,16 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
-import { AuthContext } from "../../shared/context/auth-context";
-import { useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
-import {
-  emptyUser,
-  User,
-} from "../../shared/models/access-control/users.model";
-import { useHttpClient } from "../../shared/hooks/http-hook";
-import { ComiteMember } from "../../shared/models/DTOs/comite-member";
 import ListGroup from "react-bootstrap/ListGroup";
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
@@ -18,8 +9,12 @@ import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import Col from "react-bootstrap/Col";
 
+import { ComiteMember } from "../../shared/models/DTOs/comite-member";
+import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+
 const AlterComiteMemberCockpit = () => {
-  const { changeComiteMember, user, token } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
@@ -196,8 +191,8 @@ const AlterComiteMemberCockpit = () => {
                     <Button
                       className="w-100"
                       variant="danger"
-                      onClick={() => {
-                        handleRemoveMember(cm.id);
+                      onClick={async () => {
+                        await handleRemoveMember(cm.id);
                       }}
                     >
                       Remover

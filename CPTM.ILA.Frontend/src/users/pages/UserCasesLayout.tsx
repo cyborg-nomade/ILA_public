@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { Outlet } from "react-router-dom";
+
 import { AuthContext } from "../../shared/context/auth-context";
 
 const UserCasesLayout = () => {
-  const { user, isDeveloper, token, areaTratamentoDados } =
-    useContext(AuthContext);
+  const { areaTratamentoDados } = useContext(AuthContext);
 
   return (
     <React.Fragment>

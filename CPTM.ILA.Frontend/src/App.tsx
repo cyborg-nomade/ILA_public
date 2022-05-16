@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
@@ -9,9 +9,6 @@ import { useAuth } from "./shared/hooks/auth-hook";
 import MainHeader from "./shared/components/nav/MainHeader";
 import "./App.css";
 
-const AllCasesListGetter = React.lazy(
-  () => import("./cases/pages/AllCasesListGetter")
-);
 const ApproveCasesListGetter = React.lazy(
   () => import("./cases/pages/ApproveCasesListGetter")
 );
@@ -25,10 +22,6 @@ const UserPage = React.lazy(() => import("./users/pages/UserPage"));
 const ApproveCaseGetter = React.lazy(
   () => import("./cases/pages/ApproveCaseGetter")
 );
-const ApproveCasesPage = React.lazy(
-  () => import("./cases/pages/ApproveCasesPage")
-);
-const AllCasesPage = React.lazy(() => import("./cases/pages/AllCasesPage"));
 const RequestAccess = React.lazy(() => import("./users/pages/RequestAccess"));
 const AllAccessRequestsPage = React.lazy(
   () => import("./access-requests/pages/AllAccessRequestsPage")
@@ -67,6 +60,7 @@ const DpoCasesListGetter = React.lazy(
 const AlterComiteMemberCockpit = React.lazy(
   () => import("./access-requests/pages/AlterComiteMemberCockpit")
 );
+const DpoHomePage = React.lazy(() => import("./users/pages/DpoHomePage"));
 
 const App = () => {
   const {
@@ -141,8 +135,10 @@ const App = () => {
   } else if (token && user.isComite && user.isDPO) {
     routes = (
       <React.Fragment>
-        <Route path="/dpo" element={<DpoPage />}>
+        <Route path="/dpo" element={<DpoHomePage />}>
           <Route index element={<Dashboards />} />
+        </Route>
+        <Route path="/dpo" element={<DpoPage />}>
           <Route path="cases" element={<UserCasesLayout />}>
             <Route index element={<DpoCasesListGetter />} />
           </Route>

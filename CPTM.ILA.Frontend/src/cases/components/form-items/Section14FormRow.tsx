@@ -1,20 +1,25 @@
 import React, { useState } from "react";
-
-import { useFormikContext, getIn, FieldArray } from "formik";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
-import { Case } from "../../../shared/models/cases.model";
-import Section14FormRowSub from "./Section14FormRowSub";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
-import { emptyItemContratoTI } from "../../../shared/models/case-helpers/case-helpers.model";
-import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
-import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 
-const Section14FormRow = (props: { disabled: boolean }) => {
-  const { values, setFieldValue } = useFormikContext<Case>();
+import { emptyItemContratoTI } from "../../../shared/models/case-helpers/case-helpers.model";
+import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
+import { Case } from "../../../shared/models/cases.model";
+import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
+import Section14FormRowSub from "./Section14FormRowSub";
+
+const Section14FormRow = (props: {
+  disabled: boolean;
+  methods: UseFormReturn<Case>;
+}) => {
+  const { fields, append, remove } = useFieldArray({
+    control: props.methods.control, // control props comes from useForm
+    name: "contratoServicosTITratamentoDados" as const, // unique name for your Field Array
+  });
 
   const [trata, setTrata] = useState(false);
 
@@ -23,7 +28,7 @@ const Section14FormRow = (props: { disabled: boolean }) => {
       setTrata(true);
     } else {
       setTrata(false);
-      setFieldValue("contratoServicosTITratamentoDados", []);
+      props.methods.setValue("contratoServicosTITratamentoDados", []);
     }
   };
 
@@ -33,7 +38,7 @@ const Section14FormRow = (props: { disabled: boolean }) => {
         <Col className="d-grid justify-content-center">
           <Form.Check
             type="radio"
-            name="trata"
+            name="trata-contratoServicosTITratamentoDados"
             required
             label="Sim"
             value="SIM"
@@ -43,7 +48,7 @@ const Section14FormRow = (props: { disabled: boolean }) => {
           />
           <Form.Check
             type="radio"
-            name="trata"
+            name="trata-contratoServicosTITratamentoDados"
             required
             inline
             label="Não"
@@ -65,54 +70,47 @@ const Section14FormRow = (props: { disabled: boolean }) => {
           </Row>
         </Col>
       </Row>
-      <FieldArray
-        name="contratoServicosTITratamentoDados"
-        render={(arrayHelpers) => (
-          <React.Fragment>
-            {values.contratoServicosTITratamentoDados &&
-            values.contratoServicosTITratamentoDados.length > 0 ? (
-              values.contratoServicosTITratamentoDados.map((item, index) => (
-                <React.Fragment key={index}>
-                  <Section14FormRowSub
-                    className={`mb-3 pt-2 pb-2 ${
-                      index % 2 === 0 ? "bg-primary bg-opacity-10" : ""
-                    }`}
-                    name={`contratoServicosTITratamentoDados[${index}]`}
-                  />
-                  <Row className="justify-content-center">
-                    <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
-                      <Button
-                        variant="primary"
-                        onClick={() => arrayHelpers.push(emptyItemContratoTI())}
-                      >
-                        +
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => arrayHelpers.remove(index)}
-                      >
-                        -
-                      </Button>
-                    </ButtonGroup>
-                  </Row>
-                </React.Fragment>
-              ))
-            ) : (
+
+      <React.Fragment>
+        {fields && fields.length > 0 ? (
+          fields.map((field, index) => (
+            <React.Fragment key={field.id}>
+              <Section14FormRowSub
+                className={`mb-3 pt-2 pb-2 ${
+                  index % 2 === 0 ? "bg-primary bg-opacity-10" : ""
+                }`}
+                name={`contratoServicosTITratamentoDados[${index}]`}
+                methods={props.methods}
+              />
               <Row className="justify-content-center">
                 <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                   <Button
                     variant="primary"
-                    disabled={!trata}
-                    onClick={() => arrayHelpers.push(emptyItemContratoTI())}
+                    onClick={() => append(emptyItemContratoTI())}
                   >
                     +
                   </Button>
+                  <Button variant="danger" onClick={() => remove(index)}>
+                    -
+                  </Button>
                 </ButtonGroup>
               </Row>
-            )}
-          </React.Fragment>
+            </React.Fragment>
+          ))
+        ) : (
+          <Row className="justify-content-center">
+            <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
+              <Button
+                variant="primary"
+                disabled={!trata}
+                onClick={() => append(emptyItemContratoTI())}
+              >
+                +
+              </Button>
+            </ButtonGroup>
+          </Row>
         )}
-      />
+      </React.Fragment>
     </React.Fragment>
   );
 };

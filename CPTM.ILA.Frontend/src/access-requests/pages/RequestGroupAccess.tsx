@@ -3,17 +3,17 @@ import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
-import { useHttpClient } from "../../shared/hooks/http-hook";
-import AccessRequestForm from "../../access-requests/components/AccessRequestForm";
 import {
   AccessRequestDTO,
   emptyAccessRequestDTO,
-} from "./../../shared/models/DTOs/access-request-dto.model";
+} from "../../shared/models/DTOs/access-request-dto.model";
 import {
   AccessRequest,
   tipoSolicitacaoAcesso,
 } from "../../shared/models/access-control/access-request.model";
 import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import AccessRequestForm from "../../access-requests/components/AccessRequestForm";
 
 const RequestGroupAccess = () => {
   const [message, setMessage] = useState("");
@@ -25,7 +25,6 @@ const RequestGroupAccess = () => {
   const submitRegisterHandler = async (accessRequest: AccessRequestDTO) => {
     try {
       accessRequest.usernameSolicitante = user.username;
-      console.log(accessRequest);
 
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/access-requests/require/${tipoSolicitacaoAcesso.AcessoAGrupos}`,
@@ -36,14 +35,12 @@ const RequestGroupAccess = () => {
           Authorization: "Bearer " + token,
         }
       );
-      console.log(responseData.message);
 
       const savedAR: AccessRequest = responseData.accessRequest;
 
       const emailFormData = new FormData();
       emailFormData.append("emailFile", accessRequest.emailFile);
-
-      const responseDataEmailFile = await sendRequest(
+      await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/access-requests/require/${tipoSolicitacaoAcesso.AcessoAGrupos}/save-file/${savedAR.id}`,
         "POST",
         emailFormData,
@@ -51,9 +48,6 @@ const RequestGroupAccess = () => {
           Authorization: "Bearer " + token,
         }
       );
-
-      console.log(responseDataEmailFile.message);
-
       setMessage(responseData.message);
     } catch (error) {
       console.log(error);

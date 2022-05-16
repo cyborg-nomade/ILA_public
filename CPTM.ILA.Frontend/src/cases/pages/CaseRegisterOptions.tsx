@@ -1,8 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import CardGroup from "react-bootstrap/CardGroup";
 import Button from "react-bootstrap/Button";
-import { useNavigate } from "react-router-dom";
 
 const CaseRegisterOptions = () => {
   let navigate = useNavigate();

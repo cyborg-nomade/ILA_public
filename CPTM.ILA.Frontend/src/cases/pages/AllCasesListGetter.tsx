@@ -3,10 +3,10 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
+import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CasesList from "../components/CasesList";
-import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 
 const AllCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
@@ -25,8 +25,6 @@ const AllCasesListGetter = () => {
         { Authorization: "Bearer " + token }
       );
       const loadedCases: CaseListItem[] = responseData.cases;
-      console.log(currentGroup);
-      console.log(loadedCases);
 
       const filteredCases = loadedCases.filter(
         (c) => c.grupoCriador === currentGroup.nome
