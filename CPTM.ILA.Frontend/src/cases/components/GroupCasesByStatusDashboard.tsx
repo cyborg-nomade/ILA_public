@@ -23,35 +23,50 @@ const GroupCasesByStatusDashboard = () => {
 
   useEffect(() => {
     const getGroupCaseTotals = async () => {
-      const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/totals`,
-        undefined,
-        undefined,
-        {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
+      try {
+        const responseData = await sendRequest(
+          `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/totals`,
+          undefined,
+          undefined,
+          {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          }
+        );
+
+        console.log(responseData.totals);
+
+        const loadedTotals: StatusTotals[] = responseData.totals;
+        loadedTotals.sort((a, b) => (a.nome > b.nome ? 1 : -1));
+
+        if (loadedTotals.length !== 0) {
+          loadedTotals.map((lt) => {
+            if (lt.nome === "Concluído") {
+              setConcluidos(lt.quantidadeByStatus);
+            }
+            if (lt.nome === "Em Preenchimento") {
+              setEmPreenchimento(lt.quantidadeByStatus);
+            }
+            if (lt.nome === "Pendente Aprovação") {
+              setPendenteAprovacao(lt.quantidadeByStatus);
+            }
+            return lt;
+          });
         }
-      );
-
-      console.log(responseData.totals);
-
-      const loadedTotals: StatusTotals[] = responseData.totals;
-      loadedTotals.sort((a, b) => (a.nome > b.nome ? 1 : -1));
-
-      if (loadedTotals.length === 0) {
-        setConcluidos(0);
-        setEmPreenchimento(0);
-        setPendenteAprovacao(0);
-      } else {
-        setConcluidos(loadedTotals[0].quantidadeByStatus);
-        setEmPreenchimento(loadedTotals[1].quantidadeByStatus);
-        setPendenteAprovacao(loadedTotals[2].quantidadeByStatus);
+      } catch (e) {
+        console.log(e);
       }
     };
 
     getGroupCaseTotals().catch((error) => {
       console.log(error);
     });
+
+    return () => {
+      setConcluidos(0);
+      setEmPreenchimento(0);
+      setPendenteAprovacao(0);
+    };
   }, [sendRequest, token, currentGroup.id]);
 
   if (isLoading) {
@@ -76,7 +91,7 @@ const GroupCasesByStatusDashboard = () => {
         </Alert>
       )}
       <Row>
-        <h3 className="mb-4">Visão de Comentários</h3>
+        <h3 className="mb-4">Quantitativo dos Processos</h3>
       </Row>
       <Row>
         <CardGroup>

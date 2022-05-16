@@ -11,11 +11,11 @@ const Dashboards = () => {
 
   return (
     <Row className="justify-content-evenly">
-      <Col xs={12} sm={12} md={12} lg={9}>
+      <Col xs={12} sm={12} md={12} lg={5}>
         <CasesDashboard />
       </Col>
       {!user.isComite && (
-        <Col xs={12} sm={12} md={12} lg={4} className="justify-content-center">
+        <Col xs={12} sm={12} md={12} lg={5} className="justify-content-center">
           <GroupCasesByStatusDashboard />
         </Col>
       )}

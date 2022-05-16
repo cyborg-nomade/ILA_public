@@ -80,7 +80,7 @@ const Section7FormRow = (props: {
         <Col className="d-grid justify-content-center">
           <Form.Check
             type="radio"
-            name={`trata-${props.itemRef}`}
+            name={`trata-${props.itemRef.number}`}
             required
             label="Sim"
             value="SIM"
@@ -90,7 +90,7 @@ const Section7FormRow = (props: {
           />
           <Form.Check
             type="radio"
-            name={`trata-${props.itemRef}`}
+            name={`trata-${props.itemRef.number}`}
             required
             inline
             label="Não"

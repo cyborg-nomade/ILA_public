@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import Select from "react-select";
@@ -73,6 +73,9 @@ const CaseForm = (props: {
   const cid = useParams().cid || "";
 
   const methods = useForm<Case>({ defaultValues: props.item });
+  const { reset } = methods;
+  useEffect(() => reset(props.item), [reset, props.item]);
+
   const categoriasTitularesCategorias = useFieldArray({
     control: methods.control, // control props comes from useForm
     name: "categoriasTitulares.categorias", // unique name for your Field Array

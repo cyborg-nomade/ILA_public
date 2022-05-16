@@ -32,23 +32,32 @@ const NewCase = () => {
 
   useEffect(() => {
     const getComiteMembers = async () => {
-      const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/users/comite-members/${currentGroup.id}`,
-        undefined,
-        undefined,
-        { Authorization: "Bearer " + token }
-      );
-      const loadedComiteMember: AgenteTratamento = responseData.comiteMember;
-      setInitialCase((prevCase) => ({
-        ...prevCase,
-        extensaoEncarregado: loadedComiteMember,
-      }));
+      try {
+        const responseData = await sendRequest(
+          `${process.env.REACT_APP_CONNSTR}/users/comite-members/${currentGroup.id}`,
+          undefined,
+          undefined,
+          { Authorization: "Bearer " + token }
+        );
+        const loadedComiteMember: AgenteTratamento = responseData.comiteMember;
+        console.log(loadedComiteMember);
+        setInitialCase((prevCase) => ({
+          ...prevCase,
+          extensaoEncarregado: loadedComiteMember,
+        }));
+      } catch (e) {
+        console.log(e);
+      }
     };
 
     getComiteMembers().catch((error) => {
       console.log(error);
     });
-  }, [currentGroup.id, sendRequest, token]);
+
+    return () => {
+      setInitialCase(emptyCase(areaTratamentoDados));
+    };
+  }, [areaTratamentoDados, currentGroup.id, sendRequest, token]);
 
   const saveProgressHandler = async (item: Case) => {
     console.log("Initial item: ", item);
