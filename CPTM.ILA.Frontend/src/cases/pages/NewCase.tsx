@@ -1,22 +1,21 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { diff } from "deep-object-diff";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
 import {
-  emptyBaseCase,
   Case,
+  emptyBaseCase,
   emptyCase,
-} from "./../../shared/models/cases.model";
-import { AuthContext } from "../../shared/context/auth-context";
-import { useHttpClient } from "./../../shared/hooks/http-hook";
-import CaseForm from "../components/CaseForm";
-import { diff } from "deep-object-diff";
+} from "../../shared/models/cases.model";
 import { ChangeLog } from "../../shared/models/change-logging/change-log.model";
 import { CaseChange } from "../../shared/models/DTOs/case-change.model";
-
 import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
+import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import CaseForm from "../components/CaseForm";
 
 const NewCase = () => {
   const { token, user, currentGroup, areaTratamentoDados } =
@@ -33,23 +32,32 @@ const NewCase = () => {
 
   useEffect(() => {
     const getComiteMembers = async () => {
-      const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/users/comite-members/${currentGroup.id}`,
-        undefined,
-        undefined,
-        { Authorization: "Bearer " + token }
-      );
-      const loadedComiteMember: AgenteTratamento = responseData.comiteMember;
-      setInitialCase((prevCase) => ({
-        ...prevCase,
-        extensaoEncarregado: loadedComiteMember,
-      }));
+      try {
+        const responseData = await sendRequest(
+          `${process.env.REACT_APP_CONNSTR}/users/comite-members/${currentGroup.id}`,
+          undefined,
+          undefined,
+          { Authorization: "Bearer " + token }
+        );
+        const loadedComiteMember: AgenteTratamento = responseData.comiteMember;
+        console.log(loadedComiteMember);
+        setInitialCase((prevCase) => ({
+          ...prevCase,
+          extensaoEncarregado: loadedComiteMember,
+        }));
+      } catch (e) {
+        console.log(e);
+      }
     };
 
     getComiteMembers().catch((error) => {
       console.log(error);
     });
-  }, [currentGroup.id, sendRequest, token]);
+
+    return () => {
+      setInitialCase(emptyCase(areaTratamentoDados));
+    };
+  }, [areaTratamentoDados, currentGroup.id, sendRequest, token]);
 
   const saveProgressHandler = async (item: Case) => {
     console.log("Initial item: ", item);

@@ -1,5 +1,4 @@
-import { Case } from "../cases.model";
-import { AuthUser } from "../DTOs/auth-user";
+import { AuthUser } from "../DTOs/auth-user.model";
 import { emptyGroup, Group } from "./group.model";
 
 export interface User extends AuthUser {
