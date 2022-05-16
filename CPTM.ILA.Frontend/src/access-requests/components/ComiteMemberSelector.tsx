@@ -11,7 +11,8 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 
 const ComiteMemberSelector = () => {
-  const { changeComiteMember, token } = useContext(AuthContext);
+  const { changeComiteMember, token, currentComiteMember } =
+    useContext(AuthContext);
 
   const [comiteMembers, setComiteMembers] = useState<ComiteMember[]>([]);
 
@@ -80,6 +81,7 @@ const ComiteMemberSelector = () => {
                 key={cm.id}
                 variant="outline-secondary"
                 onClick={() => changeComiteMember(cm)}
+                active={cm === currentComiteMember}
               >
                 {cm.nome}
               </Button>

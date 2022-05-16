@@ -8,7 +8,7 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useNavigate } from "react-router-dom";
 
 const GroupSelector = () => {
-  const { changeGroup, user } = useContext(AuthContext);
+  const { changeGroup, user, currentGroup } = useContext(AuthContext);
 
   let navigate = useNavigate();
 
@@ -33,6 +33,7 @@ const GroupSelector = () => {
                 key={g.id}
                 variant="outline-secondary"
                 onClick={() => changeGroup(g)}
+                active={g === currentGroup}
               >
                 {g.nome}
               </Button>

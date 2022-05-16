@@ -4,24 +4,27 @@ import CardGroup from "react-bootstrap/CardGroup";
 import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
+import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
+
+import { StatusTotals } from "../../shared/models/DTOs/status-totals.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import { ThreadStatusTotals } from "./../../shared/models/DTOs/thread-status-totals.model";
 
-const ThreadDashboard = () => {
-  const [pendentes, setPendentes] = useState(0);
-  const [respondidos, setRespondidos] = useState(0);
-  const [novos, setNovos] = useState(0);
+const GroupCasesByStatusDashboard = () => {
+  const [concluidos, setConcluidos] = useState(0);
+  const [emPreenchimento, setEmPreenchimento] = useState(0);
+  const [pendenteAprovacao, setPendenteAprovacao] = useState(0);
 
-  const { user, token, currentGroup } = useContext(AuthContext);
+  const { token, currentGroup } = useContext(AuthContext);
 
   const { isLoading, error, isWarning, sendRequest, clearError } =
     useHttpClient();
 
   useEffect(() => {
-    const getGroupThreadTotals = async () => {
+    const getGroupCaseTotals = async () => {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/threads/group/${currentGroup.id}/status/totals`,
+        `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/totals`,
         undefined,
         undefined,
         {
@@ -32,51 +35,72 @@ const ThreadDashboard = () => {
 
       console.log(responseData.totals);
 
-      const loadedTotals: ThreadStatusTotals[] = responseData.totals;
+      const loadedTotals: StatusTotals[] = responseData.totals;
+      loadedTotals.sort((a, b) => (a.nome > b.nome ? 1 : -1));
+
       if (loadedTotals.length === 0) {
-        setRespondidos(0);
-        setPendentes(0);
-        setNovos(0);
+        setConcluidos(0);
+        setEmPreenchimento(0);
+        setPendenteAprovacao(0);
       } else {
-        setRespondidos(loadedTotals[0].quantityInStatus);
-        setPendentes(loadedTotals[1].quantityInStatus);
-        setNovos(loadedTotals[2].quantityInStatus);
+        setConcluidos(loadedTotals[0].quantidadeByStatus);
+        setEmPreenchimento(loadedTotals[1].quantidadeByStatus);
+        setPendenteAprovacao(loadedTotals[2].quantidadeByStatus);
       }
     };
 
-    getGroupThreadTotals().catch((error) => {
+    getGroupCaseTotals().catch((error) => {
       console.log(error);
     });
   }, [sendRequest, token, currentGroup.id]);
 
+  if (isLoading) {
+    return (
+      <Row className="justify-content-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Row>
+    );
+  }
+
   return (
     <React.Fragment>
+      {error && (
+        <Alert
+          variant={isWarning ? "warning" : "danger"}
+          onClose={clearError}
+          dismissible
+        >
+          {error}
+        </Alert>
+      )}
       <Row>
         <h3 className="mb-4">Visão de Comentários</h3>
       </Row>
       <Row>
         <CardGroup>
           <Card border="danger">
-            <Card.Header>Pendentes</Card.Header>
+            <Card.Header>Pendente Aprovação</Card.Header>
             <Card.Body>
               <h1 className="text-center">
-                <Badge bg="danger">{pendentes}</Badge>
+                <Badge bg="danger">{pendenteAprovacao}</Badge>
               </h1>
             </Card.Body>
           </Card>
           <Card border="secondary">
-            <Card.Header>Respondidos</Card.Header>
+            <Card.Header>Concluídos</Card.Header>
             <Card.Body>
               <h1 className="text-center">
-                <Badge bg="secondary">{respondidos}</Badge>
+                <Badge bg="secondary">{concluidos}</Badge>
               </h1>
             </Card.Body>
           </Card>
           <Card border="warning">
-            <Card.Header>Novos</Card.Header>
+            <Card.Header>Em Preenchimento</Card.Header>
             <Card.Body>
               <h1 className="text-center">
-                <Badge bg="warning">{novos}</Badge>
+                <Badge bg="warning">{emPreenchimento}</Badge>
               </h1>
             </Card.Body>
           </Card>
@@ -97,4 +121,4 @@ const ThreadDashboard = () => {
   );
 };
 
-export default ThreadDashboard;
+export default GroupCasesByStatusDashboard;

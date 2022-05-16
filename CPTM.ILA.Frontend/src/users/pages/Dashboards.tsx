@@ -1,18 +1,24 @@
 import React, { useContext } from "react";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+
+import { AuthContext } from "../../shared/context/auth-context";
 import CasesDashboard from "../../cases/components/CasesDashboard";
-import { AuthContext } from "./../../shared/context/auth-context";
+import GroupCasesByStatusDashboard from "../../cases/components/GroupCasesByStatusDashboard";
 
 const Dashboards = () => {
+  const { user } = useContext(AuthContext);
+
   return (
     <Row className="justify-content-evenly">
       <Col xs={12} sm={12} md={12} lg={9}>
         <CasesDashboard />
       </Col>
-      {/* <Col xs={12} sm={12} md={12} lg={4} className="justify-content-center">
-        <ThreadDashboard />
-      </Col> */}
+      {!user.isComite && (
+        <Col xs={12} sm={12} md={12} lg={4} className="justify-content-center">
+          <GroupCasesByStatusDashboard />
+        </Col>
+      )}
     </Row>
   );
 };
