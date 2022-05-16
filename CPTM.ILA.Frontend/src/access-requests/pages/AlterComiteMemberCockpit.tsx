@@ -191,8 +191,8 @@ const AlterComiteMemberCockpit = () => {
                     <Button
                       className="w-100"
                       variant="danger"
-                      onClick={() => {
-                        handleRemoveMember(cm.id);
+                      onClick={async () => {
+                        await handleRemoveMember(cm.id);
                       }}
                     >
                       Remover
