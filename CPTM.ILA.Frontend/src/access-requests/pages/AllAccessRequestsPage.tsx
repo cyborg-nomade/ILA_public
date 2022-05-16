@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-const AllAccessRequestsPage = (props: any) => {
+const AllAccessRequestsPage = () => {
   return (
     <React.Fragment>
       <Outlet />

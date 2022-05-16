@@ -8,11 +8,7 @@ import { AuthContext } from "./shared/context/auth-context";
 import { useAuth } from "./shared/hooks/auth-hook";
 import MainHeader from "./shared/components/nav/MainHeader";
 import "./App.css";
-import DpoHomePage from "./users/pages/DpoHomePage";
 
-const AllCasesListGetter = React.lazy(
-  () => import("./cases/pages/AllCasesListGetter")
-);
 const ApproveCasesListGetter = React.lazy(
   () => import("./cases/pages/ApproveCasesListGetter")
 );
@@ -26,10 +22,6 @@ const UserPage = React.lazy(() => import("./users/pages/UserPage"));
 const ApproveCaseGetter = React.lazy(
   () => import("./cases/pages/ApproveCaseGetter")
 );
-const ApproveCasesPage = React.lazy(
-  () => import("./cases/pages/ApproveCasesPage")
-);
-const AllCasesPage = React.lazy(() => import("./cases/pages/AllCasesPage"));
 const RequestAccess = React.lazy(() => import("./users/pages/RequestAccess"));
 const AllAccessRequestsPage = React.lazy(
   () => import("./access-requests/pages/AllAccessRequestsPage")
@@ -68,6 +60,7 @@ const DpoCasesListGetter = React.lazy(
 const AlterComiteMemberCockpit = React.lazy(
   () => import("./access-requests/pages/AlterComiteMemberCockpit")
 );
+const DpoHomePage = React.lazy(() => import("./users/pages/DpoHomePage"));
 
 const App = () => {
   const {

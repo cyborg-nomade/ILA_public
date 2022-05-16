@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import * as yup from "yup";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
@@ -10,15 +9,11 @@ import AccessRequestForm from "../../access-requests/components/AccessRequestFor
 import {
   AccessRequestDTO,
   emptyAccessRequestDTO,
-} from "./../../shared/models/DTOs/access-request-dto.model";
+} from "../../shared/models/DTOs/access-request-dto.model";
 import {
   AccessRequest,
   tipoSolicitacaoAcesso,
 } from "../../shared/models/access-control/access-request.model";
-
-// const schema = yup.object().shape({
-//   username: yup.string().required(),
-// });
 
 const RequestAccess = () => {
   const [message, setMessage] = useState("");
