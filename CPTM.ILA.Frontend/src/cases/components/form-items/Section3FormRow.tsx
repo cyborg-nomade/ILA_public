@@ -12,7 +12,7 @@ import CreateCommentBox from "../../../threads-comments/components/CreateComment
 
 const Section3FormRow = (props: {
   disabled: boolean;
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
 }) => {
   const { getValues } = props.methods;
   const [atua, setAtua] = useState(false);
@@ -98,9 +98,7 @@ const Section3FormRow = (props: {
               checked={value}
               ref={ref}
               isInvalid={
-                props.methods.formState.errors.fasesCicloTratamento?.coleta
-                  ? true
-                  : false
+                !!props.methods.formState.errors.fasesCicloTratamento?.coleta
               }
             />
           )}
@@ -119,9 +117,7 @@ const Section3FormRow = (props: {
               checked={value}
               ref={ref}
               isInvalid={
-                props.methods.formState.errors.fasesCicloTratamento?.coleta
-                  ? true
-                  : false
+                !!props.methods.formState.errors.fasesCicloTratamento?.coleta
               }
             />
           )}
@@ -140,9 +136,7 @@ const Section3FormRow = (props: {
               checked={value}
               ref={ref}
               isInvalid={
-                props.methods.formState.errors.fasesCicloTratamento?.coleta
-                  ? true
-                  : false
+                !!props.methods.formState.errors.fasesCicloTratamento?.coleta
               }
             />
           )}
@@ -161,9 +155,7 @@ const Section3FormRow = (props: {
               checked={value}
               ref={ref}
               isInvalid={
-                props.methods.formState.errors.fasesCicloTratamento?.coleta
-                  ? true
-                  : false
+                !!props.methods.formState.errors.fasesCicloTratamento?.coleta
               }
             />
           )}
@@ -182,9 +174,7 @@ const Section3FormRow = (props: {
               checked={value}
               ref={ref}
               isInvalid={
-                props.methods.formState.errors.fasesCicloTratamento?.coleta
-                  ? true
-                  : false
+                !!props.methods.formState.errors.fasesCicloTratamento?.coleta
               }
             />
           )}

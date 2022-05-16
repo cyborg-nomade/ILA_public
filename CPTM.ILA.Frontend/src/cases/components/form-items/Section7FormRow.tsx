@@ -29,7 +29,7 @@ const Section7FormRow = (props: {
   className: string;
   itemRef: string;
   systems: string[];
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
 }) => {
   const { getValues } = props.methods;
 

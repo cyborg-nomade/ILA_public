@@ -3,14 +3,11 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import {
-  AccessRequest,
-  tipoSolicitacaoAcesso,
-} from "../../shared/models/access-control/access-request.model";
+import { tipoSolicitacaoAcesso } from "../../shared/models/access-control/access-request.model";
+import { AccessRequestDTO } from "../../shared/models/DTOs/access-request-dto.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import AccessRequestsList from "./AccessRequestsList";
-import { AccessRequestDTO } from "../../shared/models/DTOs/access-request-dto.model";
 
 const GroupsAccessRequestsListGetter = () => {
   const [accessRequests, setAccessRequests] = useState<AccessRequestDTO[]>([]);

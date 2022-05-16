@@ -10,7 +10,7 @@ import { Case } from "../../../shared/models/cases.model";
 const Section14FormRowSub = (props: {
   name: string;
   className: string;
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
 }) => {
   return (
     <Row className={props.className}>

@@ -5,13 +5,14 @@ import Form from "react-bootstrap/Form";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Row from "react-bootstrap/Row";
 import Tooltip from "react-bootstrap/Tooltip";
+
 import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
 import { Case } from "../../../shared/models/cases.model";
 import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
 
 const Section9QuantityRow = (props: {
   isEditing: boolean;
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
 }) => {
   const { getValues, setValue, watch } = props.methods;
   const categoriaDadosPessoaisWatch = useWatch({
@@ -27,9 +28,6 @@ const Section9QuantityRow = (props: {
     if (props.isEditing) {
       let totalDadosTratados = 0;
       let totalDadosSensiveisTratados = 0;
-
-      console.log(catDadosPessoaisSensiveisWatch);
-      console.log(categoriaDadosPessoaisWatch);
 
       for (const categoria of Object.values(watch("categoriaDadosPessoais"))) {
         for (const item of Object.values(categoria)) {

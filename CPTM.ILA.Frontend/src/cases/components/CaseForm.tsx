@@ -21,20 +21,20 @@ import {
   emptyItemObservacoesProcesso,
   emptyItemRiscoPrivacidade,
 } from "../../shared/models/case-helpers/case-helpers.model";
-import { AuthContext } from "../../shared/context/auth-context";
-import { useHttpClient } from "../../shared/hooks/http-hook";
-import Section7FormRow from "./form-items/Section7FormRow";
 import { Case, emptyCase } from "../../shared/models/cases.model";
-import CreateCommentBox from "../../threads-comments/components/CreateCommentBox";
 import { CaseIndexDictionary } from "../../shared/models/case-index.dictionary";
 import {
   hipotesesTratamento,
   tipoAbrangenciaGeografica,
   tipoFrequenciaTratamento,
 } from "../../shared/models/case-helpers/enums.model";
+import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useUtilities } from "../../shared/hooks/utilities-hook";
+import CreateCommentBox from "../../threads-comments/components/CreateCommentBox";
 import Section3FormRow from "./form-items/Section3FormRow";
 import Section6FormRow from "./form-items/Section6FormRow";
+import Section7FormRow from "./form-items/Section7FormRow";
 import Section9QuantityRow from "./form-items/Section9QuantityRow";
 import Section10FormRow from "./form-items/Section10FormRow";
 import Section11FormRow from "./form-items/Section11FormRow";

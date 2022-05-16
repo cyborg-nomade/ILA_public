@@ -8,6 +8,7 @@ import { AuthContext } from "./shared/context/auth-context";
 import { useAuth } from "./shared/hooks/auth-hook";
 import MainHeader from "./shared/components/nav/MainHeader";
 import "./App.css";
+import DpoHomePage from "./users/pages/DpoHomePage";
 
 const AllCasesListGetter = React.lazy(
   () => import("./cases/pages/AllCasesListGetter")
@@ -141,8 +142,10 @@ const App = () => {
   } else if (token && user.isComite && user.isDPO) {
     routes = (
       <React.Fragment>
-        <Route path="/dpo" element={<DpoPage />}>
+        <Route path="/dpo" element={<DpoHomePage />}>
           <Route index element={<Dashboards />} />
+        </Route>
+        <Route path="/dpo" element={<DpoPage />}>
           <Route path="cases" element={<UserCasesLayout />}>
             <Route index element={<DpoCasesListGetter />} />
           </Route>
