@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import _ from "lodash";
-import { Controller, UseFormReturn, FieldPath } from "react-hook-form";
+import { Controller, FieldPath, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -16,7 +16,7 @@ const Section11FormRowSub = (props: {
   disabled: boolean;
   name: string;
   className: string;
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
 }) => {
   const [isCompartilhamentoParcial, setIsCompartilhamentoParcial] =
     useState(false);
@@ -59,12 +59,10 @@ const Section11FormRowSub = (props: {
               onChange={onChange}
               onBlur={onBlur}
               isInvalid={
-                _.get(
+                !!_.get(
                   props.methods.formState.errors,
                   `${props.name}.nomeInstituicao`
                 )
-                  ? true
-                  : false
               }
               disabled={props.disabled}
               ref={ref}
@@ -88,12 +86,10 @@ const Section11FormRowSub = (props: {
               onBlur={onBlur}
               ref={ref}
               isInvalid={
-                _.get(
+                !!_.get(
                   props.methods.formState.errors,
                   `${props.name}.tipoCompDados.value`
                 )
-                  ? true
-                  : false
               }
             >
               {Object.values(tipoCompartilhamentoDados).map((tcd) => (
@@ -121,12 +117,10 @@ const Section11FormRowSub = (props: {
               onBlur={onBlur}
               ref={ref}
               isInvalid={
-                _.get(
+                !!_.get(
                   props.methods.formState.errors,
                   `${props.name}.nivelCompartilhamento.value`
                 )
-                  ? true
-                  : false
               }
             >
               {Object.values(tipoNivelCompartilhamento).map((tnc) => (
@@ -152,12 +146,10 @@ const Section11FormRowSub = (props: {
               onChange={onChange}
               onBlur={onBlur}
               isInvalid={
-                _.get(
+                !!_.get(
                   props.methods.formState.errors,
                   `${props.name}.descricaoDadosCompartilhados`
                 )
-                  ? true
-                  : false
               }
               disabled={props.disabled || !isCompartilhamentoParcial}
               ref={ref}
@@ -179,12 +171,10 @@ const Section11FormRowSub = (props: {
                 onBlur={onBlur}
                 ref={ref}
                 isInvalid={
-                  _.get(
+                  !!_.get(
                     props.methods.formState.errors,
                     `${props.name}.finalidadeComp.value`
                   )
-                    ? true
-                    : false
                 }
               >
                 {Object.values(tipoFinalidadeCompartilhamento).map((tfc) => (
@@ -209,12 +199,10 @@ const Section11FormRowSub = (props: {
                 onChange={onChange}
                 onBlur={onBlur}
                 isInvalid={
-                  _.get(
+                  !!_.get(
                     props.methods.formState.errors,
                     `${props.name}.descricaoFinalidadeComp`
                   )
-                    ? true
-                    : false
                 }
                 disabled={props.disabled}
                 ref={ref}

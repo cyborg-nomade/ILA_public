@@ -3,19 +3,19 @@ import { useFieldArray, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
-import { Case } from "../../../shared/models/cases.model";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
+
+import { Case } from "../../../shared/models/cases.model";
 import { emptyItemTransferenciaInternacional } from "../../../shared/models/case-helpers/case-helpers.model";
-import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
 import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
+import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
 import Section13FormRowSub from "./Section13FormRowSub";
 
 const Section13FormRow = (props: {
   countries: string[];
   disabled: boolean;
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
 }) => {
   const { fields, append, remove } = useFieldArray({
     control: props.methods.control, // control props comes from useForm

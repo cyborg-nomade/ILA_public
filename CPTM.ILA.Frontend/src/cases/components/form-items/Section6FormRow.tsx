@@ -24,7 +24,7 @@ const Section6FormRow = (props: {
   type: string;
   invalid: string;
   itemRef: string;
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
   rules: RegisterOptions;
 }) => {
   return (
@@ -55,11 +55,7 @@ const Section6FormRow = (props: {
                 onChange={onChange}
                 onBlur={onBlur}
                 ref={ref}
-                isInvalid={
-                  _.get(props.methods.formState.errors, props.name)
-                    ? true
-                    : false
-                }
+                isInvalid={!!_.get(props.methods.formState.errors, props.name)}
               >
                 {Object.values(hipotesesTratamento).map((hip) => (
                   <option value={hip} key={hip}>
@@ -82,11 +78,7 @@ const Section6FormRow = (props: {
                 value={value as string}
                 onChange={onChange}
                 onBlur={onBlur}
-                isInvalid={
-                  _.get(props.methods.formState.errors, props.name)
-                    ? true
-                    : false
-                }
+                isInvalid={!!_.get(props.methods.formState.errors, props.name)}
                 ref={ref}
               />
             )}

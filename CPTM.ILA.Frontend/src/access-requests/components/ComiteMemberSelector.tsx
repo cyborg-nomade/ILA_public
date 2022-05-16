@@ -3,23 +3,20 @@ import Card from "react-bootstrap/Card";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import { AuthContext } from "../../shared/context/auth-context";
-import { useNavigate } from "react-router-dom";
-import Row from "react-bootstrap/Row";
-import {
-  emptyUser,
-  User,
-} from "../../shared/models/access-control/users.model";
+
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { ComiteMember } from "../../shared/models/DTOs/comite-member";
+import Row from "react-bootstrap/Row";
+import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
 
 const ComiteMemberSelector = () => {
-  const { changeComiteMember, user, token } = useContext(AuthContext);
+  const { changeComiteMember, token } = useContext(AuthContext);
 
   const [comiteMembers, setComiteMembers] = useState<ComiteMember[]>([]);
 
-  let navigate = useNavigate();
-
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { isLoading, error, sendRequest, clearError, isWarning } =
+    useHttpClient();
 
   useEffect(() => {
     const getComiteMembers = async () => {
@@ -47,8 +44,27 @@ const ComiteMemberSelector = () => {
     };
   }, [sendRequest, token]);
 
+  if (isLoading) {
+    return (
+      <Row className="justify-content-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Row>
+    );
+  }
+
   return (
     <React.Fragment>
+      {error && (
+        <Alert
+          variant={isWarning ? "warning" : "danger"}
+          onClose={clearError}
+          dismissible
+        >
+          {error}
+        </Alert>
+      )}
       <Card className="justify-content-center">
         <Card.Body>
           <Card.Title className="mb-3 text-center">

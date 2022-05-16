@@ -1,17 +1,17 @@
 import React, { useState } from "react";
+import _ from "lodash";
 import { Controller, FieldPath, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 
 import { Case } from "../../../shared/models/cases.model";
 import { tipoCategoriaTitulares } from "../../../shared/models/case-helpers/enums.model";
 import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
-import _ from "lodash";
 
 const Section10FormRow = (props: {
   label: string;
@@ -21,11 +21,9 @@ const Section10FormRow = (props: {
   full: boolean;
   tooltip?: string;
   itemRef: string;
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
 }) => {
-  const [isDescricaoEnabled, setIsDescricaoEnabled] = useState(
-    false || props.full
-  );
+  const [isDescricaoEnabled, setIsDescricaoEnabled] = useState(props.full);
 
   const toggleEnableDescricao = (value: string) => {
     if (value === "NÃO") {
@@ -65,12 +63,10 @@ const Section10FormRow = (props: {
                 onBlur={onBlur}
                 ref={ref}
                 isInvalid={
-                  _.get(
+                  !!_.get(
                     props.methods.formState.errors,
                     `${props.name}.tipoCategoria.value`
                   )
-                    ? true
-                    : false
                 }
               >
                 {Object.values(tipoCategoriaTitulares).map((ctg) => (
@@ -164,12 +160,10 @@ const Section10FormRow = (props: {
               onChange={onChange}
               onBlur={onBlur}
               isInvalid={
-                _.get(
+                !!_.get(
                   props.methods.formState.errors,
                   `${props.name}.descricaoDados`
                 )
-                  ? true
-                  : false
               }
               ref={ref}
             />

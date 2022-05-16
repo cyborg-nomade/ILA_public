@@ -13,7 +13,7 @@ const Section15FormRow = (props: {
   disabled: boolean;
   name: string;
   className: string;
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
 }) => {
   return (
     <Row className={props.className}>

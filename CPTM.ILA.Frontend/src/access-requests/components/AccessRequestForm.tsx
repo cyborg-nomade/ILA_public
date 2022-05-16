@@ -1,32 +1,31 @@
-import React, { useContext, useCallback, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Formik, Field } from "formik";
+import { Field, Formik } from "formik";
 import * as yup from "yup";
+import {
+  AnyObject,
+  AssertsShape,
+  Assign,
+  ObjectShape,
+  TypeOfShape,
+} from "yup/lib/object";
+import { RequiredStringSchema } from "yup/lib/string";
+import { RequiredArraySchema } from "yup/lib/array";
+import { MixedSchema } from "yup/lib/mixed";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
 
-import { AccessRequestDTO } from "./../../shared/models/DTOs/access-request-dto.model";
-import {
-  AccessRequest,
-  tipoSolicitacaoAcesso,
-} from "../../shared/models/access-control/access-request.model";
-import { useHttpClient } from "../../shared/hooks/http-hook";
-import {
-  Assign,
-  ObjectShape,
-  AnyObject,
-  TypeOfShape,
-  AssertsShape,
-} from "yup/lib/object";
-import { RequiredStringSchema } from "yup/lib/string";
-import SelectFieldMulti from "../../shared/components/UI/SelectFieldMulti";
-import { RequiredArraySchema } from "yup/lib/array";
-import { MixedSchema } from "yup/lib/mixed";
+import { AccessRequestDTO } from "../../shared/models/DTOs/access-request-dto.model";
+import { tipoSolicitacaoAcesso } from "../../shared/models/access-control/access-request.model";
 import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import SelectFieldMulti from "../../shared/components/UI/SelectFieldMulti";
 
 type onSubmitFn = (item: AccessRequestDTO) => void;
 
@@ -187,9 +186,9 @@ const AccessRequestForm = (props: {
     return () => {};
   }, [isComiteReq, props.groups, props.item]);
 
-  const handleCheckIsComiteReq = (event: any) => {
-    setIsComiteReq(!isComiteReq);
-  };
+  /*const handleCheckIsComiteReq = (event: any) => {
+            setIsComiteReq(!isComiteReq);
+          };*/
 
   const arid = useParams().arid;
   let navigate = useNavigate();
@@ -225,7 +224,8 @@ const AccessRequestForm = (props: {
     console.log(link, url, fileBlob, fileRes.headers.get("Filename"));
   };
 
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { isLoading, error, sendRequest, clearError, isWarning } =
+    useHttpClient();
 
   useEffect(() => {
     const getGroups = async () => {
@@ -274,36 +274,58 @@ const AccessRequestForm = (props: {
     };
   }, [sendRequest]);
 
+  if (isLoading) {
+    return (
+      <Row className="justify-content-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Row>
+    );
+  }
+
   return (
-    <Formik
-      validationSchema={schema}
-      enableReinitialize={true}
-      onSubmit={(values) => {
-        values.tipoSolicitacaoAcesso = props.groups
-          ? tipoSolicitacaoAcesso.AcessoAGrupos
-          : isComiteReq
-          ? tipoSolicitacaoAcesso.AcessoComite
-          : tipoSolicitacaoAcesso.AcessoAoSistema;
-        props.onSubmit(values);
-      }}
-      initialValues={props.item}
-    >
-      {({
-        handleSubmit,
-        handleChange,
-        handleBlur,
-        setFieldValue,
-        values,
-        touched,
-        isValid,
-        errors,
-        dirty,
-      }) => (
-        <Form noValidate onSubmit={handleSubmit}>
-          <Card className="mx-auto" style={{ width: "28rem" }}>
-            <Card.Title className="pt-3 px-3">Solicitação de Acesso</Card.Title>
-            <Card.Body>
-              {/* {props.register && (
+    <React.Fragment>
+      {error && (
+        <Alert
+          variant={isWarning ? "warning" : "danger"}
+          onClose={clearError}
+          dismissible
+        >
+          {error}
+        </Alert>
+      )}
+      <Formik
+        validationSchema={schema}
+        enableReinitialize={true}
+        onSubmit={(values) => {
+          values.tipoSolicitacaoAcesso = props.groups
+            ? tipoSolicitacaoAcesso.AcessoAGrupos
+            : isComiteReq
+            ? tipoSolicitacaoAcesso.AcessoComite
+            : tipoSolicitacaoAcesso.AcessoAoSistema;
+          props.onSubmit(values);
+        }}
+        initialValues={props.item}
+      >
+        {({
+          handleSubmit,
+          handleChange,
+          handleBlur,
+          setFieldValue,
+          values,
+          touched,
+          isValid,
+          errors,
+          dirty,
+        }) => (
+          <Form noValidate onSubmit={handleSubmit}>
+            <Card className="mx-auto" style={{ width: "28rem" }}>
+              <Card.Title className="pt-3 px-3">
+                Solicitação de Acesso
+              </Card.Title>
+              <Card.Body>
+                {/* {props.register && (
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik00">
                     <Form.Check
@@ -316,172 +338,176 @@ const AccessRequestForm = (props: {
                   </Form.Group>
                 </Row>
               )} */}
-              {(props.register || props.approve) && (
+                {(props.register || props.approve) && (
+                  <Row className="mb-3">
+                    <Form.Group as={Col} controlId="validationFormik01">
+                      <Form.Label>Usuário AD do Solicitante</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="usernameSolicitante"
+                        value={values.usernameSolicitante}
+                        disabled={props.approve}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        isValid={
+                          touched.usernameSolicitante &&
+                          !errors.usernameSolicitante
+                        }
+                        isInvalid={!!errors.usernameSolicitante}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        Esse campo é obrigatório
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Row>
+                )}
+                {((props.register && !isComiteReq) ||
+                  props.approve ||
+                  props.groups) && (
+                  <Row className="mb-3">
+                    <Form.Group as={Col} controlId="validationFormik02">
+                      <Form.Label>Usuário AD do Superior</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="usernameSuperior"
+                        value={values.usernameSuperior}
+                        disabled={props.approve}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        isValid={
+                          touched.usernameSuperior && !errors.usernameSuperior
+                        }
+                        isInvalid={!!errors.usernameSuperior}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        Esse campo é obrigatório
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Row>
+                )}
+                {(props.groups || isComiteReq || props.approve) && (
+                  <Row className="mb-3">
+                    <Form.Group as={Col} controlId="validationFormik03">
+                      <Form.Label>Grupos a serem acessados</Form.Label>
+                      <Field
+                        isDisabled={props.approve}
+                        component={SelectFieldMulti}
+                        name="groupNames"
+                        options={groups}
+                      />
+                    </Form.Group>
+                  </Row>
+                )}
                 <Row className="mb-3">
-                  <Form.Group as={Col} controlId="validationFormik01">
-                    <Form.Label>Usuário AD do Solicitante</Form.Label>
+                  <Form.Group as={Col} controlId="validationFormik04">
+                    <Form.Label>Justificativa de acesso</Form.Label>
                     <Form.Control
-                      type="text"
-                      name="usernameSolicitante"
-                      value={values.usernameSolicitante}
+                      as="textarea"
+                      rows={5}
+                      name="justificativa"
+                      value={values.justificativa}
                       disabled={props.approve}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      isValid={
-                        touched.usernameSolicitante &&
-                        !errors.usernameSolicitante
-                      }
-                      isInvalid={!!errors.usernameSolicitante}
+                      isValid={touched.justificativa && !errors.justificativa}
+                      isInvalid={!!errors.justificativa}
                     />
                     <Form.Control.Feedback type="invalid">
                       Esse campo é obrigatório
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Row>
-              )}
-              {((props.register && !isComiteReq) ||
-                props.approve ||
-                props.groups) && (
-                <Row className="mb-3">
-                  <Form.Group as={Col} controlId="validationFormik02">
-                    <Form.Label>Usuário AD do Superior</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="usernameSuperior"
-                      value={values.usernameSuperior}
-                      disabled={props.approve}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      isValid={
-                        touched.usernameSuperior && !errors.usernameSuperior
-                      }
-                      isInvalid={!!errors.usernameSuperior}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Esse campo é obrigatório
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Row>
-              )}
-              {(props.groups || isComiteReq || props.approve) && (
-                <Row className="mb-3">
-                  <Form.Group as={Col} controlId="validationFormik03">
-                    <Form.Label>Grupos a serem acessados</Form.Label>
-                    <Field
-                      isDisabled={props.approve}
-                      component={SelectFieldMulti}
-                      name="groupNames"
-                      options={groups}
-                    />
-                  </Form.Group>
-                </Row>
-              )}
-              <Row className="mb-3">
-                <Form.Group as={Col} controlId="validationFormik04">
-                  <Form.Label>Justificativa de acesso</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={5}
-                    name="justificativa"
-                    value={values.justificativa}
-                    disabled={props.approve}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isValid={touched.justificativa && !errors.justificativa}
-                    isInvalid={!!errors.justificativa}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    Esse campo é obrigatório
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Row>
-              {!isComiteReq && !props.approve && (
-                <Row className="mb-3">
-                  <Form.Group controlId="formFile" className="mb-3">
-                    <Form.Label>E-mail com autorização do superior</Form.Label>
-                    <Form.Control
-                      type="file"
-                      name="emailFile"
-                      onChange={(event) => {
-                        const target = event.currentTarget as HTMLInputElement;
-                        const files = target.files as FileList;
+                {!isComiteReq && !props.approve && (
+                  <Row className="mb-3">
+                    <Form.Group controlId="formFile" className="mb-3">
+                      <Form.Label>
+                        E-mail com autorização do superior
+                      </Form.Label>
+                      <Form.Control
+                        type="file"
+                        name="emailFile"
+                        onChange={(event) => {
+                          const target =
+                            event.currentTarget as HTMLInputElement;
+                          const files = target.files as FileList;
 
-                        setFieldValue("emailFile", files[0]);
-                      }}
-                    />
-                  </Form.Group>
-                </Row>
-              )}
-              {props.approve && (
-                <Row className="mb-3">
-                  <Button onClick={getFileHandler}>
-                    Baixar Arquivo de Autorização
-                  </Button>
-                </Row>
-              )}
-              {props.register && (
-                <React.Fragment>
-                  <Button
-                    type="submit"
-                    className="float-end mt-3"
-                    variant="success"
-                    disabled={!(isValid && dirty)}
-                  >
-                    Solicitar
-                  </Button>
-                  <Button
-                    type="button"
-                    className="float-start mt-3"
-                    onClick={backToHomepageHandler}
-                  >
-                    Fazer Login
-                  </Button>
-                </React.Fragment>
-              )}
-              {props.approve && (
-                <React.Fragment>
-                  <ButtonGroup className="float-end mt-3">
-                    <Button
-                      variant="danger"
-                      onClick={() => props.onReject!(values)}
-                    >
-                      Reprovar
+                          setFieldValue("emailFile", files[0]);
+                        }}
+                      />
+                    </Form.Group>
+                  </Row>
+                )}
+                {props.approve && (
+                  <Row className="mb-3">
+                    <Button onClick={getFileHandler}>
+                      Baixar Arquivo de Autorização
                     </Button>
-                    <Button type="submit">Aprovar</Button>
-                  </ButtonGroup>
-                  <Button
-                    type="button"
-                    className="float-start mt-3"
-                    onClick={backOneHandler}
-                  >
-                    Voltar
-                  </Button>
-                </React.Fragment>
-              )}
-              {props.groups && (
-                <React.Fragment>
-                  <Button
-                    type="submit"
-                    className="float-end mt-3"
-                    variant="success"
-                    disabled={!(isValid && dirty)}
-                  >
-                    Solicitar
-                  </Button>
-                  <Button
-                    type="button"
-                    className="float-start mt-3"
-                    onClick={backToHomepageHandler}
-                  >
-                    Página Inicial
-                  </Button>
-                </React.Fragment>
-              )}
-            </Card.Body>
-          </Card>
-        </Form>
-      )}
-    </Formik>
+                  </Row>
+                )}
+                {props.register && (
+                  <React.Fragment>
+                    <Button
+                      type="submit"
+                      className="float-end mt-3"
+                      variant="success"
+                      disabled={!(isValid && dirty)}
+                    >
+                      Solicitar
+                    </Button>
+                    <Button
+                      type="button"
+                      className="float-start mt-3"
+                      onClick={backToHomepageHandler}
+                    >
+                      Fazer Login
+                    </Button>
+                  </React.Fragment>
+                )}
+                {props.approve && (
+                  <React.Fragment>
+                    <ButtonGroup className="float-end mt-3">
+                      <Button
+                        variant="danger"
+                        onClick={() => props.onReject!(values)}
+                      >
+                        Reprovar
+                      </Button>
+                      <Button type="submit">Aprovar</Button>
+                    </ButtonGroup>
+                    <Button
+                      type="button"
+                      className="float-start mt-3"
+                      onClick={backOneHandler}
+                    >
+                      Voltar
+                    </Button>
+                  </React.Fragment>
+                )}
+                {props.groups && (
+                  <React.Fragment>
+                    <Button
+                      type="submit"
+                      className="float-end mt-3"
+                      variant="success"
+                      disabled={!(isValid && dirty)}
+                    >
+                      Solicitar
+                    </Button>
+                    <Button
+                      type="button"
+                      className="float-start mt-3"
+                      onClick={backToHomepageHandler}
+                    >
+                      Página Inicial
+                    </Button>
+                  </React.Fragment>
+                )}
+              </Card.Body>
+            </Card>
+          </Form>
+        )}
+      </Formik>
+    </React.Fragment>
   );
 };
 

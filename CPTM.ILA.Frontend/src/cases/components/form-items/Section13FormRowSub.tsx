@@ -11,7 +11,7 @@ const Section13FormRowSub = (props: {
   name: string;
   className: string;
   countries: string[];
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
 }) => {
   return (
     <Row className={props.className}>

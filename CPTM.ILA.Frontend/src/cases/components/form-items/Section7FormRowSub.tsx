@@ -17,7 +17,7 @@ const Section7FormRowSub = (props: {
   className: string;
   systems: string[];
   disabled: boolean;
-  methods: UseFormReturn<Case, any>;
+  methods: UseFormReturn<Case>;
 }) => {
   const [isSystemSelect, setIsSystemSelect] = useState(false);
 
@@ -48,9 +48,10 @@ const Section7FormRowSub = (props: {
               onChange={onChange}
               onBlur={onBlur}
               isInvalid={
-                _.get(props.methods.formState.errors, `${props.name}.descricao`)
-                  ? true
-                  : false
+                !!_.get(
+                  props.methods.formState.errors,
+                  `${props.name}.descricao`
+                )
               }
               disabled={props.disabled}
               ref={ref}
@@ -74,12 +75,10 @@ const Section7FormRowSub = (props: {
               onBlur={onBlur}
               ref={ref}
               isInvalid={
-                _.get(
+                !!_.get(
                   props.methods.formState.errors,
                   `${props.name}.tempoRetencao.value`
                 )
-                  ? true
-                  : false
               }
             >
               {Object.values(tipoTempoRetencao).map((ttr) => (
@@ -107,12 +106,10 @@ const Section7FormRowSub = (props: {
               onBlur={onBlur}
               ref={ref}
               isInvalid={
-                _.get(
+                !!_.get(
                   props.methods.formState.errors,
                   `${props.name}.fonteRetencao.value`
                 )
-                  ? true
-                  : false
               }
             >
               {Object.values(tipoFontesRetencao).map((tfr) => (
@@ -137,12 +134,10 @@ const Section7FormRowSub = (props: {
                 onChange={onChange}
                 onBlur={onBlur}
                 isInvalid={
-                  _.get(
+                  !!_.get(
                     props.methods.formState.errors,
                     `${props.name}.localArmazenamento`
                   )
-                    ? true
-                    : false
                 }
                 disabled={props.disabled}
                 ref={ref}
@@ -155,7 +150,7 @@ const Section7FormRowSub = (props: {
               rules={{ required: true }}
               control={props.methods.control}
               name={`${props.name}.localArmazenamento` as FieldPath<Case>}
-              render={({ field: { onChange, value, name, ref } }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Select
                   ref={ref}
                   options={props.systems.map((s) => ({ value: s, label: s }))}
