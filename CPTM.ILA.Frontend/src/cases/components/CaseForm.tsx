@@ -282,10 +282,10 @@ const CaseForm = (props: {
             <Accordion.Body>
               <Row className="mb-3 align-items-center">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.nome}</p>
+                  <p>{CaseIndexDictionary.nome.number}</p>
                 </Col>
                 <Form.Group as={Col} controlId="validationFormik01">
-                  <Form.Label>Nome</Form.Label>
+                  <Form.Label>{CaseIndexDictionary.nome.title}</Form.Label>
                   <Controller
                     rules={{ required: true, maxLength: 250 }}
                     control={methods.control}
@@ -317,10 +317,10 @@ const CaseForm = (props: {
               {!props.new && (
                 <Row className="mb-3">
                   <Col lg={1}>
-                    <p>{CaseIndexDictionary.id}</p>
+                    <p>{CaseIndexDictionary.id.number}</p>
                   </Col>
                   <Form.Group as={Col} controlId="validationFormik02">
-                    <Form.Label>ID</Form.Label>
+                    <Form.Label>{CaseIndexDictionary.id.title}</Form.Label>
                     <Controller
                       control={methods.control}
                       name="id"
@@ -341,10 +341,12 @@ const CaseForm = (props: {
               )}
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.dataCriacao}</p>
+                  <p>{CaseIndexDictionary.dataCriacao.number}</p>
                 </Col>
                 <Form.Group as={Col} controlId="validationFormik03">
-                  <Form.Label>Data de Criação do Inventário</Form.Label>
+                  <Form.Label>
+                    {CaseIndexDictionary.dataCriacao.title}
+                  </Form.Label>
                   <Controller
                     control={methods.control}
                     name="dataCriacao"
@@ -364,10 +366,12 @@ const CaseForm = (props: {
               </Row>
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.dataAtualizacao}</p>
+                  <p>{CaseIndexDictionary.dataAtualizacao.number}</p>
                 </Col>
                 <Form.Group as={Col} controlId="validationFormik04">
-                  <Form.Label>Data Atualização do Inventário</Form.Label>
+                  <Form.Label>
+                    {CaseIndexDictionary.dataAtualizacao.title}
+                  </Form.Label>
                   <Controller
                     control={methods.control}
                     name="dataAtualizacao"
@@ -401,7 +405,7 @@ const CaseForm = (props: {
               </Row>
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.controlador}</p>
+                  <p>{CaseIndexDictionary.controlador.number}</p>
                 </Col>
                 <Col>
                   <OverlayTrigger
@@ -415,7 +419,9 @@ const CaseForm = (props: {
                       </Tooltip>
                     }
                   >
-                    <Form.Label>Controlador</Form.Label>
+                    <Form.Label>
+                      {CaseIndexDictionary.controlador.title}
+                    </Form.Label>
                   </OverlayTrigger>
                 </Col>
                 <Col>
@@ -447,7 +453,7 @@ const CaseForm = (props: {
               </Row>
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.encarregado}</p>
+                  <p>{CaseIndexDictionary.encarregado.number}</p>
                 </Col>
                 <Col>
                   <OverlayTrigger
@@ -461,7 +467,9 @@ const CaseForm = (props: {
                       </Tooltip>
                     }
                   >
-                    <Form.Label>Encarregado</Form.Label>
+                    <Form.Label>
+                      {CaseIndexDictionary.encarregado.title}
+                    </Form.Label>
                   </OverlayTrigger>
                 </Col>
                 <Col>
@@ -535,7 +543,7 @@ const CaseForm = (props: {
               </Row>
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.extensaoEncarregado}</p>
+                  <p>{CaseIndexDictionary.extensaoEncarregado.number}</p>
                 </Col>
                 <Col>
                   <OverlayTrigger
@@ -549,7 +557,9 @@ const CaseForm = (props: {
                       </Tooltip>
                     }
                   >
-                    <Form.Label>Extensão Encarregado</Form.Label>
+                    <Form.Label>
+                      {CaseIndexDictionary.extensaoEncarregado.title}
+                    </Form.Label>
                   </OverlayTrigger>
                 </Col>
                 <Col>
@@ -623,7 +633,7 @@ const CaseForm = (props: {
               </Row>
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.areaTratamentoDados}</p>
+                  <p>{CaseIndexDictionary.areaTratamentoDados.number}</p>
                 </Col>
                 <Col>
                   <OverlayTrigger
@@ -637,7 +647,9 @@ const CaseForm = (props: {
                       </Tooltip>
                     }
                   >
-                    <Form.Label>Área Tratamento Dados</Form.Label>
+                    <Form.Label>
+                      {CaseIndexDictionary.areaTratamentoDados.title}
+                    </Form.Label>
                   </OverlayTrigger>
                 </Col>
                 <Col>
@@ -711,7 +723,7 @@ const CaseForm = (props: {
               </Row>
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.operador}</p>
+                  <p>{CaseIndexDictionary.operador.number}</p>
                 </Col>
                 <Col>
                   <OverlayTrigger
@@ -724,7 +736,9 @@ const CaseForm = (props: {
                       </Tooltip>
                     }
                   >
-                    <Form.Label>Operador</Form.Label>
+                    <Form.Label>
+                      {CaseIndexDictionary.operador.title}
+                    </Form.Label>
                   </OverlayTrigger>
                 </Col>
                 <Col>
@@ -780,7 +794,7 @@ const CaseForm = (props: {
             <Accordion.Body>
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.descricaoFluxoTratamento}</p>
+                  <p>{CaseIndexDictionary.descricaoFluxoTratamento.number}</p>
                 </Col>
                 <OverlayTrigger
                   placement="right"
@@ -794,7 +808,9 @@ const CaseForm = (props: {
                     </Tooltip>
                   }
                 >
-                  <Form.Label as={Col}>Descrição do Fluxo</Form.Label>
+                  <Form.Label as={Col}>
+                    {CaseIndexDictionary.descricaoFluxoTratamento.title}
+                  </Form.Label>
                 </OverlayTrigger>
                 <Col lg={8}>
                   <Controller
@@ -839,10 +855,10 @@ const CaseForm = (props: {
             <Accordion.Body>
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.abrangenciaGeografica}</p>
+                  <p>{CaseIndexDictionary.abrangenciaGeografica.number}</p>
                 </Col>
                 <Form.Label as={Col}>
-                  Abrangência da área geográfica do tratamento
+                  {CaseIndexDictionary.abrangenciaGeografica.title}
                 </Form.Label>
                 <Col lg={8}>
                   <Controller
@@ -884,10 +900,10 @@ const CaseForm = (props: {
               </Row>
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.fonteDados}</p>
+                  <p>{CaseIndexDictionary.fonteDados.number}</p>
                 </Col>
                 <Form.Label as={Col}>
-                  Fonte de dados utilizada para obtenção dos dados pessoais
+                  {CaseIndexDictionary.fonteDados.title}
                 </Form.Label>
                 <Col lg={8}>
                   <Controller
@@ -922,7 +938,6 @@ const CaseForm = (props: {
             </Accordion.Header>
             <Accordion.Body>
               <Section6FormRow
-                label="Hipótese de Tratamento"
                 tooltip={
                   <p>
                     As hipóteses de tratamento estão descritas nos arts. 7º e 11
@@ -948,7 +963,6 @@ const CaseForm = (props: {
                 rules={{ required: true }}
               />
               <Section6FormRow
-                label="Finalidade"
                 tooltip={
                   <p>
                     Razão ou motivo pela qual se deseja tratar os dados
@@ -972,7 +986,6 @@ const CaseForm = (props: {
                 rules={{ required: true }}
               />
               <Section6FormRow
-                label="Previsão legal"
                 tooltip={
                   <p>
                     Informar Lei, Decreto, normativo ou regulamento que respalda
@@ -1005,7 +1018,6 @@ const CaseForm = (props: {
                 }
               />
               <Section6FormRow
-                label="Resultados pretendidos para o titular de dados"
                 disabled={!isEditing}
                 name="finalidadeTratamento.resultadosTitular"
                 type="text"
@@ -1017,8 +1029,6 @@ const CaseForm = (props: {
                 rules={{ required: true }}
               />
               <Section6FormRow
-                label="Benefícios esperados para o órgão, entidade ou para a
-                    sociedade como um todo"
                 disabled={!isEditing}
                 name="finalidadeTratamento.beneficiosEsperados"
                 type="text"
@@ -1074,7 +1084,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Informações de identificação pessoal"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Nome, endereço
@@ -1094,8 +1103,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Informações de identificação atribuídas por
-                            instituições governamentais"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: CPF, RG, número do
@@ -1115,7 +1122,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Dados de identificação eletrônica"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Endereços IP,
@@ -1133,7 +1139,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Dados de localização eletrônica"
                       tooltip={
                         <p>
                           Informar se são tratados dados: dados de comunicação
@@ -1188,7 +1193,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Dados de identificação financeira"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Números de
@@ -1207,7 +1211,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Recursos financeiros"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Renda, posses,
@@ -1227,7 +1230,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Dívidas e despesas"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Total de despesas,
@@ -1246,7 +1248,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Situação financeira (Solvência)"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Avaliação do
@@ -1264,7 +1265,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Empréstimos, hipotecas, linhas de crédito"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Natureza do
@@ -1284,7 +1284,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Assistência financeira"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Benefícios,
@@ -1302,7 +1301,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Detalhes da apólice de seguro"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Natureza da apólice
@@ -1323,7 +1321,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Detalhes do plano de pensão"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Data efetiva do plano
@@ -1343,7 +1340,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Transações financeiras"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Valores pagos e a
@@ -1363,7 +1359,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Compensação"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Detalhes sobre
@@ -1382,7 +1377,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Atividades profissionais"
                       tooltip={
                         <p>
                           Descrever se são tratados dado de atividades
@@ -1403,7 +1397,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Acordos e ajustes"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Detalhes sobre
@@ -1422,7 +1415,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Autorizações ou consentimentos"
                       tooltip={
                         <p>
                           Descrever se são tratados dados de: Autorizações ou
@@ -1479,7 +1471,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Detalhes pessoais"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Idade, sexo, data de
@@ -1498,7 +1489,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Detalhes militares"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Situação militar,
@@ -1516,7 +1506,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Situação de Imigração"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Detalhes sobre o
@@ -1536,7 +1525,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Descrição Física"
                       tooltip={
                         <p>
                           Dados de descrição física são informações físicas de
@@ -1594,7 +1582,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Hábitos"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Uso de tabaco, uso de
@@ -1612,7 +1599,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Estilo de vida"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Informações sobre o
@@ -1631,7 +1617,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Viagens e deslocamentos"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: sobre antigas
@@ -1650,7 +1635,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Contatos sociais"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Amigos, parceiros de
@@ -1669,7 +1653,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Posses"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Terra, propriedade ou
@@ -1687,7 +1670,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Denúncias, incidentes ou acidentes"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Informações sobre um
@@ -1707,7 +1689,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Distinções"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Distinções civis,
@@ -1725,7 +1706,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Uso de mídia"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: que definem o
@@ -1782,7 +1762,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Descrição Psicológica"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre personalidade ou
@@ -1837,7 +1816,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Casamento ou forma atual de coabitação"
                       tooltip={
                         <p>
                           Descrever se são tratados dados: Nome do cônjuge ou
@@ -1857,7 +1835,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Histórico conjugal"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre casamentos ou
@@ -1876,7 +1853,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Familiares ou membros da família"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre Detalhes de
@@ -1932,7 +1908,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Atividades e interesses de lazer"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre hobbies,
@@ -1987,7 +1962,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Associações (exceto profissionais, políticas, em sindicatos ou qualquer outra associação que se enquadre em dados pessoais sensíveis)"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre participação em
@@ -2045,7 +2019,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Suspeitas"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre suspeitas de
@@ -2066,7 +2039,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Condenações e sentenças"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre condenações e
@@ -2084,7 +2056,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Ações judiciais"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre tutela, guarda
@@ -2102,7 +2073,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Penalidades Administrativas"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre multas, processo
@@ -2159,7 +2129,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Dados de bens e serviços"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre bens e serviços
@@ -2215,7 +2184,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Residência"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre natureza da
@@ -2275,7 +2243,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Dados acadêmicos/escolares"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre diplomas,
@@ -2295,7 +2262,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Registros financeiros do curso/treinamento"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre taxas de
@@ -2314,7 +2280,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Qualificação e experiência profissional"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre certificações
@@ -2373,7 +2338,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Emprego atual"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre empregador,
@@ -2395,7 +2359,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Recrutamento"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre data de
@@ -2415,7 +2378,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Rescisão de trabalho"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre data de
@@ -2434,7 +2396,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Carreira"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre emprego anterior
@@ -2453,7 +2414,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Absentismo e disciplina"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre registos de
@@ -2472,7 +2432,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Avaliação de Desempenho"
                       tooltip={
                         <p>
                           Descrever se são tratados dados sobre avaliação de
@@ -2530,7 +2489,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Vídeo e imagem"
                       tooltip={
                         <p>
                           Descrever se são tratados arquivos de vídeos, fotos
@@ -2548,7 +2506,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                      label="Imagem de Vigilância"
                       tooltip={
                         <p>
                           Descrever se são tratadas imagens e/ou vídeos de
@@ -2566,7 +2523,6 @@ const CaseForm = (props: {
                     />
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2"
-                      label="Voz"
                       tooltip={
                         <p>
                           Descrever se são tratadas fitas e arquivos digitais de
@@ -2622,7 +2578,6 @@ const CaseForm = (props: {
                     </Row>
                     <Section7FormRow
                       className="mb-3 pt-2 pb-2 bg-primary bg-opacity-10"
-                      label="Outros (Especificar)"
                       tooltip={
                         <p>
                           Descrever se são tratadas fitas e arquivos digitais de
@@ -2678,7 +2633,6 @@ const CaseForm = (props: {
               </Row>
               <Section7FormRow
                 className="mb-3 pt-2 pb-2"
-                label="Dados que revelam origem racial ou étnica"
                 disabled={!isEditing}
                 name="catDadosPessoaisSensiveis.origemRacialEtnica"
                 itemRef={
@@ -2690,7 +2644,6 @@ const CaseForm = (props: {
               />
               <Section7FormRow
                 className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                label="Dados que revelam convicção religiosa"
                 disabled={!isEditing}
                 name="catDadosPessoaisSensiveis.conviccaoReligiosa"
                 itemRef={
@@ -2702,7 +2655,6 @@ const CaseForm = (props: {
               />
               <Section7FormRow
                 className="mb-3 pt-2 pb-2"
-                label="Dados que revelam opinião política"
                 disabled={!isEditing}
                 name="catDadosPessoaisSensiveis.opiniaoPolitica"
                 itemRef={
@@ -2713,7 +2665,6 @@ const CaseForm = (props: {
               />
               <Section7FormRow
                 className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                label="Dados que revelam filiação a sindicato"
                 disabled={!isEditing}
                 name="catDadosPessoaisSensiveis.filiacaoSindicato"
                 itemRef={
@@ -2725,7 +2676,6 @@ const CaseForm = (props: {
               />
               <Section7FormRow
                 className="mb-3 pt-2 pb-2"
-                label="Dados que revelam filiação a organização de caráter religioso"
                 disabled={!isEditing}
                 name="catDadosPessoaisSensiveis.filiacaoOrgReligiosa"
                 itemRef={
@@ -2737,7 +2687,6 @@ const CaseForm = (props: {
               />
               <Section7FormRow
                 className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                label="Dados que revelam filiação ou crença filosófica"
                 disabled={!isEditing}
                 name="catDadosPessoaisSensiveis.filiacaoCrencaFilosofica"
                 itemRef={
@@ -2749,7 +2698,6 @@ const CaseForm = (props: {
               />
               <Section7FormRow
                 className="mb-3 pt-2 pb-2"
-                label="Dados que revelam filiação ou preferências política"
                 disabled={!isEditing}
                 name="catDadosPessoaisSensiveis.filiacaoPreferenciaPolitica"
                 itemRef={
@@ -2761,7 +2709,6 @@ const CaseForm = (props: {
               />
               <Section7FormRow
                 className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                label="Dados referentes à saúde ou à vida sexual"
                 disabled={!isEditing}
                 name="catDadosPessoaisSensiveis.saudeVidaSexual"
                 itemRef={
@@ -2772,7 +2719,6 @@ const CaseForm = (props: {
               />
               <Section7FormRow
                 className="mb-3 pt-2 pb-2"
-                label="Dados genéticos"
                 disabled={!isEditing}
                 name="catDadosPessoaisSensiveis.geneticos"
                 itemRef={
@@ -2783,7 +2729,6 @@ const CaseForm = (props: {
               />
               <Section7FormRow
                 className="mb-3 bg-primary bg-opacity-10 pt-2 pb-2"
-                label="Dados biométricos"
                 disabled={!isEditing}
                 name="catDadosPessoaisSensiveis.biometricos"
                 itemRef={
@@ -2802,7 +2747,7 @@ const CaseForm = (props: {
             <Accordion.Body>
               <Row className="mb-3">
                 <Col lg={1}>
-                  <p>{CaseIndexDictionary.frequenciaTratamento}</p>
+                  <p>{CaseIndexDictionary.frequenciaTratamento.number}</p>
                 </Col>
                 <OverlayTrigger
                   placement="right"
@@ -2825,7 +2770,7 @@ const CaseForm = (props: {
                   }
                 >
                   <Form.Label as={Col}>
-                    Frequência de tratamento dos dados pessoais
+                    {CaseIndexDictionary.frequenciaTratamento.title}
                   </Form.Label>
                 </OverlayTrigger>
                 <Col lg={8}>

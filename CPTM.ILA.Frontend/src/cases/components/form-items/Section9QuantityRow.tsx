@@ -63,7 +63,7 @@ const Section9QuantityRow = (props: {
     <React.Fragment>
       <Row className="mb-3">
         <Col lg={1}>
-          <p>{CaseIndexDictionary.qtdeDadosTratados}</p>
+          <p>{CaseIndexDictionary.qtdeDadosTratados.number}</p>
         </Col>
         <OverlayTrigger
           placement="right"
@@ -90,7 +90,7 @@ const Section9QuantityRow = (props: {
           }
         >
           <Form.Label as={Col}>
-            Quantidade de dados pessoais totais tratados
+            {CaseIndexDictionary.qtdeDadosTratados.title}
           </Form.Label>
         </OverlayTrigger>
         <Col lg={8}>
@@ -119,7 +119,7 @@ const Section9QuantityRow = (props: {
       </Row>
       <Row className="mb-3">
         <Col lg={1}>
-          <p>{CaseIndexDictionary.qtdeDadosSensiveisTratados}</p>
+          <p>{CaseIndexDictionary.qtdeDadosSensiveisTratados.number}</p>
         </Col>
         <OverlayTrigger
           placement="right"
@@ -146,7 +146,7 @@ const Section9QuantityRow = (props: {
           }
         >
           <Form.Label as={Col}>
-            Quantidade de dados pessoais sensíveis tratados
+            {CaseIndexDictionary.qtdeDadosSensiveisTratados.title}
           </Form.Label>
         </OverlayTrigger>
         <Col lg={8}>

@@ -20,7 +20,7 @@ const Section10FormRow = (props: {
   className: string;
   full: boolean;
   tooltip?: string;
-  itemRef: string;
+  itemRef: { number: string; title: string };
   methods: UseFormReturn<Case>;
 }) => {
   const [isDescricaoEnabled, setIsDescricaoEnabled] = useState(props.full);
@@ -86,7 +86,7 @@ const Section10FormRow = (props: {
             name={`${props.name}.trataDados` as FieldPath<Case>}
             render={({ field: { onChange, onBlur, value, ref } }) => (
               <ToggleButtonGroup
-                name={`${props.name}.trataDados-${props.itemRef}`}
+                name={`${props.name}.trataDados-${props.itemRef.number}`}
                 type="radio"
                 value={value}
                 onChange={(val) => {
@@ -97,14 +97,14 @@ const Section10FormRow = (props: {
                 ref={ref}
               >
                 <ToggleButton
-                  id={`${props.name}.trataDados-${props.itemRef}-1`}
+                  id={`${props.name}.trataDados-${props.itemRef.number}-1`}
                   disabled={props.disabled}
                   value="SIM"
                 >
                   SIM
                 </ToggleButton>
                 <ToggleButton
-                  id={`${props.name}.trataDados-${props.itemRef}-2`}
+                  id={`${props.name}.trataDados-${props.itemRef.number}-2`}
                   disabled={props.disabled}
                   value="NÃO"
                 >
