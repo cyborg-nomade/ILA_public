@@ -16,6 +16,7 @@ export const AuthContext = createContext({
   currentComiteMember: emptyComiteMember(),
   areaTratamentoDados: emptyAgenteTratamento(),
   isLoggedIn: false,
+  tokenExpirationDate: new Date(),
   login: (
     user: User,
     isDeveloper: boolean,
