@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -343,6 +344,23 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
                     new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
             }
+        }
+
+        [Route("query")]
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<HttpResponseMessage> QueryByName([FromBody] string nameString)
+        {
+            var results = await _context.ILA_VW_USUARIO.Where(u => u.TX_NOMEUSUARIO.Contains(nameString.ToUpper()))
+                .Select(u => new { username = u.TX_USERNAME, name = u.TX_NOMEUSUARIO })
+                .ToListAsync();
+            var formattedResults = results.Select(u => new { value = u.username, label = $"{u.username} - {u.name}" });
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                message = "hi",
+                results,
+                formattedResults, nameString
+            });
         }
     }
 }
