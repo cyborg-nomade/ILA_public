@@ -43,10 +43,9 @@ import Section13FormRow from "./form-items/Section13FormRow";
 import Section14FormRow from "./form-items/Section14FormRow";
 import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
+import { useCountdown } from "../../shared/hooks/timer-hook";
 
 type onSubmitFn = (item: Case) => void;
-
-let logoutTimer: NodeJS.Timeout;
 
 const CaseForm = (props: {
   item: Case;
@@ -69,6 +68,7 @@ const CaseForm = (props: {
   const [showReproveModal, setShowReproveModal] = useState(false);
 
   const { token, tokenExpirationDate } = useContext(AuthContext);
+  const { minutes } = useCountdown(tokenExpirationDate);
   const { sendRequest, error, clearError, isLoading } = useHttpClient();
   const { systems, countries } = useUtilities();
   let navigate = useNavigate();
@@ -149,22 +149,13 @@ const CaseForm = (props: {
 
   // handle auto-save
   useEffect(() => {
-    if (token && tokenExpirationDate) {
-      const tenMinBeforeExpiration =
-        tokenExpirationDate.getTime() - 10 * 60 * 1000;
-      const remainingTime = tenMinBeforeExpiration - new Date().getTime();
-      logoutTimer = setTimeout(() => {
-        handleSaveProgressClick(getValues()).catch((error) => {
-          console.log(error);
-        });
-      }, remainingTime);
-    } else {
-      clearTimeout(logoutTimer);
+    if (token && tokenExpirationDate && minutes === 10) {
+      handleSaveProgressClick(getValues()).catch((error) => {
+        console.log(error);
+      });
     }
-    return () => {
-      clearTimeout(logoutTimer);
-    };
-  }, [token, tokenExpirationDate, handleSaveProgressClick, getValues]);
+    return () => {};
+  }, [token, tokenExpirationDate, handleSaveProgressClick, getValues, minutes]);
 
   if (isLoading) {
     return (
