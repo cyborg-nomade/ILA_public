@@ -3,10 +3,12 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { AuthContext } from "../../context/auth-context";
+import { useCountdown } from "../../hooks/timer-hook";
 
 const Footer = () => {
   const { user, currentGroup, tokenExpirationDate } = useContext(AuthContext);
-  const remainingTime = tokenExpirationDate.getTime() - new Date().getTime();
+
+  const { hours, minutes, seconds } = useCountdown(tokenExpirationDate);
 
   return (
     <Navbar
@@ -26,7 +28,7 @@ const Footer = () => {
           <Nav.Link>Usuário: {user.username}</Nav.Link>
           <Nav.Link>Grupo: {currentGroup.nome}</Nav.Link>
           <Nav.Link>
-            Sua sessão expira em: {remainingTime.toLocaleString()}
+            Sua sessão expira em: {hours}:{minutes}:{seconds}
           </Nav.Link>
         </Nav>
       </Container>

@@ -193,7 +193,7 @@ const App = () => {
           <Routes>{routes}</Routes>
         </Suspense>
       </Container>
-      <Footer />
+      {tokenExpirationDate && token && <Footer />}
     </AuthContext.Provider>
   );
 };
