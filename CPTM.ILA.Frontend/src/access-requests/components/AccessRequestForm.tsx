@@ -130,6 +130,13 @@ const AccessRequestForm = (props: {
     methods.setValue("emailFile", file);
   };
 
+  const handleSingleFileValidation = (file: File) => {
+    if (!file || file.size === 0) {
+      return "Favor anexar um arquivo de autorização";
+    }
+    return true;
+  };
+
   const onSubmit: SubmitHandler<AccessRequestDTO> = (
     item: AccessRequestDTO,
     event
@@ -292,7 +299,7 @@ const AccessRequestForm = (props: {
                 <Form.Group controlId="formFile" className="mb-3">
                   <Form.Label>E-mail com autorização do superior</Form.Label>
                   <Controller
-                    rules={{ required: true }}
+                    rules={{ validate: handleSingleFileValidation }}
                     control={methods.control}
                     name="emailFile"
                     render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -301,9 +308,15 @@ const AccessRequestForm = (props: {
                         onChange={handleFileChange}
                         onBlur={onBlur}
                         ref={ref}
+                        isInvalid={
+                          !!methods.formState.errors.emailFile?.message
+                        }
                       />
                     )}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {methods.formState.errors.emailFile?.message}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
             )}
