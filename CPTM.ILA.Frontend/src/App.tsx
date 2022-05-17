@@ -180,7 +180,11 @@ const App = () => {
       }}
     >
       <MainHeader />
-      <Container className="mt-5 swiss721" fluid>
+      <Container
+        className="mt-5 swiss721"
+        style={{ paddingBottom: "70px" }}
+        fluid
+      >
         <Suspense
           fallback={
             <Row className="justify-content-center">
