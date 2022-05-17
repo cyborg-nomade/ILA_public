@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import HttpException from "./../common/http-exception";
 
@@ -63,6 +63,8 @@ export const useHttpClient = () => {
   useEffect(() => {
     return () => {
       activeHttpRequests.current.forEach((abortCtrl) => abortCtrl.abort());
+      setIsLoading(false);
+      setError(null);
     };
   }, []);
 

@@ -49,7 +49,6 @@ const Login = () => {
       const receivedAreaTratamentoDados: AgenteTratamento =
         responseData.areaTratamentoDados;
       const isDeveloper = responseData.isDeveloper;
-      console.log(responseData);
 
       login(
         receivedUser,
