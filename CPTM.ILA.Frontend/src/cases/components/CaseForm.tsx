@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import Select from "react-select";
@@ -43,6 +43,7 @@ import Section13FormRow from "./form-items/Section13FormRow";
 import Section14FormRow from "./form-items/Section14FormRow";
 import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
+import { useCountdown } from "../../shared/hooks/timer-hook";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -66,14 +67,15 @@ const CaseForm = (props: {
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showReproveModal, setShowReproveModal] = useState(false);
 
-  const { token } = useContext(AuthContext);
+  const { token, tokenExpirationDate } = useContext(AuthContext);
+  const { minutes } = useCountdown(tokenExpirationDate);
   const { sendRequest, error, clearError, isLoading } = useHttpClient();
   const { systems, countries } = useUtilities();
   let navigate = useNavigate();
   const cid = useParams().cid || "";
 
   const methods = useForm<Case>({ defaultValues: props.item });
-  const { reset } = methods;
+  const { reset, trigger, getValues } = methods;
   useEffect(() => reset(props.item), [reset, props.item]);
 
   const categoriasTitularesCategorias = useFieldArray({
@@ -121,11 +123,14 @@ const CaseForm = (props: {
     }
   };
 
-  const handleSaveProgressClick = async (item: Case) => {
-    setItemValues(item);
-    await methods.trigger();
-    setShowSaveProgressModal(true);
-  };
+  const handleSaveProgressClick = useCallback(
+    async (item: Case) => {
+      setItemValues(item);
+      await trigger();
+      setShowSaveProgressModal(true);
+    },
+    [trigger]
+  );
   const handleSendToApprovalClick = async (item: Case) => {
     setItemValues(item);
     const valid = await methods.trigger();
@@ -141,6 +146,16 @@ const CaseForm = (props: {
     setItemValues(item);
     setShowReproveModal(true);
   };
+
+  // handle auto-save
+  useEffect(() => {
+    if (token && tokenExpirationDate && minutes === 10) {
+      handleSaveProgressClick(getValues()).catch((error) => {
+        console.log(error);
+      });
+    }
+    return () => {};
+  }, [token, tokenExpirationDate, handleSaveProgressClick, getValues, minutes]);
 
   if (isLoading) {
     return (

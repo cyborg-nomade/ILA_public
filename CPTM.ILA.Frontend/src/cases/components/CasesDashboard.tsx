@@ -48,8 +48,6 @@ const CasesDashboard = () => {
         }
       );
 
-      console.log(responseData.totals);
-
       const loadedTotals: StatusTotals[] = responseData.totals;
 
       if (loadedTotals.length === 0) {
@@ -63,7 +61,6 @@ const CasesDashboard = () => {
             key: index,
           };
         });
-        console.log(transformedData);
 
         setPieChartData(transformedData);
       }
