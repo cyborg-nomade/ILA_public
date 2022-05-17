@@ -28,6 +28,7 @@ const AccessRequestForm = (props: {
 }) => {
   const [isComiteReq, setIsComiteReq] = useState(false);
   const [groups, setGroups] = useState<GroupBase<string>[]>([]);
+  const [eFile, setEFile] = useState<File>(new File([""], "emptyFile.txt"));
 
   const { token } = useContext(AuthContext);
 
@@ -123,12 +124,15 @@ const AccessRequestForm = (props: {
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
-    console.log(event.target.files[0]);
-    methods.setValue("emailFile", event.target.files[0]);
+    const file: File = event.target.files[0];
+    console.log(file);
+    setEFile(file);
+    methods.setValue("emailFile", file);
   };
 
   const onSubmit: SubmitHandler<AccessRequestDTO> = (
-    item: AccessRequestDTO
+    item: AccessRequestDTO,
+    event
   ) => {
     item.tipoSolicitacaoAcesso = props.groups
       ? tipoSolicitacaoAcesso.AcessoAGrupos
@@ -136,7 +140,7 @@ const AccessRequestForm = (props: {
       ? tipoSolicitacaoAcesso.AcessoComite
       : tipoSolicitacaoAcesso.AcessoAoSistema;
 
-    console.log(item);
+    item.emailFile = eFile;
     props.onSubmit(item);
   };
 
