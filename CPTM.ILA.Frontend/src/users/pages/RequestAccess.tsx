@@ -22,6 +22,7 @@ const RequestAccess = () => {
 
   const submitRegisterHandler = async (accessRequest: AccessRequestDTO) => {
     try {
+      console.log(accessRequest);
       accessRequest.groupNames = accessRequest.groupNames.map(
         (g: any) => g.value
       );
@@ -43,7 +44,8 @@ const RequestAccess = () => {
         tipoSolicitacaoAcesso.AcessoAoSistema
       ) {
         const emailFormData = new FormData();
-        emailFormData.append("emailFile", accessRequest.emailFile);
+        console.log(typeof accessRequest.emailFile);
+        emailFormData.append("emailFile", accessRequest.emailFile as File);
 
         const responseDataEmailFile = await sendRequest(
           `${process.env.REACT_APP_CONNSTR}/access-requests/require/${tipoSolicitacaoAcesso.AcessoAoSistema}/save-file/${savedAR.id}`,
@@ -54,7 +56,7 @@ const RequestAccess = () => {
         console.log(responseDataEmailFile.message);
       }
 
-      setMessage(responseData.message);
+      // setMessage(responseData.message);
     } catch (error) {
       console.log(error);
     }
