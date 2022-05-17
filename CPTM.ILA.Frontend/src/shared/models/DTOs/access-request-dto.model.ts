@@ -6,7 +6,7 @@ export interface AccessRequestDTO {
   usernameSuperior: string;
   justificativa: string;
   groupNames: string[];
-  emailFile: any;
+  emailFile: File;
   tipoSolicitacaoAcesso: tipoSolicitacaoAcesso;
 }
 
@@ -17,7 +17,7 @@ export const emptyAccessRequestDTO = (): AccessRequestDTO => {
     usernameSuperior: "",
     justificativa: "",
     groupNames: [],
-    emailFile: null,
+    emailFile: new File([""], "emptyFile.txt"),
     tipoSolicitacaoAcesso: tipoSolicitacaoAcesso.AcessoAoSistema,
   };
 };
