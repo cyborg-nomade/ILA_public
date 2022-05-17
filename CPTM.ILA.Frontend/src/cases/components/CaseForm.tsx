@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import Select from "react-select";
@@ -46,6 +46,8 @@ import Section16FormRow from "./form-items/Section16FormRow";
 
 type onSubmitFn = (item: Case) => void;
 
+let logoutTimer: NodeJS.Timeout;
+
 const CaseForm = (props: {
   item: Case;
   new?: boolean;
@@ -66,14 +68,14 @@ const CaseForm = (props: {
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showReproveModal, setShowReproveModal] = useState(false);
 
-  const { token } = useContext(AuthContext);
+  const { token, tokenExpirationDate } = useContext(AuthContext);
   const { sendRequest, error, clearError, isLoading } = useHttpClient();
   const { systems, countries } = useUtilities();
   let navigate = useNavigate();
   const cid = useParams().cid || "";
 
   const methods = useForm<Case>({ defaultValues: props.item });
-  const { reset } = methods;
+  const { reset, trigger, getValues } = methods;
   useEffect(() => reset(props.item), [reset, props.item]);
 
   const categoriasTitularesCategorias = useFieldArray({
@@ -121,11 +123,14 @@ const CaseForm = (props: {
     }
   };
 
-  const handleSaveProgressClick = async (item: Case) => {
-    setItemValues(item);
-    await methods.trigger();
-    setShowSaveProgressModal(true);
-  };
+  const handleSaveProgressClick = useCallback(
+    async (item: Case) => {
+      setItemValues(item);
+      await trigger();
+      setShowSaveProgressModal(true);
+    },
+    [trigger]
+  );
   const handleSendToApprovalClick = async (item: Case) => {
     setItemValues(item);
     const valid = await methods.trigger();
@@ -141,6 +146,25 @@ const CaseForm = (props: {
     setItemValues(item);
     setShowReproveModal(true);
   };
+
+  // handle auto-save
+  useEffect(() => {
+    if (token && tokenExpirationDate) {
+      const tenMinBeforeExpiration =
+        tokenExpirationDate.getTime() - 10 * 60 * 1000;
+      const remainingTime = tenMinBeforeExpiration - new Date().getTime();
+      logoutTimer = setTimeout(() => {
+        handleSaveProgressClick(getValues()).catch((error) => {
+          console.log(error);
+        });
+      }, remainingTime);
+    } else {
+      clearTimeout(logoutTimer);
+    }
+    return () => {
+      clearTimeout(logoutTimer);
+    };
+  }, [token, tokenExpirationDate, handleSaveProgressClick, getValues]);
 
   if (isLoading) {
     return (
