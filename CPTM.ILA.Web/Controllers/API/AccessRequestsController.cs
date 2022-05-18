@@ -846,32 +846,22 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Id de usuário inválido" });
                 }
 
-                var userInDb = await _context.Users.FindAsync(uid);
+                var userInDb = await _context.Users.Where(u => u.Id == uid)
+                    .Include(u => u.GroupAccessExpirations)
+                    .Include(u => u.OriginGroup)
+                    .SingleOrDefaultAsync();
 
                 if (userInDb == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
                 }
 
-                var userAd = Seguranca.ExisteUsuario(userInDb.Username);
 
-                if (!userAd)
-                {
-                    _context.Users.Remove(userInDb);
-                    await _context.SaveChangesAsync();
-
-                    return Request.CreateResponse(HttpStatusCode.OK,
-                        new { message = "Usuário não existia mais no AD, removido com sucesso da aplicação" });
-                }
-
-                userInDb.IsComite = false;
-                userInDb.IsDPO = false;
-                _context.Entry(userInDb)
-                    .State = EntityState.Modified;
+                _context.Users.Remove(userInDb);
                 await _context.SaveChangesAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Usuário removido com sucesso do Comitê LGPD" });
+                    new { message = "Usuário removido com sucesso da aplicação" });
             }
             catch (Exception e)
             {
@@ -912,11 +902,11 @@ namespace CPTM.ILA.Web.Controllers.API
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
                 }
 
-                var userGroupNames = user.GroupAccessExpirations.Select(gae => gae.Group.Nome)
+                var userGroups = user.GroupAccessExpirations.Select(gae => gae.Group)
                     .ToList();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Grupos encontrados com sucesso", userGroupNames });
+                    new { message = "Grupos encontrados com sucesso", userGroups });
             }
             catch (Exception e)
             {
@@ -931,6 +921,11 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> AddUserGroup(int uid, [FromBody] List<string> groupNames)
         {
+            if (uid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválido" });
+            }
+
             if (User.Identity is ClaimsIdentity identity)
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
@@ -940,16 +935,6 @@ namespace CPTM.ILA.Web.Controllers.API
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
             }
-
-            // check if groupNames are already in users GroupAcess, if yes, skip
-
-            // check if groupNames exist in context; if yes, skip
-
-            // create groups that don't exist
-
-            // add to user GroupAcess
-
-            // save
 
             try
             {
@@ -964,24 +949,42 @@ namespace CPTM.ILA.Web.Controllers.API
                 var userGroupNames = user.GroupAccessExpirations.Select(gae => gae.Group.Nome)
                     .ToList();
 
-
                 var groupNamesToAdd = groupNames.Except(userGroupNames)
                     .ToList();
 
-                var test1 = new List<Group>();
+                var userNewGroups = new List<Group>();
 
                 foreach (var groupNameToAdd in groupNamesToAdd)
                 {
-                    var groupTest = await _context.Groups.SingleOrDefaultAsync(g =>
-                        string.Compare(g.Nome, groupNameToAdd, StringComparison.InvariantCultureIgnoreCase) == 0);
-                    if (groupTest != null)
+                    var selectedGroup = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == groupNameToAdd);
+                    if (selectedGroup == null)
                     {
-                        test1.Add(groupTest);
+                        var newGroup = new Group()
+                        {
+                            Nome = groupNameToAdd
+                        };
+                        selectedGroup = newGroup;
                     }
+
+                    userNewGroups.Add(selectedGroup);
                 }
 
+                foreach (var @group in userNewGroups)
+                {
+                    user.GroupAccessExpirations.Add(new GroupAccessExpiration()
+                    {
+                        ExpirationDate = user.IsComite ? DateTime.MaxValue : DateTime.Now.AddDays(30),
+                        Group = group
+                    });
+                }
+
+                _context.Entry(user)
+                    .State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Grupos encontrados com sucesso", test1 });
+                    new { message = "Grupos adicionados com sucesso", user });
             }
             catch (Exception e)
             {
@@ -996,6 +999,16 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> RemoveUserGroup(int uid, [FromBody] int gid)
         {
+            if (uid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválido" });
+            }
+
+            if (gid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido" });
+            }
+
             if (User.Identity is ClaimsIdentity identity)
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
@@ -1006,17 +1019,44 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
             }
 
-            // find user, include GroupAccessExpiration
+            try
+            {
+                var user = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync(u => u.Id == uid);
 
-            // find group by id
+                if (user == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
+                }
 
-            // check if groupNames exist in in user GroupAcess; if no, return error
+                var userGroups = user.GroupAccessExpirations.Select(gae => gae.Group)
+                    .ToList();
 
-            // remove from user GroupAcess
+                var groupToRemove = await _context.Groups.FindAsync(gid);
 
-            // save
+                if (!userGroups.Contains(groupToRemove))
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        new { message = "Este usuário já não tem acesso ao grupo informado." });
+                }
 
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = "Here are your groups" });
+                var gaeToRemove = user.GroupAccessExpirations.SingleOrDefault(gae => gae.Group == groupToRemove);
+
+                user.GroupAccessExpirations.Remove(gaeToRemove);
+
+                _context.Entry(user)
+                    .State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Grupo removido com sucesso", user });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
         }
 
         private bool GroupExists(int id)
