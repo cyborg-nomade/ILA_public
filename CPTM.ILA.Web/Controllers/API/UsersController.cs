@@ -69,11 +69,11 @@ namespace CPTM.ILA.Web.Controllers.API
                     Telefone = userAd.TelefoneComercial
                 };
 
-                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                var userInDb = await _context.Users.Where(u =>
+                        string.Equals(u.Username, user.Username, StringComparison.CurrentCultureIgnoreCase))
+                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .Include(u => u.OriginGroup)
-                    .ToListAsync();
-                var userInDb = usersInDb.SingleOrDefault(u =>
-                    string.Equals(u.Username, user.Username, StringComparison.CurrentCultureIgnoreCase));
+                    .SingleOrDefaultAsync();
                 var isDeveloper = user.Username.ToLower() == "urielf";
 
                 if (isDeveloper && userInDb == null)
@@ -89,13 +89,12 @@ namespace CPTM.ILA.Web.Controllers.API
                     _context.Users.Add(userInDb);
                     await _context.SaveChangesAsync();
 
-
-                    var groupsInDb = await _context.Groups.ToListAsync();
-                    var userOriginGroup = groupsInDb.SingleOrDefault(g => g.Nome == userAd.Departamento) ??
-                                          new Group()
-                                          {
-                                              Nome = userAd.Departamento,
-                                          };
+                    var userOriginGroup =
+                        await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento) ??
+                        new Group()
+                        {
+                            Nome = userAd.Departamento,
+                        };
 
                     userInDb.OriginGroup = userOriginGroup;
                     userInDb.GroupAccessExpirations = new List<GroupAccessExpiration>()

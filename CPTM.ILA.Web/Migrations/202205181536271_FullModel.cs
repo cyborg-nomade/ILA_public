@@ -25,7 +25,7 @@
                 c => new
                     {
                         Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
-                        Nome = c.String(),
+                        Nome = c.String(maxLength: 2000),
                         AccessRequest_Id = c.Decimal(precision: 9, scale: 0),
                     })
                 .PrimaryKey(t => t.Id)
@@ -646,7 +646,7 @@
                 c => new
                     {
                         Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
-                        Username = c.String(),
+                        Username = c.String(maxLength: 2000),
                         IsComite = c.Decimal(nullable: false, precision: 1, scale: 0),
                         IsDPO = c.Decimal(nullable: false, precision: 1, scale: 0),
                         IsSystem = c.Decimal(nullable: false, precision: 1, scale: 0),
@@ -657,7 +657,7 @@
                 .Index(t => t.OriginGroup_Id);
             
             CreateTable(
-                "ILA.ILA_GROUP_ACCESS_REQUESTS",
+                "ILA.ILA_GROUP_ACCESS_EXPIRATIONS",
                 c => new
                     {
                         Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
@@ -676,8 +676,8 @@
         public override void Down()
         {
             DropForeignKey("ILA.ILA_USERS", "OriginGroup_Id", "ILA.ILA_GROUPS");
-            DropForeignKey("ILA.ILA_GROUP_ACCESS_REQUESTS", "User_Id", "ILA.ILA_USERS");
-            DropForeignKey("ILA.ILA_GROUP_ACCESS_REQUESTS", "Group_Id", "ILA.ILA_GROUPS");
+            DropForeignKey("ILA.ILA_GROUP_ACCESS_EXPIRATIONS", "User_Id", "ILA.ILA_USERS");
+            DropForeignKey("ILA.ILA_GROUP_ACCESS_EXPIRATIONS", "Group_Id", "ILA.ILA_GROUPS");
             DropForeignKey("ILA.ILA_ITEM_TRANSF_INTERNACIONAL", "Case_Id", "ILA.ILA_CASES");
             DropForeignKey("ILA.ILA_ITEM_RISCO_PRIVACIDADE", "Case_Id", "ILA.ILA_CASES");
             DropForeignKey("ILA.ILA_CASES", "Operador_Id", "ILA.ILA_AGENTE_TRATAMENTO");
@@ -777,8 +777,8 @@
             DropForeignKey("ILA.ILA_ITEM_CAT_DADOS_PESSOAIS", "CatDadosPessoaisSensiveis_Id", "ILA.ILA_CAT_DADOS_PESSOAIS_SENS");
             DropForeignKey("ILA.ILA_CASES", "AreaTratamentoDados_Id", "ILA.ILA_AGENTE_TRATAMENTO");
             DropForeignKey("ILA.ILA_GROUPS", "AccessRequest_Id", "ILA.ILA_ACCESS_REQUESTS");
-            DropIndex("ILA.ILA_GROUP_ACCESS_REQUESTS", new[] { "User_Id" });
-            DropIndex("ILA.ILA_GROUP_ACCESS_REQUESTS", new[] { "Group_Id" });
+            DropIndex("ILA.ILA_GROUP_ACCESS_EXPIRATIONS", new[] { "User_Id" });
+            DropIndex("ILA.ILA_GROUP_ACCESS_EXPIRATIONS", new[] { "Group_Id" });
             DropIndex("ILA.ILA_USERS", new[] { "OriginGroup_Id" });
             DropIndex("ILA.ILA_ITEM_TRANSF_INTERNACIONAL", new[] { "Case_Id" });
             DropIndex("ILA.ILA_ITEM_RISCO_PRIVACIDADE", new[] { "Case_Id" });
@@ -879,7 +879,7 @@
             DropIndex("ILA.ILA_CASES", new[] { "CatDadosPessoaisSensiveis_Id" });
             DropIndex("ILA.ILA_CASES", new[] { "AreaTratamentoDados_Id" });
             DropIndex("ILA.ILA_GROUPS", new[] { "AccessRequest_Id" });
-            DropTable("ILA.ILA_GROUP_ACCESS_REQUESTS");
+            DropTable("ILA.ILA_GROUP_ACCESS_EXPIRATIONS");
             DropTable("ILA.ILA_USERS");
             DropTable("ILA.ILA_CHANGELOGS");
             DropTable("ILA.ILA_ITEM_TRANSF_INTERNACIONAL");
