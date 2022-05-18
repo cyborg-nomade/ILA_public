@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CPTM.ILA.Web.Models.AccessControl
@@ -7,6 +8,6 @@ namespace CPTM.ILA.Web.Models.AccessControl
     public class Group
     {
         public int Id { get; set; }
-        public string Nome { get; set; }
+        [MaxLength(2000)] public string Nome { get; set; }
     }
 }

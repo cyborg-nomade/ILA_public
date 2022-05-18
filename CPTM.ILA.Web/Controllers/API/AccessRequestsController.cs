@@ -881,6 +881,144 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+
+        [Route("groups/user/{uid:int}")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetUserGroups(int uid)
+        {
+            if (uid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválido" });
+            }
+
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var user = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync(u => u.Id == uid);
+
+                if (user == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
+                }
+
+                var userGroupNames = user.GroupAccessExpirations.Select(gae => gae.Group.Nome)
+                    .ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Grupos encontrados com sucesso", userGroupNames });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        [Route("groups/user/{uid:int}/add")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> AddUserGroup(int uid, [FromBody] List<string> groupNames)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            // check if groupNames are already in users GroupAcess, if yes, skip
+
+            // check if groupNames exist in context; if yes, skip
+
+            // create groups that don't exist
+
+            // add to user GroupAcess
+
+            // save
+
+            try
+            {
+                var user = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync(u => u.Id == uid);
+
+                if (user == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
+                }
+
+                var userGroupNames = user.GroupAccessExpirations.Select(gae => gae.Group.Nome)
+                    .ToList();
+
+
+                var groupNamesToAdd = groupNames.Except(userGroupNames)
+                    .ToList();
+
+                var test1 = new List<Group>();
+
+                foreach (var groupNameToAdd in groupNamesToAdd)
+                {
+                    var groupTest = await _context.Groups.SingleOrDefaultAsync(g =>
+                        string.Compare(g.Nome, groupNameToAdd, StringComparison.InvariantCultureIgnoreCase) == 0);
+                    if (groupTest != null)
+                    {
+                        test1.Add(groupTest);
+                    }
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Grupos encontrados com sucesso", test1 });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        [Route("groups/user/{uid:int}/remove")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> RemoveUserGroup(int uid, [FromBody] int gid)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            // find user, include GroupAccessExpiration
+
+            // find group by id
+
+            // check if groupNames exist in in user GroupAcess; if no, return error
+
+            // remove from user GroupAcess
+
+            // save
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = "Here are your groups" });
+        }
+
         private bool GroupExists(int id)
         {
             return _context.Groups.Count(g => g.Id == id) > 0;
