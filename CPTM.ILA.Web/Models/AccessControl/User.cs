@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace CPTM.ILA.Web.Models.AccessControl
     public class User
     {
         public int Id { get; set; }
-        public string Username { get; set; }
+        [MaxLength(2000)] public string Username { get; set; }
         public bool IsComite { get; set; }
         public bool IsDPO { get; set; }
         public bool IsSystem { get; set; }
