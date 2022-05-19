@@ -28,7 +28,9 @@ const AccessRequestForm = (props: {
   onReject?: onSubmitFn;
 }) => {
   const [isComiteReq, setIsComiteReq] = useState(false);
-  const [groups, setGroups] = useState<GroupBase<string>[]>([]);
+  const [groups, setGroups] = useState<
+    GroupBase<{ value: string; label: string }>[]
+  >([]);
   const [eFile, setEFile] = useState<File>(new File([""], "emptyFile.txt"));
   const [selectedSuperior, setSelectedSuperior] = useState("");
 
@@ -91,7 +93,10 @@ const AccessRequestForm = (props: {
         }
       );
 
-      const groupedOptions: GroupBase<string>[] = [
+      const groupedOptions: GroupBase<{
+        value: string;
+        label: string;
+      }>[] = [
         {
           label: "Diretorias",
           options: responseData.diretorias.map((d: string) => ({
@@ -108,12 +113,14 @@ const AccessRequestForm = (props: {
         },
         {
           label: "Departamentos",
-          options: responseData.deptos.map((de: string) => ({
-            value: de,
-            label: de,
+          options: responseData.deptos.map((dpto: string) => ({
+            value: dpto,
+            label: dpto,
           })),
         },
       ];
+
+      console.log("groupedOptions: ", groupedOptions);
 
       setGroups(groupedOptions);
     };
@@ -236,6 +243,7 @@ const AccessRequestForm = (props: {
                           !!methods.formState.errors.usernameSolicitante
                         }
                         placeholder="Insira o seu login"
+                        disabled={props.approve}
                       />
                     )}
                   />
@@ -251,25 +259,47 @@ const AccessRequestForm = (props: {
               <Row className="mb-3">
                 <Form.Group as={Col} controlId="validationFormik02">
                   <Form.Label>Login do Superior</Form.Label>
-                  <Controller
-                    rules={{ required: true }}
-                    control={methods.control}
-                    name="usernameSuperior"
-                    render={({ field }) => (
-                      <AsyncSelect
-                        {...field}
-                        defaultOptions={[]}
-                        cacheOptions
-                        placeholder={"Busque o nome do seu superior"}
-                        loadOptions={loadUsernameOptions}
-                        className={
-                          !!methods.formState.errors.usernameSuperior
-                            ? "invalid-border-react-select"
-                            : ""
-                        }
-                      />
-                    )}
-                  />
+                  {props.approve ? (
+                    <Controller
+                      rules={{ required: true, maxLength: 250 }}
+                      control={methods.control}
+                      name="usernameSuperior"
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <Form.Control
+                          type="text"
+                          onChange={onChange}
+                          onBlur={onBlur}
+                          value={value}
+                          ref={ref}
+                          isInvalid={
+                            !!methods.formState.errors.usernameSuperior
+                          }
+                          disabled={props.approve}
+                        />
+                      )}
+                    />
+                  ) : (
+                    <Controller
+                      rules={{ required: true }}
+                      control={methods.control}
+                      name="usernameSuperior"
+                      render={({ field }) => (
+                        <AsyncSelect
+                          {...field}
+                          defaultOptions={[]}
+                          cacheOptions
+                          placeholder={"Busque o nome do seu superior"}
+                          loadOptions={loadUsernameOptions}
+                          className={
+                            !!methods.formState.errors.usernameSuperior
+                              ? "invalid-border-react-select"
+                              : ""
+                          }
+                          isDisabled={props.approve}
+                        />
+                      )}
+                    />
+                  )}
                   {!!methods.formState.errors.usernameSuperior && (
                     <div className="invalid-feedback-react-select">
                       Esse campo é obrigatório
@@ -286,23 +316,16 @@ const AccessRequestForm = (props: {
                     rules={{ required: true }}
                     control={methods.control}
                     name="groupNames"
-                    render={({ field: { onChange, value, ref } }) => (
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
                       <Select
-                        ref={ref}
                         options={groups}
-                        value={groups
-                          .map((s) => s.options)
-                          .find((c) => c === value)}
+                        value={value.map((v) => ({ value: v, label: v }))}
                         onChange={onChange}
+                        onBlur={onBlur}
                         isSearchable
                         isMulti
-                        isDisabled={props.approve}
                         placeholder="Selecione os grupos a serem acessados"
-                        className={
-                          !!methods.formState.errors.groupNames
-                            ? "invalid-border-react-select"
-                            : ""
-                        }
+                        isDisabled={props.approve}
                       />
                     )}
                   />
