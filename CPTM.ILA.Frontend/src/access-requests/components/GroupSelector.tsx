@@ -39,12 +39,14 @@ const GroupSelector = () => {
               </Button>
             ))}
           </ButtonGroup>
-          <hr></hr>
-          <Row>
-            <Button variant="success" onClick={requestGroupAccessHandler}>
-              Solicitar Acesso a Novo Grupo
-            </Button>
-          </Row>
+          {!user.isComite && <hr></hr>}
+          {!user.isComite && (
+            <Row>
+              <Button variant="success" onClick={requestGroupAccessHandler}>
+                Solicitar Acesso a Novo Grupo
+              </Button>
+            </Row>
+          )}
         </Card.Body>
       </Card>
     </React.Fragment>
