@@ -23,10 +23,23 @@ code {
 }
 
 .swiss721 {
-    font-family: "Swiss721";
+    font-family: "Swiss721", serif;
 }
 
 @font-face {
     font-family: "Swiss721";
     src: local("Swis721"), url(./shared/assets/fonts/swiss.ttf) format("truetype");
+}
+
+.invalid-feedback-react-select {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: .875em;
+    color: #dc3545;
+    display: block;
+}
+
+.invalid-border-react-select {
+    border: 1px solid #dc3545;
+    border-radius: .25rem;
 }

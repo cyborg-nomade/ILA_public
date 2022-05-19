@@ -25,7 +25,8 @@ const RequestAccess = () => {
       accessRequest.groupNames = accessRequest.groupNames.map(
         (g: any) => g.value
       );
-      console.log(accessRequest);
+      // @ts-ignore
+      accessRequest.usernameSuperior = accessRequest.usernameSuperior.value;
 
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/access-requests/require/${accessRequest.tipoSolicitacaoAcesso}`,
@@ -35,7 +36,6 @@ const RequestAccess = () => {
           "Content-Type": "application/json",
         }
       );
-      console.log(responseData.message);
 
       const savedAR: AccessRequest = responseData.accessRequest;
       if (
@@ -43,7 +43,7 @@ const RequestAccess = () => {
         tipoSolicitacaoAcesso.AcessoAoSistema
       ) {
         const emailFormData = new FormData();
-        emailFormData.append("emailFile", accessRequest.emailFile);
+        emailFormData.append("emailFile", accessRequest.emailFile as File);
 
         const responseDataEmailFile = await sendRequest(
           `${process.env.REACT_APP_CONNSTR}/access-requests/require/${tipoSolicitacaoAcesso.AcessoAoSistema}/save-file/${savedAR.id}`,

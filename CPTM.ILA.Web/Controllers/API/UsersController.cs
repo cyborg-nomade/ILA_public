@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -48,7 +49,7 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> Login(AuthUser user)
         {
-            if (user.Username.IsNullOrWhiteSpace() || !Seguranca.Autenticar(user.Username, user.Password))
+            if (user.Username.IsNullOrWhiteSpace() || !Seguranca.Autenticar(user.Username.ToUpper(), user.Password))
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, new
                 {
@@ -58,7 +59,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var userAd = Seguranca.ObterUsuario(user.Username);
+                var userAd = Seguranca.ObterUsuario(user.Username.ToUpper());
 
                 var areaTratamentoDados = new AgenteTratamento()
                 {
@@ -68,18 +69,17 @@ namespace CPTM.ILA.Web.Controllers.API
                     Telefone = userAd.TelefoneComercial
                 };
 
-                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                var userInDb = await _context.Users.Where(u => u.Username.ToUpper() == user.Username.ToUpper())
+                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .Include(u => u.OriginGroup)
-                    .ToListAsync();
-                var userInDb = usersInDb.SingleOrDefault(u =>
-                    string.Equals(u.Username, user.Username, StringComparison.CurrentCultureIgnoreCase));
+                    .SingleOrDefaultAsync();
                 var isDeveloper = user.Username.ToLower() == "urielf";
 
                 if (isDeveloper && userInDb == null)
                 {
                     userInDb = new User()
                     {
-                        Username = userAd.Login,
+                        Username = userAd.Login.ToUpper(),
                         IsComite = false,
                         IsDPO = false,
                         IsSystem = true
@@ -88,13 +88,13 @@ namespace CPTM.ILA.Web.Controllers.API
                     _context.Users.Add(userInDb);
                     await _context.SaveChangesAsync();
 
-
-                    var groupsInDb = await _context.Groups.ToListAsync();
-                    var userOriginGroup = groupsInDb.SingleOrDefault(g => g.Nome == userAd.Departamento) ??
-                                          new Group()
-                                          {
-                                              Nome = userAd.Departamento,
-                                          };
+                    var userOriginGroup =
+                        await _context.Groups.SingleOrDefaultAsync(g =>
+                            g.Nome.ToUpper() == userAd.Departamento.ToUpper()) ??
+                        new Group()
+                        {
+                            Nome = userAd.Departamento.ToUpper(),
+                        };
 
                     userInDb.OriginGroup = userOriginGroup;
                     userInDb.GroupAccessExpirations = new List<GroupAccessExpiration>()
@@ -192,7 +192,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     });
                 }
 
-                var comiteMemberUserAd = Seguranca.ObterUsuario(selectedComiteMember.Username);
+                var comiteMemberUserAd = Seguranca.ObterUsuario(selectedComiteMember.Username.ToUpper());
 
                 if (comiteMemberUserAd == null)
                 {
@@ -204,10 +204,10 @@ namespace CPTM.ILA.Web.Controllers.API
                         message = "Nenhum usuário do Comitê LGPD é responsável por este grupo",
                         comiteMember = new AgenteTratamento()
                         {
-                            Area = "DFIS",
-                            Email = "teste@teste.com",
-                            Nome = "Tuba",
-                            Telefone = "11954719466"
+                            Nome = "Olivia Shibata Nishiyama",
+                            Area = "Encarregado de Dados (DPO)",
+                            Telefone = "+ 55 11 3117 – 7001",
+                            Email = "encarregado.dados@cptm.sp.gov.br"
                         }
                     });
                 }
@@ -278,7 +278,7 @@ namespace CPTM.ILA.Web.Controllers.API
         {
             try
             {
-                var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == username);
+                var user = await _context.Users.SingleOrDefaultAsync(u => u.Username.ToUpper() == username.ToUpper());
                 if (user == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound,
@@ -343,6 +343,23 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
                     new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
             }
+        }
+
+        [Route("query")]
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<HttpResponseMessage> QueryByName([FromBody] string nameString)
+        {
+            var results = await _context.ILA_VW_USUARIO.Where(u => u.TX_NOMEUSUARIO.Contains(nameString.ToUpper()))
+                .Select(u => new { username = u.TX_USERNAME, name = u.TX_NOMEUSUARIO })
+                .ToListAsync();
+            var formattedResults = results.Select(u => new { value = u.username, label = $"{u.username} - {u.name}" });
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                message = "hi",
+                results,
+                formattedResults, nameString
+            });
         }
     }
 }

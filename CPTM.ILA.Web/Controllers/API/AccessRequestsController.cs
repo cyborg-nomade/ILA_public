@@ -284,7 +284,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 });
             }
 
-            if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSolicitante))
+            if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSolicitante.ToUpper()))
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, new
                 {
@@ -303,7 +303,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     });
                 }
 
-                if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSuperior))
+                if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSuperior.ToUpper()))
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new
                     {
@@ -315,7 +315,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var chamadoAberto = await ItsmUtil.AbrirChamado(accessRequestDto.UsernameSolicitante, tipo.ToString());
+                var chamadoAberto =
+                    await ItsmUtil.AbrirChamado(accessRequestDto.UsernameSolicitante.ToUpper(), tipo.ToString());
 
                 if (!chamadoAberto)
                 {
@@ -323,12 +324,10 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Não foi possível abrir o chamado de requisição de acesso no ITSM!" });
                 }
 
-                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
-                    .ToListAsync();
-                if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
-
-                var userInDb =
-                    usersInDb.SingleOrDefault(u => u.Username == accessRequestDto.UsernameSolicitante.ToUpper());
+                var userInDb = await _context.Users
+                    .Where(u => u.Username.ToUpper() == accessRequestDto.UsernameSolicitante.ToUpper())
+                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync();
 
                 if (userInDb != null &&
                     userInDb.IsComite &&
@@ -350,13 +349,13 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     foreach (var groupName in accessRequestDto.GroupNames)
                     {
-                        var groups = await _context.Groups.ToListAsync();
-                        var selectedGroup = groups.SingleOrDefault(g => g.Nome == groupName);
+                        var selectedGroup =
+                            await _context.Groups.SingleOrDefaultAsync(g => g.Nome.ToUpper() == groupName.ToUpper());
                         if (selectedGroup == null)
                         {
                             var newGroup = new Group()
                             {
-                                Nome = groupName
+                                Nome = groupName.ToUpper()
                             };
                             selectedGroup = newGroup;
                         }
@@ -367,14 +366,15 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (tipo == TipoSolicitacaoAcesso.AcessoAoSistema)
                 {
-                    var userAd = Seguranca.ObterUsuario(accessRequestDto.UsernameSolicitante);
-                    var groups = await _context.Groups.ToListAsync();
-                    var selectedGroup = groups.SingleOrDefault(g => g.Nome == userAd.Departamento);
+                    var userAd = Seguranca.ObterUsuario(accessRequestDto.UsernameSolicitante.ToUpper());
+                    var selectedGroup =
+                        await _context.Groups.SingleOrDefaultAsync(g =>
+                            g.Nome.ToUpper() == userAd.Departamento.ToUpper());
                     if (selectedGroup == null)
                     {
                         var newGroup = new Group()
                         {
-                            Nome = userAd.Departamento
+                            Nome = userAd.Departamento.ToUpper()
                         };
                         selectedGroup = newGroup;
                     }
@@ -384,8 +384,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var accessRequest = new AccessRequest()
                 {
-                    UsernameSolicitante = accessRequestDto.UsernameSolicitante,
-                    UsernameSuperior = accessRequestDto.UsernameSuperior,
+                    UsernameSolicitante = accessRequestDto.UsernameSolicitante.ToUpper(),
+                    UsernameSuperior = accessRequestDto.UsernameSuperior.ToUpper(),
                     Justificativa = accessRequestDto.Justificativa,
                     TipoSolicitacaoAcesso = accessRequestDto.TipoSolicitacaoAcesso,
                     Groups = arGroups
@@ -529,12 +529,10 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Requisição de Acesso excluída com sucesso, após reprovação" });
                 }
 
-                var usersInDb = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
-                    .ToListAsync();
-                if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
-
-                var userInDb =
-                    usersInDb.SingleOrDefault(u => u.Username == accessRequest.UsernameSolicitante.ToUpper());
+                var userInDb = await _context.Users
+                    .Where(u => u.Username.ToUpper() == accessRequest.UsernameSolicitante.ToUpper())
+                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync();
 
                 if (accessRequest.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoAGrupos)
                 {
@@ -569,19 +567,19 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (userInDb == null)
                 {
-                    var userAd = Seguranca.ObterUsuario(accessRequest.UsernameSolicitante);
+                    var userAd = Seguranca.ObterUsuario(accessRequest.UsernameSolicitante.ToUpper());
 
-                    var groupsInDb = await _context.Groups.ToListAsync();
-
-                    var userOriginGroup = groupsInDb.SingleOrDefault(g => g.Nome == userAd.Departamento) ??
-                                          new Group()
-                                          {
-                                              Nome = userAd.Departamento,
-                                          };
+                    var userOriginGroup =
+                        await _context.Groups.SingleOrDefaultAsync(g =>
+                            g.Nome.ToUpper() == userAd.Departamento.ToUpper()) ??
+                        new Group()
+                        {
+                            Nome = userAd.Departamento.ToUpper(),
+                        };
 
                     var newUser = new User()
                     {
-                        Username = userAd.Login,
+                        Username = userAd.Login.ToUpper(),
                         OriginGroup = userOriginGroup,
                         IsComite = false,
                         IsDPO = false,
@@ -661,7 +659,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                if (!Seguranca.ExisteUsuario(newDpoUsername))
+                if (!Seguranca.ExisteUsuario(newDpoUsername.ToUpper()))
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new
                     {
@@ -673,7 +671,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (oldDpo != null)
                 {
-                    var existOldDpo = Seguranca.ExisteUsuario(oldDpo.Username);
+                    var existOldDpo = Seguranca.ExisteUsuario(oldDpo.Username.ToUpper());
 
                     if (existOldDpo)
                     {
@@ -685,21 +683,20 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                var usersInDb = await _context.Users.ToListAsync();
-                if (usersInDb == null) throw new ArgumentNullException(nameof(usersInDb));
-                var userInDb = usersInDb.SingleOrDefault(u => u.Username == newDpoUsername.ToUpper());
+                var userInDb =
+                    await _context.Users.SingleOrDefaultAsync(u => u.Username.ToUpper() == newDpoUsername.ToUpper());
 
                 if (userInDb == null)
                 {
-                    var userAd = Seguranca.ObterUsuario(newDpoUsername);
+                    var userAd = Seguranca.ObterUsuario(newDpoUsername.ToUpper());
                     var newGroup = new Group()
                     {
-                        Nome = userAd.Departamento,
+                        Nome = userAd.Departamento.ToUpper(),
                     };
 
                     var newUser = new User()
                     {
-                        Username = userAd.Login,
+                        Username = userAd.Login.ToUpper(),
                         OriginGroup = newGroup,
                         IsComite = true,
                         IsDPO = true,
@@ -756,7 +753,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                if (!Seguranca.ExisteUsuario(newComiteMemberUsername))
+                if (!Seguranca.ExisteUsuario(newComiteMemberUsername.ToUpper()))
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new
                     {
@@ -764,23 +761,23 @@ namespace CPTM.ILA.Web.Controllers.API
                     });
                 }
 
-                var usersInDb = await _context.Users.ToListAsync();
-
-                var userInDb = usersInDb.SingleOrDefault(u => u.Username == newComiteMemberUsername.ToUpper());
+                var userInDb =
+                    await _context.Users.SingleOrDefaultAsync(u =>
+                        u.Username.ToUpper() == newComiteMemberUsername.ToUpper());
 
                 if (userInDb == null)
                 {
-                    var userAd = Seguranca.ObterUsuario(newComiteMemberUsername);
+                    var userAd = Seguranca.ObterUsuario(newComiteMemberUsername.ToUpper());
 
-                    var groupsInDb = await _context.Groups.ToListAsync();
-
-                    var groupInDb = groupsInDb.SingleOrDefault(g => g.Nome == userAd.Departamento);
+                    var groupInDb =
+                        await _context.Groups.SingleOrDefaultAsync(g =>
+                            g.Nome.ToUpper() == userAd.Departamento.ToUpper());
 
                     if (groupInDb == null)
                     {
                         var newGroup = new Group()
                         {
-                            Nome = userAd.Departamento,
+                            Nome = userAd.Departamento.ToUpper(),
                         };
                         groupInDb = newGroup;
                         _context.Groups.Add(groupInDb);
@@ -789,7 +786,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                     var newUser = new User()
                     {
-                        Username = userAd.Login,
+                        Username = userAd.Login.ToUpper(),
                         OriginGroup = groupInDb,
                         IsComite = true,
                         IsDPO = false,
@@ -846,32 +843,211 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Id de usuário inválido" });
                 }
 
-                var userInDb = await _context.Users.FindAsync(uid);
+                var userInDb = await _context.Users.Where(u => u.Id == uid)
+                    .Include(u => u.GroupAccessExpirations)
+                    .Include(u => u.OriginGroup)
+                    .SingleOrDefaultAsync();
 
                 if (userInDb == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
                 }
 
-                var userAd = Seguranca.ExisteUsuario(userInDb.Username);
 
-                if (!userAd)
-                {
-                    _context.Users.Remove(userInDb);
-                    await _context.SaveChangesAsync();
-
-                    return Request.CreateResponse(HttpStatusCode.OK,
-                        new { message = "Usuário não existia mais no AD, removido com sucesso da aplicação" });
-                }
-
-                userInDb.IsComite = false;
-                userInDb.IsDPO = false;
-                _context.Entry(userInDb)
-                    .State = EntityState.Modified;
+                _context.Users.Remove(userInDb);
                 await _context.SaveChangesAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Usuário removido com sucesso do Comitê LGPD" });
+                    new { message = "Usuário removido com sucesso da aplicação" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+
+        [Route("groups/user/{uid:int}")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetUserGroups(int uid)
+        {
+            if (uid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválido" });
+            }
+
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var user = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync(u => u.Id == uid);
+
+                if (user == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
+                }
+
+                var userGroups = user.GroupAccessExpirations.Select(gae => gae.Group)
+                    .ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Grupos encontrados com sucesso", userGroups });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        [Route("groups/user/{uid:int}/add")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> AddUserGroup(int uid, [FromBody] List<string> groupNames)
+        {
+            if (uid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválido" });
+            }
+
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var user = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync(u => u.Id == uid);
+
+                if (user == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
+                }
+
+                var userGroupNames = user.GroupAccessExpirations.Select(gae => gae.Group.Nome)
+                    .ToList();
+
+                var groupNamesToAdd = groupNames.Except(userGroupNames)
+                    .ToList();
+
+                var userNewGroups = new List<Group>();
+
+                foreach (var groupNameToAdd in groupNamesToAdd)
+                {
+                    var selectedGroup =
+                        await _context.Groups.SingleOrDefaultAsync(g => g.Nome.ToUpper() == groupNameToAdd.ToUpper());
+                    if (selectedGroup == null)
+                    {
+                        var newGroup = new Group()
+                        {
+                            Nome = groupNameToAdd.ToUpper()
+                        };
+                        selectedGroup = newGroup;
+                    }
+
+                    userNewGroups.Add(selectedGroup);
+                }
+
+                foreach (var @group in userNewGroups)
+                {
+                    user.GroupAccessExpirations.Add(new GroupAccessExpiration()
+                    {
+                        ExpirationDate = user.IsComite ? DateTime.MaxValue : DateTime.Now.AddDays(30),
+                        Group = group
+                    });
+                }
+
+                _context.Entry(user)
+                    .State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = "Grupos adicionados com sucesso", user });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        [Route("groups/user/{uid:int}/remove")]
+        [Authorize]
+        [HttpPost]
+        public async Task<HttpResponseMessage> RemoveUserGroup(int uid, [FromBody] int gid)
+        {
+            if (uid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválido" });
+            }
+
+            if (gid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido" });
+            }
+
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDeveloper || claims.IsDpo))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var user = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync(u => u.Id == uid);
+
+                if (user == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Usuário não encontrado" });
+                }
+
+                var userGroups = user.GroupAccessExpirations.Select(gae => gae.Group)
+                    .ToList();
+
+                var groupToRemove = await _context.Groups.FindAsync(gid);
+
+                if (!userGroups.Contains(groupToRemove))
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        new { message = "Este usuário já não tem acesso ao grupo informado." });
+                }
+
+                var gaeToRemove = user.GroupAccessExpirations.SingleOrDefault(gae => gae.Group == groupToRemove);
+
+                user.GroupAccessExpirations.Remove(gaeToRemove);
+
+                _context.Entry(user)
+                    .State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Grupo removido com sucesso", user });
             }
             catch (Exception e)
             {
