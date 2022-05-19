@@ -30,6 +30,7 @@ const CasesDashboard = () => {
   const [selected, setSelected] = useState<number | undefined>(0);
   const [, setHovered] = useState<number | undefined>(undefined);
   const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
+  const [showAlert, setShowAlert] = useState(true);
 
   const { user, token, currentGroup } = useContext(AuthContext);
 
@@ -170,8 +171,12 @@ const CasesDashboard = () => {
           {error}
         </Alert>
       )}
-      {pieChartData.length === 0 && (
-        <Alert variant="warning" dismissible>
+      {pieChartData.length === 0 && showAlert && (
+        <Alert
+          variant="warning"
+          dismissible
+          onClose={() => setShowAlert(false)}
+        >
           "Não existem dados para a seleção!"
         </Alert>
       )}
