@@ -24,6 +24,11 @@ const RequestGroupAccess = () => {
 
   const submitRegisterHandler = async (accessRequest: AccessRequestDTO) => {
     try {
+      accessRequest.groupNames = accessRequest.groupNames.map(
+        (g: any) => g.value
+      );
+      // @ts-ignore
+      accessRequest.usernameSuperior = accessRequest.usernameSuperior.value;
       accessRequest.usernameSolicitante = user.username;
 
       const responseData = await sendRequest(
