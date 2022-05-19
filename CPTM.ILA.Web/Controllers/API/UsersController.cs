@@ -49,7 +49,7 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> Login(AuthUser user)
         {
-            if (user.Username.IsNullOrWhiteSpace() || !Seguranca.Autenticar(user.Username, user.Password))
+            if (user.Username.IsNullOrWhiteSpace() || !Seguranca.Autenticar(user.Username.ToUpper(), user.Password))
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, new
                 {
@@ -59,7 +59,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var userAd = Seguranca.ObterUsuario(user.Username);
+                var userAd = Seguranca.ObterUsuario(user.Username.ToUpper());
 
                 var areaTratamentoDados = new AgenteTratamento()
                 {
@@ -69,8 +69,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     Telefone = userAd.TelefoneComercial
                 };
 
-                var userInDb = await _context.Users.Where(u =>
-                        string.Equals(u.Username, user.Username, StringComparison.CurrentCultureIgnoreCase))
+                var userInDb = await _context.Users.Where(u => u.Username.ToUpper() == user.Username.ToUpper())
                     .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .Include(u => u.OriginGroup)
                     .SingleOrDefaultAsync();
@@ -80,7 +79,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     userInDb = new User()
                     {
-                        Username = userAd.Login,
+                        Username = userAd.Login.ToUpper(),
                         IsComite = false,
                         IsDPO = false,
                         IsSystem = true
@@ -90,10 +89,11 @@ namespace CPTM.ILA.Web.Controllers.API
                     await _context.SaveChangesAsync();
 
                     var userOriginGroup =
-                        await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento) ??
+                        await _context.Groups.SingleOrDefaultAsync(g =>
+                            g.Nome.ToUpper() == userAd.Departamento.ToUpper()) ??
                         new Group()
                         {
-                            Nome = userAd.Departamento,
+                            Nome = userAd.Departamento.ToUpper(),
                         };
 
                     userInDb.OriginGroup = userOriginGroup;
@@ -192,7 +192,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     });
                 }
 
-                var comiteMemberUserAd = Seguranca.ObterUsuario(selectedComiteMember.Username);
+                var comiteMemberUserAd = Seguranca.ObterUsuario(selectedComiteMember.Username.ToUpper());
 
                 if (comiteMemberUserAd == null)
                 {
@@ -204,10 +204,10 @@ namespace CPTM.ILA.Web.Controllers.API
                         message = "Nenhum usuário do Comitê LGPD é responsável por este grupo",
                         comiteMember = new AgenteTratamento()
                         {
-                            Area = "DFIS",
-                            Email = "teste@teste.com",
-                            Nome = "Tuba",
-                            Telefone = "11954719466"
+                            Nome = "Olivia Shibata Nishiyama",
+                            Area = "Encarregado de Dados (DPO)",
+                            Telefone = "+ 55 11 3117 – 7001",
+                            Email = "encarregado.dados@cptm.sp.gov.br"
                         }
                     });
                 }
@@ -278,7 +278,7 @@ namespace CPTM.ILA.Web.Controllers.API
         {
             try
             {
-                var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == username);
+                var user = await _context.Users.SingleOrDefaultAsync(u => u.Username.ToUpper() == username.ToUpper());
                 if (user == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound,
