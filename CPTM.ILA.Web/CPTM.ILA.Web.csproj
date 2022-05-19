@@ -329,13 +329,9 @@
     <Compile Include="Migrations\202203312006350_Existing-Model.designer.cs">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202205051542092_FullModel.cs" />
-    <Compile Include="Migrations\202205051542092_FullModel.designer.cs">
-      <DependentUpon>202205051542092_FullModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202205051545038_CorrectGroupAccessExpirationsTableName.cs" />
-    <Compile Include="Migrations\202205051545038_CorrectGroupAccessExpirationsTableName.designer.cs">
-      <DependentUpon>202205051545038_CorrectGroupAccessExpirationsTableName.cs</DependentUpon>
+    <Compile Include="Migrations\202205181536271_FullModel.cs" />
+    <Compile Include="Migrations\202205181536271_FullModel.designer.cs">
+      <DependentUpon>202205181536271_FullModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
@@ -509,11 +505,8 @@
     <EmbeddedResource Include="Migrations\202203312006350_Existing-Model.resx">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202205051542092_FullModel.resx">
-      <DependentUpon>202205051542092_FullModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202205051545038_CorrectGroupAccessExpirationsTableName.resx">
-      <DependentUpon>202205051545038_CorrectGroupAccessExpirationsTableName.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202205181536271_FullModel.resx">
+      <DependentUpon>202205181536271_FullModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
