@@ -284,7 +284,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 });
             }
 
-            if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSolicitante))
+            if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSolicitante.ToUpper()))
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, new
                 {
@@ -303,7 +303,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     });
                 }
 
-                if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSuperior))
+                if (!Seguranca.ExisteUsuario(accessRequestDto.UsernameSuperior.ToUpper()))
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new
                     {
@@ -315,7 +315,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var chamadoAberto = await ItsmUtil.AbrirChamado(accessRequestDto.UsernameSolicitante, tipo.ToString());
+                var chamadoAberto =
+                    await ItsmUtil.AbrirChamado(accessRequestDto.UsernameSolicitante.ToUpper(), tipo.ToString());
 
                 if (!chamadoAberto)
                 {
@@ -324,7 +325,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 var userInDb = await _context.Users
-                    .Where(u => u.Username == accessRequestDto.UsernameSolicitante.ToUpper())
+                    .Where(u => u.Username.ToUpper() == accessRequestDto.UsernameSolicitante.ToUpper())
                     .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .SingleOrDefaultAsync();
 
@@ -348,12 +349,13 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     foreach (var groupName in accessRequestDto.GroupNames)
                     {
-                        var selectedGroup = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == groupName);
+                        var selectedGroup =
+                            await _context.Groups.SingleOrDefaultAsync(g => g.Nome.ToUpper() == groupName.ToUpper());
                         if (selectedGroup == null)
                         {
                             var newGroup = new Group()
                             {
-                                Nome = groupName
+                                Nome = groupName.ToUpper()
                             };
                             selectedGroup = newGroup;
                         }
@@ -364,13 +366,15 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (tipo == TipoSolicitacaoAcesso.AcessoAoSistema)
                 {
-                    var userAd = Seguranca.ObterUsuario(accessRequestDto.UsernameSolicitante);
-                    var selectedGroup = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento);
+                    var userAd = Seguranca.ObterUsuario(accessRequestDto.UsernameSolicitante.ToUpper());
+                    var selectedGroup =
+                        await _context.Groups.SingleOrDefaultAsync(g =>
+                            g.Nome.ToUpper() == userAd.Departamento.ToUpper());
                     if (selectedGroup == null)
                     {
                         var newGroup = new Group()
                         {
-                            Nome = userAd.Departamento
+                            Nome = userAd.Departamento.ToUpper()
                         };
                         selectedGroup = newGroup;
                     }
@@ -380,8 +384,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var accessRequest = new AccessRequest()
                 {
-                    UsernameSolicitante = accessRequestDto.UsernameSolicitante,
-                    UsernameSuperior = accessRequestDto.UsernameSuperior,
+                    UsernameSolicitante = accessRequestDto.UsernameSolicitante.ToUpper(),
+                    UsernameSuperior = accessRequestDto.UsernameSuperior.ToUpper(),
                     Justificativa = accessRequestDto.Justificativa,
                     TipoSolicitacaoAcesso = accessRequestDto.TipoSolicitacaoAcesso,
                     Groups = arGroups
@@ -526,7 +530,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 var userInDb = await _context.Users
-                    .Where(u => u.Username == accessRequest.UsernameSolicitante.ToUpper())
+                    .Where(u => u.Username.ToUpper() == accessRequest.UsernameSolicitante.ToUpper())
                     .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .SingleOrDefaultAsync();
 
@@ -563,18 +567,19 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (userInDb == null)
                 {
-                    var userAd = Seguranca.ObterUsuario(accessRequest.UsernameSolicitante);
+                    var userAd = Seguranca.ObterUsuario(accessRequest.UsernameSolicitante.ToUpper());
 
                     var userOriginGroup =
-                        await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento) ??
+                        await _context.Groups.SingleOrDefaultAsync(g =>
+                            g.Nome.ToUpper() == userAd.Departamento.ToUpper()) ??
                         new Group()
                         {
-                            Nome = userAd.Departamento,
+                            Nome = userAd.Departamento.ToUpper(),
                         };
 
                     var newUser = new User()
                     {
-                        Username = userAd.Login,
+                        Username = userAd.Login.ToUpper(),
                         OriginGroup = userOriginGroup,
                         IsComite = false,
                         IsDPO = false,
@@ -654,7 +659,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                if (!Seguranca.ExisteUsuario(newDpoUsername))
+                if (!Seguranca.ExisteUsuario(newDpoUsername.ToUpper()))
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new
                     {
@@ -666,7 +671,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (oldDpo != null)
                 {
-                    var existOldDpo = Seguranca.ExisteUsuario(oldDpo.Username);
+                    var existOldDpo = Seguranca.ExisteUsuario(oldDpo.Username.ToUpper());
 
                     if (existOldDpo)
                     {
@@ -678,19 +683,20 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                var userInDb = await _context.Users.SingleOrDefaultAsync(u => u.Username == newDpoUsername.ToUpper());
+                var userInDb =
+                    await _context.Users.SingleOrDefaultAsync(u => u.Username.ToUpper() == newDpoUsername.ToUpper());
 
                 if (userInDb == null)
                 {
-                    var userAd = Seguranca.ObterUsuario(newDpoUsername);
+                    var userAd = Seguranca.ObterUsuario(newDpoUsername.ToUpper());
                     var newGroup = new Group()
                     {
-                        Nome = userAd.Departamento,
+                        Nome = userAd.Departamento.ToUpper(),
                     };
 
                     var newUser = new User()
                     {
-                        Username = userAd.Login,
+                        Username = userAd.Login.ToUpper(),
                         OriginGroup = newGroup,
                         IsComite = true,
                         IsDPO = true,
@@ -747,7 +753,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                if (!Seguranca.ExisteUsuario(newComiteMemberUsername))
+                if (!Seguranca.ExisteUsuario(newComiteMemberUsername.ToUpper()))
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new
                     {
@@ -756,19 +762,22 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
                 var userInDb =
-                    await _context.Users.SingleOrDefaultAsync(u => u.Username == newComiteMemberUsername.ToUpper());
+                    await _context.Users.SingleOrDefaultAsync(u =>
+                        u.Username.ToUpper() == newComiteMemberUsername.ToUpper());
 
                 if (userInDb == null)
                 {
-                    var userAd = Seguranca.ObterUsuario(newComiteMemberUsername);
+                    var userAd = Seguranca.ObterUsuario(newComiteMemberUsername.ToUpper());
 
-                    var groupInDb = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == userAd.Departamento);
+                    var groupInDb =
+                        await _context.Groups.SingleOrDefaultAsync(g =>
+                            g.Nome.ToUpper() == userAd.Departamento.ToUpper());
 
                     if (groupInDb == null)
                     {
                         var newGroup = new Group()
                         {
-                            Nome = userAd.Departamento,
+                            Nome = userAd.Departamento.ToUpper(),
                         };
                         groupInDb = newGroup;
                         _context.Groups.Add(groupInDb);
@@ -777,7 +786,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                     var newUser = new User()
                     {
-                        Username = userAd.Login,
+                        Username = userAd.Login.ToUpper(),
                         OriginGroup = groupInDb,
                         IsComite = true,
                         IsDPO = false,
@@ -944,12 +953,13 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 foreach (var groupNameToAdd in groupNamesToAdd)
                 {
-                    var selectedGroup = await _context.Groups.SingleOrDefaultAsync(g => g.Nome == groupNameToAdd);
+                    var selectedGroup =
+                        await _context.Groups.SingleOrDefaultAsync(g => g.Nome.ToUpper() == groupNameToAdd.ToUpper());
                     if (selectedGroup == null)
                     {
                         var newGroup = new Group()
                         {
-                            Nome = groupNameToAdd
+                            Nome = groupNameToAdd.ToUpper()
                         };
                         selectedGroup = newGroup;
                     }

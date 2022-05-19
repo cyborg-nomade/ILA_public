@@ -14,7 +14,8 @@ import { tipoSolicitacaoAcesso } from "../../shared/models/access-control/access
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import Select, { GroupBase } from "react-select";
+import Select, { GroupBase, OptionsOrGroups } from "react-select";
+import AsyncSelect from "react-select/async";
 
 type onSubmitFn = (item: AccessRequestDTO) => void;
 
@@ -29,6 +30,7 @@ const AccessRequestForm = (props: {
   const [isComiteReq, setIsComiteReq] = useState(false);
   const [groups, setGroups] = useState<GroupBase<string>[]>([]);
   const [eFile, setEFile] = useState<File>(new File([""], "emptyFile.txt"));
+  const [selectedSuperior, setSelectedSuperior] = useState("");
 
   const { token } = useContext(AuthContext);
 
@@ -94,18 +96,21 @@ const AccessRequestForm = (props: {
           label: "Diretorias",
           options: responseData.diretorias.map((d: string) => ({
             value: d,
+            label: d,
           })),
         },
         {
           label: "Gerencias",
           options: responseData.gerencias.map((g: string) => ({
             value: g,
+            label: g,
           })),
         },
         {
           label: "Departamentos",
           options: responseData.deptos.map((de: string) => ({
             value: de,
+            label: de,
           })),
         },
       ];
@@ -125,7 +130,6 @@ const AccessRequestForm = (props: {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     const file: File = event.target.files[0];
-    console.log(file);
     setEFile(file);
     methods.setValue("emailFile", file);
   };
@@ -135,6 +139,30 @@ const AccessRequestForm = (props: {
       return "Favor anexar um arquivo de autorização";
     }
     return true;
+  };
+
+  const loadUsernameOptions = async (
+    inputValue: string,
+    callback: (options: OptionsOrGroups<string, never>) => void
+  ) => {
+    if (inputValue.length >= 3) {
+      const response = await fetch(
+        `${process.env.REACT_APP_CONNSTR}/users/query`,
+        {
+          method: "POST",
+          body: JSON.stringify(inputValue),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      const json = await response.json();
+      const options = json.formattedResults;
+
+      callback(options);
+      return options;
+    }
   };
 
   const onSubmit: SubmitHandler<AccessRequestDTO> = (
@@ -224,24 +252,29 @@ const AccessRequestForm = (props: {
                 <Form.Group as={Col} controlId="validationFormik02">
                   <Form.Label>Login do Superior</Form.Label>
                   <Controller
-                    rules={{ required: true, maxLength: 250 }}
+                    rules={{ required: true }}
                     control={methods.control}
                     name="usernameSuperior"
-                    render={({ field: { onChange, onBlur, value, ref } }) => (
-                      <Form.Control
-                        type="text"
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        value={value}
-                        ref={ref}
-                        isInvalid={!!methods.formState.errors.usernameSuperior}
-                        placeholder="Busque o login do seu superior"
+                    render={({ field }) => (
+                      <AsyncSelect
+                        {...field}
+                        defaultOptions={[]}
+                        cacheOptions
+                        placeholder={"Busque o nome do seu superior"}
+                        loadOptions={loadUsernameOptions}
+                        className={
+                          !!methods.formState.errors.usernameSuperior
+                            ? "invalid-border-react-select"
+                            : ""
+                        }
                       />
                     )}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    Esse campo é obrigatório
-                  </Form.Control.Feedback>
+                  {!!methods.formState.errors.usernameSuperior && (
+                    <div className="invalid-feedback-react-select">
+                      Esse campo é obrigatório
+                    </div>
+                  )}
                 </Form.Group>
               </Row>
             )}
@@ -262,10 +295,22 @@ const AccessRequestForm = (props: {
                           .find((c) => c === value)}
                         onChange={onChange}
                         isSearchable
+                        isMulti
                         isDisabled={props.approve}
+                        placeholder="Selecione os grupos a serem acessados"
+                        className={
+                          !!methods.formState.errors.groupNames
+                            ? "invalid-border-react-select"
+                            : ""
+                        }
                       />
                     )}
                   />
+                  {!!methods.formState.errors.groupNames && (
+                    <div className="invalid-feedback-react-select">
+                      Esse campo é obrigatório
+                    </div>
+                  )}
                 </Form.Group>
               </Row>
             )}
