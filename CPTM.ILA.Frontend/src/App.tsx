@@ -9,6 +9,7 @@ import { useAuth } from "./shared/hooks/auth-hook";
 import MainHeader from "./shared/components/nav/MainHeader";
 import "./App.css";
 import Footer from "./shared/components/footer/Footer";
+import CMGroupMgmtCockpit from "./access-requests/pages/CMGroupMgmtCockpit";
 
 const ApproveCasesListGetter = React.lazy(
   () => import("./cases/pages/ApproveCasesListGetter")
@@ -155,6 +156,10 @@ const App = () => {
         <Route
           path="/dpo/alter-comite-members"
           element={<AlterComiteMemberCockpit />}
+        />
+        <Route
+          path="/dpo/alter-cm-groups/:cmid"
+          element={<CMGroupMgmtCockpit />}
         />
         <Route path="/" element={<Navigate replace to="../dpo/" />} />
         <Route path="/*" element={<Navigate replace to="../dpo/" />} />

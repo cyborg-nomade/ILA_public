@@ -13,6 +13,7 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import AsyncSelect from "react-select/async";
 import { ActionMeta, OptionsOrGroups, SingleValue } from "react-select";
+import { useNavigate } from "react-router-dom";
 
 const AlterComiteMemberCockpit = () => {
   const { token } = useContext(AuthContext);
@@ -22,6 +23,8 @@ const AlterComiteMemberCockpit = () => {
   const [comiteMembers, setComiteMembers] = useState<ComiteMember[]>([]);
   const [memberToAdd, setMemberToAdd] = useState("");
   const [message, setMessage] = useState("");
+
+  let navigate = useNavigate();
 
   useEffect(() => {
     const getComiteMembers = async () => {
@@ -156,6 +159,10 @@ const AlterComiteMemberCockpit = () => {
     }
   };
 
+  const handleEditGroups = (cmid: number) => {
+    navigate(`/dpo/alter-cm-groups/${cmid}`);
+  };
+
   const clearMessage = () => {
     setMessage("");
   };
@@ -217,7 +224,7 @@ const AlterComiteMemberCockpit = () => {
               <ListGroup.Item className="p-0" key={cm.id}>
                 <InputGroup>
                   <InputGroup.Text key={cm.id} as={Col} lg={9}>
-                    {cm.nome}
+                    <div onClick={() => handleEditGroups(cm.id)}>{cm.nome}</div>
                   </InputGroup.Text>
                   <Col lg={3} className="m-0">
                     <Button

@@ -315,8 +315,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var chamadoAberto =
-                    await ItsmUtil.AbrirChamado(accessRequestDto.UsernameSolicitante.ToUpper(), tipo.ToString());
+                var chamadoAberto = await ItsmUtil.AbrirChamado(accessRequestDto.UsernameSolicitante.ToUpper(),
+                    tipo.ToString(), false);
 
                 if (!chamadoAberto)
                 {
