@@ -134,9 +134,10 @@ const CaseForm = (props: {
   const handleSendToApprovalClick = async (item: Case) => {
     setItemValues(item);
     const valid = await methods.trigger();
-    if (valid) {
-      setShowSaveProgressModal(true);
-    }
+    // if (valid) {
+    //   setShowSendToApprovalModal(true);
+    // }
+    setShowSendToApprovalModal(true);
   };
   const handleApprovalClick = (item: Case) => {
     setItemValues(item);
@@ -3339,7 +3340,6 @@ const CaseForm = (props: {
           <Stack direction="horizontal" className="mt-3" gap={3}>
             <Button
               type="button"
-              disabled={!methods.formState.isDirty}
               variant="secondary"
               className="ms-auto"
               onClick={() => handleSaveProgressClick(methods.getValues())}
