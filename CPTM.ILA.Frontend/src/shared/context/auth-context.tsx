@@ -1,6 +1,6 @@
 import { createContext } from "react";
-import { Group } from "../models/access-control/group.model";
-import { emptyGroup } from "./../models/access-control/group.model";
+
+import { emptyGroup, Group } from "../models/access-control/group.model";
 import {
   AgenteTratamento,
   emptyAgenteTratamento,
@@ -16,6 +16,7 @@ export const AuthContext = createContext({
   currentComiteMember: emptyComiteMember(),
   areaTratamentoDados: emptyAgenteTratamento(),
   isLoggedIn: false,
+  tokenExpirationDate: new Date(),
   login: (
     user: User,
     isDeveloper: boolean,

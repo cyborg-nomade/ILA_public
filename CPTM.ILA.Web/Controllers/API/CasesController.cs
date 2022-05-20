@@ -354,7 +354,7 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var comiteMember = await _context.Users.Where(u => u.Id == uid)
-                    .Include(u => u.GroupAccessExpirations)
+                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .SingleOrDefaultAsync();
                 if (comiteMember == null)
                     return Request.CreateResponse(HttpStatusCode.NotFound, new
@@ -362,7 +362,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         message = "Usuário não encontrado."
                     });
 
-                var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Id)
+                var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Group.Id)
                     .ToList();
 
                 var pendingCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
@@ -410,7 +410,7 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var comiteMembers = await _context.Users.Where(u => u.IsComite)
-                    .Include(g => g.GroupAccessExpirations)
+                    .Include(g => g.GroupAccessExpirations.Select(gae => gae.Group))
                     .ToListAsync();
 
                 var totals = new List<ExtensaoEncarregadoTotals>();
@@ -418,7 +418,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 foreach (var comiteMember in comiteMembers)
                 {
-                    var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Id)
+                    var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Group.Id)
                         .ToList();
 
                     var pendingCases = await _context.Cases.CountAsync(c =>
@@ -429,7 +429,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     totals.Add(new ExtensaoEncarregadoTotals()
                     {
                         ExtensaoId = comiteMember.Id,
-                        ExtensaoNome = Seguranca.ObterUsuario(comiteMember.Username)
+                        ExtensaoNome = Seguranca.ObterUsuario(comiteMember.Username.ToUpper())
                             .Nome,
                         QuantityByExtensao = pendingCases
                     });
@@ -1020,11 +1020,12 @@ namespace CPTM.ILA.Web.Controllers.API
                     throw new ArgumentNullException(nameof(usuarioChamadoItsm));
                 }
 
-                var userEmailId = _context.ILA_VW_USUARIO.Where(u => u.TX_USERNAME == usuarioChamadoItsm.Username)
+                var userEmailId = _context.ILA_VW_USUARIO
+                    .Where(u => u.TX_USERNAME == usuarioChamadoItsm.Username.ToUpper())
                     .Select(u => u.ID_CODUSUARIO)
                     .SingleOrDefault();
 
-                caseToRequestApproval.SendCaseToApproval(usuarioChamadoItsm.Username, userEmailId);
+                caseToRequestApproval.SendCaseToApproval(usuarioChamadoItsm.Username.ToUpper(), userEmailId);
 
                 var changeLog = new ChangeLog()
                 {
@@ -1067,7 +1068,7 @@ namespace CPTM.ILA.Web.Controllers.API
         private async Task<string> GetGroupName(int gid)
         {
             var groupInDb = await _context.Groups.FindAsync(gid);
-            return (groupInDb != null) ? groupInDb.Nome : "";
+            return (groupInDb != null) ? groupInDb.Nome.ToUpper() : "";
         }
     }
 }

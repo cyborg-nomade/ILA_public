@@ -1,7 +1,8 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import { Outlet } from "react-router-dom";
+
 import ComiteMemberSelector from "../../access-requests/components/ComiteMemberSelector";
 
 const DpoPage = () => {

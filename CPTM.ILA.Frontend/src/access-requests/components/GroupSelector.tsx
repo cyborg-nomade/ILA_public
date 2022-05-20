@@ -2,12 +2,13 @@ import React, { useContext } from "react";
 import Card from "react-bootstrap/Card";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
-import { AuthContext } from "../../shared/context/auth-context";
-import { useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 
+import { AuthContext } from "../../shared/context/auth-context";
+import { useNavigate } from "react-router-dom";
+
 const GroupSelector = () => {
-  const { changeGroup, user } = useContext(AuthContext);
+  const { changeGroup, user, currentGroup } = useContext(AuthContext);
 
   let navigate = useNavigate();
 
@@ -32,17 +33,20 @@ const GroupSelector = () => {
                 key={g.id}
                 variant="outline-secondary"
                 onClick={() => changeGroup(g)}
+                active={g === currentGroup}
               >
                 {g.nome}
               </Button>
             ))}
           </ButtonGroup>
-          <hr></hr>
-          <Row>
-            <Button variant="success" onClick={requestGroupAccessHandler}>
-              Solicitar Acesso a Novo Grupo
-            </Button>
-          </Row>
+          {!user.isComite && <hr></hr>}
+          {!user.isComite && (
+            <Row>
+              <Button variant="success" onClick={requestGroupAccessHandler}>
+                Solicitar Acesso a Novo Grupo
+              </Button>
+            </Row>
+          )}
         </Card.Body>
       </Card>
     </React.Fragment>

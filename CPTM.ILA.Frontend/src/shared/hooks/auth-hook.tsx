@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { Group } from "../models/access-control/group.model";
-import { emptyGroup } from "./../models/access-control/group.model";
+
+import { emptyGroup, Group } from "../models/access-control/group.model";
 import {
   AgenteTratamento,
   emptyAgenteTratamento,
@@ -23,7 +23,9 @@ export const useAuth = () => {
   const [user, setUser] = useState<User>(emptyUser());
   const [isDeveloper, setIsDeveloper] = useState(false);
   const [token, setToken] = useState("");
-  const [tokenExpirationDate, setTokenExpirationDate] = useState<Date>();
+  const [tokenExpirationDate, setTokenExpirationDate] = useState<Date>(
+    new Date()
+  );
   const [currentGroup, setCurrentGroup] = useState<Group>(emptyGroup());
   const [currentComiteMember, setCurrentComiteMember] = useState<ComiteMember>(
     emptyComiteMember()
@@ -125,6 +127,7 @@ export const useAuth = () => {
     user,
     isDeveloper,
     token,
+    tokenExpirationDate,
     currentGroup,
     currentComiteMember,
     areaTratamentoDados,

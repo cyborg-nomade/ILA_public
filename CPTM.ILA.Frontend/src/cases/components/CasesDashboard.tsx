@@ -1,13 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import { PieChart } from "react-minimal-pie-chart";
-import { AuthContext } from "../../shared/context/auth-context";
-import { useHttpClient } from "../../shared/hooks/http-hook";
-import { GroupTotals } from "../../shared/models/DTOs/group-totals.model";
-import { StatusTotals } from "../../shared/models/DTOs/status-totals.model";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import randomColor from "randomcolor";
+
 import { ExtensaoEncarregadoTotals } from "../../shared/models/DTOs/extensao-encarregado-totals.model";
+import { GroupTotals } from "../../shared/models/DTOs/group-totals.model";
+import { StatusTotals } from "../../shared/models/DTOs/status-totals.model";
+import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
 
 type PieChartData = {
   title: string;
@@ -25,8 +28,9 @@ const colors = randomColor({
 
 const CasesDashboard = () => {
   const [selected, setSelected] = useState<number | undefined>(0);
-  const [hovered, setHovered] = useState<number | undefined>(undefined);
+  const [, setHovered] = useState<number | undefined>(undefined);
   const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
+  const [showAlert, setShowAlert] = useState(true);
 
   const { user, token, currentGroup } = useContext(AuthContext);
 
@@ -45,8 +49,6 @@ const CasesDashboard = () => {
         }
       );
 
-      console.log(responseData.totals);
-
       const loadedTotals: StatusTotals[] = responseData.totals;
 
       if (loadedTotals.length === 0) {
@@ -60,7 +62,6 @@ const CasesDashboard = () => {
             key: index,
           };
         });
-        console.log(transformedData);
 
         setPieChartData(transformedData);
       }
@@ -149,8 +150,36 @@ const CasesDashboard = () => {
     };
   }, [sendRequest, token, currentGroup.id, user.isComite, user.isDPO]);
 
+  if (isLoading) {
+    return (
+      <Row className="justify-content-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Row>
+    );
+  }
+
   return (
     <React.Fragment>
+      {error && (
+        <Alert
+          variant={isWarning ? "warning" : "danger"}
+          onClose={clearError}
+          dismissible
+        >
+          {error}
+        </Alert>
+      )}
+      {pieChartData.length === 0 && showAlert && (
+        <Alert
+          variant="warning"
+          dismissible
+          onClose={() => setShowAlert(false)}
+        >
+          "Não existem dados para a seleção!"
+        </Alert>
+      )}
       <Row>
         <h3 className="mb-4">Visão de Processos</h3>
       </Row>

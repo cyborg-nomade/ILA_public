@@ -10,7 +10,7 @@ namespace CPTM.ILA.Web.Util
         private const string ApiLogin = "INTEGRACAO_CPTM_LGPD";
         private const string ApiPass = "INTEGRACAO_CPTM_LGPD";
 
-        public static async Task<bool> AbrirChamado(string username, string descricao)
+        public static async Task<bool> AbrirChamado(string username, string descricao, bool isDuvida)
         {
             ServicePointManager.ServerCertificateValidationCallback +=
                 (sender, certificate, chain, sslPolicyErrors) => true;
@@ -20,6 +20,10 @@ namespace CPTM.ILA.Web.Util
                 Timeout = -1
             };
             //client.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
+
+            var template = isDuvida
+                ? "INC AUT DUVIDA INVENTARIO LGPD AUTOMATIZADO"
+                : "INC AUT SOLICITACAO INVENTARIO LGPD AUTOMATIZADO";
 
 
             var loginRequest = new RestRequest(Method.POST);
@@ -44,7 +48,7 @@ namespace CPTM.ILA.Web.Util
                 values = new
                 {
                     PDP_chrLoginUsuario = username,
-                    PDP_chrTemplateDeIncidente = "INC AUT LGPD SERVICO",
+                    PDP_chrTemplateDeIncidente = template,
                     PDP_ddlFormatoDeAbertura = "UNICO",
                     PDP_chrDescricao = descricao
                 }

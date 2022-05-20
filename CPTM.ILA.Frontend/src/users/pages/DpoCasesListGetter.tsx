@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
-import { Outlet } from "react-router-dom";
 
+import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CasesList from "../../cases/components/CasesList";
-import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 
 const DpoCasesListGetter = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
@@ -19,6 +18,7 @@ const DpoCasesListGetter = () => {
 
   useEffect(() => {
     const getApprovedCases = async () => {
+      console.log(currentComiteMember);
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${currentComiteMember.id}`,
         undefined,
