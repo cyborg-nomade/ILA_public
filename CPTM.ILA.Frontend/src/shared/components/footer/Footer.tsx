@@ -28,7 +28,10 @@ const Footer = () => {
           <Nav.Link>Usuário: {user.username}</Nav.Link>
           <Nav.Link>Grupo: {currentGroup.nome}</Nav.Link>
           <Nav.Link>
-            Sua sessão expira em: {hours}:{minutes}:{seconds}
+            Sua sessão expira em: {hours < 10 && "0"}
+            {hours}:{minutes < 10 && "0"}
+            {minutes}:{seconds < 10 && "0"}
+            {seconds}
           </Nav.Link>
         </Nav>
       </Container>

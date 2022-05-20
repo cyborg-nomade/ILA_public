@@ -11,7 +11,7 @@ const Dashboards = () => {
 
   return (
     <Row className="justify-content-evenly">
-      <Col xs={12} sm={12} md={12} lg={5}>
+      <Col xs={12} sm={12} md={12} lg={user.isComite ? 11 : 5}>
         <CasesDashboard />
       </Col>
       {!user.isComite && (
