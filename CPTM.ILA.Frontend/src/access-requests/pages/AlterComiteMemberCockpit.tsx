@@ -4,7 +4,6 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import ListGroup from "react-bootstrap/ListGroup";
 import InputGroup from "react-bootstrap/InputGroup";
-import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import Col from "react-bootstrap/Col";
@@ -12,6 +11,9 @@ import Col from "react-bootstrap/Col";
 import { ComiteMember } from "../../shared/models/DTOs/comite-member";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
+import AsyncSelect from "react-select/async";
+import { ActionMeta, OptionsOrGroups, SingleValue } from "react-select";
+import { useNavigate } from "react-router-dom";
 
 const AlterComiteMemberCockpit = () => {
   const { token } = useContext(AuthContext);
@@ -21,6 +23,8 @@ const AlterComiteMemberCockpit = () => {
   const [comiteMembers, setComiteMembers] = useState<ComiteMember[]>([]);
   const [memberToAdd, setMemberToAdd] = useState("");
   const [message, setMessage] = useState("");
+
+  let navigate = useNavigate();
 
   useEffect(() => {
     const getComiteMembers = async () => {
@@ -49,19 +53,48 @@ const AlterComiteMemberCockpit = () => {
   }, [sendRequest, token]);
 
   const handleMemberToAddChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    option: SingleValue<string>,
+    actionMeta: ActionMeta<string>
   ) => {
-    setMemberToAdd(event.currentTarget.value);
+    if (actionMeta.action === "clear") setMemberToAdd("");
+    if (option) setMemberToAdd(option);
+  };
+
+  const loadUsernameOptions = async (
+    inputValue: string,
+    callback: (options: OptionsOrGroups<string, never>) => void
+  ) => {
+    if (inputValue.length >= 3) {
+      const response = await fetch(
+        `${process.env.REACT_APP_CONNSTR}/users/query`,
+        {
+          method: "POST",
+          body: JSON.stringify(inputValue),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      const json = await response.json();
+      const options = json.formattedResults;
+
+      callback(options);
+      return options;
+    }
   };
 
   const handleAddMember = async () => {
     console.log(memberToAdd);
 
+    // @ts-ignore
+    const memberLogin = memberToAdd.value;
+
     try {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/access-requests/add-comite-member`,
         "POST",
-        JSON.stringify(memberToAdd),
+        JSON.stringify(memberLogin),
         {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
@@ -126,6 +159,10 @@ const AlterComiteMemberCockpit = () => {
     }
   };
 
+  const handleEditGroups = (cmid: number) => {
+    navigate(`/dpo/alter-cm-groups/${cmid}`);
+  };
+
   const clearMessage = () => {
     setMessage("");
   };
@@ -157,19 +194,21 @@ const AlterComiteMemberCockpit = () => {
           </Alert>
         </Row>
       )}
-      <Card
-        className="justify-content-center mx-auto mt-4"
-        style={{ width: "28rem" }}
-      >
+      <Card className="mx-auto mt-4" style={{ width: "28rem" }}>
         <Card.Title className="pt-3 px-3">Adicionar Membro</Card.Title>
         <Card.Body>
-          <InputGroup className="justify-content-center">
-            <InputGroup.Text>Login do Novo Membro: </InputGroup.Text>
-            <Form.Control
-              type="text"
-              value={memberToAdd}
-              onChange={handleMemberToAddChange}
-            />
+          <InputGroup>
+            <InputGroup.Text>Novo Membro: </InputGroup.Text>
+            <div className="form-control p-0">
+              <AsyncSelect
+                defaultOptions={[]}
+                cacheOptions
+                loadOptions={loadUsernameOptions}
+                onChange={handleMemberToAddChange}
+                value={memberToAdd}
+                isClearable
+              />
+            </div>
             <Button onClick={handleAddMember}>Adicionar</Button>
           </InputGroup>
         </Card.Body>
@@ -185,7 +224,7 @@ const AlterComiteMemberCockpit = () => {
               <ListGroup.Item className="p-0" key={cm.id}>
                 <InputGroup>
                   <InputGroup.Text key={cm.id} as={Col} lg={9}>
-                    {cm.nome}
+                    <div onClick={() => handleEditGroups(cm.id)}>{cm.nome}</div>
                   </InputGroup.Text>
                   <Col lg={3} className="m-0">
                     <Button

@@ -18,6 +18,7 @@ const DpoCasesListGetter = () => {
 
   useEffect(() => {
     const getApprovedCases = async () => {
+      console.log(currentComiteMember);
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${currentComiteMember.id}`,
         undefined,
