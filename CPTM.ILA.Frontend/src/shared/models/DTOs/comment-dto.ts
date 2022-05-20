@@ -1,5 +1,5 @@
 import { User } from "../access-control/users.model";
-import { Thread } from "./../messaging/thread.model";
+import { Thread } from "../messaging/thread.model";
 
 export interface CommentDTO {
   text: string;

@@ -1,5 +1,3 @@
-import { hipotesesTratamento } from "../case-helpers/enums.model";
-
 export interface CaseListItem {
   id: string;
   nome: string;

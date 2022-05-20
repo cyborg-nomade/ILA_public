@@ -31,8 +31,8 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> PostItsm([FromBody] CommentDTO commentDto)
         {
-            var chamadoAberto = await ItsmUtil.AbrirChamado(commentDto.Author.Username,
-                "Item " + commentDto.RefItem + ": " + commentDto.Text);
+            var chamadoAberto = await ItsmUtil.AbrirChamado(commentDto.Author.Username.ToUpper(),
+                "Item " + commentDto.RefItem + ": " + commentDto.Text, true);
 
             if (!chamadoAberto)
             {

@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
@@ -8,10 +8,9 @@ import { AuthContext } from "./shared/context/auth-context";
 import { useAuth } from "./shared/hooks/auth-hook";
 import MainHeader from "./shared/components/nav/MainHeader";
 import "./App.css";
+import Footer from "./shared/components/footer/Footer";
+import CMGroupMgmtCockpit from "./access-requests/pages/CMGroupMgmtCockpit";
 
-const AllCasesListGetter = React.lazy(
-  () => import("./cases/pages/AllCasesListGetter")
-);
 const ApproveCasesListGetter = React.lazy(
   () => import("./cases/pages/ApproveCasesListGetter")
 );
@@ -25,10 +24,6 @@ const UserPage = React.lazy(() => import("./users/pages/UserPage"));
 const ApproveCaseGetter = React.lazy(
   () => import("./cases/pages/ApproveCaseGetter")
 );
-const ApproveCasesPage = React.lazy(
-  () => import("./cases/pages/ApproveCasesPage")
-);
-const AllCasesPage = React.lazy(() => import("./cases/pages/AllCasesPage"));
 const RequestAccess = React.lazy(() => import("./users/pages/RequestAccess"));
 const AllAccessRequestsPage = React.lazy(
   () => import("./access-requests/pages/AllAccessRequestsPage")
@@ -67,12 +62,14 @@ const DpoCasesListGetter = React.lazy(
 const AlterComiteMemberCockpit = React.lazy(
   () => import("./access-requests/pages/AlterComiteMemberCockpit")
 );
+const DpoHomePage = React.lazy(() => import("./users/pages/DpoHomePage"));
 
 const App = () => {
   const {
     user,
     isDeveloper,
     token,
+    tokenExpirationDate,
     currentGroup,
     currentComiteMember,
     areaTratamentoDados,
@@ -141,8 +138,10 @@ const App = () => {
   } else if (token && user.isComite && user.isDPO) {
     routes = (
       <React.Fragment>
-        <Route path="/dpo" element={<DpoPage />}>
+        <Route path="/dpo" element={<DpoHomePage />}>
           <Route index element={<Dashboards />} />
+        </Route>
+        <Route path="/dpo" element={<DpoPage />}>
           <Route path="cases" element={<UserCasesLayout />}>
             <Route index element={<DpoCasesListGetter />} />
           </Route>
@@ -157,6 +156,10 @@ const App = () => {
         <Route
           path="/dpo/alter-comite-members"
           element={<AlterComiteMemberCockpit />}
+        />
+        <Route
+          path="/dpo/alter-cm-groups/:cmid"
+          element={<CMGroupMgmtCockpit />}
         />
         <Route path="/" element={<Navigate replace to="../dpo/" />} />
         <Route path="/*" element={<Navigate replace to="../dpo/" />} />
@@ -174,6 +177,7 @@ const App = () => {
         currentComiteMember,
         areaTratamentoDados,
         isLoggedIn: !!token,
+        tokenExpirationDate,
         login,
         logout,
         changeGroup,
@@ -181,7 +185,11 @@ const App = () => {
       }}
     >
       <MainHeader />
-      <Container className="mt-5 swiss721" fluid>
+      <Container
+        className="mt-5 swiss721"
+        style={{ paddingBottom: "70px" }}
+        fluid
+      >
         <Suspense
           fallback={
             <Row className="justify-content-center">
@@ -194,6 +202,7 @@ const App = () => {
           <Routes>{routes}</Routes>
         </Suspense>
       </Container>
+      {tokenExpirationDate && token && <Footer />}
     </AuthContext.Provider>
   );
 };

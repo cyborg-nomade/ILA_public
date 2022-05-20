@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-
-import { useFormikContext, getIn } from "formik";
+import { Controller, UseFormReturn } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -9,40 +8,42 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 import { Case } from "../../../shared/models/cases.model";
 import { CaseIndexDictionary } from "../../../shared/models/case-index.dictionary";
-import CreateCommentBox from "./../../../threads-comments/components/CreateCommentBox";
+import CreateCommentBox from "../../../threads-comments/components/CreateCommentBox";
 
-const Section3FormRow = (props: { disabled: boolean }) => {
-  const { values, touched, errors, setFieldValue, handleBlur, handleChange } =
-    useFormikContext<Case>();
-
-  const [trata, setTrata] = useState(false);
+const Section3FormRow = (props: {
+  disabled: boolean;
+  methods: UseFormReturn<Case>;
+}) => {
+  const { getValues } = props.methods;
+  const [atua, setAtua] = useState(false);
 
   useEffect(() => {
+    const values = getValues();
     for (const value of Object.values(values.fasesCicloTratamento)) {
       if (value) {
-        setTrata(true);
+        setAtua(true);
       }
     }
     return () => {};
-  }, [values]);
+  }, [getValues]);
 
   const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.value === "SIM") {
-      setTrata(true);
+      setAtua(true);
     } else {
-      setTrata(false);
-      setFieldValue("fasesCicloTratamento.coleta", false);
-      setFieldValue("fasesCicloTratamento.retencao", false);
-      setFieldValue("fasesCicloTratamento.processamento", false);
-      setFieldValue("fasesCicloTratamento.compartilhamento", false);
-      setFieldValue("fasesCicloTratamento.eliminacao", false);
+      setAtua(false);
+      props.methods.setValue("fasesCicloTratamento.coleta", false);
+      props.methods.setValue("fasesCicloTratamento.retencao", false);
+      props.methods.setValue("fasesCicloTratamento.processamento", false);
+      props.methods.setValue("fasesCicloTratamento.compartilhamento", false);
+      props.methods.setValue("fasesCicloTratamento.eliminacao", false);
     }
   };
 
   return (
     <Row className="mb-3 align-items-center bg-primary bg-opacity-10">
       <Col lg={1}>
-        <p>{CaseIndexDictionary.fasesCicloTratamento}</p>
+        <p>{CaseIndexDictionary.fasesCicloTratamento.number}</p>
       </Col>
       <Col>
         <OverlayTrigger
@@ -57,111 +58,126 @@ const Section3FormRow = (props: { disabled: boolean }) => {
           }
         >
           <Form.Label>
-            Em qual fase do ciclo de vida o Operador atua?
+            {CaseIndexDictionary.fasesCicloTratamento.title}
           </Form.Label>
         </OverlayTrigger>
       </Col>
       <Col className="d-grid justify-content-center">
         <Form.Check
           type="radio"
-          name="trata"
+          name="atua"
           required
           label="Sim"
           value="SIM"
-          checked={trata}
+          checked={atua}
           disabled={props.disabled}
           onChange={handleTrataRadio}
         />
         <Form.Check
           type="radio"
-          name="trata"
+          name="atua"
           required
           inline
           label="Não"
           value="NÃO"
-          checked={!trata}
+          checked={!atua}
           disabled={props.disabled}
           onChange={handleTrataRadio}
         />
       </Col>
       <Col className="d-grid justify-content-center">
-        <Form.Check
-          disabled={!trata || props.disabled}
-          type="checkbox"
-          id="fasesCicloTratamento.coleta"
+        <Controller
+          control={props.methods.control}
           name="fasesCicloTratamento.coleta"
-          checked={values.fasesCicloTratamento.coleta}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          isValid={
-            getIn(touched, "fasesCicloTratamento.coleta") &&
-            !getIn(errors, "fasesCicloTratamento.coleta")
-          }
-          isInvalid={!!getIn(errors, "fasesCicloTratamento.coleta")}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Check
+              disabled={!atua || props.disabled}
+              type="checkbox"
+              onChange={onChange}
+              onBlur={onBlur}
+              checked={value}
+              ref={ref}
+              isInvalid={
+                !!props.methods.formState.errors.fasesCicloTratamento?.coleta
+              }
+            />
+          )}
         />
       </Col>
       <Col className="d-grid justify-content-center">
-        <Form.Check
-          disabled={!trata || props.disabled}
-          type="checkbox"
-          id="fasesCicloTratamento.retencao"
+        <Controller
+          control={props.methods.control}
           name="fasesCicloTratamento.retencao"
-          checked={values.fasesCicloTratamento.retencao}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          isValid={
-            getIn(touched, "fasesCicloTratamento.retencao") &&
-            !getIn(errors, "fasesCicloTratamento.retencao")
-          }
-          isInvalid={!!getIn(errors, "fasesCicloTratamento.retencao")}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Check
+              disabled={!atua || props.disabled}
+              type="checkbox"
+              onChange={onChange}
+              onBlur={onBlur}
+              checked={value}
+              ref={ref}
+              isInvalid={
+                !!props.methods.formState.errors.fasesCicloTratamento?.coleta
+              }
+            />
+          )}
         />
       </Col>
       <Col className="d-grid justify-content-center">
-        <Form.Check
-          disabled={!trata || props.disabled}
-          type="checkbox"
-          id="fasesCicloTratamento.processamento"
+        <Controller
+          control={props.methods.control}
           name="fasesCicloTratamento.processamento"
-          checked={values.fasesCicloTratamento.processamento}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          isValid={
-            getIn(touched, "fasesCicloTratamento.processamento") &&
-            !getIn(errors, "fasesCicloTratamento.processamento")
-          }
-          isInvalid={!!getIn(errors, "fasesCicloTratamento.processamento")}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Check
+              disabled={!atua || props.disabled}
+              type="checkbox"
+              onChange={onChange}
+              onBlur={onBlur}
+              checked={value}
+              ref={ref}
+              isInvalid={
+                !!props.methods.formState.errors.fasesCicloTratamento?.coleta
+              }
+            />
+          )}
         />
       </Col>
       <Col className="d-grid justify-content-center">
-        <Form.Check
-          disabled={!trata || props.disabled}
-          type="checkbox"
-          id="fasesCicloTratamento.compartilhamento"
+        <Controller
+          control={props.methods.control}
           name="fasesCicloTratamento.compartilhamento"
-          checked={values.fasesCicloTratamento.compartilhamento}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          isValid={
-            getIn(touched, "fasesCicloTratamento.compartilhamento") &&
-            !getIn(errors, "fasesCicloTratamento.compartilhamento")
-          }
-          isInvalid={!!getIn(errors, "fasesCicloTratamento.compartilhamento")}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Check
+              disabled={!atua || props.disabled}
+              type="checkbox"
+              onChange={onChange}
+              onBlur={onBlur}
+              checked={value}
+              ref={ref}
+              isInvalid={
+                !!props.methods.formState.errors.fasesCicloTratamento?.coleta
+              }
+            />
+          )}
         />
       </Col>
       <Col className="d-grid justify-content-center">
-        <Form.Check
-          disabled={!trata || props.disabled}
-          type="checkbox"
-          id="fasesCicloTratamento.eliminacao"
+        <Controller
+          control={props.methods.control}
           name="fasesCicloTratamento.eliminacao"
-          checked={values.fasesCicloTratamento.eliminacao}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          isValid={
-            getIn(touched, "fasesCicloTratamento.eliminacao") &&
-            !getIn(errors, "fasesCicloTratamento.eliminacao")
-          }
-          isInvalid={!!getIn(errors, "fasesCicloTratamento.eliminacao")}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Form.Check
+              disabled={!atua || props.disabled}
+              type="checkbox"
+              onChange={onChange}
+              onBlur={onBlur}
+              checked={value}
+              ref={ref}
+              isInvalid={
+                !!props.methods.formState.errors.fasesCicloTratamento?.coleta
+              }
+            />
+          )}
         />
       </Col>
       <Col lg={1} className="p-0">

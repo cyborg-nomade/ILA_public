@@ -1,153 +1,28 @@
-import React, { useContext, useCallback, useEffect, useState } from "react";
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Formik, Field } from "formik";
-import * as yup from "yup";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
 
-import { AccessRequestDTO } from "./../../shared/models/DTOs/access-request-dto.model";
-import {
-  AccessRequest,
-  tipoSolicitacaoAcesso,
-} from "../../shared/models/access-control/access-request.model";
-import { useHttpClient } from "../../shared/hooks/http-hook";
-import {
-  Assign,
-  ObjectShape,
-  AnyObject,
-  TypeOfShape,
-  AssertsShape,
-} from "yup/lib/object";
-import { RequiredStringSchema } from "yup/lib/string";
-import SelectFieldMulti from "../../shared/components/UI/SelectFieldMulti";
-import { RequiredArraySchema } from "yup/lib/array";
-import { MixedSchema } from "yup/lib/mixed";
+import { AccessRequestDTO } from "../../shared/models/DTOs/access-request-dto.model";
+import { tipoSolicitacaoAcesso } from "../../shared/models/access-control/access-request.model";
 import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import Select, {
+  ActionMeta,
+  GroupBase,
+  MultiValue,
+  OptionsOrGroups,
+} from "react-select";
+import AsyncSelect from "react-select/async";
 
 type onSubmitFn = (item: AccessRequestDTO) => void;
-
-let schema:
-  | yup.ObjectSchema<
-      Assign<
-        ObjectShape,
-        {
-          usernameSuperior: RequiredStringSchema<string | undefined, AnyObject>;
-          groupNames: RequiredArraySchema<
-            yup.AnySchema<any, any, any>,
-            AnyObject,
-            any[] | undefined
-          >;
-          justificativa: RequiredStringSchema<string | undefined, AnyObject>;
-          emailFile: MixedSchema<any, AnyObject, any>;
-        }
-      >,
-      AnyObject,
-      TypeOfShape<
-        Assign<
-          ObjectShape,
-          {
-            usernameSuperior: RequiredStringSchema<
-              string | undefined,
-              AnyObject
-            >;
-            groupNames: RequiredArraySchema<
-              yup.AnySchema<any, any, any>,
-              AnyObject,
-              any[] | undefined
-            >;
-            justificativa: RequiredStringSchema<string | undefined, AnyObject>;
-            emailFile: MixedSchema<any, AnyObject, any>;
-          }
-        >
-      >,
-      AssertsShape<
-        Assign<
-          ObjectShape,
-          {
-            usernameSuperior: RequiredStringSchema<
-              string | undefined,
-              AnyObject
-            >;
-            groupNames: RequiredArraySchema<
-              yup.AnySchema<any, any, any>,
-              AnyObject,
-              any[] | undefined
-            >;
-            justificativa: RequiredStringSchema<string | undefined, AnyObject>;
-            emailFile: MixedSchema<any, AnyObject, any>;
-          }
-        >
-      >
-    >
-  | yup.ObjectSchema<
-      Assign<
-        ObjectShape,
-        {
-          usernameSolicitante: RequiredStringSchema<
-            string | undefined,
-            AnyObject
-          >;
-          usernameSuperior: yup.StringSchema<
-            string | undefined,
-            AnyObject,
-            string | undefined
-          >;
-          justificativa: RequiredStringSchema<string | undefined, AnyObject>;
-          emailFile: any;
-        }
-      >,
-      AnyObject,
-      TypeOfShape<
-        Assign<
-          ObjectShape,
-          {
-            usernameSolicitante: RequiredStringSchema<
-              string | undefined,
-              AnyObject
-            >;
-            usernameSuperior: yup.StringSchema<
-              string | undefined,
-              AnyObject,
-              string | undefined
-            >;
-            justificativa: RequiredStringSchema<string | undefined, AnyObject>;
-            emailFile: any;
-          }
-        >
-      >,
-      AssertsShape<
-        Assign<
-          ObjectShape,
-          {
-            usernameSolicitante: RequiredStringSchema<
-              string | undefined,
-              AnyObject
-            >;
-            usernameSuperior: yup.StringSchema<
-              string | undefined,
-              AnyObject,
-              string | undefined
-            >;
-            justificativa: RequiredStringSchema<string | undefined, AnyObject>;
-            emailFile: any;
-          }
-        >
-      >
-    >;
-
-export interface Options {
-  value: string;
-  label: string;
-}
-
-export interface GroupedOption {
-  label: string;
-  options: Options[];
-}
 
 const AccessRequestForm = (props: {
   item: AccessRequestDTO;
@@ -158,38 +33,20 @@ const AccessRequestForm = (props: {
   onReject?: onSubmitFn;
 }) => {
   const [isComiteReq, setIsComiteReq] = useState(false);
-  const [groups, setGroups] = useState<GroupedOption[]>([]);
+  const [groups, setGroups] = useState<
+    GroupBase<{ value: string; label: string }>[]
+  >([]);
+  const [eFile, setEFile] = useState<File>(new File([""], "emptyFile.txt"));
+  const [selectedSuperior, setSelectedSuperior] = useState("");
 
   const { token } = useContext(AuthContext);
 
-  useEffect(() => {
-    schema = props.groups
-      ? yup.object().shape({
-          usernameSuperior: yup.string().required(),
-          groupNames: yup.array().required(),
-          justificativa: yup.string().required(),
-          emailFile: yup.mixed().required(),
-        })
-      : isComiteReq
-      ? yup.object().shape({
-          usernameSolicitante: yup.string().required(),
-          usernameSuperior: yup.string().required(),
-          justificativa: yup.string().required(),
-          emailFile: yup.mixed().required(),
-        })
-      : yup.object().shape({
-          usernameSolicitante: yup.string().required(),
-          usernameSuperior: yup.string().optional(),
-          justificativa: yup.string().required(),
-          emailFile: yup.mixed().optional(),
-        });
+  const { isLoading, error, sendRequest, clearError, isWarning } =
+    useHttpClient();
 
-    return () => {};
-  }, [isComiteReq, props.groups, props.item]);
-
-  const handleCheckIsComiteReq = (event: any) => {
-    setIsComiteReq(!isComiteReq);
-  };
+  const methods = useForm<AccessRequestDTO>({ defaultValues: props.item });
+  const { reset } = methods;
+  useEffect(() => reset(props.item), [reset, props.item]);
 
   const arid = useParams().arid;
   let navigate = useNavigate();
@@ -199,6 +56,11 @@ const AccessRequestForm = (props: {
   const backOneHandler = () => {
     navigate(-1);
   };
+
+  // const handleCheckIsComiteReq = (event: any) => {
+  //   setIsComiteReq(!isComiteReq);
+  // };
+
   const getFileHandler = async () => {
     const fileRes = await fetch(
       `${process.env.REACT_APP_CONNSTR}/access-requests/get-file/${arid}`,
@@ -225,8 +87,6 @@ const AccessRequestForm = (props: {
     console.log(link, url, fileBlob, fileRes.headers.get("Filename"));
   };
 
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
-
   useEffect(() => {
     const getGroups = async () => {
       const responseData = await sendRequest(
@@ -238,7 +98,10 @@ const AccessRequestForm = (props: {
         }
       );
 
-      const groupedOptions: GroupedOption[] = [
+      const groupedOptions: GroupBase<{
+        value: string;
+        label: string;
+      }>[] = [
         {
           label: "Diretorias",
           options: responseData.diretorias.map((d: string) => ({
@@ -255,12 +118,14 @@ const AccessRequestForm = (props: {
         },
         {
           label: "Departamentos",
-          options: responseData.deptos.map((de: string) => ({
-            value: de,
-            label: de,
+          options: responseData.deptos.map((dpto: string) => ({
+            value: dpto,
+            label: dpto,
           })),
         },
       ];
+
+      console.log("groupedOptions: ", groupedOptions);
 
       setGroups(groupedOptions);
     };
@@ -274,36 +139,93 @@ const AccessRequestForm = (props: {
     };
   }, [sendRequest]);
 
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+    const file: File = event.target.files[0];
+    setEFile(file);
+    methods.setValue("emailFile", file);
+  };
+
+  const handleSingleFileValidation = (file: File) => {
+    if (!file || file.size === 0) {
+      return "Favor anexar um arquivo de autorização";
+    }
+    return true;
+  };
+
+  const handleGroupsToAddChange = (
+    options: MultiValue<{ value: string; label: string }>,
+    actionMeta: ActionMeta<{ value: string; label: string }>
+  ) => {
+    if (actionMeta.action === "clear") methods.setValue("groupNames", []);
+    const values = options.map((o) => o.value);
+    if (options) methods.setValue("groupNames", values);
+  };
+
+  const loadUsernameOptions = async (
+    inputValue: string,
+    callback: (options: OptionsOrGroups<string, never>) => void
+  ) => {
+    if (inputValue.length >= 3) {
+      const response = await fetch(
+        `${process.env.REACT_APP_CONNSTR}/users/query`,
+        {
+          method: "POST",
+          body: JSON.stringify(inputValue),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      const json = await response.json();
+      const options = json.formattedResults;
+
+      callback(options);
+      return options;
+    }
+  };
+
+  const onSubmit: SubmitHandler<AccessRequestDTO> = (
+    item: AccessRequestDTO,
+    event
+  ) => {
+    item.tipoSolicitacaoAcesso = props.groups
+      ? tipoSolicitacaoAcesso.AcessoAGrupos
+      : isComiteReq
+      ? tipoSolicitacaoAcesso.AcessoComite
+      : tipoSolicitacaoAcesso.AcessoAoSistema;
+
+    item.emailFile = eFile;
+    props.onSubmit(item);
+  };
+
+  if (isLoading) {
+    return (
+      <Row className="justify-content-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Row>
+    );
+  }
+
   return (
-    <Formik
-      validationSchema={schema}
-      enableReinitialize={true}
-      onSubmit={(values) => {
-        values.tipoSolicitacaoAcesso = props.groups
-          ? tipoSolicitacaoAcesso.AcessoAGrupos
-          : isComiteReq
-          ? tipoSolicitacaoAcesso.AcessoComite
-          : tipoSolicitacaoAcesso.AcessoAoSistema;
-        props.onSubmit(values);
-      }}
-      initialValues={props.item}
-    >
-      {({
-        handleSubmit,
-        handleChange,
-        handleBlur,
-        setFieldValue,
-        values,
-        touched,
-        isValid,
-        errors,
-        dirty,
-      }) => (
-        <Form noValidate onSubmit={handleSubmit}>
-          <Card className="mx-auto" style={{ width: "28rem" }}>
-            <Card.Title className="pt-3 px-3">Solicitação de Acesso</Card.Title>
-            <Card.Body>
-              {/* {props.register && (
+    <React.Fragment>
+      {error && (
+        <Alert
+          variant={isWarning ? "warning" : "danger"}
+          onClose={clearError}
+          dismissible
+        >
+          {error}
+        </Alert>
+      )}
+      <Form noValidate onSubmit={methods.handleSubmit(onSubmit)}>
+        <Card className="mx-auto" style={{ width: "28rem" }}>
+          <Card.Title className="pt-3 px-3">Solicitação de Acesso</Card.Title>
+          <Card.Body>
+            {/* {props.register && (
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="validationFormik00">
                     <Form.Check
@@ -316,172 +238,239 @@ const AccessRequestForm = (props: {
                   </Form.Group>
                 </Row>
               )} */}
-              {(props.register || props.approve) && (
-                <Row className="mb-3">
-                  <Form.Group as={Col} controlId="validationFormik01">
-                    <Form.Label>Usuário AD do Solicitante</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="usernameSolicitante"
-                      value={values.usernameSolicitante}
-                      disabled={props.approve}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      isValid={
-                        touched.usernameSolicitante &&
-                        !errors.usernameSolicitante
-                      }
-                      isInvalid={!!errors.usernameSolicitante}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Esse campo é obrigatório
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Row>
-              )}
-              {((props.register && !isComiteReq) ||
-                props.approve ||
-                props.groups) && (
-                <Row className="mb-3">
-                  <Form.Group as={Col} controlId="validationFormik02">
-                    <Form.Label>Usuário AD do Superior</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="usernameSuperior"
-                      value={values.usernameSuperior}
-                      disabled={props.approve}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      isValid={
-                        touched.usernameSuperior && !errors.usernameSuperior
-                      }
-                      isInvalid={!!errors.usernameSuperior}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Esse campo é obrigatório
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Row>
-              )}
-              {(props.groups || isComiteReq || props.approve) && (
-                <Row className="mb-3">
-                  <Form.Group as={Col} controlId="validationFormik03">
-                    <Form.Label>Grupos a serem acessados</Form.Label>
-                    <Field
-                      isDisabled={props.approve}
-                      component={SelectFieldMulti}
-                      name="groupNames"
-                      options={groups}
-                    />
-                  </Form.Group>
-                </Row>
-              )}
+            {(props.register || props.approve) && (
               <Row className="mb-3">
-                <Form.Group as={Col} controlId="validationFormik04">
-                  <Form.Label>Justificativa de acesso</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={5}
-                    name="justificativa"
-                    value={values.justificativa}
-                    disabled={props.approve}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isValid={touched.justificativa && !errors.justificativa}
-                    isInvalid={!!errors.justificativa}
+                <Form.Group as={Col} controlId="validationFormik01">
+                  <Form.Label>Login do Solicitante</Form.Label>
+                  <Controller
+                    rules={{ required: true, maxLength: 250 }}
+                    control={methods.control}
+                    name="usernameSolicitante"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        type="text"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        ref={ref}
+                        isInvalid={
+                          !!methods.formState.errors.usernameSolicitante
+                        }
+                        placeholder="Insira o seu login"
+                        disabled={props.approve}
+                      />
+                    )}
                   />
                   <Form.Control.Feedback type="invalid">
                     Esse campo é obrigatório
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
-              {!isComiteReq && !props.approve && (
-                <Row className="mb-3">
-                  <Form.Group controlId="formFile" className="mb-3">
-                    <Form.Label>E-mail com autorização do superior</Form.Label>
-                    <Form.Control
-                      type="file"
-                      name="emailFile"
-                      onChange={(event) => {
-                        const target = event.currentTarget as HTMLInputElement;
-                        const files = target.files as FileList;
-
-                        setFieldValue("emailFile", files[0]);
-                      }}
+            )}
+            {((props.register && !isComiteReq) ||
+              props.approve ||
+              props.groups) && (
+              <Row className="mb-3">
+                <Form.Group as={Col} controlId="validationFormik02">
+                  <Form.Label>Login do Superior</Form.Label>
+                  {props.approve ? (
+                    <Controller
+                      rules={{ required: true, maxLength: 250 }}
+                      control={methods.control}
+                      name="usernameSuperior"
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <Form.Control
+                          type="text"
+                          onChange={onChange}
+                          onBlur={onBlur}
+                          value={value}
+                          ref={ref}
+                          isInvalid={
+                            !!methods.formState.errors.usernameSuperior
+                          }
+                          disabled={props.approve}
+                        />
+                      )}
                     />
-                  </Form.Group>
-                </Row>
-              )}
-              {props.approve && (
-                <Row className="mb-3">
-                  <Button onClick={getFileHandler}>
-                    Baixar Arquivo de Autorização
-                  </Button>
-                </Row>
-              )}
-              {props.register && (
-                <React.Fragment>
+                  ) : (
+                    <Controller
+                      rules={{ required: true }}
+                      control={methods.control}
+                      name="usernameSuperior"
+                      render={({ field }) => (
+                        <AsyncSelect
+                          {...field}
+                          defaultOptions={[]}
+                          cacheOptions
+                          placeholder={"Busque o nome do seu superior"}
+                          loadOptions={loadUsernameOptions}
+                          className={
+                            !!methods.formState.errors.usernameSuperior
+                              ? "invalid-border-react-select"
+                              : ""
+                          }
+                          isDisabled={props.approve}
+                        />
+                      )}
+                    />
+                  )}
+                  {!!methods.formState.errors.usernameSuperior && (
+                    <div className="invalid-feedback-react-select">
+                      Esse campo é obrigatório
+                    </div>
+                  )}
+                </Form.Group>
+              </Row>
+            )}
+            {(props.groups || isComiteReq || props.approve) && (
+              <Row className="mb-3">
+                <Form.Group as={Col} controlId="validationFormik03">
+                  <Form.Label>Grupos a serem acessados</Form.Label>
+                  <Controller
+                    rules={{ required: true }}
+                    control={methods.control}
+                    name="groupNames"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Select
+                        options={groups}
+                        value={value.map((v) => ({ value: v, label: v }))}
+                        onChange={handleGroupsToAddChange}
+                        onBlur={onBlur}
+                        isSearchable
+                        isMulti
+                        placeholder="Selecione os grupos a serem acessados"
+                        isDisabled={props.approve}
+                      />
+                    )}
+                  />
+                  {!!methods.formState.errors.groupNames && (
+                    <div className="invalid-feedback-react-select">
+                      Esse campo é obrigatório
+                    </div>
+                  )}
+                </Form.Group>
+              </Row>
+            )}
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="validationFormik04">
+                <Form.Label>Justificativa de acesso</Form.Label>
+                <Controller
+                  rules={{ required: true, maxLength: 250 }}
+                  control={methods.control}
+                  name="justificativa"
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <Form.Control
+                      as="textarea"
+                      rows={5}
+                      value={value}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      isInvalid={!!methods.formState.errors.justificativa}
+                      disabled={props.approve}
+                      ref={ref}
+                    />
+                  )}
+                />
+                <Form.Control.Feedback type="invalid">
+                  Esse campo é obrigatório
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+            {!isComiteReq && !props.approve && (
+              <Row className="mb-3">
+                <Form.Group controlId="formFile" className="mb-3">
+                  <Form.Label>E-mail com autorização do superior</Form.Label>
+                  <Controller
+                    rules={{ validate: handleSingleFileValidation }}
+                    control={methods.control}
+                    name="emailFile"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Form.Control
+                        type="file"
+                        onChange={handleFileChange}
+                        onBlur={onBlur}
+                        ref={ref}
+                        isInvalid={
+                          !!methods.formState.errors.emailFile?.message
+                        }
+                      />
+                    )}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {methods.formState.errors.emailFile?.message}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+            )}
+            {props.approve && (
+              <Row className="mb-3">
+                <Button onClick={getFileHandler}>
+                  Baixar Arquivo de Autorização
+                </Button>
+              </Row>
+            )}
+            {props.register && (
+              <React.Fragment>
+                <Button
+                  type="submit"
+                  className="float-end mt-3"
+                  variant="success"
+                  disabled={!methods.formState.isDirty}
+                >
+                  Solicitar
+                </Button>
+                <Button
+                  type="button"
+                  className="float-start mt-3"
+                  onClick={backToHomepageHandler}
+                >
+                  Fazer Login
+                </Button>
+              </React.Fragment>
+            )}
+            {props.approve && (
+              <React.Fragment>
+                <ButtonGroup className="float-end mt-3">
                   <Button
-                    type="submit"
-                    className="float-end mt-3"
-                    variant="success"
-                    disabled={!(isValid && dirty)}
+                    variant="danger"
+                    onClick={() => props.onReject!(methods.getValues())}
                   >
-                    Solicitar
+                    Reprovar
                   </Button>
-                  <Button
-                    type="button"
-                    className="float-start mt-3"
-                    onClick={backToHomepageHandler}
-                  >
-                    Fazer Login
-                  </Button>
-                </React.Fragment>
-              )}
-              {props.approve && (
-                <React.Fragment>
-                  <ButtonGroup className="float-end mt-3">
-                    <Button
-                      variant="danger"
-                      onClick={() => props.onReject!(values)}
-                    >
-                      Reprovar
-                    </Button>
-                    <Button type="submit">Aprovar</Button>
-                  </ButtonGroup>
-                  <Button
-                    type="button"
-                    className="float-start mt-3"
-                    onClick={backOneHandler}
-                  >
-                    Voltar
-                  </Button>
-                </React.Fragment>
-              )}
-              {props.groups && (
-                <React.Fragment>
-                  <Button
-                    type="submit"
-                    className="float-end mt-3"
-                    variant="success"
-                    disabled={!(isValid && dirty)}
-                  >
-                    Solicitar
-                  </Button>
-                  <Button
-                    type="button"
-                    className="float-start mt-3"
-                    onClick={backToHomepageHandler}
-                  >
-                    Página Inicial
-                  </Button>
-                </React.Fragment>
-              )}
-            </Card.Body>
-          </Card>
-        </Form>
-      )}
-    </Formik>
+                  <Button type="submit">Aprovar</Button>
+                </ButtonGroup>
+                <Button
+                  type="button"
+                  className="float-start mt-3"
+                  onClick={backOneHandler}
+                >
+                  Voltar
+                </Button>
+              </React.Fragment>
+            )}
+            {props.groups && (
+              <React.Fragment>
+                <Button
+                  type="submit"
+                  className="float-end mt-3"
+                  variant="success"
+                  disabled={!methods.formState.isDirty}
+                >
+                  Solicitar
+                </Button>
+                <Button
+                  type="button"
+                  className="float-start mt-3"
+                  onClick={backToHomepageHandler}
+                >
+                  Página Inicial
+                </Button>
+              </React.Fragment>
+            )}
+          </Card.Body>
+        </Card>
+      </Form>
+    </React.Fragment>
   );
 };
 

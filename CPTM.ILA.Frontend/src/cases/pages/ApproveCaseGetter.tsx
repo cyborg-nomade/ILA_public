@@ -4,7 +4,7 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { emptyCase, BaseCase, Case } from "../../shared/models/cases.model";
+import { Case, emptyCase } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
@@ -22,8 +22,6 @@ const ApproveCaseGetter = () => {
 
   useEffect(() => {
     const getCaseToApprove = async () => {
-      console.log(token);
-
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
         undefined,

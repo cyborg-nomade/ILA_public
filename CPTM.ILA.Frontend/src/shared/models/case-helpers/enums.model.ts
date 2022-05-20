@@ -33,12 +33,12 @@ export enum tipoCompartilhamentoDados {
 }
 
 export enum tipoFinalidadeCompartilhamento {
-  execuçãoDescentralizadaAtividadePublica = "I. execução descentralizada de atividade pública, exclusivamente para esse fim específico e determinado",
+  execucaoDescentralizadaAtividadePublica = "I. execução descentralizada de atividade pública, exclusivamente para esse fim específico e determinado",
   dadosAcessiveisPublicamente = "II. dados acessíveis publicamente",
-  previsãoLegal = "III. previsão legal",
-  transferênciaRespaldadaContratos = "IV. transferência respaldada em contratos, convênios ou instrumentos congêneres comunicados previamente à ANPD, nos termos do artigo 26, § 2º da LGPD",
-  prevençãoFraudesIrregularidades = "V. prevenção de fraudes e irregularidades",
-  proteçãoSegurancaIntegridadeTitular = "VI. proteção à segurança e à integridade do Titular de Dados Pessoais",
+  previsaoLegal = "III. previsão legal",
+  transferenciaRespaldadaContratos = "IV. transferência respaldada em contratos, convênios ou instrumentos congêneres comunicados previamente à ANPD, nos termos do artigo 26, § 2º da LGPD",
+  prevencaoFraudesIrregularidades = "V. prevenção de fraudes e irregularidades",
+  protecaoSegurancaIntegridadeTitular = "VI. proteção à segurança e à integridade do Titular de Dados Pessoais",
   consentimento = "VII. com o consentimento do Titular de Dados Pessoais",
 }
 
@@ -60,7 +60,7 @@ export enum tipoMedidaSegurancaPrivacidade {
   consentimentoEscolha = "Consentimento e Escolha",
   continuidadeNegocio = "Continuidade de Negócio",
   controleCriptografico = "Controles Criptográficos",
-  controlesAcessoLógico = "Controles de Acesso Lógico",
+  controlesAcessoLogico = "Controles de Acesso Lógico",
   controleAcessoPrivacidade = "Controle de Acesso e Privacidade",
   controlesSeguranceRedeFisicaAmbiente = "Controles de Segurança em Redes, Proteção Física e do Ambiente",
   copiaSeguranca = "Cópia de Segurança",

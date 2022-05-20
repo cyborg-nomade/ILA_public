@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import * as yup from "yup";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
@@ -10,15 +9,11 @@ import AccessRequestForm from "../../access-requests/components/AccessRequestFor
 import {
   AccessRequestDTO,
   emptyAccessRequestDTO,
-} from "./../../shared/models/DTOs/access-request-dto.model";
+} from "../../shared/models/DTOs/access-request-dto.model";
 import {
   AccessRequest,
   tipoSolicitacaoAcesso,
 } from "../../shared/models/access-control/access-request.model";
-
-// const schema = yup.object().shape({
-//   username: yup.string().required(),
-// });
 
 const RequestAccess = () => {
   const [message, setMessage] = useState("");
@@ -30,7 +25,8 @@ const RequestAccess = () => {
       accessRequest.groupNames = accessRequest.groupNames.map(
         (g: any) => g.value
       );
-      console.log(accessRequest);
+      // @ts-ignore
+      accessRequest.usernameSuperior = accessRequest.usernameSuperior.value;
 
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/access-requests/require/${accessRequest.tipoSolicitacaoAcesso}`,
@@ -40,7 +36,6 @@ const RequestAccess = () => {
           "Content-Type": "application/json",
         }
       );
-      console.log(responseData.message);
 
       const savedAR: AccessRequest = responseData.accessRequest;
       if (
@@ -48,7 +43,7 @@ const RequestAccess = () => {
         tipoSolicitacaoAcesso.AcessoAoSistema
       ) {
         const emailFormData = new FormData();
-        emailFormData.append("emailFile", accessRequest.emailFile);
+        emailFormData.append("emailFile", accessRequest.emailFile as File);
 
         const responseDataEmailFile = await sendRequest(
           `${process.env.REACT_APP_CONNSTR}/access-requests/require/${tipoSolicitacaoAcesso.AcessoAoSistema}/save-file/${savedAR.id}`,
