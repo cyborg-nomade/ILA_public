@@ -129,7 +129,7 @@ const CasesList = (props: { items: CaseListItem[]; redirect: boolean }) => {
           <TableBody
             onRowClick={handleRowClick}
             labels={{ noResults: "Nenhum resultado encontrado" }}
-            rowProps={{ style: { cursor: "pointer" } }}
+            rowProps={{ style: { cursor: props.redirect ? "pointer" : "" } }}
           />
         </Table>
       </DatatableWrapper>

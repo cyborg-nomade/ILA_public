@@ -224,7 +224,12 @@ const AlterComiteMemberCockpit = () => {
               <ListGroup.Item className="p-0" key={cm.id}>
                 <InputGroup>
                   <InputGroup.Text key={cm.id} as={Col} lg={9}>
-                    <div onClick={() => handleEditGroups(cm.id)}>{cm.nome}</div>
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleEditGroups(cm.id)}
+                    >
+                      {cm.nome}
+                    </div>
                   </InputGroup.Text>
                   <Col lg={3} className="m-0">
                     <Button

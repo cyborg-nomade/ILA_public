@@ -14,7 +14,12 @@ import { tipoSolicitacaoAcesso } from "../../shared/models/access-control/access
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import Select, { GroupBase, OptionsOrGroups } from "react-select";
+import Select, {
+  ActionMeta,
+  GroupBase,
+  MultiValue,
+  OptionsOrGroups,
+} from "react-select";
 import AsyncSelect from "react-select/async";
 
 type onSubmitFn = (item: AccessRequestDTO) => void;
@@ -146,6 +151,15 @@ const AccessRequestForm = (props: {
       return "Favor anexar um arquivo de autorização";
     }
     return true;
+  };
+
+  const handleGroupsToAddChange = (
+    options: MultiValue<{ value: string; label: string }>,
+    actionMeta: ActionMeta<{ value: string; label: string }>
+  ) => {
+    if (actionMeta.action === "clear") methods.setValue("groupNames", []);
+    const values = options.map((o) => o.value);
+    if (options) methods.setValue("groupNames", values);
   };
 
   const loadUsernameOptions = async (
@@ -320,7 +334,7 @@ const AccessRequestForm = (props: {
                       <Select
                         options={groups}
                         value={value.map((v) => ({ value: v, label: v }))}
-                        onChange={onChange}
+                        onChange={handleGroupsToAddChange}
                         onBlur={onBlur}
                         isSearchable
                         isMulti
