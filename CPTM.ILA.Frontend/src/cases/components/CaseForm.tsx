@@ -134,10 +134,9 @@ const CaseForm = (props: {
   const handleSendToApprovalClick = async (item: Case) => {
     setItemValues(item);
     const valid = await methods.trigger();
-    // if (valid) {
-    //   setShowSendToApprovalModal(true);
-    // }
-    setShowSendToApprovalModal(true);
+    if (valid) {
+      setShowSendToApprovalModal(true);
+    }
   };
   const handleApprovalClick = (item: Case) => {
     setItemValues(item);
