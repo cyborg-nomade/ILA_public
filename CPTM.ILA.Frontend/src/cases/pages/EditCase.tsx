@@ -56,6 +56,7 @@ const EditCase = () => {
 
   const saveProgressHandler = async (item: Case) => {
     console.log("Initial item: ", item);
+    setFullCase(item);
 
     const dateCriacaoParts = item.dataCriacao.split("/");
     const dateAtualizacaoParts = item.dataAtualizacao.split("/");
@@ -113,14 +114,12 @@ const EditCase = () => {
       navigate(`/`);
     } catch (err) {
       console.log(err);
-      item.dataCriacao = new Date(item.dataCriacao).toLocaleDateString();
-      item.dataAtualizacao = new Date().toLocaleDateString();
-      setFullCase(item);
     }
   };
 
   const sendToApprovalHandler = async (item: Case) => {
     console.log("sah, Initial item: ", item);
+    setFullCase(item);
 
     const dateCriacaoParts = item.dataCriacao.split("/");
     const dateAtualizacaoParts = item.dataAtualizacao.split("/");
@@ -174,6 +173,14 @@ const EditCase = () => {
       );
 
       const savedCase: Case = initialResponse.caseToSave;
+      console.log(savedCase);
+
+      const alteredSavedCase = savedCase;
+      alteredSavedCase.dataCriacao = new Date(
+        savedCase.dataCriacao
+      ).toLocaleDateString();
+      alteredSavedCase.dataAtualizacao = new Date().toLocaleDateString();
+      setFullCase(alteredSavedCase);
 
       const resp2 = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/request-approval/${savedCase.id}`,
@@ -189,9 +196,6 @@ const EditCase = () => {
       navigate(`/`);
     } catch (err) {
       console.log(err);
-      item.dataCriacao = new Date(item.dataCriacao).toLocaleDateString();
-      item.dataAtualizacao = new Date().toLocaleDateString();
-      setFullCase(item);
     }
   };
 
