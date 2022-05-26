@@ -651,7 +651,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (cid <= 0)
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        new { message = "Id inválido: Menor que 0." });
                 }
 
                 if (!ModelState.IsValid)
@@ -715,7 +716,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (caseInDb == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id inválido." });
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        new { message = "Id inválido: Não encontrado no banco para edição" });
                 }
 
                 var caseToSave = caseChange.Case;
@@ -1020,12 +1022,22 @@ namespace CPTM.ILA.Web.Controllers.API
                     throw new ArgumentNullException(nameof(usuarioChamadoItsm));
                 }
 
-                var userEmailId = _context.ILA_VW_USUARIO
-                    .Where(u => u.TX_USERNAME == usuarioChamadoItsm.Username.ToUpper())
-                    .Select(u => u.ID_CODUSUARIO)
-                    .SingleOrDefault();
+                if (usuarioChamadoItsm.Username.ToUpper() != "LGPDCOMUM")
+                {
+                    var userEmailId = _context.ILA_VW_USUARIO
+                        .Where(u => u.TX_USERNAME == usuarioChamadoItsm.Username.ToUpper())
+                        .Select(u => u.ID_CODUSUARIO)
+                        .SingleOrDefault();
 
-                caseToRequestApproval.SendCaseToApproval(usuarioChamadoItsm.Username.ToUpper(), userEmailId);
+                    caseToRequestApproval.SendCaseToApproval(usuarioChamadoItsm.Username.ToUpper(), userEmailId);
+                }
+                else
+                {
+                    var userEmailId = _context.ILA_VW_USUARIO.Where(u => u.TX_USERNAME == "URIELF")
+                        .Select(u => u.ID_CODUSUARIO)
+                        .SingleOrDefault();
+                    caseToRequestApproval.SendCaseToApproval("URIELF", userEmailId);
+                }
 
                 var changeLog = new ChangeLog()
                 {
