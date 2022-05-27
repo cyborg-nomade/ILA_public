@@ -61,6 +61,7 @@ const NewCase = () => {
 
   const saveProgressHandler = async (item: Case) => {
     console.log("Initial item: ", item);
+    setInitialCase(item);
 
     item.grupoCriadorId = currentGroup.id;
     const dateCriacaoParts = item.dataCriacao.split("/");
@@ -116,14 +117,12 @@ const NewCase = () => {
       navigate(`/`);
     } catch (err) {
       console.log(err);
-      item.dataCriacao = new Date(item.dataCriacao).toLocaleDateString();
-      item.dataAtualizacao = new Date().toLocaleDateString();
-      setInitialCase(item);
     }
   };
 
   const sendToApprovalHandler = async (item: Case) => {
     console.log("sah, Initial item: ", item);
+    setInitialCase(item);
 
     item.grupoCriadorId = currentGroup.id;
     item.area = currentGroup.nome;
@@ -178,6 +177,14 @@ const NewCase = () => {
       );
 
       const savedCase: Case = initialResponse.caseToSave;
+      console.log(savedCase);
+
+      const alteredSavedCase = savedCase;
+      alteredSavedCase.dataCriacao = new Date(
+        savedCase.dataCriacao
+      ).toLocaleDateString();
+      alteredSavedCase.dataAtualizacao = new Date().toLocaleDateString();
+      setInitialCase(alteredSavedCase);
 
       const resp2 = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/cases/request-approval/${savedCase.id}`,
@@ -193,9 +200,6 @@ const NewCase = () => {
       navigate(`/`);
     } catch (err) {
       console.log(err);
-      item.dataCriacao = new Date(item.dataCriacao).toLocaleDateString();
-      item.dataAtualizacao = new Date().toLocaleDateString();
-      setInitialCase(item);
     }
   };
 
