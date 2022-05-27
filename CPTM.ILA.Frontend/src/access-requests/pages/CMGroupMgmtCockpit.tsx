@@ -50,7 +50,10 @@ const CMGroupMgmtCockpit = () => {
       );
 
       const loadedMembers: ComiteMember[] = responseData.comiteMembers;
+      console.log("loadedMembers", loadedMembers);
+
       const cmEditing = loadedMembers.find((cm) => cm.id.toString() === cmid);
+      console.log("cmEditing", cmEditing);
 
       if (cmEditing) setComiteMemberEditing(cmEditing);
       else setComiteMemberEditing(emptyComiteMember());
@@ -78,6 +81,7 @@ const CMGroupMgmtCockpit = () => {
       );
 
       const cmLoadedGroups: Group[] = responseData.userGroups;
+      console.log("cmLoadedGroups", cmLoadedGroups);
 
       setCmGroups(cmLoadedGroups);
     };
@@ -166,7 +170,7 @@ const CMGroupMgmtCockpit = () => {
         }
       );
 
-      console.log(responseData);
+      console.log("add cm groups response: ", responseData);
       setMessage(responseData.message);
 
       const responseDataCmGroups = await sendRequest(
@@ -180,6 +184,7 @@ const CMGroupMgmtCockpit = () => {
       );
 
       const cmLoadedGroups: Group[] = responseDataCmGroups.userGroups;
+      console.log("cmLoadedGroups: ", cmLoadedGroups);
 
       setCmGroups(cmLoadedGroups);
       setCmGroupsToAdd([]);
@@ -189,7 +194,7 @@ const CMGroupMgmtCockpit = () => {
   };
 
   const handleRemoveCmGroups = async (gid: number) => {
-    console.log(gid);
+    console.log("gid to remove: ", gid);
 
     try {
       const responseData = await sendRequest(
@@ -202,7 +207,7 @@ const CMGroupMgmtCockpit = () => {
         }
       );
 
-      console.log(responseData);
+      console.log("remove cm group response: ", responseData);
       setMessage(responseData.message);
 
       const responseDataCmGroups = await sendRequest(
@@ -216,6 +221,7 @@ const CMGroupMgmtCockpit = () => {
       );
 
       const cmLoadedGroups: Group[] = responseDataCmGroups.userGroups;
+      console.log("cmLoadedGroups: ", cmLoadedGroups);
 
       setCmGroups(cmLoadedGroups);
     } catch (err) {

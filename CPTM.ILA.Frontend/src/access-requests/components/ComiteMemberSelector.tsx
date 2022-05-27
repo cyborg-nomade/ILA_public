@@ -32,6 +32,7 @@ const ComiteMemberSelector = () => {
       );
 
       const loadedMembers: ComiteMember[] = responseData.comiteMembers;
+      console.log("loadedMembers: ", loadedMembers);
 
       setComiteMembers(loadedMembers);
     };
