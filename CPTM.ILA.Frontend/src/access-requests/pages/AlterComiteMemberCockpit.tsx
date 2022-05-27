@@ -39,7 +39,7 @@ const AlterComiteMemberCockpit = () => {
       );
 
       const loadedMembers: ComiteMember[] = responseData.comiteMembers;
-
+      console.log("loadedMembers", loadedMembers);
       setComiteMembers(loadedMembers);
     };
 
@@ -78,6 +78,7 @@ const AlterComiteMemberCockpit = () => {
       );
       const json = await response.json();
       const options = json.formattedResults;
+      console.log("username options: ", options);
 
       callback(options);
       return options;
@@ -101,7 +102,7 @@ const AlterComiteMemberCockpit = () => {
         }
       );
 
-      console.log(responseData);
+      console.log("add member response: ", responseData);
       setMessage(responseData.message);
 
       const responseDataComiteMembers = await sendRequest(
@@ -116,7 +117,7 @@ const AlterComiteMemberCockpit = () => {
 
       const loadedMembers: ComiteMember[] =
         responseDataComiteMembers.comiteMembers;
-
+      console.log("loadedMembers", loadedMembers);
       setComiteMembers(loadedMembers);
     } catch (err) {
       console.log(err);
@@ -137,7 +138,7 @@ const AlterComiteMemberCockpit = () => {
         }
       );
 
-      console.log(responseData);
+      console.log("remove member response: ", responseData);
       setMessage(responseData.message);
 
       const responseDataComiteMembers = await sendRequest(
@@ -152,7 +153,7 @@ const AlterComiteMemberCockpit = () => {
 
       const loadedMembers: ComiteMember[] =
         responseDataComiteMembers.comiteMembers;
-
+      console.log("loadedMembers", loadedMembers);
       setComiteMembers(loadedMembers);
     } catch (err) {
       console.log(err);

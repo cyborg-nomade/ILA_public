@@ -84,6 +84,8 @@ const AccessRequestForm = (props: {
     // Clean up and remove the link
     link.parentNode?.removeChild(link);
 
+    console.log("File infos: ");
+    console.log("link, url, fileBlog, filename");
     console.log(link, url, fileBlob, fileRes.headers.get("Filename"));
   };
 
@@ -180,6 +182,7 @@ const AccessRequestForm = (props: {
       );
       const json = await response.json();
       const options = json.formattedResults;
+      console.log("username options: ", options);
 
       callback(options);
       return options;

@@ -42,6 +42,7 @@ const RequestGroupAccess = () => {
       );
 
       const savedAR: AccessRequest = responseData.accessRequest;
+      console.log("savedAR: ", savedAR);
 
       const emailFormData = new FormData();
       emailFormData.append("emailFile", accessRequest.emailFile);
@@ -53,6 +54,8 @@ const RequestGroupAccess = () => {
           Authorization: "Bearer " + token,
         }
       );
+      console.log("AR file saved");
+
       setMessage(responseData.message);
     } catch (error) {
       console.log(error);

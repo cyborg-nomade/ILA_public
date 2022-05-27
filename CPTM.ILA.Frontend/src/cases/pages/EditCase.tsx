@@ -32,10 +32,14 @@ const EditCase = () => {
                 { Authorization: "Bearer " + token }
             );
             let loadedCase: Case = responseData.uniqueCase;
+            console.log("loadedCase: ", loadedCase);
+
             loadedCase.dataCriacao = new Date(
                 loadedCase.dataCriacao
             ).toLocaleDateString();
             loadedCase.dataAtualizacao = new Date().toLocaleDateString();
+            console.log("loadedCase, dates altered: ", loadedCase);
+
             setFullCase(loadedCase);
         };
 
@@ -44,18 +48,8 @@ const EditCase = () => {
         });
     }, [cid, sendRequest, token]);
 
-    if (isLoading) {
-        return (
-            <Row className="justify-content-center">
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            </Row>
-        );
-    }
-
     const saveProgressHandler = async (item: Case) => {
-        console.log("Initial item: ", item);
+        console.log("save progress, Initial item: ", item);
         setFullCase(item);
 
         const dateCriacaoParts = item.dataCriacao.split("/");
@@ -80,7 +74,7 @@ const EditCase = () => {
             }
         }
 
-        console.log("Altered item: ", item);
+        console.log("save progress, Altered item: ", item);
 
         const changeObj = diff(fullCase, item);
 
@@ -93,14 +87,14 @@ const EditCase = () => {
             changeDate: new Date(),
         };
 
-        console.log("Change Log: ", changeLog);
+        console.log("save progress, Change Log: ", changeLog);
 
         const caseChange: CaseChange = {
             case: item,
             changeLog: changeLog,
         };
 
-        console.log("Case Change: ", caseChange);
+        console.log("save progress, Case Change: ", caseChange);
 
         try {
             await sendRequest(
@@ -112,6 +106,7 @@ const EditCase = () => {
                     Authorization: "Bearer " + token,
                 }
             );
+            console.log("case saved");
 
             navigate(`/`);
         } catch (err) {
@@ -120,7 +115,7 @@ const EditCase = () => {
     };
 
     const sendToApprovalHandler = async (item: Case) => {
-        console.log("sah, Initial item: ", item);
+        console.log("send to approval, Initial item: ", item);
         setFullCase(item);
 
         const dateCriacaoParts = item.dataCriacao.split("/");
@@ -143,7 +138,7 @@ const EditCase = () => {
             }
         }
 
-        console.log("sah, Altered item: ", item);
+        console.log("send to approval, Altered item: ", item);
 
         const changeObj = diff(fullCase, item);
 
@@ -156,14 +151,14 @@ const EditCase = () => {
             changeDate: new Date(),
         };
 
-        console.log("sah, Change Log: ", changeLog);
+        console.log("send to approval, Change Log: ", changeLog);
 
         const caseChange: CaseChange = {
             case: item,
             changeLog: changeLog,
         };
 
-        console.log("sah, Case change: ", changeLog);
+        console.log("send to approval, Case change: ", caseChange);
 
         try {
             const initialResponse = await sendRequest(
@@ -177,14 +172,14 @@ const EditCase = () => {
             );
 
             const savedCase: Case = initialResponse.caseToSave;
-            console.log(savedCase);
+            console.log("send to approval, caseSaved", savedCase);
 
             const alteredSavedCase = savedCase;
             alteredSavedCase.dataCriacao = new Date(
                 savedCase.dataCriacao
             ).toLocaleDateString();
             alteredSavedCase.dataAtualizacao = new Date().toLocaleDateString();
-            setFullCase(alteredSavedCase);
+            console.log("send to approval, alteredSavedCase", savedCase);
 
             const resp2 = await sendRequest(
                 `${process.env.REACT_APP_CONNSTR}/cases/request-approval/${savedCase.id}`,
@@ -195,13 +190,26 @@ const EditCase = () => {
                     Authorization: "Bearer " + token,
                 }
             );
-            console.log(resp2);
+            console.log(
+                "send to approva, request case approval response",
+                resp2
+            );
 
             navigate(`/`);
         } catch (err) {
             console.log(err);
         }
     };
+
+    if (isLoading) {
+        return (
+            <Row className="justify-content-center">
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </Row>
+        );
+    }
 
     return (
         <React.Fragment>

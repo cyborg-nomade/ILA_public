@@ -25,6 +25,7 @@ const ApproveCasesListGetter = () => {
                 { Authorization: "Bearer " + token }
             );
             const loadedCases: CaseListItem[] = responseData.cases;
+            console.log("loadedCases: ", loadedCases);
             setCases(loadedCases);
         };
 

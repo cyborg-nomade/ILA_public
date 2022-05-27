@@ -63,7 +63,7 @@ const CreateCommentBox = (props: {
         }
       );
 
-      console.log(responseData);
+      console.log("send comment response: ", responseData);
       setMessage(responseData.message);
       setText("");
     } catch (error) {
