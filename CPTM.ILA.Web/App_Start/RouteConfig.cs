@@ -7,8 +7,15 @@ using System.Web.Routing;
 
 namespace CPTM.ILA.Web
 {
+    /// <summary>
+    /// Configuração das rotas
+    /// </summary>
     public class RouteConfig
     {
+        /// <summary>
+        /// Registra as rotas da aplicação
+        /// </summary>
+        /// <param name="routes"></param>
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");

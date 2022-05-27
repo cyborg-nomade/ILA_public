@@ -2,11 +2,16 @@
 
 namespace CPTM.ILA.Web.Controllers
 {
+    /// <inheritdoc />
     public class HomeController : Controller
     {
+        /// <summary>
+        /// Página inicial da documentação
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
+            ViewBag.Title = "Página Inicial";
 
             return View();
         }

@@ -13,7 +13,7 @@ using CPTM.ILA.Web.Util;
 namespace CPTM.ILA.Web.Controllers.API
 {
     /// <summary>
-    /// Controlador para threads e comentários dentro do sistema ILA. 
+    /// Controlador para criação de dúvidas sobre o formulário de Casos de Uso. 
     /// </summary>
     [RoutePrefix("api/threads")]
     public class ThreadsCommentsController : ApiController
@@ -26,6 +26,12 @@ namespace CPTM.ILA.Web.Controllers.API
             _context = new ILAContext();
         }
 
+        /// <summary>
+        /// Posta uma dúvida, criando um chamado no ITSM com a descrição adequada do item em questão.
+        /// Endpoint disponibilizado para todos os usuários com acesso ao sistema
+        /// </summary>
+        /// <param name="commentDto">Comentário com a dúvida</param>
+        /// <returns>Status da transação e um objeto JSON com uma chave "message" contendo uma mensagem de sucesso ou descrevendo o erro.</returns>
         [Route("itsm")]
         [Authorize]
         [HttpPost]
