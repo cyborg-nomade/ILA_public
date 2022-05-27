@@ -599,8 +599,8 @@
             </summary>
             <param name="arid">Id da Requisição de Acesso</param>
             <returns>
-            Status da transação e um objeto JSON com uma chave "message" confirmando o sucesso, ou especificando o erro ocorrido.
-            No conteúdo da resposta, retorna o byteStream correspondente ao arquivo.
+            Status da transação e, no conteúdo da resposta, retorna o byteStream correspondente ao arquivo.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" especificando o erro ocorrido.
             </returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.AccessRequestsController.GetByType(CPTM.ILA.Web.Models.AccessControl.TipoSolicitacaoAcesso)">
@@ -620,7 +620,7 @@
             2- Demais solicitações => aberta a todos os usuários com acesso ao ILA
             </summary>
             <param name="tipo">Int representando o tipo de Requisição de Acesso</param>
-            <param name="accessRequestDto">Objeto vindo do corpo da requisição HTTP, representando a Requisição de Acesso. Deve corresponder ao tipo AccessRequest</param>
+            <param name="accessRequestDto">Objeto vindo do corpo da requisição HTTP, representando a Requisição de Acesso. Deve corresponder ao tipo AccessRequestDTO</param>
             <returns>
             Status da transação e um objeto JSON com uma chave "message" confirmando o registro da Requisição de Acesso, ou indicando o erro ocorrido
             </returns>
@@ -799,7 +799,8 @@
             </summary>
             <param name="caseChange">Objeto vindo do corpo da requisição HTTP, representando o Caso de Uso e o log de alteração. Deve corresponder ao tipo CaseChange</param>
             <returns>
-            Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+            Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido.
+            Também retorna uma chave "caseToSave" contendo o Caso de Uso salvo
             </returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Edit(System.Int32,CPTM.ILA.Web.DTOs.CaseChange)">
@@ -811,6 +812,7 @@
             <param name="caseChange">Objeto vindo do corpo da requisição HTTP, representando o Caso de Uso e o log de alteração. Deve corresponder ao tipo CaseChange</param>
             <returns>
             Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+            Também retorna uma chave "caseToSave" contendo o Caso de Uso salvo
             </returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Delete(System.Int32)">
@@ -867,11 +869,19 @@
         </member>
         <member name="T:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController">
             <summary>
-            Controlador para threads e comentários dentro do sistema ILA. 
+            Controlador para criação de dúvidas sobre o formulário de Casos de Uso. 
             </summary>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.#ctor">
             <inheritdoc />
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.PostItsm(CPTM.ILA.Web.DTOs.CommentDTO)">
+            <summary>
+            Posta uma dúvida, criando um chamado no ITSM com a descrição adequada do item em questão.
+            Endpoint disponibilizado para todos os usuários com acesso ao sistema
+            </summary>
+            <param name="commentDto">Comentário com a dúvida</param>
+            <returns>Status da transação e um objeto JSON com uma chave "message" contendo uma mensagem de sucesso ou descrevendo o erro.</returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.ThreadsCommentsController.Dispose(System.Boolean)">
             <inheritdoc />
@@ -905,9 +915,16 @@
             </summary>
             <param name="gid">Id do grupo especificado</param>
             <returns>
-            Status da transação e um objeto JSON com uma chave "comiteMember" contendo os dados dos membros do Comitê LGPD (objeto AgenteTratamento)
+            Status da transação e um objeto JSON com uma chave "comiteMember" contendo os dados do membros do Comitê LGPD (objeto AgenteTratamento)
             Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
             </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.GetComiteMembers">
+            <summary>
+            Retorna todos os usuários cadastrados que são membros do Comitê LGPD
+            Endpoint disponibilizado apenas para o DPO.
+            </summary>
+            <returns>Status da transação e um objeto JSON com uma chave "comiteMembers" contendo os dados dos membros do Comitê LGPD (objeto ComiteMembers)</returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.GetUserGroups(System.String)">
             <summary>
@@ -929,6 +946,14 @@
             Status da transação e um objeto JSON com uma chave "message" confirmando o registro do comentário, ou indicando o erro ocorrido
             </returns>
         </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.QueryByName(System.String)">
+            <summary>
+            Retorna uma lista de nomes de usuário correspondentes a pesquisa de nome recebida.
+            Endpoint disponibilizado publicamente.
+            </summary>
+            <param name="nameString">Query busca por nome</param>
+            <returns>Status da transação e um objeto JSON com uma chave "results" contendo o conjunto de nomes de usuário e nomes correspondentes à pesquisa</returns>
+        </member>
         <member name="T:CPTM.ILA.Web.Controllers.API.UtilitiesController">
             <summary>
             Controlador para utilidades diversas.
@@ -940,10 +965,18 @@
         <member name="M:CPTM.ILA.Web.Controllers.API.UtilitiesController.GetCountries">
             <summary>
             Retorna a lista completa de países do mundo, em português.
+            Endpoint disponibilizado para todos os usuários com acesso ao sistema.
             </summary>
             <returns>
             Status da transação e um objeto JSON com uma chave "countries" contendo uma lista dos nomes dos países do mundo.
             </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.UtilitiesController.GetSystems">
+            <summary>
+            Retorna a lista completa de sistemas em operação na CPTM.
+            Endpoint disponibilizado para todos os usuários com acesso ao sistema.
+            </summary>
+            <returns>Status da transação e um objeto JSON com uma chave "systems" contendo uma lista dos nomes dos sistema em operação na CPTM.</returns>
         </member>
         <member name="T:CPTM.ILA.Web.Controllers.HomeController">
             <inheritdoc />
