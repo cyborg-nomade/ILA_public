@@ -25,8 +25,8 @@ const ContinueCaseListGetter = () => {
         { Authorization: "Bearer " + token }
       );
       const loadedCases: CaseListItem[] = responseData.cases;
-      console.log(currentGroup);
-      console.log(loadedCases);
+      console.log("currentGroup: ", currentGroup);
+      console.log("loadedCases: ", loadedCases);
 
       setCases(loadedCases);
     };

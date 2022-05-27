@@ -50,6 +50,7 @@ const CasesDashboard = () => {
       );
 
       const loadedTotals: StatusTotals[] = responseData.totals;
+      console.log("groupCase loadedTotals: ", loadedTotals);
 
       if (loadedTotals.length === 0) {
         setPieChartData([]);
@@ -63,6 +64,7 @@ const CasesDashboard = () => {
           };
         });
 
+        console.log("transformedData: ", transformedData);
         setPieChartData(transformedData);
       }
     };
@@ -78,9 +80,8 @@ const CasesDashboard = () => {
         }
       );
 
-      console.log(responseData.totals);
-
       const loadedTotals: GroupTotals[] = responseData.totals;
+      console.log("comiteCase loadedTotals: ", loadedTotals);
 
       if (loadedTotals.length === 0) {
         setPieChartData([]);
@@ -93,8 +94,8 @@ const CasesDashboard = () => {
             key: index,
           };
         });
-        console.log(transformedData);
 
+        console.log("transformedData: ", transformedData);
         setPieChartData(transformedData);
       }
     };
@@ -110,9 +111,8 @@ const CasesDashboard = () => {
         }
       );
 
-      console.log(responseData.totals);
-
       const loadedTotals: ExtensaoEncarregadoTotals[] = responseData.totals;
+      console.log("dpoCase loadedTotals: ", loadedTotals);
 
       if (loadedTotals.length === 0) {
         setPieChartData([]);
@@ -125,8 +125,8 @@ const CasesDashboard = () => {
             key: index,
           };
         });
-        console.log(transformedData);
 
+        console.log("transformedData: ", transformedData);
         setPieChartData(transformedData);
       }
     };

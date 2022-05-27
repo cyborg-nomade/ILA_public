@@ -115,7 +115,7 @@ const CaseForm = (props: {
         }
       );
 
-      console.log(responseData);
+      console.log("delete case response: ", responseData);
       navigate(`/`);
     } catch (err) {
       console.log(err);
