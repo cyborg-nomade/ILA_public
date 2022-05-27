@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Description;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models;
 using CPTM.ILA.Web.Models.AccessControl.VIEWS;
@@ -36,6 +37,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com chaves "diretorias", "gerencias" e "dptos", contendo listas de strings com os nomes das áreas da CPTM.
         /// Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
         /// </returns>
+        [ResponseType(typeof(GroupsResponseType))]
         [Route("")]
         [AllowAnonymous]
         [HttpGet]
