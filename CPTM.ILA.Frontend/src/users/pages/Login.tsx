@@ -44,6 +44,7 @@ const Login = () => {
           "Content-Type": "application/json",
         }
       );
+      console.log("login response data:", responseData);
 
       const receivedUser: User = responseData.user;
       const receivedAreaTratamentoDados: AgenteTratamento =
@@ -71,7 +72,7 @@ const Login = () => {
 
         const loadedMembers: ComiteMember[] =
           responseDataComiteMembers.comiteMembers;
-
+        console.log("loadedMembers", loadedMembers);
         changeComiteMember(loadedMembers[0]);
       }
 

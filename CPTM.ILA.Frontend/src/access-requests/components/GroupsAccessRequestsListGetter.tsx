@@ -25,9 +25,9 @@ const GroupsAccessRequestsListGetter = () => {
         undefined,
         { Authorization: "Bearer " + token }
       );
-      console.log(responseData);
 
       const loadedAccessRequests: AccessRequestDTO[] = responseData.requests;
+      console.log("loadedAccessRequest: ", loadedAccessRequests);
       setAccessRequests(loadedAccessRequests);
     };
 

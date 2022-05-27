@@ -11,8 +11,18 @@ using Newtonsoft.Json.Serialization;
 
 namespace CPTM.ILA.Web
 {
+    /// <summary>
+    /// Configuração da Web API
+    /// </summary>
     public static class WebApiConfig
     {
+        /// <summary>
+        /// Registra as configurações da Web API.
+        /// Define cabeçalhos CORS de resposta.
+        /// Mapeia as rotas.
+        /// Configura a formatação das respostas JSON
+        /// </summary>
+        /// <param name="config"></param>
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
@@ -41,8 +51,10 @@ namespace CPTM.ILA.Web
         }
     }
 
+    /// <inheritdoc />
     public class BrowserJsonFormatter : JsonMediaTypeFormatter
     {
+        /// <inheritdoc />
         public BrowserJsonFormatter()
         {
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
@@ -51,6 +63,7 @@ namespace CPTM.ILA.Web
             UseDataContractJsonSerializer = false;
         }
 
+        /// <inheritdoc />
         public override void SetDefaultContentHeaders(Type type, HttpContentHeaders headers,
             MediaTypeHeaderValue mediaType)
         {

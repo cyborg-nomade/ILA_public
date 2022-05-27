@@ -26,6 +26,7 @@ const ComiteAccessRequestsListGetter = () => {
         { Authorization: "Bearer " + token }
       );
       const loadedAccessRequests: AccessRequestDTO[] = responseData.requests;
+      console.log("loadedAccessRequests: ", loadedAccessRequests);
       setAccessRequests(loadedAccessRequests);
     };
 

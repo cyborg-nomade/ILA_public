@@ -25,10 +25,12 @@ const AllCasesListGetter = () => {
         { Authorization: "Bearer " + token }
       );
       const loadedCases: CaseListItem[] = responseData.cases;
+      console.log("loadedCases: ", loadedCases);
 
       const filteredCases = loadedCases.filter(
         (c) => c.grupoCriador === currentGroup.nome
       );
+      console.log("filteredCases: ", filteredCases);
 
       setCases(filteredCases);
     };

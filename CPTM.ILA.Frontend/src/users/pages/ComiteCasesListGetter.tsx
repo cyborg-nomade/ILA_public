@@ -28,9 +28,8 @@ const ComiteCasesListGetter = () => {
         }
       );
 
-      console.log(responseData.cases);
-
       const loadedCases: CaseListItem[] = responseData.cases;
+      console.log("loadedCases: ", loadedCases);
       setCases(loadedCases);
     };
 

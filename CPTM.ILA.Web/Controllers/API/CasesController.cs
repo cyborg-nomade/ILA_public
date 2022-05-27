@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Web.Http;
 using CPTM.ILA.Web.Models;
 using System.Threading.Tasks;
+using System.Web.Http.Description;
 using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.ChangeLogging;
@@ -42,6 +43,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso, em formato reduzido (CaseListItem)
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
         [Route("")]
         [Authorize]
         [HttpGet]
@@ -70,7 +72,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -82,6 +84,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
         [Route("group/{gid:int}")]
         [Authorize]
         [HttpGet]
@@ -135,6 +138,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
+        [ResponseType(typeof(TotalsResponseType<GroupTotals>))]
         [Route("group/comite-member/totals")]
         [Authorize]
         [HttpGet]
@@ -189,7 +193,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -204,6 +208,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
         [Route("group/{gid:int}/status/{aprovado:bool}/{encaminhadoAprovacao:bool}")]
         [Authorize]
         [HttpGet]
@@ -261,6 +266,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
+        [ResponseType(typeof(TotalsResponseType<StatusTotals>))]
         [Route("group/{gid:int}/status/totals")]
         [Authorize]
         [HttpGet]
@@ -318,7 +324,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -331,6 +337,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
         [Route("extensao-encarregado/{uid:int}")]
         [Authorize]
         [HttpGet]
@@ -379,7 +386,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -392,6 +399,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
+        [ResponseType(typeof(TotalsResponseType<ExtensaoEncarregadoTotals>))]
         [Route("extensao-encarregado/totals")]
         [Authorize]
         [HttpGet]
@@ -457,6 +465,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "uniqueCase" que contém os dados do Caso de Uso (objeto Case).
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" contendo a descrição do erro.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<Case>))]
         [Route("{cid:int}")]
         [Authorize]
         [HttpGet]
@@ -548,7 +557,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -558,8 +567,10 @@ namespace CPTM.ILA.Web.Controllers.API
         /// </summary>
         /// <param name="caseChange">Objeto vindo do corpo da requisição HTTP, representando o Caso de Uso e o log de alteração. Deve corresponder ao tipo CaseChange</param>
         /// <returns>
-        /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+        /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido.
+        /// Também retorna uma chave "caseToSave" contendo o Caso de Uso salvo
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<Case>))]
         [Route("")]
         [Authorize]
         [HttpPost]
@@ -620,7 +631,9 @@ namespace CPTM.ILA.Web.Controllers.API
         /// <param name="caseChange">Objeto vindo do corpo da requisição HTTP, representando o Caso de Uso e o log de alteração. Deve corresponder ao tipo CaseChange</param>
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
+        /// Também retorna uma chave "caseToSave" contendo o Caso de Uso salvo
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<Case>))]
         [Route("{cid:int}")]
         [Authorize]
         [HttpPost]
@@ -863,7 +876,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -962,7 +975,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -1022,22 +1035,14 @@ namespace CPTM.ILA.Web.Controllers.API
                     throw new ArgumentNullException(nameof(usuarioChamadoItsm));
                 }
 
-                if (usuarioChamadoItsm.Username.ToUpper() != "LGPDCOMUM")
-                {
-                    var userEmailId = _context.ILA_VW_USUARIO
-                        .Where(u => u.TX_USERNAME == usuarioChamadoItsm.Username.ToUpper())
-                        .Select(u => u.ID_CODUSUARIO)
-                        .SingleOrDefault();
 
-                    caseToRequestApproval.SendCaseToApproval(usuarioChamadoItsm.Username.ToUpper(), userEmailId);
-                }
-                else
-                {
-                    var userEmailId = _context.ILA_VW_USUARIO.Where(u => u.TX_USERNAME == "URIELF")
-                        .Select(u => u.ID_CODUSUARIO)
-                        .SingleOrDefault();
-                    caseToRequestApproval.SendCaseToApproval("URIELF", userEmailId);
-                }
+                var userEmailId = _context.ILA_VW_USUARIO
+                    .Where(u => u.TX_USERNAME == usuarioChamadoItsm.Username.ToUpper())
+                    .Select(u => u.ID_CODUSUARIO)
+                    .SingleOrDefault();
+
+                caseToRequestApproval.SendCaseToApproval(usuarioChamadoItsm.Username.ToUpper(), userEmailId);
+
 
                 var changeLog = new ChangeLog()
                 {
