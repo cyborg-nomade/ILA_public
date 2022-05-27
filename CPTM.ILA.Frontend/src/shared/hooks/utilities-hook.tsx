@@ -20,6 +20,7 @@ export const useUtilities = () => {
       );
 
       const systems: string[] = responseData.systems;
+      console.log("systems: ", systems);
 
       setSystems(systems);
     } catch (err) {
@@ -37,6 +38,7 @@ export const useUtilities = () => {
       );
 
       const countries: string[] = responseData.countries;
+      console.log("countries: ", countries);
 
       setCountries(countries);
     } catch (err) {
