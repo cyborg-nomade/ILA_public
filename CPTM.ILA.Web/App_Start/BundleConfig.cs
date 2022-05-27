@@ -3,8 +3,15 @@ using System.Web.Optimization;
 
 namespace CPTM.ILA.Web
 {
+    /// <summary>
+    /// Configuração dos bundles
+    /// </summary>
     public class BundleConfig
     {
+        /// <summary>
+        /// Registra os bundles da aplicação
+        /// </summary>
+        /// <param name="bundles"></param>
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/Scripts/funcoes").Include("~/Scripts/funcoes.js"));
