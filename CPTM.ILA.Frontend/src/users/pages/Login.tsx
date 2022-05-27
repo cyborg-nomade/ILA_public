@@ -58,20 +58,22 @@ const Login = () => {
         receivedAreaTratamentoDados
       );
 
-      const responseDataComiteMembers = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/users/comite-members`,
-        undefined,
-        undefined,
-        {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + responseData.token,
-        }
-      );
+      if (receivedUser.isDPO) {
+        const responseDataComiteMembers = await sendRequest(
+          `${process.env.REACT_APP_CONNSTR}/users/comite-members`,
+          undefined,
+          undefined,
+          {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + responseData.token,
+          }
+        );
 
-      const loadedMembers: ComiteMember[] =
-        responseDataComiteMembers.comiteMembers;
+        const loadedMembers: ComiteMember[] =
+          responseDataComiteMembers.comiteMembers;
 
-      changeComiteMember(loadedMembers[0]);
+        changeComiteMember(loadedMembers[0]);
+      }
 
       navigate(`/${receivedUser.id}/`);
     } catch (error) {
