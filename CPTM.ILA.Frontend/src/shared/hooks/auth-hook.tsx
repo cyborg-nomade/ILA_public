@@ -59,6 +59,7 @@ export const useAuth = () => {
         token,
         tokenExpirationDate: expDate.toISOString(),
       };
+      console.log("userToStore", userToStore);
 
       localStorage.setItem("userData", JSON.stringify(userToStore));
     },

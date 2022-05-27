@@ -38,6 +38,8 @@ const RequestAccess = () => {
       );
 
       const savedAR: AccessRequest = responseData.accessRequest;
+      console.log("savedAR: ", savedAR);
+
       if (
         accessRequest.tipoSolicitacaoAcesso ===
         tipoSolicitacaoAcesso.AcessoAoSistema
@@ -50,8 +52,10 @@ const RequestAccess = () => {
           "POST",
           emailFormData
         );
-
-        console.log(responseDataEmailFile.message);
+        console.log(
+          "AR save file response message: ",
+          responseDataEmailFile.message
+        );
       }
 
       setMessage(responseData.message);

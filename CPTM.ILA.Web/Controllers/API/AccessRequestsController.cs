@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Description;
 using CPTM.ILA.Web.Models;
 using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ActiveDirectory;
@@ -29,9 +30,9 @@ namespace CPTM.ILA.Web.Controllers.API
     public class AccessRequestsController : ApiController
     {
         private readonly ILAContext _context;
-        private const string ItsmUrl = "https://panelas-app2:8443/api/";
-        private const string ApiLogin = "INTEGRACAO_CPTM_LGPD";
-        private const string ApiPass = "INTEGRACAO_CPTM_LGPD";
+        //private const string ItsmUrl = "https://panelas-app2:8443/api/";
+        //private const string ApiLogin = "INTEGRACAO_CPTM_LGPD";
+        //private const string ApiPass = "INTEGRACAO_CPTM_LGPD";
 
 
         /// <inheritdoc />
@@ -48,6 +49,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "accessRequest" onde se encontram os dados da Requisição de Acesso.
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<AccessRequestDTO>))]
         [Route("{arid:int}")]
         [Authorize]
         [HttpGet]
@@ -101,13 +103,13 @@ namespace CPTM.ILA.Web.Controllers.API
         }
 
         /// <summary>
-        /// Retorna o arquivo de email de aprovação enviado para uma determinada Requisição de Acesso.
+        /// Retornaa o arquivo de email de aprovação enviado para uma determinada Requisição de Acesso.
         /// Endpoint disponibilizado para o DPO e membros do Comitê LGPD.
         /// </summary>
         /// <param name="arid">Id da Requisição de Acesso</param>
         /// <returns>
-        /// Status da transação e um objeto JSON com uma chave "message" confirmando o sucesso, ou especificando o erro ocorrido.
-        /// No conteúdo da resposta, retorna o byteStream correspondente ao arquivo.
+        /// Status da transação e, no conteúdo da resposta, retorna o byteStream correspondente ao arquivo.
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" especificando o erro ocorrido.
         /// </returns>
         [Route("get-file/{arid:int}")]
         [Authorize]
@@ -178,8 +180,10 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new
+                {
+                    message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e
+                });
             }
         }
 
@@ -191,6 +195,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "accessRequests" onde se encontram os dados das Requisição de Acesso do tipo solicitado
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<List<AccessRequestDTO>>))]
         [Route("type/{tipo:int}")]
         [Authorize]
         [HttpGet]
@@ -243,10 +248,11 @@ namespace CPTM.ILA.Web.Controllers.API
         /// 2- Demais solicitações => aberta a todos os usuários com acesso ao ILA
         /// </summary>
         /// <param name="tipo">Int representando o tipo de Requisição de Acesso</param>
-        /// <param name="accessRequestDto">Objeto vindo do corpo da requisição HTTP, representando a Requisição de Acesso. Deve corresponder ao tipo AccessRequest</param>
+        /// <param name="accessRequestDto">Objeto vindo do corpo da requisição HTTP, representando a Requisição de Acesso. Deve corresponder ao tipo AccessRequestDTO</param>
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro da Requisição de Acesso, ou indicando o erro ocorrido
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<AccessRequest>))]
         [Route("require/{tipo:int}")]
         [HttpPost]
         public async Task<HttpResponseMessage> RequestAccess(TipoSolicitacaoAcesso tipo,
@@ -482,6 +488,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Caso reprovada, remove a requisição de usuário.
         /// Em ambos os casos, retorna o status da transação e um objeto JSON com uma chave "message" confirmando a operação realizada, ou informando o erro.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<User>))]
         [Route("approve/{arid:int}")]
         [Authorize]
         [HttpPost]
@@ -730,6 +737,12 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Adiciona um usuário ao comitê LGPD.
+        /// Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <param name="newComiteMemberUsername">Username do novo membro do comitê, recebido no corpo da requisição HTTP.</param>
+        /// <returns>Status da transação e um objeto JSON com uma chave "message" confirmando a operação realizada, ou o erro ocorrido.</returns>
         [Route("add-comite-member")]
         [Authorize]
         [HttpPost]
@@ -820,6 +833,12 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Remove um usuário do comitê LGPD e do sistema.
+        /// Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <param name="uid">Id do usuário a ser removido.</param>
+        /// <returns>Status da transação e um objeto JSON com uma chave "message" confirmando a operação realizada, ou o erro ocorrido.</returns>
         [Route("remove-comite-member/{uid:int}")]
         [Authorize]
         [HttpPost]
@@ -869,6 +888,13 @@ namespace CPTM.ILA.Web.Controllers.API
         }
 
 
+        /// <summary>
+        /// Retorna todos os grupos de um usuário determinado.
+        /// Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <param name="uid">Id do usuário a ser consultado</param>
+        /// <returns>Status da transação e um objeto JSON com uma chave "userGroups", contendo uma lista de grupos (objeto "Group")</returns>
+        [ResponseType(typeof(ApiResponseType<List<Group>>))]
         [Route("groups/user/{uid:int}")]
         [Authorize]
         [HttpGet]
@@ -913,6 +939,14 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Adiciona um grupo a lista de permissões de um usuário.
+        /// Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <param name="uid">Id do usuário a ser alterado.</param>
+        /// <param name="groupNames">Lista de strings com o nome dos grupos a serem adicionados ao perfil do usuário</param>
+        /// <returns>Status da transação e um objeto JSON com uma chave "message" confirmando a operação realizada, ou o erro ocorrido. Também retorna uma chave "user" contendo o novo usuário.</returns>
+        [ResponseType(typeof(ApiResponseType<User>))]
         [Route("groups/user/{uid:int}/add")]
         [Authorize]
         [HttpPost]
@@ -992,6 +1026,14 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Remove um grupo da lista de permissões de um usuário.
+        /// Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <param name="uid">Id do usuário a ser alterado.</param>
+        /// <param name="gid">Id do grupo a ser removido.</param>
+        /// <returns>Status da transação e um objeto JSON com uma chave "message" confirmando a operação realizada, ou o erro ocorrido. Também retorna uma chave "user" contendo o novo usuário.</returns>
+        [ResponseType(typeof(ApiResponseType<User>))]
         [Route("groups/user/{uid:int}/remove")]
         [Authorize]
         [HttpPost]
@@ -1057,9 +1099,9 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
-        private bool GroupExists(int id)
-        {
-            return _context.Groups.Count(g => g.Id == id) > 0;
-        }
+        //private bool GroupExists(int id)
+        //{
+        //    return _context.Groups.Count(g => g.Id == id) > 0;
+        //}
     }
 }

@@ -31,12 +31,15 @@ const ContinueCase = () => {
         undefined,
         { Authorization: "Bearer " + token }
       );
+
       let loadedCase: Case = responseData.uniqueCase;
-      console.log(loadedCase);
+      console.log("loadedCase: ", loadedCase);
+
       loadedCase.dataCriacao = new Date(
         loadedCase.dataCriacao
       ).toLocaleDateString();
       loadedCase.dataAtualizacao = new Date().toLocaleDateString();
+      console.log("loadedCase dates altered: ", loadedCase);
       setFullCase(loadedCase);
     };
 
@@ -45,18 +48,8 @@ const ContinueCase = () => {
     });
   }, [cid, sendRequest, token]);
 
-  if (isLoading) {
-    return (
-      <Row className="justify-content-center">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </Row>
-    );
-  }
-
   const saveProgressHandler = async (item: Case) => {
-    console.log("Initial item: ", item);
+    console.log("save progress, Initial item: ", item);
     setFullCase(item);
 
     const dateCriacaoParts = item.dataCriacao.split("/");
@@ -79,7 +72,7 @@ const ContinueCase = () => {
       }
     }
 
-    console.log("Altered item: ", item);
+    console.log("save progress, Altered item: ", item);
 
     const changeObj = diff(fullCase, item);
 
@@ -90,14 +83,14 @@ const ContinueCase = () => {
       changeDate: new Date(),
     };
 
-    console.log("Change Log: ", changeLog);
+    console.log("save progress, Change Log: ", changeLog);
 
     const caseChange: CaseChange = {
       case: item,
       changeLog: changeLog,
     };
 
-    console.log("Case Change: ", caseChange);
+    console.log("save progress, Case Change: ", caseChange);
 
     try {
       await sendRequest(
@@ -109,6 +102,7 @@ const ContinueCase = () => {
           Authorization: "Bearer " + token,
         }
       );
+      console.log("case saved");
 
       navigate(`/`);
     } catch (err) {
@@ -117,7 +111,7 @@ const ContinueCase = () => {
   };
 
   const sendToApprovalHandler = async (item: Case) => {
-    console.log("sah, Initial item: ", item);
+    console.log("send to approval, Initial item: ", item);
     setFullCase(item);
 
     const dateCriacaoParts = item.dataCriacao.split("/");
@@ -140,7 +134,7 @@ const ContinueCase = () => {
       }
     }
 
-    console.log("sah, Altered item: ", item);
+    console.log("send to approval, Altered item: ", item);
 
     const changeObj = diff(fullCase, item);
 
@@ -151,14 +145,14 @@ const ContinueCase = () => {
       changeDate: new Date(),
     };
 
-    console.log("sah, Change Log: ", changeLog);
+    console.log("send to approval, Change Log: ", changeLog);
 
     const caseChange: CaseChange = {
       case: item,
       changeLog: changeLog,
     };
 
-    console.log("sah, Case change: ", caseChange);
+    console.log("send to approval, Case change: ", caseChange);
 
     try {
       const initialResponse = await sendRequest(
@@ -172,13 +166,15 @@ const ContinueCase = () => {
       );
 
       const savedCase: Case = initialResponse.caseToSave;
-      console.log(savedCase);
+      console.log("send to approval, savedCase", savedCase);
 
       const alteredSavedCase = savedCase;
       alteredSavedCase.dataCriacao = new Date(
         savedCase.dataCriacao
       ).toLocaleDateString();
       alteredSavedCase.dataAtualizacao = new Date().toLocaleDateString();
+      console.log("send to approval, alteredSavedCase", alteredSavedCase);
+
       setFullCase(alteredSavedCase);
 
       const resp2 = await sendRequest(
@@ -190,13 +186,23 @@ const ContinueCase = () => {
           Authorization: "Bearer " + token,
         }
       );
-      console.log(resp2);
+      console.log("send to approval, request approval response: ", resp2);
 
       navigate(`/`);
     } catch (err) {
       console.log(err);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Row className="justify-content-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Row>
+    );
+  }
 
   return (
     <React.Fragment>

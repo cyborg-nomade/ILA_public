@@ -40,7 +40,7 @@ const NewCase = () => {
           { Authorization: "Bearer " + token }
         );
         const loadedComiteMember: AgenteTratamento = responseData.comiteMember;
-        console.log(loadedComiteMember);
+        console.log("loadedComiteMember: ", loadedComiteMember);
         setInitialCase((prevCase) => ({
           ...prevCase,
           extensaoEncarregado: loadedComiteMember,
@@ -60,7 +60,7 @@ const NewCase = () => {
   }, [areaTratamentoDados, currentGroup.id, sendRequest, token]);
 
   const saveProgressHandler = async (item: Case) => {
-    console.log("Initial item: ", item);
+    console.log("save progress, Initial item: ", item);
     setInitialCase(item);
 
     item.grupoCriadorId = currentGroup.id;
@@ -83,7 +83,7 @@ const NewCase = () => {
       }
     }
 
-    console.log("Altered item: ", item);
+    console.log("save progress, Altered item: ", item);
 
     const changeObj = diff(emptyBaseCase(), item);
 
@@ -94,14 +94,14 @@ const NewCase = () => {
       changeDate: new Date(),
     };
 
-    console.log("Change Log: ", changeLog);
+    console.log("save progress, Change Log: ", changeLog);
 
     const caseChange: CaseChange = {
       case: item,
       changeLog: changeLog,
     };
 
-    console.log("Case Change: ", caseChange);
+    console.log("save progress, Case Change: ", caseChange);
 
     try {
       await sendRequest(
@@ -113,6 +113,7 @@ const NewCase = () => {
           Authorization: "Bearer " + token,
         }
       );
+      console.log("case saved");
 
       navigate(`/`);
     } catch (err) {
@@ -121,7 +122,7 @@ const NewCase = () => {
   };
 
   const sendToApprovalHandler = async (item: Case) => {
-    console.log("sah, Initial item: ", item);
+    console.log("send to approval, Initial item: ", item);
     setInitialCase(item);
 
     item.grupoCriadorId = currentGroup.id;
@@ -145,7 +146,7 @@ const NewCase = () => {
       }
     }
 
-    console.log("sah, Altered item: ", item);
+    console.log("send to approval, Altered item: ", item);
 
     const changeObj = diff(emptyBaseCase(), item);
 
@@ -156,14 +157,14 @@ const NewCase = () => {
       changeDate: new Date(),
     };
 
-    console.log("sah, Change Log: ", changeLog);
+    console.log("send to approval, Change Log: ", changeLog);
 
     const caseChange: CaseChange = {
       case: item,
       changeLog: changeLog,
     };
 
-    console.log("sah, Case change: ", changeLog);
+    console.log("send to approval, Case change: ", caseChange);
 
     try {
       const initialResponse = await sendRequest(
@@ -177,13 +178,14 @@ const NewCase = () => {
       );
 
       const savedCase: Case = initialResponse.caseToSave;
-      console.log(savedCase);
+      console.log("send to approval, savedCase", savedCase);
 
       const alteredSavedCase = savedCase;
       alteredSavedCase.dataCriacao = new Date(
         savedCase.dataCriacao
       ).toLocaleDateString();
       alteredSavedCase.dataAtualizacao = new Date().toLocaleDateString();
+      console.log("send to approval, altered savedCase", alteredSavedCase);
       setInitialCase(alteredSavedCase);
 
       const resp2 = await sendRequest(
@@ -195,7 +197,7 @@ const NewCase = () => {
           Authorization: "Bearer " + token,
         }
       );
-      console.log(resp2);
+      console.log("send to approval, request approval response", resp2);
 
       navigate(`/`);
     } catch (err) {

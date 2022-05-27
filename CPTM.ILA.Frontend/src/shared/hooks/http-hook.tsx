@@ -28,8 +28,10 @@ export const useHttpClient = () => {
           signal: httpAbortController.signal,
           credentials: "include",
         });
+        console.log("response: ", response);
 
         const responseData = await response.json();
+        console.log("responseData: ", responseData);
 
         activeHttpRequests.current = activeHttpRequests.current.filter(
           (reqCtrl) => reqCtrl !== httpAbortController
@@ -42,8 +44,7 @@ export const useHttpClient = () => {
         setIsLoading(false);
         return responseData;
       } catch (error: any) {
-        console.log("hook error log:");
-        console.log(error);
+        console.log("hook error log: ", error);
 
         setIsLoading(false);
         setError(error.message);

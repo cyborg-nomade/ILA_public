@@ -26,7 +26,7 @@ const ApproveAccessRequestGetter = () => {
   let navigate = useNavigate();
 
   useEffect(() => {
-    const getCaseToApprove = async () => {
+    const getARToApprove = async () => {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_CONNSTR}/access-requests/${arid}`,
         undefined,
@@ -35,24 +35,14 @@ const ApproveAccessRequestGetter = () => {
       );
 
       let loadedAccessRequest = responseData.accessRequest;
-
+      console.log("loadedAccessRequest", loadedAccessRequest);
       setAccessRequest(loadedAccessRequest);
     };
 
-    getCaseToApprove().catch((error) => {
+    getARToApprove().catch((error) => {
       console.log(error);
     });
   }, [arid, sendRequest, token]);
-
-  if (isLoading) {
-    return (
-      <Row className="justify-content-center">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </Row>
-    );
-  }
 
   const approveHandler = async (item: AccessRequestDTO) => {
     try {
@@ -65,6 +55,7 @@ const ApproveAccessRequestGetter = () => {
           Authorization: "Bearer " + token,
         }
       );
+      console.log("AR approved");
 
       navigate(`/comite/access-requests/approve`);
     } catch (err) {
@@ -84,6 +75,7 @@ const ApproveAccessRequestGetter = () => {
           Authorization: "Bearer " + token,
         }
       );
+      console.log("AR rejected");
 
       navigate(`/comite/access-requests/approve`);
     } catch (err) {
@@ -91,6 +83,16 @@ const ApproveAccessRequestGetter = () => {
       setAccessRequest(item);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Row className="justify-content-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Row>
+    );
+  }
 
   return (
     <React.Fragment>

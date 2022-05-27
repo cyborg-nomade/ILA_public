@@ -35,7 +35,10 @@ const GroupCasesByStatusDashboard = () => {
         );
 
         const loadedTotals: StatusTotals[] = responseData.totals;
+        console.log("groupCase loadedTotals: ", loadedTotals);
+
         loadedTotals.sort((a, b) => (a.nome > b.nome ? 1 : -1));
+        console.log("groupCase loadedTotals sorted: ", loadedTotals);
 
         if (loadedTotals.length !== 0) {
           loadedTotals.map((lt) => {

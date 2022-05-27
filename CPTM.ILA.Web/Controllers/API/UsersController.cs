@@ -10,6 +10,7 @@ using CPTM.ILA.Web.Models;
 using CPTM.ActiveDirectory;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.Http.Description;
 using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.CaseHelpers;
@@ -44,79 +45,12 @@ namespace CPTM.ILA.Web.Controllers.API
         /// "token", contendo um token JWT, utilizado posteriormente para autenticação dos endpoints da API ILA,
         /// "message", contendo uma mensagem de sucesso, ou descrevendo o erro ocorrido
         /// </returns>
+        [ResponseType(typeof(LoginResponseType))]
         [Route("login")]
         [AllowAnonymous]
         [HttpPost]
         public async Task<HttpResponseMessage> Login(AuthUser user)
         {
-            if (user.Username.ToUpper() == "LGPDCOMUM")
-            {
-                var areaTratamentoDados = new AgenteTratamento()
-                {
-                    Nome = "LGPDCOMUM",
-                    Area = "LGPDTESTE",
-                    Email = "lgpdcomum@test.com.br",
-                    Telefone = "+0000000000"
-                };
-
-                var userInDb = await _context.Users.Where(u => u.Username.ToUpper() == user.Username.ToUpper())
-                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
-                    .Include(u => u.OriginGroup)
-                    .SingleOrDefaultAsync();
-
-                if (userInDb == null)
-                {
-                    userInDb = new User()
-                    {
-                        Username = "LGPDCOMUM",
-                        IsComite = false,
-                        IsDPO = false,
-                        IsSystem = true
-                    };
-
-                    _context.Users.Add(userInDb);
-                    await _context.SaveChangesAsync();
-
-                    var userOriginGroup =
-                        await _context.Groups.SingleOrDefaultAsync(g => g.Nome.ToUpper() == "LGPDTESTE") ??
-                        new Group()
-                        {
-                            Nome = "LGPDTESTE",
-                        };
-
-                    userInDb.OriginGroup = userOriginGroup;
-                    userInDb.GroupAccessExpirations = new List<GroupAccessExpiration>()
-                        { new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = userOriginGroup } };
-                    _context.Entry(userInDb)
-                        .State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-                }
-
-                foreach (var groupAccessExpiration in userInDb.GroupAccessExpirations)
-                {
-                    if (groupAccessExpiration.ExpirationDate <= DateTime.Now)
-                    {
-                        userInDb.GroupAccessExpirations.Remove(groupAccessExpiration);
-                    }
-                }
-
-                _context.Entry(userInDb)
-                    .State = EntityState.Modified;
-
-                await _context.SaveChangesAsync();
-
-                var jwtToken = TokenUtil.CreateToken(userInDb, new UsuarioAD() { Nome = "LGPDCOMUM" }, false);
-
-                return Request.CreateResponse(HttpStatusCode.OK, new
-                {
-                    user = Models.AccessControl.User.ReduceToUserDto(userInDb),
-                    areaTratamentoDados,
-                    isDeveloper = false,
-                    token = jwtToken,
-                    message = "Usuário logado"
-                });
-            }
-
             if (user.Username.IsNullOrWhiteSpace() || !Seguranca.Autenticar(user.Username.ToUpper(), user.Password))
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, new
@@ -216,9 +150,10 @@ namespace CPTM.ILA.Web.Controllers.API
         /// </summary>
         /// <param name="gid">Id do grupo especificado</param>
         /// <returns>
-        /// Status da transação e um objeto JSON com uma chave "comiteMember" contendo os dados dos membros do Comitê LGPD (objeto AgenteTratamento)
+        /// Status da transação e um objeto JSON com uma chave "comiteMember" contendo os dados do membros do Comitê LGPD (objeto AgenteTratamento)
         /// Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<AgenteTratamento>))]
         [Route("comite-members/{gid:int}")]
         [Authorize]
         [HttpGet]
@@ -288,7 +223,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     Telefone = comiteMemberUserAd.TelefoneComercial
                 };
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { comiteMember });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { comiteMember, message = "Membro do Comitê obtido com sucesso!" });
             }
             catch (Exception e)
             {
@@ -298,6 +234,12 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Retorna todos os usuários cadastrados que são membros do Comitê LGPD
+        /// Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <returns>Status da transação e um objeto JSON com uma chave "comiteMembers" contendo os dados dos membros do Comitê LGPD (objeto ComiteMembers)</returns>
+        [ResponseType(typeof(ApiResponseType<List<ComiteMember>>))]
         [Route("comite-members")]
         [Authorize]
         [HttpGet]
@@ -321,13 +263,14 @@ namespace CPTM.ILA.Web.Controllers.API
                 var comiteMembers =
                     comiteMembersUsers.ConvertAll<ComiteMember>(Models.AccessControl.User.ReduceToComiteMember);
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { comiteMembers });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { comiteMembers, message = "Membros do comitê obtidos com sucesso!" });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -339,6 +282,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "groups" contendo o conjunto de grupos de acesso do usuário especificado (objetos Group)
         /// Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<List<Group>>))]
         [Route("user-groups/{username}")]
         [Authorize]
         [HttpGet]
@@ -346,22 +290,26 @@ namespace CPTM.ILA.Web.Controllers.API
         {
             try
             {
-                var user = await _context.Users.SingleOrDefaultAsync(u => u.Username.ToUpper() == username.ToUpper());
+                var user = await _context.Users.Where(u => u.Username.ToUpper() == username.ToUpper())
+                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync();
                 if (user == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound,
                         new { message = "Usuário não encontrado.", username });
                 }
 
-                var groups = user.GroupAccessExpirations;
+                var groups = user.GroupAccessExpirations.Select(gae => gae.Group)
+                    .ToList();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { groups });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { groups, message = "Grupos obtidos com sucesso!" });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -409,10 +357,17 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
+        /// <summary>
+        /// Retorna uma lista de nomes de usuário correspondentes a pesquisa de nome recebida.
+        /// Endpoint disponibilizado publicamente.
+        /// </summary>
+        /// <param name="nameString">Query busca por nome</param>
+        /// <returns>Status da transação e um objeto JSON com uma chave "results" contendo o conjunto de nomes de usuário e nomes correspondentes à pesquisa</returns>
+        [ResponseType(typeof(ApiResponseType<List<UsernameQueryResult>>))]
         [Route("query")]
         [AllowAnonymous]
         [HttpPost]
@@ -424,7 +379,7 @@ namespace CPTM.ILA.Web.Controllers.API
             var formattedResults = results.Select(u => new { value = u.username, label = $"{u.username} - {u.name}" });
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                message = "hi",
+                message = "Nomes de usuário obtidos com sucesso!",
                 results,
                 formattedResults, nameString
             });

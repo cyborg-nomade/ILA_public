@@ -30,10 +30,14 @@ const ApproveCaseGetter = () => {
       );
 
       let loadedCase = responseData.uniqueCase;
+      console.log("loadedCase: ", loadedCase);
+
       loadedCase.dataCriacao = new Date(
         loadedCase.dataCriacao
       ).toLocaleDateString();
       loadedCase.dataAtualizacao = new Date().toLocaleDateString();
+
+      console.log("loadedCase dates altered: ", loadedCase);
       setFullCase(loadedCase);
     };
 
@@ -41,16 +45,6 @@ const ApproveCaseGetter = () => {
       console.log(error);
     });
   }, [cid, sendRequest, token]);
-
-  if (isLoading) {
-    return (
-      <Row className="justify-content-center">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </Row>
-    );
-  }
 
   const approveCaseHandler = async (item: Case) => {
     item.aprovado = true;
@@ -65,6 +59,7 @@ const ApproveCaseGetter = () => {
           Authorization: "Bearer " + token,
         }
       );
+      console.log("Case approved");
 
       navigate(`/comite/`);
     } catch (err) {
@@ -86,6 +81,7 @@ const ApproveCaseGetter = () => {
           Authorization: "Bearer " + token,
         }
       );
+      console.log("Case rejected");
 
       navigate(`/comite/`);
     } catch (err) {
@@ -93,6 +89,16 @@ const ApproveCaseGetter = () => {
       setFullCase(item);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Row className="justify-content-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Row>
+    );
+  }
 
   return (
     <React.Fragment>
