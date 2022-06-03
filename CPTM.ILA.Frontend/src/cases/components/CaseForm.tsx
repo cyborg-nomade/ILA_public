@@ -1551,11 +1551,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -1563,7 +1563,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -1897,11 +1898,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -1909,7 +1910,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -2041,11 +2043,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -2053,7 +2055,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -2261,11 +2264,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -2273,7 +2276,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -2331,11 +2335,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -2343,7 +2347,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -2450,11 +2455,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -2462,7 +2467,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -2520,11 +2526,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -2532,7 +2538,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -2594,11 +2601,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -2606,7 +2613,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -2735,11 +2743,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -2747,7 +2755,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -2807,11 +2816,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -2819,7 +2828,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -2884,11 +2894,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -2896,7 +2906,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -3005,11 +3016,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -3017,7 +3028,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -3196,11 +3208,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -3208,7 +3220,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -3309,11 +3322,11 @@ const CaseForm = (props: {
                                             </Form.Label>
                                             <OverlayTrigger
                                                 placement="top"
-                                                trigger={["click", "hover"]}
+                                                trigger={"click"}
                                                 overlay={
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
-                                                        visite o
+                                                        visite o{" "}
                                                         <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                             site da CADA
                                                         </a>
@@ -3321,7 +3334,8 @@ const CaseForm = (props: {
                                                 }
                                             >
                                                 <Form.Label as={Col}>
-                                                    Tempo Retenção dos Dados
+                                                    Tempo de Retenção dos Dados{" "}
+                                                    <AiFillQuestionCircle />
                                                 </Form.Label>
                                             </OverlayTrigger>
                                             <Form.Label as={Col}>
@@ -3378,10 +3392,10 @@ const CaseForm = (props: {
                                 <Form.Label as={Col}>Descrição</Form.Label>
                                 <OverlayTrigger
                                     placement="top"
-                                    trigger={["click", "hover"]}
+                                    trigger={"click"}
                                     overlay={
                                         <Tooltip className="text-muted">
-                                            Para maiores informações visite o
+                                            Para maiores informações visite o{" "}
                                             <a href="http://intranet/adm/CADA/Paginas/default.aspx">
                                                 site da CADA
                                             </a>
@@ -3389,7 +3403,8 @@ const CaseForm = (props: {
                                     }
                                 >
                                     <Form.Label as={Col}>
-                                        Tempo Retenção dos Dados
+                                        Tempo de Retenção dos Dados{" "}
+                                        <AiFillQuestionCircle />
                                     </Form.Label>
                                 </OverlayTrigger>
                                 <Form.Label as={Col}>Fonte Retenção</Form.Label>
