@@ -16,12 +16,19 @@ namespace CPTM.ILA.Web.Models
     public class Case
     {
         public int Id { get; set; }
+        [MaxLength(250)] public string Ref { get; set; }
         [MaxLength(250)] public string Nome { get; set; }
         public string Area { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
+        public DateTime DataEnvio { get; set; }
+        public DateTime DataAprovacao { get; set; }
+        public DateTime DataProxRevisao { get; set; }
+        public int UsuarioRespId { get; set; }
         public int GrupoCriadorId { get; set; }
         public bool Aprovado { get; set; }
+        public bool Reprovado { get; set; }
+        public string ComentarioReprovacao { get; set; }
         public bool EncaminhadoAprovacao { get; set; }
         public bool DadosPessoaisSensiveis { get; set; }
 
