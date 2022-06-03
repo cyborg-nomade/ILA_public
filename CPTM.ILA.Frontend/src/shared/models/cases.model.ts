@@ -24,12 +24,19 @@ import {
 } from "./case-helpers/enums.model";
 
 export interface BaseCase {
+    ref: string;
     nome: string;
     area: string;
     dataCriacao: string;
     dataAtualizacao: string;
+    dataEnvio: string;
+    dataAprovacao: string;
+    dataProxRevisao: string;
+    usuarioRespId: number;
     grupoCriadorId: number;
     aprovado: boolean;
+    reprovado: boolean;
+    comentarioReprovacao: string;
     encaminhadoAprovacao: boolean;
     dadosPessoaisSensiveis: boolean;
     controlador: AgenteTratamento;
@@ -61,12 +68,19 @@ export interface Case extends BaseCase {
 }
 
 export const emptyBaseCase = (): BaseCase => ({
+    ref: "",
     nome: "",
     area: "",
     dataCriacao: new Date().toISOString(),
     dataAtualizacao: new Date().toISOString(),
+    dataEnvio: new Date().toISOString(),
+    dataAprovacao: new Date().toISOString(),
+    dataProxRevisao: new Date().toISOString(),
+    usuarioRespId: 0,
     grupoCriadorId: 0,
     aprovado: false,
+    reprovado: false,
+    comentarioReprovacao: "",
     encaminhadoAprovacao: false,
     dadosPessoaisSensiveis: false,
     controlador: emptyAgenteTratamento(),
@@ -95,12 +109,19 @@ export const emptyBaseCase = (): BaseCase => ({
 
 export const emptyCase = (currentAreaTratamento?: AgenteTratamento): Case => ({
     id: 0,
+    ref: "",
     nome: "",
     area: "",
     dataCriacao: new Date().toLocaleDateString(),
     dataAtualizacao: new Date().toLocaleDateString(),
+    dataEnvio: new Date().toISOString(),
+    dataAprovacao: new Date().toISOString(),
+    dataProxRevisao: new Date().toISOString(),
+    usuarioRespId: 0,
     grupoCriadorId: 0,
     aprovado: false,
+    reprovado: false,
+    comentarioReprovacao: "",
     encaminhadoAprovacao: false,
     dadosPessoaisSensiveis: false,
     controlador: emptyAgenteTratamento("CPTM"),
