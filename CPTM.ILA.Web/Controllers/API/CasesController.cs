@@ -204,10 +204,11 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
-        [Route("group/{gid:int}/status/{aprovado:bool}/{encaminhadoAprovacao:bool}")]
+        [Route("group/{gid:int}/status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}")]
         [Authorize]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetByGroupByStatus(int gid, bool aprovado, bool encaminhadoAprovacao)
+        public async Task<HttpResponseMessage> GetByGroupByStatus(int gid, bool encaminhadoAprovacao, bool aprovado,
+            bool reprovado)
         {
             try
             {
@@ -233,12 +234,12 @@ namespace CPTM.ILA.Web.Controllers.API
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
                 }
 
-                var groupCasesInDb = await _context.Cases.Include(c => c.FinalidadeTratamento)
-                    .Where(c => c.GrupoCriadorId == gid)
+                var filteredCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.GrupoCriadorId == gid &&
+                                c.Aprovado == aprovado &&
+                                c.EncaminhadoAprovacao == encaminhadoAprovacao &&
+                                c.Reprovado == reprovado)
                     .ToListAsync();
-                var filteredCases = groupCasesInDb.Where(c => c.Aprovado == aprovado &&
-                                                              c.EncaminhadoAprovacao == encaminhadoAprovacao)
-                    .ToList();
 
                 var caseListItems = filteredCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
 
@@ -346,13 +347,18 @@ namespace CPTM.ILA.Web.Controllers.API
                             .Aprovado
                             ? "Concluído"
                             : (c.FirstOrDefault()
-                                .EncaminhadoAprovacao
-                                ? "Pendente Aprovação"
-                                : "Em Preenchimento"),
+                                .Reprovado
+                                ? "Reprovado"
+                                : (c.FirstOrDefault()
+                                    .EncaminhadoAprovacao
+                                    ? "Pendente Aprovação"
+                                    : "Em Preenchimento")),
                         Aprovado = c.FirstOrDefault()
                             .Aprovado,
                         EncaminhadoAprovacao = c.FirstOrDefault()
                             .EncaminhadoAprovacao,
+                        Reprovado = c.FirstOrDefault()
+                            .Reprovado,
                         QuantidadeByStatus = c.Count(),
                     })
                     .ToListAsync();
