@@ -13,7 +13,7 @@ namespace CPTM.ILA.Web.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202205181536271_FullModel"; }
+            get { return "202206061351091_Full-Model"; }
         }
         
         string IMigrationMetadata.Source
