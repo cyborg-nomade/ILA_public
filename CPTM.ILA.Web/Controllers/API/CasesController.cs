@@ -204,10 +204,12 @@ namespace CPTM.ILA.Web.Controllers.API
         /// <param name="gid">Id do grupo</param>
         /// <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
         /// <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+        /// <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
+        [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
         [Route("group/{gid:int}/status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}")]
         [Authorize]
         [HttpGet]
@@ -257,6 +259,16 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Retorna o total de Casos de Uso pendentes de aprovação para um grupo especificado. 
+        /// Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+        /// </summary>
+        /// <param name="gid">Id do grupo</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "totalPeding" onde se encontra o total dos Casos de Uso pendentes.
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+        /// </returns>
+        [ResponseType(typeof(ApiResponseType<int>))]
         [Route("groups/{gid:int}/status/pending/totals")]
         [Authorize]
         [HttpGet]

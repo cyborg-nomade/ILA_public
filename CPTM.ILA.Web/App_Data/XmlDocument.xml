@@ -736,15 +736,27 @@
             Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
             </returns>
         </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByGroupByStatus(System.Int32,System.Boolean,System.Boolean)">
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByGroupByStatus(System.Int32,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Retorna todos os Casos de Uso de um grupo de acesso que estejam em um certo status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
             </summary>
             <param name="gid">Id do grupo</param>
             <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
             <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+            <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
             <returns>
             Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalPendingByGroup(System.Int32)">
+            <summary>
+            Retorna o total de Casos de Uso pendentes de aprovação para um grupo especificado. 
+            Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+            </summary>
+            <param name="gid">Id do grupo</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totalPeding" onde se encontra o total dos Casos de Uso pendentes.
             Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
             </returns>
         </member>
@@ -893,6 +905,16 @@
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.#ctor">
             <inheritdoc />
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.Get">
+            <summary>
+            Retorna todos os usuários cadastrados para acesso ao sistema ILA
+            Endpoint disponibilizado apenas para o DPO
+            </summary>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "users" onde se encontram os dados dos usuários do sistema, em formato reduzido (UserDto)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
         </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.Login(CPTM.ILA.Web.DTOs.AuthUser)">
             <summary>
