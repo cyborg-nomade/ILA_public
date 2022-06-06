@@ -9,62 +9,57 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import CasesList from "../components/CasesList";
 
 const AllCasesListGetter = () => {
-  const [cases, setCases] = useState<CaseListItem[]>([]);
+    const [cases, setCases] = useState<CaseListItem[]>([]);
 
-  const { token, currentGroup } = useContext(AuthContext);
+    const { token, currentGroup } = useContext(AuthContext);
 
-  const { isLoading, error, isWarning, sendRequest, clearError } =
-    useHttpClient();
+    const { isLoading, error, isWarning, sendRequest, clearError } =
+        useHttpClient();
 
-  useEffect(() => {
-    const getAllCases = async () => {
-      const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/`,
-        undefined,
-        undefined,
-        { Authorization: "Bearer " + token }
-      );
-      const loadedCases: CaseListItem[] = responseData.cases;
-      console.log("loadedCases: ", loadedCases);
+    useEffect(() => {
+        const getAllCases = async () => {
+            const responseData = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/`,
+                undefined,
+                undefined,
+                { Authorization: "Bearer " + token }
+            );
+            const loadedCases: CaseListItem[] = responseData.cases;
+            console.log("loadedCases: ", loadedCases);
 
-      const filteredCases = loadedCases.filter(
-        (c) => c.grupoCriador === currentGroup.nome
-      );
-      console.log("filteredCases: ", filteredCases);
+            setCases(loadedCases);
+        };
 
-      setCases(filteredCases);
-    };
+        getAllCases().catch((error) => {
+            console.log(error);
+        });
+    }, [sendRequest, token, currentGroup]);
 
-    getAllCases().catch((error) => {
-      console.log(error);
-    });
-  }, [sendRequest, token, currentGroup]);
+    if (isLoading) {
+        return (
+            <Row className="justify-content-center">
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </Row>
+        );
+    }
 
-  if (isLoading) {
     return (
-      <Row className="justify-content-center">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </Row>
+        <React.Fragment>
+            <h1>Página Inicial - Todos os Itens Aprovados</h1>
+            {error && (
+                <Alert
+                    variant={isWarning ? "warning" : "danger"}
+                    onClose={clearError}
+                    dismissible
+                >
+                    {error}
+                </Alert>
+            )}
+            <CasesList items={cases} redirect={false} />
+        </React.Fragment>
     );
-  }
-
-  return (
-    <React.Fragment>
-      <h1>Página Inicial - Todos os Itens Aprovados</h1>
-      {error && (
-        <Alert
-          variant={isWarning ? "warning" : "danger"}
-          onClose={clearError}
-          dismissible
-        >
-          {error}
-        </Alert>
-      )}
-      <CasesList items={cases} redirect={false} />
-    </React.Fragment>
-  );
 };
 
 export default AllCasesListGetter;
