@@ -841,9 +841,11 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     var deleteChangeLog = new ChangeLog()
                     {
+                        CaseRef = caseToDelete.Ref,
                         CaseId = caseToDelete.Id,
                         ChangeDate = DateTime.Now,
                         UserId = userDeleting.Id,
+                        UsernameResp = userDeleting.Username,
                         CaseDiff = @"
                         {
                             Name = ""Remoção"",
@@ -920,9 +922,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var changeLog = new ChangeLog()
                 {
+                    CaseRef = caseToApprove.Ref,
                     CaseId = caseToApprove.Id,
                     ChangeDate = DateTime.Now,
                     UserId = userId,
+                    UsernameResp = caseToApprove.UsernameResponsavel,
                 };
 
 
