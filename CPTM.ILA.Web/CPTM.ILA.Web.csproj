@@ -329,9 +329,9 @@
     <Compile Include="Migrations\202203312006350_Existing-Model.designer.cs">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202205181536271_FullModel.cs" />
-    <Compile Include="Migrations\202205181536271_FullModel.designer.cs">
-      <DependentUpon>202205181536271_FullModel.cs</DependentUpon>
+    <Compile Include="Migrations\202206061351091_Full-Model.cs" />
+    <Compile Include="Migrations\202206061351091_Full-Model.designer.cs">
+      <DependentUpon>202206061351091_Full-Model.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessControl\AccessRequest.cs" />
@@ -506,8 +506,8 @@
     <EmbeddedResource Include="Migrations\202203312006350_Existing-Model.resx">
       <DependentUpon>202203312006350_Existing-Model.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202205181536271_FullModel.resx">
-      <DependentUpon>202205181536271_FullModel.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202206061351091_Full-Model.resx">
+      <DependentUpon>202206061351091_Full-Model.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

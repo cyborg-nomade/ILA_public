@@ -37,12 +37,19 @@
                 c => new
                     {
                         Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
+                        Ref = c.String(maxLength: 250),
                         Nome = c.String(maxLength: 250),
                         Area = c.String(),
                         DataCriacao = c.DateTime(nullable: false),
                         DataAtualizacao = c.DateTime(nullable: false),
+                        DataEnvio = c.DateTime(),
+                        DataAprovacao = c.DateTime(),
+                        DataProxRevisao = c.DateTime(),
+                        UsernameResponsavel = c.String(maxLength: 250),
                         GrupoCriadorId = c.Decimal(nullable: false, precision: 9, scale: 0),
                         Aprovado = c.Decimal(nullable: false, precision: 1, scale: 0),
+                        Reprovado = c.Decimal(nullable: false, precision: 1, scale: 0),
+                        ComentarioReprovacao = c.String(),
                         EncaminhadoAprovacao = c.Decimal(nullable: false, precision: 1, scale: 0),
                         DadosPessoaisSensiveis = c.Decimal(nullable: false, precision: 1, scale: 0),
                         DescricaoFluxoTratamento = c.String(),
@@ -635,7 +642,9 @@
                     {
                         Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
                         UserId = c.Decimal(nullable: false, precision: 9, scale: 0),
+                        UsernameResp = c.String(),
                         CaseId = c.Decimal(nullable: false, precision: 9, scale: 0),
+                        CaseRef = c.String(),
                         ChangeDate = c.DateTime(nullable: false),
                         CaseDiff = c.String(),
                     })
