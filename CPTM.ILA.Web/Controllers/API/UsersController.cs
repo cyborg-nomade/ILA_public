@@ -33,6 +33,15 @@ namespace CPTM.ILA.Web.Controllers.API
             _context = new ILAContext();
         }
 
+        /// <summary>
+        /// Retorna todos os usuários cadastrados para acesso ao sistema ILA
+        /// Endpoint disponibilizado apenas para o DPO
+        /// </summary>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "users" onde se encontram os dados dos usuários do sistema, em formato reduzido (UserDto)
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+        /// </returns>
+        [ResponseType(typeof(ApiResponseType<List<UserDto>>))]
         [Route("")]
         [Authorize]
         [HttpGet]
