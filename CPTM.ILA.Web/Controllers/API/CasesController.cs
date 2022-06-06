@@ -252,6 +252,54 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        [Route("groups/{gid:int}/status/pending/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalPendingByGroup(int gid)
+        {
+            try
+            {
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                        .ToListAsync();
+
+                    var searchedGroup = await _context.Groups.FindAsync(gid);
+
+                    if (!(userGroups.Contains(searchedGroup) || claims.IsDpo || claims.IsDeveloper))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+                if (gid <= 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+                }
+
+                var pendingGroupCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.GrupoCriadorId == gid &&
+                                c.Aprovado == false &&
+                                c.Reprovado == false &&
+                                c.EncaminhadoAprovacao == true)
+                    .ToListAsync();
+
+                var totalPending = pendingGroupCases.Count;
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totalPending });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
         /// <summary>
         /// Retorna os totais dos Casos de Uso de um grupo de acesso por status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
         /// </summary>
