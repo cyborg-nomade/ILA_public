@@ -11,7 +11,9 @@ namespace CPTM.ILA.Web.Models.ChangeLogging
     {
         public int Id { get; set; }
         public int UserId { get; set; }
+        public string UsernameResp { get; set; }
         public int CaseId { get; set; }
+        public string CaseRef { get; set; }
         public DateTime ChangeDate { get; set; }
         public string CaseDiff { get; set; }
     }

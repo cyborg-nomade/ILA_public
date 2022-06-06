@@ -1,13 +1,14 @@
 export interface CaseListItem {
-  id: string;
-  nome: string;
-  area: string;
-  dataCriacao: string;
-  dataAtualizacao: string;
-  hipotesesTratamento: string;
-  descricaoFinalidade: string;
-  dadosPessoaisSensiveis: string;
-  grupoCriador: string;
+    id: string;
+    ref: string;
+    nome: string;
+    area: string;
+    dataEnvio: string;
+    dataAprovacao: string;
+    dataProxRevisao: string;
+    usuarioResp: string;
+    dadosPessoaisSensiveis: string;
+    grupoCriadorId: number;
 }
 
 export type headersCaseListItem = keyof CaseListItem;

@@ -21,10 +21,10 @@ namespace CPTM.ILA.Web.Models
         public string Area { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public DateTime DataEnvio { get; set; }
-        public DateTime DataAprovacao { get; set; }
-        public DateTime DataProxRevisao { get; set; }
-        public int UsuarioRespId { get; set; }
+        public DateTime? DataEnvio { get; set; }
+        public DateTime? DataAprovacao { get; set; }
+        public DateTime? DataProxRevisao { get; set; }
+        [MaxLength(250)] public string UsernameResponsavel { get; set; }
         public int GrupoCriadorId { get; set; }
         public bool Aprovado { get; set; }
         public bool Reprovado { get; set; }
@@ -63,14 +63,16 @@ namespace CPTM.ILA.Web.Models
         public static CaseListItem ReduceToListItem(Case fullCase) =>
             new CaseListItem()
             {
-                Area = fullCase.Area,
-                DadosPessoaisSensiveis = fullCase.DadosPessoaisSensiveis ? "SIM" : "NÃO",
-                DataAtualizacao = fullCase.DataAtualizacao.ToString("d", CultureInfo.GetCultureInfo("pt-BR")),
-                DataCriacao = fullCase.DataAtualizacao.ToString("d", CultureInfo.GetCultureInfo("pt-BR")),
-                DescricaoFinalidade = fullCase.FinalidadeTratamento.DescricaoFinalidade,
-                HipotesesTratamento = fullCase.FinalidadeTratamento.HipoteseTratamento.Value,
-                Id = fullCase.Id,
                 Nome = fullCase.Nome,
+                Id = fullCase.Id,
+                Ref = fullCase.Ref,
+                Area = fullCase.Area,
+                UsuarioResp = Seguranca.ObterUsuario(fullCase.UsernameResponsavel)
+                    .Nome.ToUpper(),
+                DataEnvio = fullCase.DataEnvio?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
+                DataAprovacao = fullCase.DataAprovacao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
+                DataProxRevisao = fullCase.DataProxRevisao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
+                DadosPessoaisSensiveis = fullCase.DadosPessoaisSensiveis ? "SIM" : "NÃO",
                 GrupoCriadorId = fullCase.GrupoCriadorId
             };
 
@@ -116,6 +118,8 @@ namespace CPTM.ILA.Web.Models
         public Case ApproveCase()
         {
             Aprovado = true;
+            DataAprovacao = DateTime.Today;
+            DataProxRevisao = DataAprovacao?.AddMonths(6);
             return this;
         }
 
@@ -123,12 +127,15 @@ namespace CPTM.ILA.Web.Models
         {
             Aprovado = false;
             EncaminhadoAprovacao = false;
+            Reprovado = true;
             return this;
         }
 
         public Case SendCaseToApproval(string usernameCriador, int idUsuario)
         {
             EncaminhadoAprovacao = true;
+
+            DataEnvio = DateTime.Today;
 
             if (FinalidadeTratamento.HipoteseTratamento.Value !=
                 HipotesesTratamento.Consentimento()
