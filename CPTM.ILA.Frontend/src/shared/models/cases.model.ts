@@ -32,7 +32,7 @@ export interface BaseCase {
     dataEnvio: string;
     dataAprovacao: string;
     dataProxRevisao: string;
-    usuarioRespId: number;
+    usernameResponsavel: string;
     grupoCriadorId: number;
     aprovado: boolean;
     reprovado: boolean;
@@ -76,7 +76,7 @@ export const emptyBaseCase = (): BaseCase => ({
     dataEnvio: new Date().toISOString(),
     dataAprovacao: new Date().toISOString(),
     dataProxRevisao: new Date().toISOString(),
-    usuarioRespId: 0,
+    usernameResponsavel: "",
     grupoCriadorId: 0,
     aprovado: false,
     reprovado: false,
@@ -114,10 +114,10 @@ export const emptyCase = (currentAreaTratamento?: AgenteTratamento): Case => ({
     area: "",
     dataCriacao: new Date().toLocaleDateString(),
     dataAtualizacao: new Date().toLocaleDateString(),
-    dataEnvio: new Date().toISOString(),
-    dataAprovacao: new Date().toISOString(),
-    dataProxRevisao: new Date().toISOString(),
-    usuarioRespId: 0,
+    dataEnvio: "",
+    dataAprovacao: "",
+    dataProxRevisao: "",
+    usernameResponsavel: "",
     grupoCriadorId: 0,
     aprovado: false,
     reprovado: false,
