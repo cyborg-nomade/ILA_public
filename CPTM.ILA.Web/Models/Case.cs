@@ -118,6 +118,8 @@ namespace CPTM.ILA.Web.Models
         public Case ApproveCase()
         {
             Aprovado = true;
+            Reprovado = false;
+            EncaminhadoAprovacao = false;
             DataAprovacao = DateTime.Today;
             DataProxRevisao = DataAprovacao?.AddMonths(6);
             return this;
@@ -134,6 +136,8 @@ namespace CPTM.ILA.Web.Models
         public Case SendCaseToApproval(string usernameCriador, int idUsuario)
         {
             EncaminhadoAprovacao = true;
+            Aprovado = false;
+            Reprovado = false;
 
             DataEnvio = DateTime.Today;
 
