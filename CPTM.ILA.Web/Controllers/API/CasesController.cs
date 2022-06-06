@@ -70,7 +70,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -189,7 +189,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -204,10 +204,11 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
-        [Route("group/{gid:int}/status/{aprovado:bool}/{encaminhadoAprovacao:bool}")]
+        [Route("group/{gid:int}/status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}")]
         [Authorize]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetByGroupByStatus(int gid, bool aprovado, bool encaminhadoAprovacao)
+        public async Task<HttpResponseMessage> GetByGroupByStatus(int gid, bool encaminhadoAprovacao, bool aprovado,
+            bool reprovado)
         {
             try
             {
@@ -233,16 +234,64 @@ namespace CPTM.ILA.Web.Controllers.API
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
                 }
 
-                var groupCasesInDb = await _context.Cases.Include(c => c.FinalidadeTratamento)
-                    .Where(c => c.GrupoCriadorId == gid)
+                var filteredCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.GrupoCriadorId == gid &&
+                                c.Aprovado == aprovado &&
+                                c.EncaminhadoAprovacao == encaminhadoAprovacao &&
+                                c.Reprovado == reprovado)
                     .ToListAsync();
-                var filteredCases = groupCasesInDb.Where(c => c.Aprovado == aprovado &&
-                                                              c.EncaminhadoAprovacao == encaminhadoAprovacao)
-                    .ToList();
 
                 var caseListItems = filteredCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        [Route("groups/{gid:int}/status/pending/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalPendingByGroup(int gid)
+        {
+            try
+            {
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                        .ToListAsync();
+
+                    var searchedGroup = await _context.Groups.FindAsync(gid);
+
+                    if (!(userGroups.Contains(searchedGroup) || claims.IsDpo || claims.IsDeveloper))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+                if (gid <= 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+                }
+
+                var pendingGroupCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.GrupoCriadorId == gid &&
+                                c.Aprovado == false &&
+                                c.Reprovado == false &&
+                                c.EncaminhadoAprovacao == true)
+                    .ToListAsync();
+
+                var totalPending = pendingGroupCases.Count;
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totalPending });
             }
             catch (Exception e)
             {
@@ -298,13 +347,18 @@ namespace CPTM.ILA.Web.Controllers.API
                             .Aprovado
                             ? "Concluído"
                             : (c.FirstOrDefault()
-                                .EncaminhadoAprovacao
-                                ? "Pendente Aprovação"
-                                : "Em Preenchimento"),
+                                .Reprovado
+                                ? "Reprovado"
+                                : (c.FirstOrDefault()
+                                    .EncaminhadoAprovacao
+                                    ? "Pendente Aprovação"
+                                    : "Em Preenchimento")),
                         Aprovado = c.FirstOrDefault()
                             .Aprovado,
                         EncaminhadoAprovacao = c.FirstOrDefault()
                             .EncaminhadoAprovacao,
+                        Reprovado = c.FirstOrDefault()
+                            .Reprovado,
                         QuantidadeByStatus = c.Count(),
                     })
                     .ToListAsync();
@@ -318,7 +372,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -379,7 +433,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -548,7 +602,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -841,9 +895,11 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     var deleteChangeLog = new ChangeLog()
                     {
+                        CaseRef = caseToDelete.Ref,
                         CaseId = caseToDelete.Id,
                         ChangeDate = DateTime.Now,
                         UserId = userDeleting.Id,
+                        UsernameResp = userDeleting.Username,
                         CaseDiff = @"
                         {
                             Name = ""Remoção"",
@@ -863,7 +919,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 
@@ -920,9 +976,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var changeLog = new ChangeLog()
                 {
+                    CaseRef = caseToApprove.Ref,
                     CaseId = caseToApprove.Id,
                     ChangeDate = DateTime.Now,
                     UserId = userId,
+                    UsernameResp = caseToApprove.UsernameResponsavel,
                 };
 
 
@@ -962,7 +1020,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 Console.WriteLine(e);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
         }
 

@@ -32,6 +32,38 @@ namespace CPTM.ILA.Web.Controllers.API
             _context = new ILAContext();
         }
 
+        [Route("")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> Get()
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDpo || claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var users = await _context.Users.ToListAsync();
+
+                var userDtos = users.ConvertAll<UserDto>(Models.AccessControl.User.ReduceToUserDto);
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { users = userDtos, message = "Usuários obtidos com sucesso!" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
         /// <summary>
         /// Realiza o login do usuário.
         /// Endpoint disponibilizado publicamente

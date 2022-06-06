@@ -19,5 +19,7 @@
         public static TipoTempoRetencao Ano10() => new TipoTempoRetencao("10 anos");
         public static TipoTempoRetencao Ano15() => new TipoTempoRetencao("15 anos");
         public static TipoTempoRetencao Ano20() => new TipoTempoRetencao("20 anos");
+        public static TipoTempoRetencao Ano30() => new TipoTempoRetencao("30 anos");
+        public static TipoTempoRetencao MaisQue30() => new TipoTempoRetencao("Mais que 30 anos");
     }
 }
