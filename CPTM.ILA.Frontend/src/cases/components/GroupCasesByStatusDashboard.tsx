@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import CardGroup from "react-bootstrap/CardGroup";
 import Badge from "react-bootstrap/Badge";
-import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
@@ -15,11 +15,14 @@ const GroupCasesByStatusDashboard = () => {
     const [concluidos, setConcluidos] = useState(0);
     const [emPreenchimento, setEmPreenchimento] = useState(0);
     const [pendenteAprovacao, setPendenteAprovacao] = useState(0);
+    const [reprovado, setReprovado] = useState(0);
 
     const { token, currentGroup } = useContext(AuthContext);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
+
+    let navigate = useNavigate();
 
     useEffect(() => {
         const getGroupCaseTotals = async () => {
@@ -51,6 +54,9 @@ const GroupCasesByStatusDashboard = () => {
                         if (lt.nome === "Pendente Aprovação") {
                             setPendenteAprovacao(lt.quantidadeByStatus);
                         }
+                        if (lt.nome === "Reprovado") {
+                            setReprovado(lt.quantidadeByStatus);
+                        }
                         return lt;
                     });
                 }
@@ -67,6 +73,7 @@ const GroupCasesByStatusDashboard = () => {
             setConcluidos(0);
             setEmPreenchimento(0);
             setPendenteAprovacao(0);
+            setReprovado(0);
         };
     }, [sendRequest, token, currentGroup.id]);
 
@@ -96,27 +103,55 @@ const GroupCasesByStatusDashboard = () => {
             </Row>
             <Row>
                 <CardGroup>
-                    <Card border="danger">
-                        <Card.Header>Pendente Aprovação</Card.Header>
-                        <Card.Body>
-                            <h1 className="text-center">
-                                <Badge bg="danger">{pendenteAprovacao}</Badge>
-                            </h1>
-                        </Card.Body>
-                    </Card>
-                    <Card border="secondary">
-                        <Card.Header>Concluídos</Card.Header>
-                        <Card.Body>
-                            <h1 className="text-center">
-                                <Badge bg="secondary">{concluidos}</Badge>
-                            </h1>
-                        </Card.Body>
-                    </Card>
                     <Card border="warning">
                         <Card.Header>Em Preenchimento</Card.Header>
                         <Card.Body>
                             <h1 className="text-center">
-                                <Badge bg="warning">{emPreenchimento}</Badge>
+                                <Badge
+                                    bg="warning"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() =>
+                                        navigate("../cases/continue")
+                                    }
+                                >
+                                    {emPreenchimento}
+                                </Badge>
+                            </h1>
+                        </Card.Body>
+                    </Card>
+                    <Card border="secondary">
+                        <Card.Header>Pendente Aprovação</Card.Header>
+                        <Card.Body>
+                            <h1 className="text-center">
+                                <Badge bg="secondary">
+                                    {pendenteAprovacao}
+                                </Badge>
+                            </h1>
+                        </Card.Body>
+                    </Card>
+                </CardGroup>
+                <CardGroup>
+                    <Card border="success">
+                        <Card.Header>Concluídos</Card.Header>
+                        <Card.Body>
+                            <h1
+                                className="text-center"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => navigate("../cases/continue")}
+                            >
+                                <Badge bg="success">{concluidos}</Badge>
+                            </h1>
+                        </Card.Body>
+                    </Card>
+                    <Card border="danger">
+                        <Card.Header>Reprovados</Card.Header>
+                        <Card.Body>
+                            <h1
+                                className="text-center"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => navigate("../cases/reprovados")}
+                            >
+                                <Badge bg="danger">{reprovado}</Badge>
                             </h1>
                         </Card.Body>
                     </Card>
