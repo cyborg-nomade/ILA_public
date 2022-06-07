@@ -373,7 +373,7 @@ const CaseForm = (props: {
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
-                            {!props.new && (
+                            {/* {!props.new && (
                                 <Row className="mb-3">
                                     <Col lg={1}>
                                         <p>{CaseIndexDictionary.id.number}</p>
@@ -388,6 +388,43 @@ const CaseForm = (props: {
                                         <Controller
                                             control={methods.control}
                                             name="id"
+                                            render={({
+                                                field: {
+                                                    onChange,
+                                                    onBlur,
+                                                    value,
+                                                    ref,
+                                                },
+                                            }) => (
+                                                <Form.Control
+                                                    disabled
+                                                    type="text"
+                                                    onChange={onChange}
+                                                    onBlur={onBlur}
+                                                    value={value}
+                                                    ref={ref}
+                                                    readOnly
+                                                />
+                                            )}
+                                        />
+                                    </Form.Group>
+                                </Row>
+                            )} */}
+                            {!props.new && (
+                                <Row className="mb-3">
+                                    <Col lg={1}>
+                                        <p>{CaseIndexDictionary.ref.number}</p>
+                                    </Col>
+                                    <Form.Group
+                                        as={Col}
+                                        controlId="validationFormik02"
+                                    >
+                                        <Form.Label>
+                                            {CaseIndexDictionary.id.title}
+                                        </Form.Label>
+                                        <Controller
+                                            control={methods.control}
+                                            name="ref"
                                             render={({
                                                 field: {
                                                     onChange,

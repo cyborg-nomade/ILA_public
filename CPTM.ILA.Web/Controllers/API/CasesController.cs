@@ -674,6 +674,10 @@ namespace CPTM.ILA.Web.Controllers.API
                 await _context.SaveChangesAsync();
 
                 newChangeLog.CaseId = caseToSave.Id;
+                caseToSave.Ref =
+                    $@"PRC-{caseToSave.Area}-{caseToSave.DataCriacao:yyyy-MM-dd}/{DateTime.Now:ssfff}{caseToSave.Id}";
+                _context.Entry(caseToSave)
+                    .State = EntityState.Modified;
                 _context.ChangeLogs.Add(newChangeLog);
                 await _context.SaveChangesAsync();
 

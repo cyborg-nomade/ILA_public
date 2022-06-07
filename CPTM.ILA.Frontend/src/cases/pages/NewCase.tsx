@@ -65,6 +65,7 @@ const NewCase = () => {
         setInitialCase(item);
 
         item.grupoCriadorId = currentGroup.id;
+        item.usernameResponsavel = user.username;
         const dateCriacaoParts = item.dataCriacao.split("/");
         const dateAtualizacaoParts = item.dataAtualizacao.split("/");
         item.dataCriacao = new Date(
@@ -78,8 +79,6 @@ const NewCase = () => {
             +dateAtualizacaoParts[0]
         ).toISOString();
         item.area = currentGroup.nome;
-        item.ref =
-            "PROC-" + item.area + "-" + (Date.now() + Math.random()).toString;
         for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
             if (value.length !== 0) {
                 item.dadosPessoaisSensiveis = true;
@@ -131,6 +130,7 @@ const NewCase = () => {
         setInitialCase(item);
 
         item.grupoCriadorId = currentGroup.id;
+        item.usernameResponsavel = user.username;
         item.area = currentGroup.nome;
         const dateCriacaoParts = item.dataCriacao.split("/");
         const dateAtualizacaoParts = item.dataAtualizacao.split("/");
@@ -145,8 +145,6 @@ const NewCase = () => {
             +dateAtualizacaoParts[0]
         ).toISOString();
         item.area = currentGroup.nome;
-        item.ref =
-            "PROC-" + item.area + "-" + (Date.now() + Math.random()).toString;
         for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
             if (value.length !== 0) {
                 item.dadosPessoaisSensiveis = true;
