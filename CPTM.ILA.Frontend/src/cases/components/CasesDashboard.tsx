@@ -1,5 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { PieChart } from "react-minimal-pie-chart";
+// import { PieChart } from "react-minimal-pie-chart";
+import {
+    PieChart,
+    Pie,
+    Sector,
+    Cell,
+    ResponsiveContainer,
+    Tooltip,
+} from "recharts";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import randomColor from "randomcolor";
@@ -13,10 +21,8 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 
 type PieChartData = {
-    title: string;
+    name: string;
     value: number;
-    color: string;
-    key: number;
 };
 
 const colors = randomColor({
@@ -26,8 +32,7 @@ const colors = randomColor({
     seed: "same2",
 });
 
-// const colors2 = ["#ffc107", "#6c757d", "#198754", "#dc3545"];
-const getChartColor = (statusName: string) => {
+const getChartColor = (statusName: string, index: number) => {
     if (statusName === "Em Preenchimento") {
         return "#ffc107";
     }
@@ -40,7 +45,11 @@ const getChartColor = (statusName: string) => {
     if (statusName === "Reprovado") {
         return "#dc3545";
     }
-    return "black";
+    return colors[index];
+};
+
+const renderLabel = (entry: any) => {
+    return `${entry.name}: ${entry.percent * 100}%`;
 };
 
 const CasesDashboard = () => {
@@ -75,10 +84,10 @@ const CasesDashboard = () => {
                 const transformedData: PieChartData[] = loadedTotals.map(
                     (d, index) => {
                         return {
-                            title: d.nome,
+                            name: d.nome,
                             value: d.quantidadeByStatus,
-                            color: getChartColor(d.nome),
-                            key: index,
+                            // color: getChartColor(d.nome),
+                            // key: index,
                         };
                     }
                 );
@@ -108,10 +117,10 @@ const CasesDashboard = () => {
                 const transformedData: PieChartData[] = loadedTotals.map(
                     (d, index) => {
                         return {
-                            title: d.groupName,
+                            name: d.groupName,
                             value: d.quantityInGroup,
-                            color: colors[index],
-                            key: index,
+                            // color: colors[index],
+                            // key: index,
                         };
                     }
                 );
@@ -142,10 +151,10 @@ const CasesDashboard = () => {
                 const transformedData: PieChartData[] = loadedTotals.map(
                     (d, index) => {
                         return {
-                            title: d.extensaoNome,
+                            name: d.extensaoNome,
                             value: d.quantityByExtensao,
-                            color: colors[index],
-                            key: index,
+                            // color: colors[index],
+                            // key: index,
                         };
                     }
                 );
@@ -201,7 +210,7 @@ const CasesDashboard = () => {
                     dismissible
                     onClose={() => setShowAlert(false)}
                 >
-                    "Não existem dados para a seleção!"
+                    "Não existem dados para o grupo selecionado!"
                 </Alert>
             )}
             <Row>
@@ -213,41 +222,28 @@ const CasesDashboard = () => {
                     className="m-0"
                     style={{ height: "400px" }}
                 >
-                    <PieChart
-                        data={pieChartData}
-                        label={({ x, y, dx, dy, dataEntry, dataIndex }) => (
-                            <text
-                                key={dataIndex}
-                                x={x + 5}
-                                y={y + 9}
-                                dx={dx}
-                                dy={dy}
-                                dominantBaseline="auto"
-                                textAnchor="middle"
-                                style={{
-                                    fontSize: "4px",
-                                    fontFamily: "sans-serif",
-                                }}
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart width={400} height={400}>
+                            <Pie
+                                data={pieChartData}
+                                cx={"50%"}
+                                cy={"50%"}
+                                labelLine
+                                label={renderLabel}
+                                outerRadius={80}
+                                fill="#8884d8"
+                                dataKey="value"
                             >
-                                {dataEntry.title +
-                                    ": " +
-                                    Math.round(dataEntry.percentage) +
-                                    "%"}
-                            </text>
-                        )}
-                        radius={20}
-                        labelPosition={200}
-                        onClick={(event, index) => {
-                            console.log("CLICK", { event, index });
-                            setSelected(index === selected ? undefined : index);
-                        }}
-                        onMouseOver={(_, index) => {
-                            setHovered(index);
-                        }}
-                        onMouseOut={() => {
-                            setHovered(undefined);
-                        }}
-                    />
+                                {pieChartData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={getChartColor(entry.name, index)}
+                                    />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                        </PieChart>
+                    </ResponsiveContainer>
                 </Card>
             </Row>
         </React.Fragment>
