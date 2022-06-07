@@ -81,10 +81,6 @@ const RequestAccess = () => {
         }
     };
 
-    const clearMessage = () => {
-        setMessage("");
-    };
-
     return (
         <React.Fragment>
             <Modal
