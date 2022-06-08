@@ -98,7 +98,7 @@ const CaseForm = (props: {
         setIsEditing(true);
     };
     const onCancel = () => {
-        navigate(`/`);
+        navigate(-1);
     };
     const onDelete = async (itemId: string) => {
         console.log(itemId);
