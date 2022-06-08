@@ -63,8 +63,6 @@ const CaseForm = (props: {
     const [itemValues, setItemValues] = useState<Case>(emptyCase());
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showSendToApprovalModal, setShowSendToApprovalModal] =
-        useState(false);
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showReproveModal, setShowReproveModal] = useState(false);
 
@@ -125,11 +123,11 @@ const CaseForm = (props: {
     };
 
     const handleSendToApprovalClick = async (item: Case) => {
-        setItemValues(item);
         const valid = await methods.trigger();
         if (valid) {
-            setShowSendToApprovalModal(true);
+            props.onSendToApprovalSubmit!(item);
         }
+        // props.onSendToApprovalSubmit!(item);
     };
     const handleApprovalClick = (item: Case) => {
         setItemValues(item);
@@ -186,37 +184,6 @@ const CaseForm = (props: {
                     </Button>
                     <Button variant="danger" onClick={() => onDelete(cid)}>
                         Prosseguir com Remoção
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal
-                show={showSendToApprovalModal}
-                onHide={() => setShowSendToApprovalModal(false)}
-                animation={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        Enviar para o Encarregado de Dados!
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Você tem certeza que deseja enviar as informações para
-                    validação do time de Privacidade de Dados?
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        variant="danger"
-                        onClick={() => setShowSendToApprovalModal(false)}
-                    >
-                        Não
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={() =>
-                            props.onSendToApprovalSubmit!(itemValues)
-                        }
-                    >
-                        Sim
                     </Button>
                 </Modal.Footer>
             </Modal>
