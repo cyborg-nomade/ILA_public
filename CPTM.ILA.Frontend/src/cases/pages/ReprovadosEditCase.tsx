@@ -286,7 +286,7 @@ const ReprovadosEditCase = () => {
             </SendToApprovalModal>
             <CaseForm
                 item={fullCase}
-                edit={true}
+                reprovado={true}
                 onSaveProgressSubmit={showSaveProgressModalHandler}
                 onSendToApprovalSubmit={showSendToApprovalModalHandler}
             />

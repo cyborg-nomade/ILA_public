@@ -54,6 +54,7 @@ const CaseForm = (props: {
     edit?: boolean;
     approve?: boolean;
     continue?: boolean;
+    reprovado?: boolean;
     onSaveProgressSubmit?: onSubmitFn;
     onSendToApprovalSubmit?: onSubmitFn;
     onApproveSubmit?: onSubmitFn;
@@ -271,6 +272,12 @@ const CaseForm = (props: {
             {error && (
                 <Alert variant="danger" onClose={clearError} dismissible>
                     Ocorreu um erro ao enviar o processo: {error}
+                </Alert>
+            )}
+            {methods.getValues().comentarioReprovacao && props.reprovado && (
+                <Alert variant="danger">
+                    Este processo foi reprovado pelo seguinte motivo:{" "}
+                    {methods.getValues().comentarioReprovacao}
                 </Alert>
             )}
             <Form>
