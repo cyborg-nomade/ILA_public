@@ -61,6 +61,7 @@ const CaseForm = (props: {
 }) => {
     const [isEditing, setIsEditing] = useState(props.new || false);
     const [itemValues, setItemValues] = useState<Case>(emptyCase());
+    const [formIsValid, setFormIsValid] = useState(true);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showApproveModal, setShowApproveModal] = useState(false);
@@ -126,6 +127,8 @@ const CaseForm = (props: {
         const valid = await methods.trigger();
         if (valid) {
             props.onSendToApprovalSubmit!(item);
+        } else {
+            setFormIsValid(false);
         }
         // props.onSendToApprovalSubmit!(item);
     };
@@ -245,8 +248,8 @@ const CaseForm = (props: {
                 </Alert>
             )}
             <Form>
-                <Accordion defaultActiveKey="0">
-                    <Accordion.Item eventKey="0">
+                <Accordion defaultActiveKey="0" alwaysOpen={!formIsValid}>
+                    <Accordion.Item eventKey={formIsValid ? "0" : "0"}>
                         <Accordion.Header>1 - Identificação</Accordion.Header>
                         <Accordion.Body>
                             <Row className="mb-3 align-items-center">
@@ -459,7 +462,7 @@ const CaseForm = (props: {
                             </Row>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="1">
+                    <Accordion.Item eventKey={formIsValid ? "1" : "0"}>
                         <Accordion.Header>
                             2 - Agentes de Tratamento e Encarregado
                         </Accordion.Header>
@@ -956,7 +959,7 @@ const CaseForm = (props: {
                             </Row>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="2">
+                    <Accordion.Item eventKey={formIsValid ? "2" : "0"}>
                         <Accordion.Header>
                             3 - Fases do Ciclo de Vida do Tratamento de Dados
                             Pessoais
@@ -1009,7 +1012,7 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="3">
+                    <Accordion.Item eventKey={formIsValid ? "3" : "0"}>
                         <Accordion.Header>
                             4 - Fluxo de Tratamento de Dados Pessoais
                         </Accordion.Header>
@@ -1094,7 +1097,7 @@ const CaseForm = (props: {
                             </Row>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="4">
+                    <Accordion.Item eventKey={formIsValid ? "4" : "0"}>
                         <Accordion.Header>
                             5 - Escopo e Natureza dos Dados Pessoais
                         </Accordion.Header>
@@ -1224,7 +1227,7 @@ const CaseForm = (props: {
                             </Row>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="5">
+                    <Accordion.Item eventKey={formIsValid ? "5" : "0"}>
                         <Accordion.Header>
                             6 - Finalidade do Tratamento de Dados Pessoais
                         </Accordion.Header>
@@ -1352,13 +1355,18 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="6">
+                    <Accordion.Item eventKey={formIsValid ? "6" : "0"}>
                         <Accordion.Header>
                             7 - Categoria de Dados Pessoais
                         </Accordion.Header>
                         <Accordion.Body>
-                            <Accordion>
-                                <Accordion.Item eventKey="60">
+                            <Accordion
+                                defaultActiveKey={formIsValid ? "" : "0"}
+                                alwaysOpen={!formIsValid}
+                            >
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "60" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.1 - Dados de Identificação Pessoal
                                     </Accordion.Header>
@@ -1496,7 +1504,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="61">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "61" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.2 - Dados Financeiros
                                     </Accordion.Header>
@@ -1843,7 +1853,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="62">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "62" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.3 - Características Pessoais
                                     </Accordion.Header>
@@ -1988,7 +2000,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="63">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "63" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.4 - Hábitos Pessoais
                                     </Accordion.Header>
@@ -2209,7 +2223,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="64">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "64" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.5 - Características Psicológicas
                                     </Accordion.Header>
@@ -2280,7 +2296,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="65">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "65" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.6 - Composição Familiar
                                     </Accordion.Header>
@@ -2400,7 +2418,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="66">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "66" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.7 - Interesses de lazer
                                     </Accordion.Header>
@@ -2471,7 +2491,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="67">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "67" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.8 - Associações
                                     </Accordion.Header>
@@ -2545,7 +2567,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="68">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "68" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.9 - Processo
                                         Judicial/Administrativo/Criminal
@@ -2688,7 +2712,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="69">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "69" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.10 - Hábitos de Consumo
                                     </Accordion.Header>
@@ -2761,7 +2787,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="610">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "610" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.11 - Dados Residenciais
                                     </Accordion.Header>
@@ -2839,7 +2867,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="611">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "611" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.12 - Educação e Treinamento
                                     </Accordion.Header>
@@ -2961,7 +2991,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="612">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "612" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.13 - Profissão e emprego
                                     </Accordion.Header>
@@ -3152,7 +3184,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="613">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "613" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.14 - Registros/gravações de vídeo,
                                         imagem e voz
@@ -3267,7 +3301,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="614">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "614" : "0"}
+                                >
                                     <Accordion.Header>
                                         7.15 - Outros
                                     </Accordion.Header>
@@ -3342,7 +3378,7 @@ const CaseForm = (props: {
                             </Accordion>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="7">
+                    <Accordion.Item eventKey={formIsValid ? "7" : "0"}>
                         <Accordion.Header>
                             8 - Categorias de Dados Pessoais Sensíveis
                         </Accordion.Header>
@@ -3500,7 +3536,7 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="8">
+                    <Accordion.Item eventKey={formIsValid ? "8" : "0"}>
                         <Accordion.Header>
                             9 - Frequência e totalização das categorias de dados
                             pessoais tratados
@@ -3606,13 +3642,18 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="9">
+                    <Accordion.Item eventKey={formIsValid ? "9" : "0"}>
                         <Accordion.Header>
                             10 - Categorias dos titulares de dados pessoais
                         </Accordion.Header>
                         <Accordion.Body>
-                            <Accordion>
-                                <Accordion.Item eventKey="90">
+                            <Accordion
+                                defaultActiveKey={formIsValid ? "" : "0"}
+                                alwaysOpen={!formIsValid}
+                            >
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "90" : "0"}
+                                >
                                     <Accordion.Header>
                                         10.1 - Categorias gerais
                                     </Accordion.Header>
@@ -3743,7 +3784,9 @@ const CaseForm = (props: {
                                         </React.Fragment>
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="91">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "91" : "0"}
+                                >
                                     <Accordion.Header>
                                         10.3 - Categorias que envolvam crianças
                                         e adolescentes
@@ -3783,7 +3826,9 @@ const CaseForm = (props: {
                                         />
                                     </Accordion.Body>
                                 </Accordion.Item>
-                                <Accordion.Item eventKey="92">
+                                <Accordion.Item
+                                    eventKey={formIsValid ? "92" : "0"}
+                                >
                                     <Accordion.Header>
                                         10.4 - Categorias que envolvam outros
                                         grupos vulneráveis
@@ -3829,7 +3874,7 @@ const CaseForm = (props: {
                             </Accordion>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="10">
+                    <Accordion.Item eventKey={formIsValid ? "10" : "0"}>
                         <Accordion.Header>
                             11 - Compartilhamento de Dados Pessoais
                         </Accordion.Header>
@@ -3864,7 +3909,7 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="11">
+                    <Accordion.Item eventKey={formIsValid ? "11" : "0"}>
                         <Accordion.Header>
                             12 - Medidas de Segurança/Privacidade
                         </Accordion.Header>
@@ -3974,7 +4019,7 @@ const CaseForm = (props: {
                             </React.Fragment>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="12">
+                    <Accordion.Item eventKey={formIsValid ? "12" : "0"}>
                         <Accordion.Header>
                             13 - Transferência Internacional de Dados Pessoais
                         </Accordion.Header>
@@ -4005,7 +4050,7 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="13">
+                    <Accordion.Item eventKey={formIsValid ? "13" : "0"}>
                         <Accordion.Header>
                             14 - Contrato(s) de serviços e/ou soluções de TI que
                             trata(m) dados pessoais do serviço/processo de
@@ -4039,7 +4084,7 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="14">
+                    <Accordion.Item eventKey={formIsValid ? "14" : "0"}>
                         <Accordion.Header>
                             15 - Risco de Privacidade
                         </Accordion.Header>
@@ -4144,7 +4189,7 @@ const CaseForm = (props: {
                             </React.Fragment>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="15">
+                    <Accordion.Item eventKey={formIsValid ? "15" : "0"}>
                         <Accordion.Header>
                             16 - Observações sobre o Processo
                         </Accordion.Header>
@@ -4248,6 +4293,9 @@ const CaseForm = (props: {
                 </Accordion>
                 {props.new && (
                     <Stack direction="horizontal" className="mt-3" gap={3}>
+                        <Button variant="light" onClick={() => onCancel()}>
+                            Cancelar
+                        </Button>
                         <Button
                             type="button"
                             disabled={!methods.formState.isDirty}
@@ -4297,6 +4345,9 @@ const CaseForm = (props: {
                 )}
                 {props.edit && isEditing && (
                     <Stack direction="horizontal" className="mt-3" gap={3}>
+                        <Button variant="light" onClick={() => onCancel()}>
+                            Cancelar
+                        </Button>
                         <Button
                             type="button"
                             variant="secondary"
