@@ -78,20 +78,20 @@ const CaseForm = (props: {
     useEffect(() => reset(props.item), [reset, props.item]);
 
     const categoriasTitularesCategorias = useFieldArray({
-        control: methods.control, // control props comes from useForm
-        name: "categoriasTitulares.categorias", // unique name for your Field Array
+        control: methods.control,
+        name: "categoriasTitulares.categorias",
     });
     const medidasSegurancaPrivacidade = useFieldArray({
-        control: methods.control, // control props comes from useForm
-        name: "medidasSegurancaPrivacidade", // unique name for your Field Array
+        control: methods.control,
+        name: "medidasSegurancaPrivacidade",
     });
     const riscosPrivacidade = useFieldArray({
-        control: methods.control, // control props comes from useForm
-        name: "riscosPrivacidade", // unique name for your Field Array
+        control: methods.control,
+        name: "riscosPrivacidade",
     });
     const observacoesProcesso = useFieldArray({
-        control: methods.control, // control props comes from useForm
-        name: "observacoesProcesso", // unique name for your Field Array
+        control: methods.control,
+        name: "observacoesProcesso",
     });
 
     const onStartEditing = () => {
@@ -101,7 +101,7 @@ const CaseForm = (props: {
         navigate(-1);
     };
     const onDelete = async (itemId: string) => {
-        console.log(itemId);
+        console.log("itemId: ", itemId);
 
         try {
             const responseData = await sendRequest(

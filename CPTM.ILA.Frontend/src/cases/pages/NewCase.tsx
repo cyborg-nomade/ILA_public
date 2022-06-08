@@ -238,7 +238,7 @@ const NewCase = () => {
                     Authorization: "Bearer " + token,
                 }
             );
-            console.log("send to approval, request approval response", resp2);
+            console.log("send to approval, request approval response: ", resp2);
             setMessage(resp2.message);
         } catch (err) {
             console.log(err);
