@@ -85,7 +85,7 @@ const CaseForm = (props: {
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showReproveModal, setShowReproveModal] = useState(false);
 
-    const { token, tokenExpirationDate } = useContext(AuthContext);
+    const { token, tokenExpirationDate, user } = useContext(AuthContext);
     const { minutes } = useCountdown(tokenExpirationDate);
     const { sendRequest, error, clearError, isLoading } = useHttpClient();
     const { systems, countries } = useUtilities();
@@ -142,6 +142,8 @@ const CaseForm = (props: {
     };
 
     const handleSendToApprovalClick = async (item: Case) => {
+        console.log(item);
+
         const isAllTouched = props.new
             ? Object.values(isFormAllTouched).reduce((t, n) => {
                   return t && n;
@@ -898,15 +900,22 @@ const CaseForm = (props: {
                                                 ref,
                                             },
                                         }) => (
-                                            <Form.Control
+                                            <Form.Select
                                                 disabled={!isEditing}
-                                                type="text"
                                                 onChange={onChange}
                                                 onBlur={onBlur}
                                                 value={value}
                                                 ref={ref}
-                                                readOnly
-                                            />
+                                            >
+                                                {user.groups.map((g) => (
+                                                    <option
+                                                        value={g.nome}
+                                                        key={g.id}
+                                                    >
+                                                        {g.nome}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
                                         )}
                                     />
                                 </Col>
