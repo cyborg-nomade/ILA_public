@@ -14,6 +14,7 @@ import ReprovadosCaseListGetter from "./cases/pages/ReprovadosCaseListGetter";
 import ReprovadosEditCase from "./cases/pages/ReprovadosEditCase";
 import DpoInventarioCasesListGetter from "./users/pages/DpoInventarioCasesListGetter";
 import CheckCase from "./cases/pages/CheckCase";
+import UsersMgmtCockpit from "./access-requests/pages/UsersMgmtCockpit";
 
 const ApproveCasesListGetter = React.lazy(
     () => import("./cases/pages/ApproveCasesListGetter")
@@ -204,6 +205,7 @@ const App = () => {
                         element={<ApproveAccessRequestGetter />}
                     />
                 </Route>
+                <Route path="/dpo/alter-users" element={<UsersMgmtCockpit />} />
                 <Route
                     path="/dpo/alter-comite-members"
                     element={<AlterComiteMemberCockpit />}

@@ -37,7 +37,9 @@ namespace CPTM.ILA.Web.Models.AccessControl
                 Id = user.Id, Username = user.Username, IsComite = user.IsComite, IsDPO = user.IsDPO,
                 IsSystem = user.IsSystem, OriginGroup = user.OriginGroup, Groups = user.GroupAccessExpirations
                     .Select(gae => gae.Group)
-                    .ToList()
+                    .ToList(),
+                Nome = Seguranca.ObterUsuario(user.Username)
+                    .Nome.ToUpper()
             };
 
             return userDto;

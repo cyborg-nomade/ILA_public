@@ -69,6 +69,11 @@ const NavLinks = () => {
                     Alterar Membros Comitê
                 </Nav.Link>
             )}
+            {isLoggedIn && user.isComite && user.isDPO && (
+                <Nav.Link as={NavLink} to={`/dpo/alter-users`}>
+                    Usuários
+                </Nav.Link>
+            )}
             {isLoggedIn && <Nav.Link onClick={logout}>Sair</Nav.Link>}
             {!isLoggedIn && (
                 <Nav.Link as={NavLink} to="/login">

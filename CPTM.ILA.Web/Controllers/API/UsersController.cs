@@ -59,7 +59,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
             try
             {
-                var users = await _context.Users.ToListAsync();
+                var users = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .ToListAsync();
 
                 var userDtos = users.ConvertAll<UserDto>(Models.AccessControl.User.ReduceToUserDto);
 
