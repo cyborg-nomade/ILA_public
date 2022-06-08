@@ -682,7 +682,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 await _context.SaveChangesAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Caso registrado com sucesso!", caseToSave });
+                    new { message = "Processo registrado com sucesso!", caseToSave });
             }
             catch (Exception e)
             {
@@ -814,7 +814,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 await _context.SaveChangesAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Caso registrado com sucesso!", caseToSave });
+                    new { message = "Processo alterado com sucesso!", caseToSave });
             }
             catch (Exception e)
             {
@@ -941,7 +941,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 _context.Cases.Remove(caseToDelete);
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso removido com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Processo removido com sucesso!" });
             }
             catch (Exception e)
             {
@@ -1026,7 +1026,8 @@ namespace CPTM.ILA.Web.Controllers.API
                         .State = EntityState.Modified;
                     await _context.SaveChangesAsync();
 
-                    return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso reprovado com sucesso!" });
+                    return Request.CreateResponse(HttpStatusCode.OK,
+                        new { message = "Processo reprovado com sucesso!" });
                 }
 
                 caseToApprove.ApproveCase();
@@ -1042,7 +1043,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Caso aprovado com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Processo aprovado com sucesso!" });
             }
             catch (Exception e)
             {
@@ -1134,7 +1135,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 await _context.SaveChangesAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Caso enviado para aprovação com sucesso!" });
+                    new { message = "Processo enviado para aprovação com sucesso!" });
             }
             catch (Exception e)
             {
