@@ -156,9 +156,28 @@ const CasesList = (props: {
                     <TableBody
                         onRowClick={handleRowClick}
                         labels={{ noResults: "Nenhum resultado encontrado" }}
-                        rowProps={{
-                            style: { cursor: props.redirect ? "pointer" : "" },
-                        }}
+                        rowProps={(row: CaseListItem) => ({
+                            style: {
+                                background: row.aprovado
+                                    ? "#198754"
+                                    : row.reprovado
+                                    ? "#dc3545"
+                                    : row.encaminhadoAprovacao
+                                    ? "#6c757d"
+                                    : "#ffc107",
+                                color: row.aprovado
+                                    ? "white"
+                                    : row.reprovado
+                                    ? "white"
+                                    : row.encaminhadoAprovacao
+                                    ? "white"
+                                    : "black",
+                                cursor: props.redirect ? "pointer" : "",
+                            },
+                        })}
+                        // rowProps={{
+                        //     style: { cursor: props.redirect ? "pointer" : "" },
+                        // }}
                     />
                 </Table>
             </DatatableWrapper>
