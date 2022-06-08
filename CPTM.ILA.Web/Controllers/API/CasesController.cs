@@ -520,6 +520,87 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Retorna os totais dos Casos de Uso dos grupos de acesso de um Mebro do Comitê por status de aprovação. Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <param name="uid">Id do grupo</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos status (objeto StatusTotals).
+        /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+        /// </returns>
+        [ResponseType(typeof(TotalsResponseType<StatusTotals>))]
+        [Route("extensao-encarregado/{uid:int}/status/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsByExtensaoEncarregadoByStatus(int uid)
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDpo || claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var comiteMember = await _context.Users.Where(u => u.Id == uid)
+                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync();
+                if (comiteMember == null)
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new
+                    {
+                        message = "Membro do comitê buscado não foi encontrado."
+                    });
+
+                var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Group.Id)
+                    .ToList();
+
+
+                var totals = await _context.Cases.Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId))
+                    .GroupBy(c => new
+                    {
+                        c.Aprovado,
+                        c.EncaminhadoAprovacao
+                    })
+                    .Select(c => new StatusTotals()
+                    {
+                        Nome = c.FirstOrDefault()
+                            .Aprovado
+                            ? "Concluído"
+                            : (c.FirstOrDefault()
+                                .Reprovado
+                                ? "Reprovado"
+                                : (c.FirstOrDefault()
+                                    .EncaminhadoAprovacao
+                                    ? "Pendente Aprovação"
+                                    : "Em Preenchimento")),
+                        Aprovado = c.FirstOrDefault()
+                            .Aprovado,
+                        EncaminhadoAprovacao = c.FirstOrDefault()
+                            .EncaminhadoAprovacao,
+                        Reprovado = c.FirstOrDefault()
+                            .Reprovado,
+                        QuantidadeByStatus = c.Count(),
+                    })
+                    .ToListAsync();
+
+                var totalQuantity = await _context.Cases.Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId))
+                    .CountAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
 
         /// <summary>
         /// Retorna um Caso de Uso de Dados Pessoais específico.

@@ -17,7 +17,7 @@ const GroupCasesByStatusDashboard = () => {
     const [pendenteAprovacao, setPendenteAprovacao] = useState(0);
     const [reprovado, setReprovado] = useState(0);
 
-    const { token, currentGroup } = useContext(AuthContext);
+    const { token, currentGroup, user } = useContext(AuthContext);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
@@ -109,10 +109,16 @@ const GroupCasesByStatusDashboard = () => {
                             <h1 className="text-center">
                                 <Badge
                                     bg="warning"
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() =>
-                                        navigate("../cases/continue")
-                                    }
+                                    style={{
+                                        cursor: !user.isDPO ? "pointer" : "",
+                                    }}
+                                    onClick={() => {
+                                        if (!user.isDPO) {
+                                            return navigate(
+                                                "../cases/continue"
+                                            );
+                                        }
+                                    }}
                                 >
                                     {emPreenchimento}
                                 </Badge>
@@ -123,7 +129,17 @@ const GroupCasesByStatusDashboard = () => {
                         <Card.Header>Pendente Aprovação</Card.Header>
                         <Card.Body>
                             <h1 className="text-center">
-                                <Badge bg="secondary">
+                                <Badge
+                                    bg="secondary"
+                                    style={{
+                                        cursor: user.isDPO ? "pointer" : "",
+                                    }}
+                                    onClick={() => {
+                                        if (user.isDPO) {
+                                            return navigate("../cases/pending");
+                                        }
+                                    }}
+                                >
                                     {pendenteAprovacao}
                                 </Badge>
                             </h1>
@@ -134,24 +150,42 @@ const GroupCasesByStatusDashboard = () => {
                     <Card border="success">
                         <Card.Header>Concluídos</Card.Header>
                         <Card.Body>
-                            <h1
-                                className="text-center"
-                                style={{ cursor: "pointer" }}
-                                onClick={() => navigate("../cases/continue")}
-                            >
-                                <Badge bg="success">{concluidos}</Badge>
+                            <h1 className="text-center">
+                                <Badge
+                                    bg="success"
+                                    style={{
+                                        cursor: !user.isDPO ? "pointer" : "",
+                                    }}
+                                    onClick={() => {
+                                        if (!user.isDPO) {
+                                            return navigate("../cases/edit");
+                                        }
+                                    }}
+                                >
+                                    {concluidos}
+                                </Badge>
                             </h1>
                         </Card.Body>
                     </Card>
                     <Card border="danger">
                         <Card.Header>Reprovados</Card.Header>
                         <Card.Body>
-                            <h1
-                                className="text-center"
-                                style={{ cursor: "pointer" }}
-                                onClick={() => navigate("../cases/reprovados")}
-                            >
-                                <Badge bg="danger">{reprovado}</Badge>
+                            <h1 className="text-center">
+                                <Badge
+                                    bg="danger"
+                                    style={{
+                                        cursor: !user.isDPO ? "pointer" : "",
+                                    }}
+                                    onClick={() => {
+                                        if (!user.isDPO) {
+                                            return navigate(
+                                                "../cases/reprovados"
+                                            );
+                                        }
+                                    }}
+                                >
+                                    {reprovado}
+                                </Badge>
                             </h1>
                         </Card.Body>
                     </Card>
