@@ -17,14 +17,16 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
 import SaveProgressModal from "../components/modals/SaveProgressModal";
+import SendToApprovalModal from "../components/modals/SendToApprovalModal";
 
 const NewCase = () => {
-    const [message, setMessage] = useState("");
-    const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
-
     const { token, user, currentGroup, areaTratamentoDados } =
         useContext(AuthContext);
 
+    const [message, setMessage] = useState("");
+    const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
+    const [showSendToApprovalModal, setShowSendToApprovalModal] =
+        useState(false);
     const [initialCase, setInitialCase] = useState<Case>(
         emptyCase(areaTratamentoDados)
     );
@@ -33,19 +35,6 @@ const NewCase = () => {
         useHttpClient();
 
     let navigate = useNavigate();
-
-    const showSaveProgressModalHandler = useCallback((item: Case) => {
-        setInitialCase(item);
-        setShowSaveProgressModal(true);
-    }, []);
-
-    const hideSaveProgressModalHandler = () => {
-        setShowSaveProgressModal(false);
-    };
-
-    const dismissSaveProgressModalHandler = () => {
-        navigate(-1);
-    };
 
     useEffect(() => {
         const getComiteMembers = async () => {
@@ -76,6 +65,19 @@ const NewCase = () => {
             setInitialCase(emptyCase(areaTratamentoDados));
         };
     }, [areaTratamentoDados, currentGroup.id, sendRequest, token]);
+
+    const dismissModalHandler = () => {
+        navigate(-1);
+    };
+
+    const showSaveProgressModalHandler = useCallback((item: Case) => {
+        setInitialCase(item);
+        setShowSaveProgressModal(true);
+    }, []);
+
+    const hideSaveProgressModalHandler = () => {
+        setShowSaveProgressModal(false);
+    };
 
     const saveProgressHandler = async () => {
         console.log("save progress, Initial item: ", initialCase);
@@ -143,40 +145,51 @@ const NewCase = () => {
         }
     };
 
-    const sendToApprovalHandler = async (item: Case) => {
-        console.log("send to approval, Initial item: ", item);
+    const showSendToApprovalModalHandler = useCallback((item: Case) => {
         setInitialCase(item);
+        setShowSendToApprovalModal(true);
+    }, []);
 
-        item.grupoCriadorId = currentGroup.id;
-        item.usernameResponsavel = user.username;
-        item.area = currentGroup.nome;
-        const dateCriacaoParts = item.dataCriacao.split("/");
-        const dateAtualizacaoParts = item.dataAtualizacao.split("/");
-        item.dataCriacao = new Date(
+    const hideSendToApprovalModalHandler = () => {
+        setShowSendToApprovalModal(false);
+    };
+
+    const sendToApprovalHandler = async () => {
+        console.log("send to approval, Initial item: ", initialCase);
+        setInitialCase(initialCase);
+
+        initialCase.grupoCriadorId = currentGroup.id;
+        initialCase.usernameResponsavel = user.username;
+        initialCase.area = currentGroup.nome;
+        const dateCriacaoParts = initialCase.dataCriacao.split("/");
+        const dateAtualizacaoParts = initialCase.dataAtualizacao.split("/");
+        initialCase.dataCriacao = new Date(
             +dateCriacaoParts[2],
             +dateCriacaoParts[1] - 1,
             +dateCriacaoParts[0]
         ).toISOString();
-        item.dataAtualizacao = new Date(
+        initialCase.dataAtualizacao = new Date(
             +dateAtualizacaoParts[2],
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        item.area = currentGroup.nome;
-        for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
+        initialCase.area = currentGroup.nome;
+        for (const value of Object.values(
+            initialCase.catDadosPessoaisSensiveis
+        )) {
             if (value.length !== 0) {
-                item.dadosPessoaisSensiveis = true;
+                initialCase.dadosPessoaisSensiveis = true;
             }
         }
 
-        console.log("send to approval, Altered item: ", item);
+        console.log("send to approval, Altered item: ", initialCase);
 
-        const changeObj = diff(emptyBaseCase(), item);
+        const changeObj = diff(emptyBaseCase(), initialCase);
 
         const changeLog: ChangeLog = {
             caseDiff: JSON.stringify(changeObj),
             caseId: 0,
-            caseRef: item.ref,
+            caseRef: initialCase.ref,
             userId: user.id,
             usernameResp: user.username,
             changeDate: new Date(),
@@ -185,7 +198,7 @@ const NewCase = () => {
         console.log("send to approval, Change Log: ", changeLog);
 
         const caseChange: CaseChange = {
-            case: item,
+            case: initialCase,
             changeLog: changeLog,
         };
 
@@ -226,12 +239,39 @@ const NewCase = () => {
                 }
             );
             console.log("send to approval, request approval response", resp2);
-
-            navigate(-1);
+            setMessage(resp2.message);
         } catch (err) {
             console.log(err);
         }
     };
+
+    const contentChildren = (
+        <React.Fragment>
+            {isLoading && (
+                <Row className="justify-content-center">
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </Row>
+            )}
+            {error && (
+                <Row
+                    className="justify-content-center mx-auto"
+                    style={{ width: "28rem" }}
+                >
+                    <Alert variant="danger">{error}</Alert>
+                </Row>
+            )}
+            {message && (
+                <Row
+                    className="justify-content-center mx-auto"
+                    style={{ width: "28rem" }}
+                >
+                    <Alert variant="success">{message}</Alert>
+                </Row>
+            )}
+        </React.Fragment>
+    );
 
     return (
         <React.Fragment>
@@ -248,39 +288,27 @@ const NewCase = () => {
             <SaveProgressModal
                 onHideSaveProgressModal={hideSaveProgressModalHandler}
                 onSaveProgressSubmit={saveProgressHandler}
-                onDismissSaveProgressModal={dismissSaveProgressModalHandler}
+                onDismissSaveProgressModal={dismissModalHandler}
                 showSaveProgressModal={showSaveProgressModal}
                 showChildrenContent={isLoading || error || !!message}
                 isLoading={isLoading}
             >
-                {isLoading && (
-                    <Row className="justify-content-center">
-                        <Spinner animation="border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </Spinner>
-                    </Row>
-                )}
-                {error && (
-                    <Row
-                        className="justify-content-center mx-auto"
-                        style={{ width: "28rem" }}
-                    >
-                        <Alert variant="danger">{error}</Alert>
-                    </Row>
-                )}
-                {message && (
-                    <Row
-                        className="justify-content-center mx-auto"
-                        style={{ width: "28rem" }}
-                    >
-                        <Alert variant="success">{message}</Alert>
-                    </Row>
-                )}
+                {contentChildren}
             </SaveProgressModal>
+            <SendToApprovalModal
+                isLoading={isLoading}
+                onDismissSendToApprovalModal={dismissModalHandler}
+                onHideSendToApprovalModal={hideSendToApprovalModalHandler}
+                onSendToApprovalSubmit={sendToApprovalHandler}
+                showChildrenContent={isLoading || error || !!message}
+                showSendToApprovalModal={showSendToApprovalModal}
+            >
+                {contentChildren}
+            </SendToApprovalModal>
             <CaseForm
                 new={true}
                 onSaveProgressSubmit={showSaveProgressModalHandler}
-                onSendToApprovalSubmit={sendToApprovalHandler}
+                onSendToApprovalSubmit={showSendToApprovalModalHandler}
                 item={initialCase}
             />
         </React.Fragment>
