@@ -12,6 +12,8 @@ import Footer from "./shared/components/footer/Footer";
 import CMGroupMgmtCockpit from "./access-requests/pages/CMGroupMgmtCockpit";
 import ReprovadosCaseListGetter from "./cases/pages/ReprovadosCaseListGetter";
 import ReprovadosEditCase from "./cases/pages/ReprovadosEditCase";
+import DpoInventarioCasesListGetter from "./users/pages/DpoInventarioCasesListGetter";
+import CheckCase from "./cases/pages/CheckCase";
 
 const ApproveCasesListGetter = React.lazy(
     () => import("./cases/pages/ApproveCasesListGetter")
@@ -177,10 +179,19 @@ const App = () => {
             <React.Fragment>
                 <Route path="/dpo" element={<DpoHomePage />}>
                     <Route index element={<Dashboards />} />
+                    <Route
+                        path="cases"
+                        element={<DpoInventarioCasesListGetter />}
+                    >
+                        <Route path=":cid" element={<CheckCase />} />
+                    </Route>
                 </Route>
                 <Route path="/dpo" element={<DpoPage />}>
                     <Route path="cases" element={<UserCasesLayout />}>
-                        <Route index element={<DpoCasesListGetter />} />
+                        <Route
+                            path="pending"
+                            element={<DpoCasesListGetter />}
+                        />
                     </Route>
                 </Route>
                 <Route
