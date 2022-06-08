@@ -1,42 +1,49 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 
-import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
+import { Case, emptyCase } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import CasesList from "../../cases/components/CasesList";
+import CaseForm from "../components/CaseForm";
 
-const DpoCasesListGetter = () => {
-    const [cases, setCases] = useState<CaseListItem[]>([]);
+const CheckCase = () => {
+    const [fullCase, setFullCase] = useState<Case>(emptyCase());
 
-    const { token, currentComiteMember } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
 
+    const cid = useParams().cid;
+
     useEffect(() => {
-        const getPendingCases = async () => {
+        const getCaseToApprove = async () => {
             const responseData = await sendRequest(
-                `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${currentComiteMember.id}`,
+                `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
                 undefined,
                 undefined,
-                {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + token,
-                }
+                { Authorization: "Bearer " + token }
             );
 
-            const loadedCases: CaseListItem[] = responseData.caseListItems;
-            console.log("loadedCases: ", loadedCases);
-            setCases(loadedCases);
+            let loadedCase = responseData.uniqueCase;
+            console.log("loadedCase: ", loadedCase);
+
+            loadedCase.dataCriacao = new Date(
+                loadedCase.dataCriacao
+            ).toLocaleDateString();
+            loadedCase.dataAtualizacao = new Date().toLocaleDateString();
+
+            console.log("loadedCase dates altered: ", loadedCase);
+            setFullCase(loadedCase);
         };
 
-        getPendingCases().catch((error) => {
+        getCaseToApprove().catch((error) => {
             console.log(error);
         });
-    }, [sendRequest, token, currentComiteMember.id]);
+    }, [cid, sendRequest, token]);
 
     if (isLoading) {
         return (
@@ -50,19 +57,19 @@ const DpoCasesListGetter = () => {
 
     return (
         <React.Fragment>
-            <h1>Processos Pendentes do Membro Selecionado</h1>
+            <h1>Aprovar Item</h1>
             {error && (
                 <Alert
                     variant={isWarning ? "warning" : "danger"}
                     onClose={clearError}
                     dismissible
                 >
-                    {error}
+                    Ocorreu um erro: {error}
                 </Alert>
             )}
-            <CasesList items={cases} redirect={false} />
+            <CaseForm item={fullCase} check={true} />
         </React.Fragment>
     );
 };
 
-export default DpoCasesListGetter;
+export default CheckCase;

@@ -55,6 +55,7 @@ const CaseForm = (props: {
     approve?: boolean;
     continue?: boolean;
     reprovado?: boolean;
+    check?: boolean;
     onSaveProgressSubmit?: onSubmitFn;
     onSendToApprovalSubmit?: onSubmitFn;
     onApproveSubmit?: onSubmitFn;
@@ -4502,6 +4503,17 @@ const CaseForm = (props: {
                             onClick={() => onStartEditing()}
                         >
                             Editar
+                        </Button>
+                    </Stack>
+                )}
+                {props.check && (
+                    <Stack direction="horizontal" className="mt-3" gap={0}>
+                        <Button
+                            variant="primary"
+                            className="ms-auto"
+                            onClick={() => onCancel()}
+                        >
+                            Voltar
                         </Button>
                     </Stack>
                 )}

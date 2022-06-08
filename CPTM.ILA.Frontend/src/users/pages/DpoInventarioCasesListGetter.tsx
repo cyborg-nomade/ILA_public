@@ -8,18 +8,18 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CasesList from "../../cases/components/CasesList";
 
-const DpoCasesListGetter = () => {
+const DpoInventarioCasesListGetter = () => {
     const [cases, setCases] = useState<CaseListItem[]>([]);
 
-    const { token, currentComiteMember } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
 
     useEffect(() => {
-        const getPendingCases = async () => {
+        const getAllCases = async () => {
             const responseData = await sendRequest(
-                `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${currentComiteMember.id}`,
+                `${process.env.REACT_APP_CONNSTR}/cases/`,
                 undefined,
                 undefined,
                 {
@@ -30,13 +30,17 @@ const DpoCasesListGetter = () => {
 
             const loadedCases: CaseListItem[] = responseData.caseListItems;
             console.log("loadedCases: ", loadedCases);
-            setCases(loadedCases);
+            const filteredCases: CaseListItem[] = loadedCases.filter(
+                (c) => c.aprovado
+            );
+            console.log("filteredCases: ", filteredCases);
+            setCases(filteredCases);
         };
 
-        getPendingCases().catch((error) => {
+        getAllCases().catch((error) => {
             console.log(error);
         });
-    }, [sendRequest, token, currentComiteMember.id]);
+    }, [sendRequest, token]);
 
     if (isLoading) {
         return (
@@ -50,7 +54,7 @@ const DpoCasesListGetter = () => {
 
     return (
         <React.Fragment>
-            <h1>Processos Pendentes do Membro Selecionado</h1>
+            <h1>Inventário - Todos os processos aprovados</h1>
             {error && (
                 <Alert
                     variant={isWarning ? "warning" : "danger"}
@@ -60,9 +64,9 @@ const DpoCasesListGetter = () => {
                     {error}
                 </Alert>
             )}
-            <CasesList items={cases} redirect={false} />
+            <CasesList items={cases} redirect={true} />
         </React.Fragment>
     );
 };
 
-export default DpoCasesListGetter;
+export default DpoInventarioCasesListGetter;
