@@ -11,6 +11,7 @@ import "./App.css";
 import Footer from "./shared/components/footer/Footer";
 import CMGroupMgmtCockpit from "./access-requests/pages/CMGroupMgmtCockpit";
 import ReprovadosCaseListGetter from "./cases/pages/ReprovadosCaseListGetter";
+import ReprovadosEditCase from "./cases/pages/ReprovadosEditCase";
 
 const ApproveCasesListGetter = React.lazy(
     () => import("./cases/pages/ApproveCasesListGetter")
@@ -118,6 +119,10 @@ const App = () => {
                     element={<ContinueCase />}
                 />
                 <Route path="/:uid/cases/edit/:cid" element={<EditCase />} />
+                <Route
+                    path="/:uid/cases/reprovados/:cid"
+                    element={<ReprovadosEditCase />}
+                />
                 <Route
                     path="/request-group-access"
                     element={<RequestGroupAccess />}
