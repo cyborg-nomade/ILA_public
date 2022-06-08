@@ -9,6 +9,9 @@ export interface CaseListItem {
     usuarioResp: string;
     dadosPessoaisSensiveis: string;
     grupoCriadorId: number;
+    aprovado: boolean;
+    reprovado: boolean;
+    encaminhadoAprovacao: boolean;
 }
 
 export type headersCaseListItem = keyof CaseListItem;

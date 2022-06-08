@@ -73,7 +73,10 @@ namespace CPTM.ILA.Web.Models
                 DataAprovacao = fullCase.DataAprovacao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
                 DataProxRevisao = fullCase.DataProxRevisao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
                 DadosPessoaisSensiveis = fullCase.DadosPessoaisSensiveis ? "SIM" : "NÃO",
-                GrupoCriadorId = fullCase.GrupoCriadorId
+                GrupoCriadorId = fullCase.GrupoCriadorId,
+                Aprovado = fullCase.Aprovado,
+                Reprovado = fullCase.Reprovado,
+                EncaminhadoAprovacao = fullCase.EncaminhadoAprovacao
             };
 
         public Case FillStandardValues()
