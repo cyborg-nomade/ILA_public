@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import Select from "react-select";
@@ -14,7 +14,7 @@ import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Stack from "react-bootstrap/Stack";
-import { AiFillCaretDown, AiFillQuestionCircle } from "react-icons/ai";
+import { AiFillQuestionCircle } from "react-icons/ai";
 
 import {
     emptyItemCategoriaTitulares,
@@ -63,7 +63,6 @@ const CaseForm = (props: {
     const [itemValues, setItemValues] = useState<Case>(emptyCase());
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
     const [showSendToApprovalModal, setShowSendToApprovalModal] =
         useState(false);
     const [showApproveModal, setShowApproveModal] = useState(false);
@@ -77,7 +76,7 @@ const CaseForm = (props: {
     const cid = useParams().cid || "";
 
     const methods = useForm<Case>({ defaultValues: props.item });
-    const { reset, trigger, getValues } = methods;
+    const { reset, getValues } = methods;
     useEffect(() => reset(props.item), [reset, props.item]);
 
     const categoriasTitularesCategorias = useFieldArray({
@@ -125,14 +124,6 @@ const CaseForm = (props: {
         }
     };
 
-    const handleSaveProgressClick = useCallback(
-        async (item: Case) => {
-            setItemValues(item);
-            await trigger();
-            setShowSaveProgressModal(true);
-        },
-        [trigger]
-    );
     const handleSendToApprovalClick = async (item: Case) => {
         setItemValues(item);
         const valid = await methods.trigger();
@@ -152,17 +143,15 @@ const CaseForm = (props: {
     // handle auto-save
     useEffect(() => {
         if (token && tokenExpirationDate && minutes === 10) {
-            handleSaveProgressClick(getValues()).catch((error) => {
-                console.log(error);
-            });
+            props.onSaveProgressSubmit!(getValues());
         }
         return () => {};
     }, [
         token,
         tokenExpirationDate,
-        handleSaveProgressClick,
         getValues,
         minutes,
+        props.onSaveProgressSubmit,
     ]);
 
     if (isLoading) {
@@ -197,32 +186,6 @@ const CaseForm = (props: {
                     </Button>
                     <Button variant="danger" onClick={() => onDelete(cid)}>
                         Prosseguir com Remoção
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal
-                show={showSaveProgressModal}
-                onHide={() => setShowSaveProgressModal(false)}
-                animation={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>Salvar Progresso!</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Você tem certeza que deseja salvar o seu progresso?
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        variant="danger"
-                        onClick={() => setShowSaveProgressModal(false)}
-                    >
-                        Não
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={() => props.onSaveProgressSubmit!(itemValues)}
-                    >
-                        Sim
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -4324,7 +4287,7 @@ const CaseForm = (props: {
                             variant="secondary"
                             className="ms-auto"
                             onClick={() =>
-                                handleSaveProgressClick(methods.getValues())
+                                props.onSaveProgressSubmit!(methods.getValues())
                             }
                         >
                             Salvar Alterações
@@ -4372,7 +4335,7 @@ const CaseForm = (props: {
                             variant="secondary"
                             className="ms-auto"
                             onClick={() =>
-                                handleSaveProgressClick(methods.getValues())
+                                props.onSaveProgressSubmit!(methods.getValues())
                             }
                         >
                             Salvar Alterações
