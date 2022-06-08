@@ -28,10 +28,6 @@ const ReviewCasesListGetter = () => {
             console.log("currentGroup: ", currentGroup);
             console.log("loadedCases: ", loadedCases);
 
-            const test = new Date(loadedCases[0].dataProxRevisao);
-            const test2 = !!loadedCases[0].dataProxRevisao;
-            console.log(test2);
-
             const filteredCases: CaseListItem[] = loadedCases.filter((c) =>
                 c.dataProxRevisao
                     ? new Date(c.dataProxRevisao) > new Date()
