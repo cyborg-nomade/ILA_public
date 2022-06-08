@@ -178,7 +178,6 @@ const App = () => {
         routes = (
             <React.Fragment>
                 <Route path="/dpo" element={<DpoHomePage />}>
-                    <Route index element={<Dashboards />} />
                     <Route
                         path="cases"
                         element={<DpoInventarioCasesListGetter />}
@@ -187,6 +186,7 @@ const App = () => {
                     </Route>
                 </Route>
                 <Route path="/dpo" element={<DpoPage />}>
+                    <Route index element={<Dashboards />} />
                     <Route path="cases" element={<UserCasesLayout />}>
                         <Route
                             path="pending"

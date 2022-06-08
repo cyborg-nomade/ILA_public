@@ -53,12 +53,11 @@ const renderLabel = (entry: any) => {
 };
 
 const CasesDashboard = () => {
-    const [selected, setSelected] = useState<number | undefined>(0);
-    const [, setHovered] = useState<number | undefined>(undefined);
     const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
     const [showAlert, setShowAlert] = useState(true);
 
-    const { user, token, currentGroup } = useContext(AuthContext);
+    const { user, token, currentGroup, currentComiteMember } =
+        useContext(AuthContext);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
@@ -86,8 +85,6 @@ const CasesDashboard = () => {
                         return {
                             name: d.nome,
                             value: d.quantidadeByStatus,
-                            // color: getChartColor(d.nome),
-                            // key: index,
                         };
                     }
                 );
@@ -132,7 +129,7 @@ const CasesDashboard = () => {
 
         const getDpoCasesTotals = async () => {
             const responseData = await sendRequest(
-                `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/totals`,
+                `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${currentComiteMember.id}/status/totals`,
                 undefined,
                 undefined,
                 {
@@ -141,8 +138,7 @@ const CasesDashboard = () => {
                 }
             );
 
-            const loadedTotals: ExtensaoEncarregadoTotals[] =
-                responseData.totals;
+            const loadedTotals: StatusTotals[] = responseData.totals;
             console.log("dpoCase loadedTotals: ", loadedTotals);
 
             if (loadedTotals.length === 0) {
@@ -151,10 +147,8 @@ const CasesDashboard = () => {
                 const transformedData: PieChartData[] = loadedTotals.map(
                     (d, index) => {
                         return {
-                            name: d.extensaoNome,
-                            value: d.quantityByExtensao,
-                            // color: colors[index],
-                            // key: index,
+                            name: d.nome,
+                            value: d.quantidadeByStatus,
                         };
                     }
                 );
