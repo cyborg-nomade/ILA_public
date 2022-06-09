@@ -356,6 +356,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .GroupBy(c => new
                     {
                         c.Aprovado,
+                        c.Reprovado,
                         c.EncaminhadoAprovacao
                     })
                     .Select(c => new StatusTotals()
