@@ -793,6 +793,17 @@
             Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
             </returns>
         </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByExtensaoEncarregadoByStatus(System.Int32)">
+            <summary>
+            Retorna os totais dos Casos de Uso dos grupos de acesso de um Mebro do Comitê por status de aprovação. Endpoint disponibilizado apenas para o DPO.
+            </summary>
+            <param name="uid">Id do grupo</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos status (objeto StatusTotals).
+            Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Get(System.Int32)">
             <summary>
             Retorna um Caso de Uso de Dados Pessoais específico.

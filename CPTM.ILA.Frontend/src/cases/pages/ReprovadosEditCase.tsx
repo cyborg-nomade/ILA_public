@@ -14,7 +14,7 @@ import CaseForm from "../components/CaseForm";
 import SaveProgressModal from "../components/modals/SaveProgressModal";
 import SendToApprovalModal from "../components/modals/SendToApprovalModal";
 
-const EditCase = () => {
+const ReprovadosEditCase = () => {
     const { user, token, currentGroup } = useContext(AuthContext);
 
     const [message, setMessage] = useState("");
@@ -254,7 +254,7 @@ const EditCase = () => {
 
     return (
         <React.Fragment>
-            <h1>Alterar Processo Aprovado</h1>
+            <h1>Alterar Processo Reprovado</h1>
             {error && (
                 <Alert
                     variant={isWarning ? "warning" : "danger"}
@@ -286,7 +286,7 @@ const EditCase = () => {
             </SendToApprovalModal>
             <CaseForm
                 item={fullCase}
-                edit={true}
+                reprovado={true}
                 onSaveProgressSubmit={showSaveProgressModalHandler}
                 onSendToApprovalSubmit={showSendToApprovalModalHandler}
             />
@@ -294,4 +294,4 @@ const EditCase = () => {
     );
 };
 
-export default EditCase;
+export default ReprovadosEditCase;

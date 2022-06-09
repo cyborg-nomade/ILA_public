@@ -14,5 +14,8 @@ namespace CPTM.ILA.Web.DTOs
         public string UsuarioResp { get; set; }
         public string DadosPessoaisSensiveis { get; set; }
         public int GrupoCriadorId { get; set; }
+        public bool Aprovado { get; set; }
+        public bool Reprovado { get; set; }
+        public bool EncaminhadoAprovacao { get; set; }
     }
 }

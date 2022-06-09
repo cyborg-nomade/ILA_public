@@ -6,9 +6,9 @@ import Row from "react-bootstrap/Row";
 import { CaseListItem } from "../../shared/models/DTOs/case-list-item.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import CasesList from "../../cases/components/CasesList";
+import CasesList from "../components/CasesList";
 
-const ComiteCasesListGetter = () => {
+const ReprovadosCaseListGetter = () => {
     const [cases, setCases] = useState<CaseListItem[]>([]);
 
     const { token, currentGroup } = useContext(AuthContext);
@@ -17,31 +17,29 @@ const ComiteCasesListGetter = () => {
         useHttpClient();
 
     useEffect(() => {
-        const getApprovedCases = async () => {
+        const getReprovadosCases = async () => {
             const responseData = await sendRequest(
-                `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/false/true/false`,
+                `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/false/false/true`,
                 undefined,
                 undefined,
-                {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + token,
-                }
+                { Authorization: "Bearer " + token }
             );
-
             const loadedCases: CaseListItem[] = responseData.cases;
+            console.log("currentGroup: ", currentGroup);
             console.log("loadedCases: ", loadedCases);
+
             setCases(loadedCases);
         };
 
-        getApprovedCases().catch((error) => {
+        getReprovadosCases().catch((error) => {
             console.log(error);
         });
-    }, [sendRequest, token, currentGroup.id]);
+    }, [sendRequest, token, currentGroup]);
 
     if (isLoading) {
         return (
             <Row className="justify-content-center">
-                <Spinner animation="border" role="status">
+                <Spinner animation="border" role="status" variant="light">
                     <span className="visually-hidden">Loading...</span>
                 </Spinner>
             </Row>
@@ -50,10 +48,10 @@ const ComiteCasesListGetter = () => {
 
     return (
         <React.Fragment>
-            <h1>
-                Meus Processos - Todos os processos aprovados do grupo
-                selecionado
-            </h1>
+            <h2>
+                Revisar Processos Reprovados - Todos os seus processos
+                reprovados
+            </h2>
             {error && (
                 <Alert
                     variant={isWarning ? "warning" : "danger"}
@@ -68,4 +66,4 @@ const ComiteCasesListGetter = () => {
     );
 };
 
-export default ComiteCasesListGetter;
+export default ReprovadosCaseListGetter;

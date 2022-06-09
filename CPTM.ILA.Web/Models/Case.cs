@@ -73,7 +73,10 @@ namespace CPTM.ILA.Web.Models
                 DataAprovacao = fullCase.DataAprovacao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
                 DataProxRevisao = fullCase.DataProxRevisao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
                 DadosPessoaisSensiveis = fullCase.DadosPessoaisSensiveis ? "SIM" : "NÃO",
-                GrupoCriadorId = fullCase.GrupoCriadorId
+                GrupoCriadorId = fullCase.GrupoCriadorId,
+                Aprovado = fullCase.Aprovado,
+                Reprovado = fullCase.Reprovado,
+                EncaminhadoAprovacao = fullCase.EncaminhadoAprovacao
             };
 
         public Case FillStandardValues()
@@ -155,8 +158,10 @@ namespace CPTM.ILA.Web.Models
             var erro = "Algo deu errado no envio do e-mail. Contate o suporte técnico";
             //send email
             var enviado = Email.Enviar("ILA", userAd.Nome, userAd.Email,
-                new List<string>() { "encarregado.dados@cptm.sp.gov.br" }, assunto, mensagem, DateTime.Now, idUsuario,
+                new List<string>() { "uriel.fiori@cptm.sp.gov.br" }, assunto, mensagem, DateTime.Now, idUsuario,
                 ref erro);
+
+            // encarregado.dados@cptm.sp.gov.br
 
             return this;
         }
