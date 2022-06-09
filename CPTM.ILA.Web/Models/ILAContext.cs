@@ -1,8 +1,5 @@
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Linq;
 using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.AccessControl.VIEWS;
 using CPTM.ILA.Web.Models.ChangeLogging;

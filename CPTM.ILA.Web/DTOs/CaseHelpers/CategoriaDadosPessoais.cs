@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais;
+using CPTM.ILA.Web.DTOs.CaseHelpers.CategoriasDadosPessoais;
 
-namespace CPTM.ILA.Web.Models.CaseHelpers
+namespace CPTM.ILA.Web.DTOs.CaseHelpers
 {
     [Table("ILA_CATEGORIA_DADOS_PESSOAIS")]
     public class CategoriaDadosPessoais

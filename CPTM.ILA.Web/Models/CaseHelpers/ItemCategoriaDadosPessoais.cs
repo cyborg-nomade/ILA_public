@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using CPTM.ILA.Web.Models.CaseHelpers.CategoriasDadosPessoais;
 using CPTM.ILA.Web.Models.CaseHelpers.Enums;
 
 namespace CPTM.ILA.Web.Models.CaseHelpers
@@ -12,5 +11,7 @@ namespace CPTM.ILA.Web.Models.CaseHelpers
         public TipoTempoRetencao TempoRetencao { get; set; }
         public TipoFontesRetenção FonteRetencao { get; set; }
         public string LocalArmazenamento { get; set; }
+
+        public CategoriaDadosPessoaisEnum CategoriaDadosPessoais { get; set; }
     }
 }

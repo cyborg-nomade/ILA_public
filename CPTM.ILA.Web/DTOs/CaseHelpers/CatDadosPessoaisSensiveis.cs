@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using CPTM.ILA.Web.Models.CaseHelpers;
 
-namespace CPTM.ILA.Web.Models.CaseHelpers
+namespace CPTM.ILA.Web.DTOs.CaseHelpers
 {
     [Table("ILA_CAT_DADOS_PESSOAIS_SENS")]
     public class CatDadosPessoaisSensiveis

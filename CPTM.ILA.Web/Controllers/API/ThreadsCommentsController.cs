@@ -1,13 +1,9 @@
-﻿using System.Data.Entity.Infrastructure;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using CPTM.ILA.Web.Models;
 using System.Threading.Tasks;
-using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
-using CPTM.ILA.Web.Models.AccessControl;
-using CPTM.ILA.Web.Models.CaseHelpers;
 using CPTM.ILA.Web.Util;
 
 namespace CPTM.ILA.Web.Controllers.API

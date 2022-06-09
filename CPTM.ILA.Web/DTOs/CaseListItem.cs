@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.Models;
-using CPTM.ILA.Web.Models.CaseHelpers.Enums;
 
 namespace CPTM.ILA.Web.DTOs
 {
