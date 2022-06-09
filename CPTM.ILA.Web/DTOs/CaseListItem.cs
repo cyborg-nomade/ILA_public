@@ -1,4 +1,7 @@
-﻿using CPTM.ILA.Web.Models.CaseHelpers.Enums;
+﻿using System.Globalization;
+using CPTM.ActiveDirectory;
+using CPTM.ILA.Web.Models;
+using CPTM.ILA.Web.Models.CaseHelpers.Enums;
 
 namespace CPTM.ILA.Web.DTOs
 {
@@ -17,5 +20,24 @@ namespace CPTM.ILA.Web.DTOs
         public bool Aprovado { get; set; }
         public bool Reprovado { get; set; }
         public bool EncaminhadoAprovacao { get; set; }
+
+        public static CaseListItem ReduceToListItem(Case fullCase) =>
+            new CaseListItem()
+            {
+                Nome = fullCase.Nome,
+                Id = fullCase.Id,
+                Ref = fullCase.Ref,
+                Area = fullCase.Area,
+                UsuarioResp = Seguranca.ObterUsuario(fullCase.UsernameResponsavel)
+                    .Nome.ToUpper(),
+                DataEnvio = fullCase.DataEnvio?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
+                DataAprovacao = fullCase.DataAprovacao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
+                DataProxRevisao = fullCase.DataProxRevisao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
+                DadosPessoaisSensiveis = fullCase.DadosPessoaisSensiveis ? "SIM" : "NÃO",
+                GrupoCriadorId = fullCase.GrupoCriadorId,
+                Aprovado = fullCase.Aprovado,
+                Reprovado = fullCase.Reprovado,
+                EncaminhadoAprovacao = fullCase.EncaminhadoAprovacao
+            };
     }
 }

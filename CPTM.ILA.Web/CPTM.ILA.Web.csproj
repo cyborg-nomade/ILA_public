@@ -318,10 +318,12 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DTOs\AccessRequestDTO.cs" />
     <Compile Include="DTOs\CaseChange.cs" />
+    <Compile Include="DTOs\CaseDTO.cs" />
     <Compile Include="DTOs\ComiteMember.cs" />
     <Compile Include="DTOs\CommentDTO.cs" />
     <Compile Include="DTOs\ExtensaoEncarregadoTotals.cs" />
     <Compile Include="DTOs\GroupTotals.cs" />
+    <Compile Include="DTOs\ItemCategoriaDadosPessoasDTO.cs" />
     <Compile Include="DTOs\StatusTotals.cs" />
     <Compile Include="DTOs\ThreadStatusTotals.cs" />
     <Compile Include="DTOs\UserDto.cs" />
@@ -357,6 +359,7 @@
     <Compile Include="Models\CaseHelpers\CategoriasDadosPessoais\ProfissaoEmprego.cs" />
     <Compile Include="Models\CaseHelpers\CategoriasDadosPessoais\RegVideoImgVoz.cs" />
     <Compile Include="Models\CaseHelpers\CategoriasDadosPessoais\Residenciais.cs" />
+    <Compile Include="Models\CaseHelpers\Enums\CategoriaDadosPessoais.cs" />
     <Compile Include="Models\CaseHelpers\Enums\Pais.cs" />
     <Compile Include="Models\CaseHelpers\Enums\TipoTempoRetencao.cs" />
     <Compile Include="Models\CaseHelpers\CategoriasTitulares.cs" />

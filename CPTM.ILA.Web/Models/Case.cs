@@ -60,25 +60,6 @@ namespace CPTM.ILA.Web.Models
         public ICollection<ItemRiscoPrivacidade> RiscosPrivacidade { get; set; }
         public ICollection<ItemObservacoesProcesso> ObservacoesProcesso { get; set; }
 
-        public static CaseListItem ReduceToListItem(Case fullCase) =>
-            new CaseListItem()
-            {
-                Nome = fullCase.Nome,
-                Id = fullCase.Id,
-                Ref = fullCase.Ref,
-                Area = fullCase.Area,
-                UsuarioResp = Seguranca.ObterUsuario(fullCase.UsernameResponsavel)
-                    .Nome.ToUpper(),
-                DataEnvio = fullCase.DataEnvio?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
-                DataAprovacao = fullCase.DataAprovacao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
-                DataProxRevisao = fullCase.DataProxRevisao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
-                DadosPessoaisSensiveis = fullCase.DadosPessoaisSensiveis ? "SIM" : "NÃO",
-                GrupoCriadorId = fullCase.GrupoCriadorId,
-                Aprovado = fullCase.Aprovado,
-                Reprovado = fullCase.Reprovado,
-                EncaminhadoAprovacao = fullCase.EncaminhadoAprovacao
-            };
-
         public Case FillStandardValues()
         {
             Controlador = new AgenteTratamento()

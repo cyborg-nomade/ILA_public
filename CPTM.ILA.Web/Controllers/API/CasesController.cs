@@ -64,7 +64,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var cases = await _context.Cases.Include(c => c.FinalidadeTratamento)
                     .ToListAsync();
 
-                var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+                var caseListItems = cases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
             }
@@ -117,7 +117,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .Where(c => c.GrupoCriadorId == gid)
                     .ToListAsync();
 
-                var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+                var caseListItems = cases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
             }
@@ -247,7 +247,7 @@ namespace CPTM.ILA.Web.Controllers.API
                                 c.Reprovado == reprovado)
                     .ToListAsync();
 
-                var caseListItems = filteredCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+                var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
             }
@@ -444,7 +444,7 @@ namespace CPTM.ILA.Web.Controllers.API
                                 c.EncaminhadoAprovacao)
                     .ToListAsync();
 
-                var caseListItems = pendingCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+                var caseListItems = pendingCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { caseListItems });
             }
