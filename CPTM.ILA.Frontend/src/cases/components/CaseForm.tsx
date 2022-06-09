@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import Select from "react-select";
@@ -14,7 +14,7 @@ import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Stack from "react-bootstrap/Stack";
-import { AiFillCaretDown, AiFillQuestionCircle } from "react-icons/ai";
+import { AiFillQuestionCircle } from "react-icons/ai";
 
 import {
     emptyItemCategoriaTitulares,
@@ -54,6 +54,8 @@ const CaseForm = (props: {
     edit?: boolean;
     approve?: boolean;
     continue?: boolean;
+    reprovado?: boolean;
+    check?: boolean;
     onSaveProgressSubmit?: onSubmitFn;
     onSendToApprovalSubmit?: onSubmitFn;
     onApproveSubmit?: onSubmitFn;
@@ -61,15 +63,31 @@ const CaseForm = (props: {
 }) => {
     const [isEditing, setIsEditing] = useState(props.new || false);
     const [itemValues, setItemValues] = useState<Case>(emptyCase());
+    const [formIsValid, setFormIsValid] = useState(true);
+    const [isFormAllTouched, setIsFormAllTouched] = useState({
+        "0": true,
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false,
+        "15": false,
+    });
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
-    const [showSendToApprovalModal, setShowSendToApprovalModal] =
-        useState(false);
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showReproveModal, setShowReproveModal] = useState(false);
 
-    const { token, tokenExpirationDate } = useContext(AuthContext);
+    const { token, tokenExpirationDate, user } = useContext(AuthContext);
     const { minutes } = useCountdown(tokenExpirationDate);
     const { sendRequest, error, clearError, isLoading } = useHttpClient();
     const { systems, countries } = useUtilities();
@@ -77,34 +95,34 @@ const CaseForm = (props: {
     const cid = useParams().cid || "";
 
     const methods = useForm<Case>({ defaultValues: props.item });
-    const { reset, trigger, getValues } = methods;
+    const { reset, getValues } = methods;
     useEffect(() => reset(props.item), [reset, props.item]);
 
     const categoriasTitularesCategorias = useFieldArray({
-        control: methods.control, // control props comes from useForm
-        name: "categoriasTitulares.categorias", // unique name for your Field Array
+        control: methods.control,
+        name: "categoriasTitulares.categorias",
     });
     const medidasSegurancaPrivacidade = useFieldArray({
-        control: methods.control, // control props comes from useForm
-        name: "medidasSegurancaPrivacidade", // unique name for your Field Array
+        control: methods.control,
+        name: "medidasSegurancaPrivacidade",
     });
     const riscosPrivacidade = useFieldArray({
-        control: methods.control, // control props comes from useForm
-        name: "riscosPrivacidade", // unique name for your Field Array
+        control: methods.control,
+        name: "riscosPrivacidade",
     });
     const observacoesProcesso = useFieldArray({
-        control: methods.control, // control props comes from useForm
-        name: "observacoesProcesso", // unique name for your Field Array
+        control: methods.control,
+        name: "observacoesProcesso",
     });
 
     const onStartEditing = () => {
         setIsEditing(true);
     };
     const onCancel = () => {
-        navigate(`/`);
+        navigate(-1);
     };
     const onDelete = async (itemId: string) => {
-        console.log(itemId);
+        console.log("itemId: ", itemId);
 
         try {
             const responseData = await sendRequest(
@@ -125,20 +143,22 @@ const CaseForm = (props: {
         }
     };
 
-    const handleSaveProgressClick = useCallback(
-        async (item: Case) => {
-            setItemValues(item);
-            await trigger();
-            setShowSaveProgressModal(true);
-        },
-        [trigger]
-    );
     const handleSendToApprovalClick = async (item: Case) => {
-        setItemValues(item);
+        console.log(item);
+
+        const isAllTouched = props.new
+            ? Object.values(isFormAllTouched).reduce((t, n) => {
+                  return t && n;
+              })
+            : true;
         const valid = await methods.trigger();
-        if (valid) {
-            setShowSendToApprovalModal(true);
+        if (valid && isAllTouched) {
+            props.onSendToApprovalSubmit!(item);
         }
+        if (!valid) {
+            setFormIsValid(false);
+        }
+        // props.onSendToApprovalSubmit!(item);
     };
     const handleApprovalClick = (item: Case) => {
         setItemValues(item);
@@ -152,17 +172,15 @@ const CaseForm = (props: {
     // handle auto-save
     useEffect(() => {
         if (token && tokenExpirationDate && minutes === 10) {
-            handleSaveProgressClick(getValues()).catch((error) => {
-                console.log(error);
-            });
+            props.onSaveProgressSubmit!(getValues());
         }
         return () => {};
     }, [
         token,
         tokenExpirationDate,
-        handleSaveProgressClick,
         getValues,
         minutes,
+        props.onSaveProgressSubmit,
     ]);
 
     if (isLoading) {
@@ -197,63 +215,6 @@ const CaseForm = (props: {
                     </Button>
                     <Button variant="danger" onClick={() => onDelete(cid)}>
                         Prosseguir com Remoção
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal
-                show={showSaveProgressModal}
-                onHide={() => setShowSaveProgressModal(false)}
-                animation={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>Salvar Progresso!</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Você tem certeza que deseja salvar o seu progresso?
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        variant="danger"
-                        onClick={() => setShowSaveProgressModal(false)}
-                    >
-                        Não
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={() => props.onSaveProgressSubmit!(itemValues)}
-                    >
-                        Sim
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal
-                show={showSendToApprovalModal}
-                onHide={() => setShowSendToApprovalModal(false)}
-                animation={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        Enviar para o Encarregado de Dados!
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Você tem certeza que deseja enviar as informações para
-                    validação do time de Privacidade de Dados?
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        variant="danger"
-                        onClick={() => setShowSendToApprovalModal(false)}
-                    >
-                        Não
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={() =>
-                            props.onSendToApprovalSubmit!(itemValues)
-                        }
-                    >
-                        Sim
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -314,8 +275,20 @@ const CaseForm = (props: {
                     Ocorreu um erro ao enviar o processo: {error}
                 </Alert>
             )}
+            {methods.getValues().comentarioReprovacao && props.reprovado && (
+                <Alert variant="danger">
+                    Este processo foi reprovado pelo seguinte motivo:{" "}
+                    {methods.getValues().comentarioReprovacao}
+                </Alert>
+            )}
             <Form>
-                <Accordion defaultActiveKey="0">
+                <Accordion
+                    defaultActiveKey="0"
+                    activeKey={
+                        !formIsValid ? Object.keys(isFormAllTouched) : undefined
+                    }
+                    alwaysOpen={!formIsValid}
+                >
                     <Accordion.Item eventKey="0">
                         <Accordion.Header>1 - Identificação</Accordion.Header>
                         <Accordion.Body>
@@ -373,7 +346,7 @@ const CaseForm = (props: {
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
-                            {!props.new && (
+                            {/* {!props.new && (
                                 <Row className="mb-3">
                                     <Col lg={1}>
                                         <p>{CaseIndexDictionary.id.number}</p>
@@ -388,6 +361,43 @@ const CaseForm = (props: {
                                         <Controller
                                             control={methods.control}
                                             name="id"
+                                            render={({
+                                                field: {
+                                                    onChange,
+                                                    onBlur,
+                                                    value,
+                                                    ref,
+                                                },
+                                            }) => (
+                                                <Form.Control
+                                                    disabled
+                                                    type="text"
+                                                    onChange={onChange}
+                                                    onBlur={onBlur}
+                                                    value={value}
+                                                    ref={ref}
+                                                    readOnly
+                                                />
+                                            )}
+                                        />
+                                    </Form.Group>
+                                </Row>
+                            )} */}
+                            {!props.new && (
+                                <Row className="mb-3">
+                                    <Col lg={1}>
+                                        <p>{CaseIndexDictionary.ref.number}</p>
+                                    </Col>
+                                    <Form.Group
+                                        as={Col}
+                                        controlId="validationFormik02"
+                                    >
+                                        <Form.Label>
+                                            {CaseIndexDictionary.id.title}
+                                        </Form.Label>
+                                        <Controller
+                                            control={methods.control}
+                                            name="ref"
                                             render={({
                                                 field: {
                                                     onChange,
@@ -492,7 +502,14 @@ const CaseForm = (props: {
                             </Row>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="1">
+                    <Accordion.Item
+                        eventKey="1"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "1": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             2 - Agentes de Tratamento e Encarregado
                         </Accordion.Header>
@@ -891,15 +908,22 @@ const CaseForm = (props: {
                                                 ref,
                                             },
                                         }) => (
-                                            <Form.Control
+                                            <Form.Select
                                                 disabled={!isEditing}
-                                                type="text"
                                                 onChange={onChange}
                                                 onBlur={onBlur}
                                                 value={value}
                                                 ref={ref}
-                                                readOnly
-                                            />
+                                            >
+                                                {user.groups.map((g) => (
+                                                    <option
+                                                        value={g.nome}
+                                                        key={g.id}
+                                                    >
+                                                        {g.nome}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
                                         )}
                                     />
                                 </Col>
@@ -989,7 +1013,14 @@ const CaseForm = (props: {
                             </Row>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="2">
+                    <Accordion.Item
+                        eventKey="2"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "2": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             3 - Fases do Ciclo de Vida do Tratamento de Dados
                             Pessoais
@@ -1042,7 +1073,14 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="3">
+                    <Accordion.Item
+                        eventKey="3"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "3": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             4 - Fluxo de Tratamento de Dados Pessoais
                         </Accordion.Header>
@@ -1127,7 +1165,14 @@ const CaseForm = (props: {
                             </Row>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="4">
+                    <Accordion.Item
+                        eventKey="4"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "4": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             5 - Escopo e Natureza dos Dados Pessoais
                         </Accordion.Header>
@@ -1257,7 +1302,14 @@ const CaseForm = (props: {
                             </Row>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="5">
+                    <Accordion.Item
+                        eventKey="5"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "5": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             6 - Finalidade do Tratamento de Dados Pessoais
                         </Accordion.Header>
@@ -1385,12 +1437,22 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="6">
+                    <Accordion.Item
+                        eventKey="6"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "6": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             7 - Categoria de Dados Pessoais
                         </Accordion.Header>
                         <Accordion.Body>
-                            <Accordion>
+                            <Accordion
+                                defaultActiveKey={formIsValid ? "" : "0"}
+                                alwaysOpen={!formIsValid}
+                            >
                                 <Accordion.Item eventKey="60">
                                     <Accordion.Header>
                                         7.1 - Dados de Identificação Pessoal
@@ -3375,7 +3437,14 @@ const CaseForm = (props: {
                             </Accordion>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="7">
+                    <Accordion.Item
+                        eventKey="7"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "7": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             8 - Categorias de Dados Pessoais Sensíveis
                         </Accordion.Header>
@@ -3533,7 +3602,14 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="8">
+                    <Accordion.Item
+                        eventKey="8"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "8": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             9 - Frequência e totalização das categorias de dados
                             pessoais tratados
@@ -3639,12 +3715,22 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="9">
+                    <Accordion.Item
+                        eventKey="9"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "9": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             10 - Categorias dos titulares de dados pessoais
                         </Accordion.Header>
                         <Accordion.Body>
-                            <Accordion>
+                            <Accordion
+                                defaultActiveKey={formIsValid ? "" : "0"}
+                                alwaysOpen={!formIsValid}
+                            >
                                 <Accordion.Item eventKey="90">
                                     <Accordion.Header>
                                         10.1 - Categorias gerais
@@ -3862,7 +3948,14 @@ const CaseForm = (props: {
                             </Accordion>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="10">
+                    <Accordion.Item
+                        eventKey="10"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "10": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             11 - Compartilhamento de Dados Pessoais
                         </Accordion.Header>
@@ -3897,7 +3990,14 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="11">
+                    <Accordion.Item
+                        eventKey="11"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "11": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             12 - Medidas de Segurança/Privacidade
                         </Accordion.Header>
@@ -4007,7 +4107,14 @@ const CaseForm = (props: {
                             </React.Fragment>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="12">
+                    <Accordion.Item
+                        eventKey="12"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "12": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             13 - Transferência Internacional de Dados Pessoais
                         </Accordion.Header>
@@ -4038,7 +4145,14 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="13">
+                    <Accordion.Item
+                        eventKey="13"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "13": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             14 - Contrato(s) de serviços e/ou soluções de TI que
                             trata(m) dados pessoais do serviço/processo de
@@ -4072,7 +4186,14 @@ const CaseForm = (props: {
                             />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="14">
+                    <Accordion.Item
+                        eventKey="14"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "14": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             15 - Risco de Privacidade
                         </Accordion.Header>
@@ -4177,7 +4298,14 @@ const CaseForm = (props: {
                             </React.Fragment>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="15">
+                    <Accordion.Item
+                        eventKey="15"
+                        onClick={() =>
+                            setIsFormAllTouched((prevState) => {
+                                return { ...prevState, "15": true };
+                            })
+                        }
+                    >
                         <Accordion.Header>
                             16 - Observações sobre o Processo
                         </Accordion.Header>
@@ -4281,13 +4409,16 @@ const CaseForm = (props: {
                 </Accordion>
                 {props.new && (
                     <Stack direction="horizontal" className="mt-3" gap={3}>
+                        <Button variant="light" onClick={() => onCancel()}>
+                            Cancelar
+                        </Button>
                         <Button
                             type="button"
                             disabled={!methods.formState.isDirty}
                             variant="secondary"
                             className="ms-auto"
                             onClick={() =>
-                                handleSaveProgressClick(methods.getValues())
+                                props.onSaveProgressSubmit!(methods.getValues())
                             }
                         >
                             Salvar Alterações
@@ -4313,7 +4444,7 @@ const CaseForm = (props: {
                             variant="danger"
                             className="ms-auto"
                             onClick={() =>
-                                handleReprovalClick(methods.getValues())
+                                props.onReproveSubmit!(methods.getValues())
                             }
                         >
                             Reprovar
@@ -4321,7 +4452,7 @@ const CaseForm = (props: {
                         <Button
                             variant="primary"
                             onClick={() =>
-                                handleApprovalClick(methods.getValues())
+                                props.onApproveSubmit!(methods.getValues())
                             }
                         >
                             Aprovar
@@ -4330,12 +4461,15 @@ const CaseForm = (props: {
                 )}
                 {props.edit && isEditing && (
                     <Stack direction="horizontal" className="mt-3" gap={3}>
+                        <Button variant="light" onClick={() => onCancel()}>
+                            Cancelar
+                        </Button>
                         <Button
                             type="button"
                             variant="secondary"
                             className="ms-auto"
                             onClick={() =>
-                                handleSaveProgressClick(methods.getValues())
+                                props.onSaveProgressSubmit!(methods.getValues())
                             }
                         >
                             Salvar Alterações
@@ -4369,6 +4503,17 @@ const CaseForm = (props: {
                             onClick={() => onStartEditing()}
                         >
                             Editar
+                        </Button>
+                    </Stack>
+                )}
+                {props.check && (
+                    <Stack direction="horizontal" className="mt-3" gap={0}>
+                        <Button
+                            variant="primary"
+                            className="ms-auto"
+                            onClick={() => onCancel()}
+                        >
+                            Voltar
                         </Button>
                     </Stack>
                 )}

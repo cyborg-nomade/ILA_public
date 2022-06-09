@@ -58,25 +58,48 @@ const headers: {
         isFilterable: false,
     },
 ];
+const headersMinimal: {
+    title: string;
+    isFilterable: boolean;
+    isSortable: boolean;
+    prop: headersCaseListItem;
+}[] = [
+    { title: "Nome", prop: "nome", isFilterable: true, isSortable: true },
+    { title: "Ref", prop: "ref", isFilterable: true, isSortable: true },
+    { title: "Área", prop: "area", isFilterable: true, isSortable: true },
+    {
+        title: "Usuário Responsável",
+        prop: "usuarioResp",
+        isFilterable: true,
+        isSortable: true,
+    },
+];
 
-const CasesList = (props: { items: CaseListItem[]; redirect: boolean }) => {
+const CasesList = (props: {
+    items: CaseListItem[];
+    redirect: boolean;
+    minimal?: boolean;
+}) => {
     let navigate = useNavigate();
 
     if (props.items.length === 0) {
         return (
             <Alert variant="warning">
-                <Alert.Heading>Nada foi encontrado</Alert.Heading>
                 <p>
-                    Não foi encontrado nenhum item do inventário de casos de uso
-                    de dados pessoais com o filtro determinado.
+                    Não há dados para o grupo atual. Selecione um novo grupo
+                    para nova pesquisa.
                 </p>
             </Alert>
         );
     }
 
     const handleRowClick = (row: CaseListItem) => {
-        if (props.redirect) {
+        if (props.redirect && !props.minimal) {
             navigate(`${row.id}`);
+        }
+
+        if (props.redirect && props.minimal) {
+            navigate(`../cases/edit/${row.id}`);
         }
     };
 
@@ -84,7 +107,7 @@ const CasesList = (props: { items: CaseListItem[]; redirect: boolean }) => {
         <Card>
             <DatatableWrapper
                 body={props.items}
-                headers={headers}
+                headers={props.minimal ? headersMinimal : headers}
                 paginationOptionsProps={{
                     initialState: {
                         rowsPerPage: 10,
@@ -92,48 +115,69 @@ const CasesList = (props: { items: CaseListItem[]; redirect: boolean }) => {
                     },
                 }}
             >
-                <Row className="mb-4">
-                    <Col
-                        xs={12}
-                        lg={4}
-                        className="d-flex flex-col justify-content-end align-items-end"
-                    >
-                        <Filter placeholder="Entre sua busca" />
-                    </Col>
-                    <Col
-                        xs={12}
-                        sm={6}
-                        lg={4}
-                        className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
-                    >
-                        <PaginationOptions
-                            labels={{ beforeSelect: "Linhas por página" }}
-                        />
-                    </Col>
-                    <Col
-                        xs={12}
-                        sm={6}
-                        lg={4}
-                        className="d-flex flex-col justify-content-end align-items-end"
-                    >
-                        <Pagination
-                            labels={{
-                                firstPage: "Primeira",
-                                lastPage: "Última",
-                                nextPage: "Próxima",
-                                prevPage: "Anterior",
-                            }}
-                        />
-                    </Col>
-                </Row>
+                {!props.minimal && (
+                    <Row className="mb-4">
+                        <Col
+                            xs={12}
+                            lg={4}
+                            className="d-flex flex-col justify-content-end align-items-end"
+                        >
+                            <Filter placeholder="Entre sua busca" />
+                        </Col>
+                        <Col
+                            xs={12}
+                            sm={6}
+                            lg={4}
+                            className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
+                        >
+                            <PaginationOptions
+                                labels={{ beforeSelect: "Linhas por página" }}
+                            />
+                        </Col>
+                        <Col
+                            xs={12}
+                            sm={6}
+                            lg={4}
+                            className="d-flex flex-col justify-content-end align-items-end"
+                        >
+                            <Pagination
+                                labels={{
+                                    firstPage: "Primeira",
+                                    lastPage: "Última",
+                                    nextPage: "Próxima",
+                                    prevPage: "Anterior",
+                                }}
+                            />
+                        </Col>
+                    </Row>
+                )}
                 <Table>
                     <TableHeader />
                     <TableBody
                         onRowClick={handleRowClick}
                         labels={{ noResults: "Nenhum resultado encontrado" }}
-                        rowProps={{
-                            style: { cursor: props.redirect ? "pointer" : "" },
-                        }}
+                        rowProps={(row: CaseListItem) => ({
+                            style: {
+                                background: row.aprovado
+                                    ? "#198754"
+                                    : row.reprovado
+                                    ? "#dc3545"
+                                    : row.encaminhadoAprovacao
+                                    ? "#6c757d"
+                                    : "#ffc107",
+                                color: row.aprovado
+                                    ? "white"
+                                    : row.reprovado
+                                    ? "white"
+                                    : row.encaminhadoAprovacao
+                                    ? "white"
+                                    : "black",
+                                cursor: props.redirect ? "pointer" : "",
+                            },
+                        })}
+                        // rowProps={{
+                        //     style: { cursor: props.redirect ? "pointer" : "" },
+                        // }}
                     />
                 </Table>
             </DatatableWrapper>

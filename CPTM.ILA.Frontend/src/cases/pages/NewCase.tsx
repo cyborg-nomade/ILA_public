@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { diff } from "deep-object-diff";
 import Row from "react-bootstrap/Row";
@@ -16,11 +16,17 @@ import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
+import SaveProgressModal from "../components/modals/SaveProgressModal";
+import SendToApprovalModal from "../components/modals/SendToApprovalModal";
 
 const NewCase = () => {
     const { token, user, currentGroup, areaTratamentoDados } =
         useContext(AuthContext);
 
+    const [message, setMessage] = useState("");
+    const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
+    const [showSendToApprovalModal, setShowSendToApprovalModal] =
+        useState(false);
     const [initialCase, setInitialCase] = useState<Case>(
         emptyCase(areaTratamentoDados)
     );
@@ -60,40 +66,54 @@ const NewCase = () => {
         };
     }, [areaTratamentoDados, currentGroup.id, sendRequest, token]);
 
-    const saveProgressHandler = async (item: Case) => {
-        console.log("save progress, Initial item: ", item);
-        setInitialCase(item);
+    const dismissModalHandler = () => {
+        navigate(-1);
+    };
 
-        item.grupoCriadorId = currentGroup.id;
-        const dateCriacaoParts = item.dataCriacao.split("/");
-        const dateAtualizacaoParts = item.dataAtualizacao.split("/");
-        item.dataCriacao = new Date(
+    const showSaveProgressModalHandler = useCallback((item: Case) => {
+        setInitialCase(item);
+        setShowSaveProgressModal(true);
+    }, []);
+
+    const hideSaveProgressModalHandler = () => {
+        setShowSaveProgressModal(false);
+    };
+
+    const saveProgressHandler = async () => {
+        console.log("save progress, Initial item: ", initialCase);
+        setInitialCase(initialCase);
+
+        initialCase.grupoCriadorId = currentGroup.id;
+        initialCase.usernameResponsavel = user.username;
+        const dateCriacaoParts = initialCase.dataCriacao.split("/");
+        const dateAtualizacaoParts = initialCase.dataAtualizacao.split("/");
+        initialCase.dataCriacao = new Date(
             +dateCriacaoParts[2],
             +dateCriacaoParts[1] - 1,
             +dateCriacaoParts[0]
         ).toISOString();
-        item.dataAtualizacao = new Date(
+        initialCase.dataAtualizacao = new Date(
             +dateAtualizacaoParts[2],
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        item.area = currentGroup.nome;
-        item.ref =
-            "PROC-" + item.area + "-" + (Date.now() + Math.random()).toString;
-        for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
+        initialCase.area = currentGroup.nome;
+        for (const value of Object.values(
+            initialCase.catDadosPessoaisSensiveis
+        )) {
             if (value.length !== 0) {
-                item.dadosPessoaisSensiveis = true;
+                initialCase.dadosPessoaisSensiveis = true;
             }
         }
 
-        console.log("save progress, Altered item: ", item);
+        console.log("save progress, Altered item: ", initialCase);
 
-        const changeObj = diff(emptyBaseCase(), item);
+        const changeObj = diff(emptyBaseCase(), initialCase);
 
         const changeLog: ChangeLog = {
             caseDiff: JSON.stringify(changeObj),
             caseId: 0,
-            caseRef: item.ref,
+            caseRef: initialCase.ref,
             userId: user.id,
             usernameResp: user.username,
             changeDate: new Date(),
@@ -102,14 +122,14 @@ const NewCase = () => {
         console.log("save progress, Change Log: ", changeLog);
 
         const caseChange: CaseChange = {
-            case: item,
+            case: initialCase,
             changeLog: changeLog,
         };
 
         console.log("save progress, Case Change: ", caseChange);
 
         try {
-            await sendRequest(
+            const responseData = await sendRequest(
                 `${process.env.REACT_APP_CONNSTR}/cases/`,
                 "POST",
                 JSON.stringify(caseChange),
@@ -118,49 +138,58 @@ const NewCase = () => {
                     Authorization: "Bearer " + token,
                 }
             );
-            console.log("case saved");
-
-            navigate(`/`);
+            console.log("case saved, response data: ", responseData);
+            setMessage(responseData.message);
         } catch (err) {
             console.log(err);
         }
     };
 
-    const sendToApprovalHandler = async (item: Case) => {
-        console.log("send to approval, Initial item: ", item);
+    const showSendToApprovalModalHandler = useCallback((item: Case) => {
         setInitialCase(item);
+        setShowSendToApprovalModal(true);
+    }, []);
 
-        item.grupoCriadorId = currentGroup.id;
-        item.area = currentGroup.nome;
-        const dateCriacaoParts = item.dataCriacao.split("/");
-        const dateAtualizacaoParts = item.dataAtualizacao.split("/");
-        item.dataCriacao = new Date(
+    const hideSendToApprovalModalHandler = () => {
+        setShowSendToApprovalModal(false);
+    };
+
+    const sendToApprovalHandler = async () => {
+        console.log("send to approval, Initial item: ", initialCase);
+        setInitialCase(initialCase);
+
+        initialCase.grupoCriadorId = currentGroup.id;
+        initialCase.usernameResponsavel = user.username;
+        initialCase.area = currentGroup.nome;
+        const dateCriacaoParts = initialCase.dataCriacao.split("/");
+        const dateAtualizacaoParts = initialCase.dataAtualizacao.split("/");
+        initialCase.dataCriacao = new Date(
             +dateCriacaoParts[2],
             +dateCriacaoParts[1] - 1,
             +dateCriacaoParts[0]
         ).toISOString();
-        item.dataAtualizacao = new Date(
+        initialCase.dataAtualizacao = new Date(
             +dateAtualizacaoParts[2],
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        item.area = currentGroup.nome;
-        item.ref =
-            "PROC-" + item.area + "-" + (Date.now() + Math.random()).toString;
-        for (const value of Object.values(item.catDadosPessoaisSensiveis)) {
+        initialCase.area = currentGroup.nome;
+        for (const value of Object.values(
+            initialCase.catDadosPessoaisSensiveis
+        )) {
             if (value.length !== 0) {
-                item.dadosPessoaisSensiveis = true;
+                initialCase.dadosPessoaisSensiveis = true;
             }
         }
 
-        console.log("send to approval, Altered item: ", item);
+        console.log("send to approval, Altered item: ", initialCase);
 
-        const changeObj = diff(emptyBaseCase(), item);
+        const changeObj = diff(emptyBaseCase(), initialCase);
 
         const changeLog: ChangeLog = {
             caseDiff: JSON.stringify(changeObj),
             caseId: 0,
-            caseRef: item.ref,
+            caseRef: initialCase.ref,
             userId: user.id,
             usernameResp: user.username,
             changeDate: new Date(),
@@ -169,7 +198,7 @@ const NewCase = () => {
         console.log("send to approval, Change Log: ", changeLog);
 
         const caseChange: CaseChange = {
-            case: item,
+            case: initialCase,
             changeLog: changeLog,
         };
 
@@ -209,23 +238,40 @@ const NewCase = () => {
                     Authorization: "Bearer " + token,
                 }
             );
-            console.log("send to approval, request approval response", resp2);
-
-            navigate(`/`);
+            console.log("send to approval, request approval response: ", resp2);
+            setMessage(resp2.message);
         } catch (err) {
             console.log(err);
         }
     };
 
-    if (isLoading) {
-        return (
-            <Row className="justify-content-center">
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            </Row>
-        );
-    }
+    const contentChildren = (
+        <React.Fragment>
+            {isLoading && (
+                <Row className="justify-content-center">
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </Row>
+            )}
+            {error && (
+                <Row
+                    className="justify-content-center mx-auto"
+                    style={{ width: "28rem" }}
+                >
+                    <Alert variant="danger">{error}</Alert>
+                </Row>
+            )}
+            {message && (
+                <Row
+                    className="justify-content-center mx-auto"
+                    style={{ width: "28rem" }}
+                >
+                    <Alert variant="success">{message}</Alert>
+                </Row>
+            )}
+        </React.Fragment>
+    );
 
     return (
         <React.Fragment>
@@ -239,10 +285,30 @@ const NewCase = () => {
                     Ocorreu um erro: {error}
                 </Alert>
             )}
+            <SaveProgressModal
+                onHideSaveProgressModal={hideSaveProgressModalHandler}
+                onSaveProgressSubmit={saveProgressHandler}
+                onDismissSaveProgressModal={dismissModalHandler}
+                showSaveProgressModal={showSaveProgressModal}
+                showChildrenContent={isLoading || error || !!message}
+                isLoading={isLoading}
+            >
+                {contentChildren}
+            </SaveProgressModal>
+            <SendToApprovalModal
+                isLoading={isLoading}
+                onDismissSendToApprovalModal={dismissModalHandler}
+                onHideSendToApprovalModal={hideSendToApprovalModalHandler}
+                onSendToApprovalSubmit={sendToApprovalHandler}
+                showChildrenContent={isLoading || error || !!message}
+                showSendToApprovalModal={showSendToApprovalModal}
+            >
+                {contentChildren}
+            </SendToApprovalModal>
             <CaseForm
                 new={true}
-                onSaveProgressSubmit={saveProgressHandler}
-                onSendToApprovalSubmit={sendToApprovalHandler}
+                onSaveProgressSubmit={showSaveProgressModalHandler}
+                onSendToApprovalSubmit={showSendToApprovalModalHandler}
                 item={initialCase}
             />
         </React.Fragment>

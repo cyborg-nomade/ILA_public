@@ -8,18 +8,18 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CasesList from "../../cases/components/CasesList";
 
-const ComiteCasesListGetter = () => {
+const DpoInventarioCasesListGetter = () => {
     const [cases, setCases] = useState<CaseListItem[]>([]);
 
-    const { token, currentGroup } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
 
     useEffect(() => {
-        const getApprovedCases = async () => {
+        const getAllCases = async () => {
             const responseData = await sendRequest(
-                `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/false/true/false`,
+                `${process.env.REACT_APP_CONNSTR}/cases/`,
                 undefined,
                 undefined,
                 {
@@ -28,15 +28,19 @@ const ComiteCasesListGetter = () => {
                 }
             );
 
-            const loadedCases: CaseListItem[] = responseData.cases;
+            const loadedCases: CaseListItem[] = responseData.caseListItems;
             console.log("loadedCases: ", loadedCases);
-            setCases(loadedCases);
+            const filteredCases: CaseListItem[] = loadedCases.filter(
+                (c) => c.aprovado
+            );
+            console.log("filteredCases: ", filteredCases);
+            setCases(filteredCases);
         };
 
-        getApprovedCases().catch((error) => {
+        getAllCases().catch((error) => {
             console.log(error);
         });
-    }, [sendRequest, token, currentGroup.id]);
+    }, [sendRequest, token]);
 
     if (isLoading) {
         return (
@@ -50,10 +54,7 @@ const ComiteCasesListGetter = () => {
 
     return (
         <React.Fragment>
-            <h1>
-                Meus Processos - Todos os processos aprovados do grupo
-                selecionado
-            </h1>
+            <h1>Inventário - Todos os processos aprovados</h1>
             {error && (
                 <Alert
                     variant={isWarning ? "warning" : "danger"}
@@ -68,4 +69,4 @@ const ComiteCasesListGetter = () => {
     );
 };
 
-export default ComiteCasesListGetter;
+export default DpoInventarioCasesListGetter;
