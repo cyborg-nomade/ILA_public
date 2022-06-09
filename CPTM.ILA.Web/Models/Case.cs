@@ -41,7 +41,7 @@ namespace CPTM.ILA.Web.Models
         public string FonteDados { get; set; }
         public FinalidadeTratamento FinalidadeTratamento { get; set; }
 
-        public ICollection<ItemCategoriaDadosPessoais> ItemCategoriaDadosPessoaisCollection { get; set; }
+        public ICollection<ItemCategoriaDadosPessoais> ItensCategoriaDadosPessoais { get; set; }
 
         public TipoFrequenciaTratamento FrequenciaTratamento { get; set; }
         public int QtdeDadosTratados { get; set; }

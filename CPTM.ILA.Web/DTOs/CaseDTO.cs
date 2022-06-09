@@ -310,7 +310,7 @@ namespace CPTM.ILA.Web.DTOs
                 FrequenciaTratamento = caseDto.FrequenciaTratamento,
                 GrupoCriadorId = caseDto.GrupoCriadorId,
                 Id = caseDto.Id,
-                ItemCategoriaDadosPessoaisCollection = GetItemCategoriaDadosPessoaisList(caseDto),
+                ItensCategoriaDadosPessoais = GetItemCategoriaDadosPessoaisList(caseDto),
                 MedidasSegurancaPrivacidade = caseDto.MedidasSegurancaPrivacidade,
                 ObservacoesProcesso = caseDto.ObservacoesProcesso,
                 Operador = caseDto.Operador,
@@ -325,7 +325,7 @@ namespace CPTM.ILA.Web.DTOs
         public static List<ItemCategoriaDadosPessoasDTO> GetItemCategoriaDadosPessoasDtos(Case fullCase,
             CategoriaDadosPessoaisEnum categoria)
         {
-            return fullCase.ItemCategoriaDadosPessoaisCollection.Where(i => i.CategoriaDadosPessoais == categoria)
+            return fullCase.ItensCategoriaDadosPessoais.Where(i => i.CategoriaDadosPessoais == categoria)
                 .Select(ItemCategoriaDadosPessoasDTO.ConvertToItemCategoriaDadosPessoasDto)
                 .ToList();
         }
