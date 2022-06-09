@@ -11,17 +11,17 @@ const NavLinks = () => {
         <React.Fragment>
             {isLoggedIn && !user.isComite && (
                 <Nav.Link as={NavLink} to={`/${user.id}/`}>
-                    Página Inicial
+                    Início
                 </Nav.Link>
             )}
             {isLoggedIn && user.isComite && !user.isDPO && (
                 <Nav.Link as={NavLink} to={`/comite/`}>
-                    Página Inicial
+                    Início
                 </Nav.Link>
             )}
             {isLoggedIn && user.isComite && user.isDPO && (
                 <Nav.Link as={NavLink} to={`/dpo/`}>
-                    Página Inicial
+                    Início
                 </Nav.Link>
             )}
             {isLoggedIn && !user.isComite && (
@@ -41,7 +41,7 @@ const NavLinks = () => {
             )}
             {isLoggedIn && user.isComite && user.isDPO && (
                 <Nav.Link as={NavLink} to={`dpo/cases/pending`}>
-                    Processos Pendentes
+                    Pendentes
                 </Nav.Link>
             )}
             {isLoggedIn && !user.isComite && (
@@ -51,27 +51,27 @@ const NavLinks = () => {
             )}
             {isLoggedIn && user.isComite && !user.isDPO && (
                 <Nav.Link as={NavLink} to={`comite/cases/approve/`}>
-                    Aprovar Processos
+                    Aprovar
                 </Nav.Link>
             )}
             {isLoggedIn && user.isComite && !user.isDPO && (
                 <Nav.Link as={NavLink} to={`/comite/access-requests/approve/`}>
-                    Aprovar Requisições de Acesso
+                    Req. de Acesso
                 </Nav.Link>
             )}
             {isLoggedIn && user.isComite && user.isDPO && (
                 <Nav.Link as={NavLink} to={`/dpo/access-requests/approve/`}>
-                    Aprovar Requisições de Acesso
+                    Req. de Acesso
                 </Nav.Link>
             )}
             {isLoggedIn && user.isComite && user.isDPO && (
                 <Nav.Link as={NavLink} to={`/dpo/alter-comite-members`}>
-                    Alterar Membros Comitê
+                    Gerir Comitê
                 </Nav.Link>
             )}
             {isLoggedIn && user.isComite && user.isDPO && (
                 <Nav.Link as={NavLink} to={`/dpo/alter-users`}>
-                    Usuários
+                    Gerir Usuários
                 </Nav.Link>
             )}
             {isLoggedIn && <Nav.Link onClick={logout}>Sair</Nav.Link>}
