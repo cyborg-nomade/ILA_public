@@ -139,11 +139,13 @@ const App = () => {
             <React.Fragment>
                 <Route path="/comite/" element={<UserPage />}>
                     <Route index element={<Dashboards />} />
-                    <Route path="cases" element={<ComiteCasesListGetter />} />
-                    <Route
-                        path="approve"
-                        element={<ApproveCasesListGetter />}
-                    />
+                    <Route path="cases" element={<ComiteHomePage />}>
+                        <Route index element={<ComiteCasesListGetter />} />
+                        <Route
+                            path="approve"
+                            element={<ApproveCasesListGetter />}
+                        />
+                    </Route>
                 </Route>
                 <Route
                     path="/comite/cases/approve/:cid"
