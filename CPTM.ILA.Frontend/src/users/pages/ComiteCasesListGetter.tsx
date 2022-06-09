@@ -63,7 +63,7 @@ const ComiteCasesListGetter = () => {
                     {error}
                 </Alert>
             )}
-            <CasesList items={cases} redirect={false} />
+            <CasesList items={cases} redirect={true} />
         </React.Fragment>
     );
 };

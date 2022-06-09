@@ -151,6 +151,7 @@ const App = () => {
                     path="/comite/cases/approve/:cid"
                     element={<ApproveCaseGetter />}
                 />
+                <Route path="/comite/cases/:cid" element={<CheckCase />} />
                 <Route
                     path="/comite/access-requests/approve"
                     element={<AllAccessRequestsPage />}
