@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
@@ -8,118 +8,186 @@ import { Case, emptyCase } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
+import ApproveCaseModal from "../components/modals/ApproveCaseModal";
+import RepproveCaseModal from "../components/modals/RepproveCaseModal";
 
 const ApproveCaseGetter = () => {
-  const [fullCase, setFullCase] = useState<Case>(emptyCase());
+    const { token } = useContext(AuthContext);
 
-  const { token } = useContext(AuthContext);
+    const [message, setMessage] = useState("");
+    const [showApproveModal, setShowApproveModal] = useState(false);
+    const [showRepproveModal, setShowRepproveModal] = useState(false);
+    const [fullCase, setFullCase] = useState<Case>(emptyCase());
 
-  const { isLoading, error, isWarning, sendRequest, clearError } =
-    useHttpClient();
+    const { isLoading, error, isWarning, sendRequest, clearError } =
+        useHttpClient();
 
-  const cid = useParams().cid;
-  let navigate = useNavigate();
+    const cid = useParams().cid;
+    let navigate = useNavigate();
 
-  useEffect(() => {
-    const getCaseToApprove = async () => {
-      const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
-        undefined,
-        undefined,
-        { Authorization: "Bearer " + token }
-      );
+    useEffect(() => {
+        const getCaseToApprove = async () => {
+            const responseData = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
+                undefined,
+                undefined,
+                { Authorization: "Bearer " + token }
+            );
 
-      let loadedCase = responseData.uniqueCase;
-      console.log("loadedCase: ", loadedCase);
+            let loadedCase = responseData.uniqueCase;
+            console.log("loadedCase: ", loadedCase);
 
-      loadedCase.dataCriacao = new Date(
-        loadedCase.dataCriacao
-      ).toLocaleDateString();
-      loadedCase.dataAtualizacao = new Date().toLocaleDateString();
+            loadedCase.dataCriacao = new Date(
+                loadedCase.dataCriacao
+            ).toLocaleDateString();
+            loadedCase.dataAtualizacao = new Date().toLocaleDateString();
 
-      console.log("loadedCase dates altered: ", loadedCase);
-      setFullCase(loadedCase);
+            console.log("loadedCase dates altered: ", loadedCase);
+            setFullCase(loadedCase);
+        };
+
+        getCaseToApprove().catch((error) => {
+            console.log(error);
+        });
+    }, [cid, sendRequest, token]);
+
+    const dismissModalHandler = () => {
+        navigate(-1);
     };
 
-    getCaseToApprove().catch((error) => {
-      console.log(error);
-    });
-  }, [cid, sendRequest, token]);
+    const showApproveModalHandler = useCallback((item: Case) => {
+        setFullCase(item);
+        setShowApproveModal(true);
+    }, []);
 
-  const approveCaseHandler = async (item: Case) => {
-    item.aprovado = true;
+    const hideApproveHandler = () => {
+        setShowApproveModal(false);
+    };
 
-    try {
-      await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/approve/${cid}`,
-        "POST",
-        JSON.stringify(item.aprovado),
-        {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
+    const approveCaseHandler = async () => {
+        fullCase.aprovado = true;
+        fullCase.encaminhadoAprovacao = false;
+        fullCase.reprovado = false;
+
+        try {
+            const approveRespose = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/approve/${cid}`,
+                "POST",
+                JSON.stringify(fullCase.aprovado),
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                }
+            );
+            console.log("Case approved, response: ", approveRespose);
+            setMessage(approveRespose.message);
+        } catch (err) {
+            console.log(err);
+            setFullCase(fullCase);
         }
-      );
-      console.log("Case approved");
+    };
 
-      navigate(`/comite/`);
-    } catch (err) {
-      console.log(err);
-      setFullCase(item);
-    }
-  };
+    const showRepproveModalHandler = useCallback((item: Case) => {
+        setFullCase(item);
+        setShowRepproveModal(true);
+    }, []);
 
-  const reproveCaseHandler = async (item: Case) => {
-    item.aprovado = false;
+    const hideRepproveModalHandler = () => {
+        setShowRepproveModal(false);
+    };
 
-    try {
-      await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/approve/${cid}`,
-        "POST",
-        JSON.stringify(item.aprovado),
-        {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
+    const reproveCaseHandler = async (comentarioReprovado: string) => {
+        fullCase.aprovado = false;
+        fullCase.reprovado = true;
+        fullCase.encaminhadoAprovacao = false;
+        fullCase.comentarioReprovacao = comentarioReprovado;
+
+        try {
+            const repproveResponse = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/approve/${cid}`,
+                "POST",
+                JSON.stringify(fullCase.aprovado),
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                }
+            );
+            console.log("Case approved, response: ", repproveResponse);
+            setMessage(repproveResponse.message);
+        } catch (err) {
+            console.log(err);
+            setFullCase(fullCase);
         }
-      );
-      console.log("Case rejected");
+    };
 
-      navigate(`/comite/`);
-    } catch (err) {
-      console.log(err);
-      setFullCase(item);
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <Row className="justify-content-center">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </Row>
+    const contentChildren = (
+        <React.Fragment>
+            {isLoading && (
+                <Row className="justify-content-center">
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </Row>
+            )}
+            {error && (
+                <Row
+                    className="justify-content-center mx-auto"
+                    style={{ width: "28rem" }}
+                >
+                    <Alert variant="danger">{error}</Alert>
+                </Row>
+            )}
+            {message && (
+                <Row
+                    className="justify-content-center mx-auto"
+                    style={{ width: "28rem" }}
+                >
+                    <Alert variant="success">{message}</Alert>
+                </Row>
+            )}
+        </React.Fragment>
     );
-  }
 
-  return (
-    <React.Fragment>
-      <h1>Aprovar Item</h1>
-      {error && (
-        <Alert
-          variant={isWarning ? "warning" : "danger"}
-          onClose={clearError}
-          dismissible
-        >
-          Ocorreu um erro: {error}
-        </Alert>
-      )}
-      <CaseForm
-        item={fullCase}
-        approve={true}
-        onApproveSubmit={approveCaseHandler}
-        onReproveSubmit={reproveCaseHandler}
-      />
-    </React.Fragment>
-  );
+    return (
+        <React.Fragment>
+            <h1>Aprovar Item</h1>
+            {error && (
+                <Alert
+                    variant={isWarning ? "warning" : "danger"}
+                    onClose={clearError}
+                    dismissible
+                >
+                    Ocorreu um erro: {error}
+                </Alert>
+            )}
+            <ApproveCaseModal
+                onApproveSubmit={approveCaseHandler}
+                onHideApproveModal={hideApproveHandler}
+                onDismissApproveModal={dismissModalHandler}
+                showApproveModal={showApproveModal}
+                showChildrenContent={isLoading || error || !!message}
+                isLoading={isLoading}
+            >
+                {contentChildren}
+            </ApproveCaseModal>
+            <RepproveCaseModal
+                isLoading={isLoading}
+                onDismissRepproveModal={dismissModalHandler}
+                onHideRepproveModal={hideRepproveModalHandler}
+                onRepproveSubmit={reproveCaseHandler}
+                showChildrenContent={isLoading || error || !!message}
+                showRepproveModal={showRepproveModal}
+            >
+                {contentChildren}
+            </RepproveCaseModal>
+            <CaseForm
+                item={fullCase}
+                approve={true}
+                onApproveSubmit={showApproveModalHandler}
+                onReproveSubmit={showRepproveModalHandler}
+            />
+        </React.Fragment>
+    );
 };
 
 export default ApproveCaseGetter;

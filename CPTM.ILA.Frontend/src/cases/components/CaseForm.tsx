@@ -4444,7 +4444,7 @@ const CaseForm = (props: {
                             variant="danger"
                             className="ms-auto"
                             onClick={() =>
-                                handleReprovalClick(methods.getValues())
+                                props.onReproveSubmit!(methods.getValues())
                             }
                         >
                             Reprovar
@@ -4452,7 +4452,7 @@ const CaseForm = (props: {
                         <Button
                             variant="primary"
                             onClick={() =>
-                                handleApprovalClick(methods.getValues())
+                                props.onApproveSubmit!(methods.getValues())
                             }
                         >
                             Aprovar
