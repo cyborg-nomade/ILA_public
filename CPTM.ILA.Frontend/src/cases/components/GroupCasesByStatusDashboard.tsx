@@ -110,10 +110,10 @@ const GroupCasesByStatusDashboard = () => {
                                 <Badge
                                     bg="warning"
                                     style={{
-                                        cursor: !user.isDPO ? "pointer" : "",
+                                        cursor: !user.isComite ? "pointer" : "",
                                     }}
                                     onClick={() => {
-                                        if (!user.isDPO) {
+                                        if (!user.isComite) {
                                             return navigate(
                                                 "../cases/continue"
                                             );
@@ -132,11 +132,14 @@ const GroupCasesByStatusDashboard = () => {
                                 <Badge
                                     bg="secondary"
                                     style={{
-                                        cursor: user.isDPO ? "pointer" : "",
+                                        cursor: user.isComite ? "pointer" : "",
                                     }}
                                     onClick={() => {
                                         if (user.isDPO) {
                                             return navigate("../cases/pending");
+                                        }
+                                        if (user.isComite && !user.isDPO) {
+                                            return navigate("../cases/approve");
                                         }
                                     }}
                                 >
@@ -154,11 +157,14 @@ const GroupCasesByStatusDashboard = () => {
                                 <Badge
                                     bg="success"
                                     style={{
-                                        cursor: !user.isDPO ? "pointer" : "",
+                                        cursor: "pointer",
                                     }}
                                     onClick={() => {
-                                        if (!user.isDPO) {
+                                        if (!user.isComite) {
                                             return navigate("../cases/edit");
+                                        }
+                                        if (user.isComite && !user.isDPO) {
+                                            return navigate("../cases/");
                                         }
                                     }}
                                 >
@@ -174,10 +180,10 @@ const GroupCasesByStatusDashboard = () => {
                                 <Badge
                                     bg="danger"
                                     style={{
-                                        cursor: !user.isDPO ? "pointer" : "",
+                                        cursor: !user.isComite ? "pointer" : "",
                                     }}
                                     onClick={() => {
-                                        if (!user.isDPO) {
+                                        if (!user.isComite) {
                                             return navigate(
                                                 "../cases/reprovados"
                                             );
