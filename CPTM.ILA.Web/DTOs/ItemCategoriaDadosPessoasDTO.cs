@@ -14,14 +14,29 @@ namespace CPTM.ILA.Web.DTOs
         public static ItemCategoriaDadosPessoasDTO ConvertToItemCategoriaDadosPessoasDto(
             ItemCategoriaDadosPessoais itemCategoriaDadosPessoais)
         {
-            var itemDto = new ItemCategoriaDadosPessoasDTO();
+            var itemDto = new ItemCategoriaDadosPessoasDTO
+            {
+                Descricao = itemCategoriaDadosPessoais.Descricao,
+                FonteRetencao = itemCategoriaDadosPessoais.FonteRetencao,
+                Id = itemCategoriaDadosPessoais.Id,
+                LocalArmazenamento = itemCategoriaDadosPessoais.LocalArmazenamento,
+                TempoRetencao = itemCategoriaDadosPessoais.TempoRetencao
+            };
             return itemDto;
         }
 
         public static ItemCategoriaDadosPessoais ConvertToDomainItemCategoriaDadosPessoais(
-            ItemCategoriaDadosPessoasDTO itemCategoriaDadosPessoasDto)
+            ItemCategoriaDadosPessoasDTO itemCategoriaDadosPessoasDto, CategoriaDadosPessoaisEnum categoria)
         {
-            var itemDomain = new ItemCategoriaDadosPessoais();
+            var itemDomain = new ItemCategoriaDadosPessoais
+            {
+                Descricao = itemCategoriaDadosPessoasDto.Descricao,
+                FonteRetencao = itemCategoriaDadosPessoasDto.FonteRetencao,
+                Id = itemCategoriaDadosPessoasDto.Id,
+                LocalArmazenamento = itemCategoriaDadosPessoasDto.LocalArmazenamento,
+                TempoRetencao = itemCategoriaDadosPessoasDto.TempoRetencao,
+                CategoriaDadosPessoais = categoria
+            };
             return itemDomain;
         }
     }

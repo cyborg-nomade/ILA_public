@@ -8,18 +8,18 @@ namespace CPTM.ILA.Web.DTOs.CaseHelpers
     public class CatDadosPessoaisSensiveis
     {
         public int Id { get; set; }
-        public virtual ICollection<ItemCategoriaDadosPessoais> OrigemRacialEtnica { get; set; }
-        public virtual ICollection<ItemCategoriaDadosPessoais> ConviccaoReligiosa { get; set; }
-        public virtual ICollection<ItemCategoriaDadosPessoais> OpiniaoPolitica { get; set; }
-        public virtual ICollection<ItemCategoriaDadosPessoais> FiliacaoSindicato { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoasDTO> OrigemRacialEtnica { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoasDTO> ConviccaoReligiosa { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoasDTO> OpiniaoPolitica { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoasDTO> FiliacaoSindicato { get; set; }
 
 
-        public virtual ICollection<ItemCategoriaDadosPessoais> FiliacaoOrgReligiosa { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoasDTO> FiliacaoOrgReligiosa { get; set; }
 
-        public virtual ICollection<ItemCategoriaDadosPessoais> FiliacaoCrencaFilosofica { get; set; }
-        public virtual ICollection<ItemCategoriaDadosPessoais> FiliacaoPreferenciaPolitica { get; set; }
-        public virtual ICollection<ItemCategoriaDadosPessoais> SaudeVidaSexual { get; set; }
-        public virtual ICollection<ItemCategoriaDadosPessoais> Geneticos { get; set; }
-        public virtual ICollection<ItemCategoriaDadosPessoais> Biometricos { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoasDTO> FiliacaoCrencaFilosofica { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoasDTO> FiliacaoPreferenciaPolitica { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoasDTO> SaudeVidaSexual { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoasDTO> Geneticos { get; set; }
+        public virtual ICollection<ItemCategoriaDadosPessoasDTO> Biometricos { get; set; }
     }
 }
