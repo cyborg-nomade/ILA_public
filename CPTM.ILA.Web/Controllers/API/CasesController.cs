@@ -629,33 +629,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .Include(c => c.Operador)
                     .Include(c => c.FasesCicloTratamento)
                     .Include(c => c.FinalidadeTratamento)
-                    .Include(c => c.CategoriaDadosPessoais)
-                    .Include(c => c.CategoriaDadosPessoais.Associacoes)
-                    .Include(c => c.CategoriaDadosPessoais.Caracteristicas)
-                    .Include(c => c.CategoriaDadosPessoais.CaracteristicasPsicologicas)
-                    .Include(c => c.CategoriaDadosPessoais.ComposicaoFamiliar)
-                    .Include(c => c.CategoriaDadosPessoais.EducacaoTreinamento)
-                    .Include(c => c.CategoriaDadosPessoais.Financeiros)
-                    .Include(c => c.CategoriaDadosPessoais.Habitos)
-                    .Include(c => c.CategoriaDadosPessoais.HabitosConsumo)
-                    .Include(c => c.CategoriaDadosPessoais.Identificacao)
-                    .Include(c => c.CategoriaDadosPessoais.InteressesLazer)
-                    .Include(c => c.CategoriaDadosPessoais.Outros)
-                    .Include(c => c.CategoriaDadosPessoais.ProcessoJudAdmCrim)
-                    .Include(c => c.CategoriaDadosPessoais.ProfissaoEmprego)
-                    .Include(c => c.CategoriaDadosPessoais.RegVideoImgVoz)
-                    .Include(c => c.CategoriaDadosPessoais.Residenciais)
-                    .Include(c => c.CatDadosPessoaisSensiveis)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OpiniaoPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.ConviccaoReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoPreferenciaPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoSindicato)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Geneticos)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OrigemRacialEtnica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.SaudeVidaSexual)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoOrgReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Biometricos)
+                    .Include(c => c.ItemCategoriaDadosPessoaisCollection)
                     .Include(c => c.CategoriasTitulares)
                     .Include(c => c.CategoriasTitulares.Categorias)
                     .Include(c => c.CategoriasTitulares.CriancasAdolescentes)
@@ -694,7 +668,10 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { uniqueCase });
+                var caseDto = CaseDTO.ConvertToCaseDTO(uniqueCase);
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { uniqueCase = caseDto, message = "Caso obtido com sucesso!" });
             }
             catch (Exception e)
             {
@@ -743,7 +720,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Objeto enviado não corresponde ao tipo CaseChange" });
                 }
 
-                var caseToSave = caseChange.Case;
+                var caseToSave = CaseDTO.ConvertToDomainCase(caseChange.Case);
                 var newChangeLog = caseChange.ChangeLog;
 
                 caseToSave.RectifyCase();
@@ -759,8 +736,10 @@ namespace CPTM.ILA.Web.Controllers.API
                 _context.ChangeLogs.Add(newChangeLog);
                 await _context.SaveChangesAsync();
 
+                var responseCase = CaseDTO.ConvertToCaseDTO(caseToSave);
+
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Processo registrado com sucesso!", caseToSave });
+                    new { message = "Processo registrado com sucesso!", caseToSave = responseCase });
             }
             catch (Exception e)
             {
@@ -835,33 +814,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .Include(c => c.Operador)
                     .Include(c => c.FasesCicloTratamento)
                     .Include(c => c.FinalidadeTratamento)
-                    .Include(c => c.CategoriaDadosPessoais)
-                    .Include(c => c.CategoriaDadosPessoais.Associacoes)
-                    .Include(c => c.CategoriaDadosPessoais.Caracteristicas)
-                    .Include(c => c.CategoriaDadosPessoais.CaracteristicasPsicologicas)
-                    .Include(c => c.CategoriaDadosPessoais.ComposicaoFamiliar)
-                    .Include(c => c.CategoriaDadosPessoais.EducacaoTreinamento)
-                    .Include(c => c.CategoriaDadosPessoais.Financeiros)
-                    .Include(c => c.CategoriaDadosPessoais.Habitos)
-                    .Include(c => c.CategoriaDadosPessoais.HabitosConsumo)
-                    .Include(c => c.CategoriaDadosPessoais.Identificacao)
-                    .Include(c => c.CategoriaDadosPessoais.InteressesLazer)
-                    .Include(c => c.CategoriaDadosPessoais.Outros)
-                    .Include(c => c.CategoriaDadosPessoais.ProcessoJudAdmCrim)
-                    .Include(c => c.CategoriaDadosPessoais.ProfissaoEmprego)
-                    .Include(c => c.CategoriaDadosPessoais.RegVideoImgVoz)
-                    .Include(c => c.CategoriaDadosPessoais.Residenciais)
-                    .Include(c => c.CatDadosPessoaisSensiveis)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OpiniaoPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.ConviccaoReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoPreferenciaPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoSindicato)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Geneticos)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OrigemRacialEtnica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.SaudeVidaSexual)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoOrgReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Biometricos)
+                    .Include(c => c.ItemCategoriaDadosPessoaisCollection)
                     .Include(c => c.CategoriasTitulares)
                     .Include(c => c.CategoriasTitulares.Categorias)
                     .Include(c => c.CategoriasTitulares.CriancasAdolescentes)
@@ -880,14 +833,15 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Id inválido: Não encontrado no banco para edição" });
                 }
 
-                var caseToSave = caseChange.Case;
+                var caseToSave = CaseDTO.ConvertToDomainCase(caseChange.Case);
                 var newChangeLog = caseChange.ChangeLog;
 
                 caseToSave.RectifyCase();
 
                 _context.ChangeLogs.Add(newChangeLog);
-                _context.Cases.Remove(caseInDb);
-                _context.Cases.Add(caseToSave);
+                caseInDb = caseToSave;
+                _context.Entry(caseInDb)
+                    .State = EntityState.Modified;
 
                 await _context.SaveChangesAsync();
 
@@ -930,33 +884,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .Include(c => c.Operador)
                     .Include(c => c.FasesCicloTratamento)
                     .Include(c => c.FinalidadeTratamento)
-                    .Include(c => c.CategoriaDadosPessoais)
-                    .Include(c => c.CategoriaDadosPessoais.Associacoes)
-                    .Include(c => c.CategoriaDadosPessoais.Caracteristicas)
-                    .Include(c => c.CategoriaDadosPessoais.CaracteristicasPsicologicas)
-                    .Include(c => c.CategoriaDadosPessoais.ComposicaoFamiliar)
-                    .Include(c => c.CategoriaDadosPessoais.EducacaoTreinamento)
-                    .Include(c => c.CategoriaDadosPessoais.Financeiros)
-                    .Include(c => c.CategoriaDadosPessoais.Habitos)
-                    .Include(c => c.CategoriaDadosPessoais.HabitosConsumo)
-                    .Include(c => c.CategoriaDadosPessoais.Identificacao)
-                    .Include(c => c.CategoriaDadosPessoais.InteressesLazer)
-                    .Include(c => c.CategoriaDadosPessoais.Outros)
-                    .Include(c => c.CategoriaDadosPessoais.ProcessoJudAdmCrim)
-                    .Include(c => c.CategoriaDadosPessoais.ProfissaoEmprego)
-                    .Include(c => c.CategoriaDadosPessoais.RegVideoImgVoz)
-                    .Include(c => c.CategoriaDadosPessoais.Residenciais)
-                    .Include(c => c.CatDadosPessoaisSensiveis)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OpiniaoPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.ConviccaoReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoPreferenciaPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoSindicato)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Geneticos)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OrigemRacialEtnica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.SaudeVidaSexual)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoOrgReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Biometricos)
+                    .Include(c => c.ItemCategoriaDadosPessoaisCollection)
                     .Include(c => c.CategoriasTitulares)
                     .Include(c => c.CategoriasTitulares.Categorias)
                     .Include(c => c.CategoriasTitulares.CriancasAdolescentes)
