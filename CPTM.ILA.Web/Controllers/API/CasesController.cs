@@ -840,6 +840,36 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 _context.ChangeLogs.Add(newChangeLog);
                 caseInDb = caseToSave;
+                _context.Entry(caseInDb.Controlador)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.Encarregado)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.ExtensaoEncarregado)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.AreaTratamentoDados)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.Operador)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.FasesCicloTratamento)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.FinalidadeTratamento)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.ItensCategoriaDadosPessoais)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.CategoriasTitulares)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.CompartilhamentoDadosPessoais)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.MedidasSegurancaPrivacidade)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.TransferenciaInternacional)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.ContratoServicosTi)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.RiscosPrivacidade)
+                    .State = EntityState.Modified;
+                _context.Entry(caseInDb.ObservacoesProcesso)
+                    .State = EntityState.Modified;
                 _context.Entry(caseInDb)
                     .State = EntityState.Modified;
 
