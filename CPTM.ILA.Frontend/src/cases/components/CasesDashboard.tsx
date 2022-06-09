@@ -162,10 +162,6 @@ const CasesDashboard = () => {
             getDpoCasesTotals().catch((error) => {
                 console.log(error);
             });
-        } else if (user.isComite && !user.isDPO) {
-            getComiteCasesTotals().catch((error) => {
-                console.log(error);
-            });
         } else {
             getGroupCaseTotals().catch((error) => {
                 console.log(error);
@@ -175,7 +171,14 @@ const CasesDashboard = () => {
         return () => {
             setPieChartData([]);
         };
-    }, [sendRequest, token, currentGroup.id, user.isComite, user.isDPO]);
+    }, [
+        sendRequest,
+        token,
+        currentGroup.id,
+        user.isComite,
+        user.isDPO,
+        currentComiteMember.id,
+    ]);
 
     if (isLoading) {
         return (

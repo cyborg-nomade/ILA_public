@@ -137,11 +137,9 @@ const App = () => {
     } else if (token && user.isComite && !user.isDPO) {
         routes = (
             <React.Fragment>
-                <Route path="/comite" element={<ComiteHomePage />}>
+                <Route path="/comite/" element={<UserPage />}>
                     <Route index element={<Dashboards />} />
-                </Route>
-                <Route path="/comite/cases" element={<UserPage />}>
-                    <Route index element={<ComiteCasesListGetter />} />
+                    <Route path="cases" element={<ComiteCasesListGetter />} />
                     <Route
                         path="approve"
                         element={<ApproveCasesListGetter />}

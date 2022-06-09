@@ -23,7 +23,7 @@ const Dashboards = () => {
                 className="justify-content-center"
             >
                 <GroupCasesByStatusDashboard />
-                {!user.isDPO && <ReviewCasesListGetter />}
+                {!user.isComite && <ReviewCasesListGetter />}
             </Col>
         </Row>
     );
