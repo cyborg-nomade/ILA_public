@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,11 +12,8 @@ using System.Web.Http.Description;
 using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.ChangeLogging;
-using CPTM.ILA.Web.Models.Messaging;
 using CPTM.ILA.Web.Util;
-using CPTM.GNU.Library;
 using CPTM.ILA.Web.Models.AccessControl;
-using CPTM.ILA.Web.Models.CaseHelpers;
 
 
 namespace CPTM.ILA.Web.Controllers.API

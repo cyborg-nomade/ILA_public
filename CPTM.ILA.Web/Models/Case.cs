@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using CPTM.ActiveDirectory;
-using CPTM.ILA.Web.DTOs;
-using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.CaseHelpers;
 using CPTM.ILA.Web.Models.CaseHelpers.Enums;
 using CPTM.GNU.Library;
@@ -44,8 +41,7 @@ namespace CPTM.ILA.Web.Models
         public string FonteDados { get; set; }
         public FinalidadeTratamento FinalidadeTratamento { get; set; }
 
-        public CategoriaDadosPessoais CategoriaDadosPessoais { get; set; }
-        public CatDadosPessoaisSensiveis CatDadosPessoaisSensiveis { get; set; }
+        public ICollection<ItemCategoriaDadosPessoais> ItemCategoriaDadosPessoaisCollection { get; set; }
 
         public TipoFrequenciaTratamento FrequenciaTratamento { get; set; }
         public int QtdeDadosTratados { get; set; }
