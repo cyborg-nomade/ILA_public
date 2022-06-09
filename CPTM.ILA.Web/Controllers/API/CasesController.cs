@@ -269,7 +269,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
         [ResponseType(typeof(ApiResponseType<int>))]
-        [Route("groups/{gid:int}/status/pending/totals")]
+        [Route("group/{gid:int}/status/pending/totals")]
         [Authorize]
         [HttpGet]
         public async Task<HttpResponseMessage> GetTotalPendingByGroup(int gid)
