@@ -49,7 +49,7 @@ const getChartColor = (statusName: string, index: number) => {
 };
 
 const renderLabel = (entry: any) => {
-    return `${entry.name}: ${entry.percent * 100}%`;
+    return `${entry.name}: ${Math.round(entry.percent * 100)}%`;
 };
 
 const CasesDashboard = () => {
@@ -227,7 +227,7 @@ const CasesDashboard = () => {
                                 cy={"50%"}
                                 labelLine
                                 label={renderLabel}
-                                outerRadius={80}
+                                outerRadius={40}
                                 fill="#8884d8"
                                 dataKey="value"
                             >

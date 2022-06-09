@@ -42,7 +42,7 @@ const PendingCasesCounter = (props: { gid: number }) => {
     }, [sendRequest, token, props.gid]);
 
     return (
-        <Badge bg={pendingCasesCount !== 0 ? "danger" : "secondary"}>
+        <Badge bg={pendingCasesCount !== 0 ? "dark" : "secondary"}>
             {pendingCasesCount}
         </Badge>
     );
