@@ -33,6 +33,18 @@
                 .Index(t => t.AccessRequest_Id);
             
             CreateTable(
+                "ILA.ILA_AGENTE_TRATAMENTO",
+                c => new
+                    {
+                        Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
+                        Nome = c.String(),
+                        Area = c.String(),
+                        Telefone = c.String(),
+                        Email = c.String(),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
                 "ILA.ILA_CASES",
                 c => new
                     {
@@ -84,18 +96,6 @@
                 .Index(t => t.FasesCicloTratamento_Id)
                 .Index(t => t.FinalidadeTratamento_Id)
                 .Index(t => t.Operador_Id);
-            
-            CreateTable(
-                "ILA.ILA_AGENTE_TRATAMENTO",
-                c => new
-                    {
-                        Id = c.Decimal(nullable: false, precision: 9, scale: 0, identity: true),
-                        Nome = c.String(),
-                        Area = c.String(),
-                        Telefone = c.String(),
-                        Email = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "ILA.ILA_CATEGORIA_TITULARES",
@@ -368,8 +368,8 @@
             DropTable("ILA.ILA_ITEM_CAT_TITULARES_EXTRA");
             DropTable("ILA.ILA_ITEM_CAT_TITULARES");
             DropTable("ILA.ILA_CATEGORIA_TITULARES");
-            DropTable("ILA.ILA_AGENTE_TRATAMENTO");
             DropTable("ILA.ILA_CASES");
+            DropTable("ILA.ILA_AGENTE_TRATAMENTO");
             DropTable("ILA.ILA_GROUPS");
             DropTable("ILA.ILA_ACCESS_REQUESTS");
         }
