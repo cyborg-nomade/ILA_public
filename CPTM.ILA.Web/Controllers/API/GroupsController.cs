@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models;
-using CPTM.ILA.Web.Models.AccessControl.VIEWS;
 using CPTM.ILA.Web.Util;
 
 namespace CPTM.ILA.Web.Controllers.API

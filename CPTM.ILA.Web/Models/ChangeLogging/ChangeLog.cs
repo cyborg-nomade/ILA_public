@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using CPTM.ILA.Web.Models.AccessControl;
-using CPTM.ILA.Web.Models.Messaging;
 
 namespace CPTM.ILA.Web.Models.ChangeLogging
 {
