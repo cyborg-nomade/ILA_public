@@ -1,5 +1,4 @@
 begin
-begin
 execute immediate '
 create table "ILA"."ILA_ACCESS_REQUESTS"
 (
