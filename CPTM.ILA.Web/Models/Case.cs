@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using CPTM.ActiveDirectory;
-using CPTM.ILA.Web.DTOs;
-using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.CaseHelpers;
 using CPTM.ILA.Web.Models.CaseHelpers.Enums;
 using CPTM.GNU.Library;
@@ -44,8 +41,7 @@ namespace CPTM.ILA.Web.Models
         public string FonteDados { get; set; }
         public FinalidadeTratamento FinalidadeTratamento { get; set; }
 
-        public CategoriaDadosPessoais CategoriaDadosPessoais { get; set; }
-        public CatDadosPessoaisSensiveis CatDadosPessoaisSensiveis { get; set; }
+        public ICollection<ItemCategoriaDadosPessoais> ItensCategoriaDadosPessoais { get; set; }
 
         public TipoFrequenciaTratamento FrequenciaTratamento { get; set; }
         public int QtdeDadosTratados { get; set; }
@@ -59,25 +55,6 @@ namespace CPTM.ILA.Web.Models
         public ICollection<ItemContratoTi> ContratoServicosTi { get; set; }
         public ICollection<ItemRiscoPrivacidade> RiscosPrivacidade { get; set; }
         public ICollection<ItemObservacoesProcesso> ObservacoesProcesso { get; set; }
-
-        public static CaseListItem ReduceToListItem(Case fullCase) =>
-            new CaseListItem()
-            {
-                Nome = fullCase.Nome,
-                Id = fullCase.Id,
-                Ref = fullCase.Ref,
-                Area = fullCase.Area,
-                UsuarioResp = Seguranca.ObterUsuario(fullCase.UsernameResponsavel)
-                    .Nome.ToUpper(),
-                DataEnvio = fullCase.DataEnvio?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
-                DataAprovacao = fullCase.DataAprovacao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
-                DataProxRevisao = fullCase.DataProxRevisao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
-                DadosPessoaisSensiveis = fullCase.DadosPessoaisSensiveis ? "SIM" : "NÃO",
-                GrupoCriadorId = fullCase.GrupoCriadorId,
-                Aprovado = fullCase.Aprovado,
-                Reprovado = fullCase.Reprovado,
-                EncaminhadoAprovacao = fullCase.EncaminhadoAprovacao
-            };
 
         public Case FillStandardValues()
         {

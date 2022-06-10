@@ -1,8 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using CPTM.ILA.Web.Models.CaseHelpers.Enums;
 
 namespace CPTM.ILA.Web.Models.CaseHelpers
 {

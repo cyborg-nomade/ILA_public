@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,9 +12,7 @@ using System.Web.Http.Description;
 using CPTM.ActiveDirectory;
 using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models.ChangeLogging;
-using CPTM.ILA.Web.Models.Messaging;
 using CPTM.ILA.Web.Util;
-using CPTM.GNU.Library;
 using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.CaseHelpers;
 
@@ -64,7 +61,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var cases = await _context.Cases.Include(c => c.FinalidadeTratamento)
                     .ToListAsync();
 
-                var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+                var caseListItems = cases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
             }
@@ -117,7 +114,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .Where(c => c.GrupoCriadorId == gid)
                     .ToListAsync();
 
-                var caseListItems = cases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+                var caseListItems = cases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
             }
@@ -247,7 +244,7 @@ namespace CPTM.ILA.Web.Controllers.API
                                 c.Reprovado == reprovado)
                     .ToListAsync();
 
-                var caseListItems = filteredCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+                var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
             }
@@ -444,7 +441,7 @@ namespace CPTM.ILA.Web.Controllers.API
                                 c.EncaminhadoAprovacao)
                     .ToListAsync();
 
-                var caseListItems = pendingCases.ConvertAll<CaseListItem>(Case.ReduceToListItem);
+                var caseListItems = pendingCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { caseListItems });
             }
@@ -633,33 +630,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .Include(c => c.Operador)
                     .Include(c => c.FasesCicloTratamento)
                     .Include(c => c.FinalidadeTratamento)
-                    .Include(c => c.CategoriaDadosPessoais)
-                    .Include(c => c.CategoriaDadosPessoais.Associacoes)
-                    .Include(c => c.CategoriaDadosPessoais.Caracteristicas)
-                    .Include(c => c.CategoriaDadosPessoais.CaracteristicasPsicologicas)
-                    .Include(c => c.CategoriaDadosPessoais.ComposicaoFamiliar)
-                    .Include(c => c.CategoriaDadosPessoais.EducacaoTreinamento)
-                    .Include(c => c.CategoriaDadosPessoais.Financeiros)
-                    .Include(c => c.CategoriaDadosPessoais.Habitos)
-                    .Include(c => c.CategoriaDadosPessoais.HabitosConsumo)
-                    .Include(c => c.CategoriaDadosPessoais.Identificacao)
-                    .Include(c => c.CategoriaDadosPessoais.InteressesLazer)
-                    .Include(c => c.CategoriaDadosPessoais.Outros)
-                    .Include(c => c.CategoriaDadosPessoais.ProcessoJudAdmCrim)
-                    .Include(c => c.CategoriaDadosPessoais.ProfissaoEmprego)
-                    .Include(c => c.CategoriaDadosPessoais.RegVideoImgVoz)
-                    .Include(c => c.CategoriaDadosPessoais.Residenciais)
-                    .Include(c => c.CatDadosPessoaisSensiveis)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OpiniaoPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.ConviccaoReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoPreferenciaPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoSindicato)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Geneticos)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OrigemRacialEtnica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.SaudeVidaSexual)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoOrgReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Biometricos)
+                    .Include(c => c.ItensCategoriaDadosPessoais)
                     .Include(c => c.CategoriasTitulares)
                     .Include(c => c.CategoriasTitulares.Categorias)
                     .Include(c => c.CategoriasTitulares.CriancasAdolescentes)
@@ -698,7 +669,10 @@ namespace CPTM.ILA.Web.Controllers.API
                     }
                 }
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { uniqueCase });
+                var caseDto = CaseDTO.ConvertToCaseDTO(uniqueCase);
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { uniqueCase = caseDto, message = "Caso obtido com sucesso!" });
             }
             catch (Exception e)
             {
@@ -747,7 +721,7 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Objeto enviado não corresponde ao tipo CaseChange" });
                 }
 
-                var caseToSave = caseChange.Case;
+                var caseToSave = CaseDTO.ConvertToDomainCase(caseChange.Case);
                 var newChangeLog = caseChange.ChangeLog;
 
                 caseToSave.RectifyCase();
@@ -763,8 +737,10 @@ namespace CPTM.ILA.Web.Controllers.API
                 _context.ChangeLogs.Add(newChangeLog);
                 await _context.SaveChangesAsync();
 
+                var responseCase = CaseDTO.ConvertToCaseDTO(caseToSave);
+
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Processo registrado com sucesso!", caseToSave });
+                    new { message = "Processo registrado com sucesso!", caseToSave = responseCase });
             }
             catch (Exception e)
             {
@@ -839,33 +815,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .Include(c => c.Operador)
                     .Include(c => c.FasesCicloTratamento)
                     .Include(c => c.FinalidadeTratamento)
-                    .Include(c => c.CategoriaDadosPessoais)
-                    .Include(c => c.CategoriaDadosPessoais.Associacoes)
-                    .Include(c => c.CategoriaDadosPessoais.Caracteristicas)
-                    .Include(c => c.CategoriaDadosPessoais.CaracteristicasPsicologicas)
-                    .Include(c => c.CategoriaDadosPessoais.ComposicaoFamiliar)
-                    .Include(c => c.CategoriaDadosPessoais.EducacaoTreinamento)
-                    .Include(c => c.CategoriaDadosPessoais.Financeiros)
-                    .Include(c => c.CategoriaDadosPessoais.Habitos)
-                    .Include(c => c.CategoriaDadosPessoais.HabitosConsumo)
-                    .Include(c => c.CategoriaDadosPessoais.Identificacao)
-                    .Include(c => c.CategoriaDadosPessoais.InteressesLazer)
-                    .Include(c => c.CategoriaDadosPessoais.Outros)
-                    .Include(c => c.CategoriaDadosPessoais.ProcessoJudAdmCrim)
-                    .Include(c => c.CategoriaDadosPessoais.ProfissaoEmprego)
-                    .Include(c => c.CategoriaDadosPessoais.RegVideoImgVoz)
-                    .Include(c => c.CategoriaDadosPessoais.Residenciais)
-                    .Include(c => c.CatDadosPessoaisSensiveis)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OpiniaoPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.ConviccaoReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoPreferenciaPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoSindicato)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Geneticos)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OrigemRacialEtnica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.SaudeVidaSexual)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoOrgReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Biometricos)
+                    .Include(c => c.ItensCategoriaDadosPessoais)
                     .Include(c => c.CategoriasTitulares)
                     .Include(c => c.CategoriasTitulares.Categorias)
                     .Include(c => c.CategoriasTitulares.CriancasAdolescentes)
@@ -884,14 +834,388 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Id inválido: Não encontrado no banco para edição" });
                 }
 
-                var caseToSave = caseChange.Case;
+                var caseToSave = CaseDTO.ConvertToDomainCase(caseChange.Case);
                 var newChangeLog = caseChange.ChangeLog;
 
                 caseToSave.RectifyCase();
 
                 _context.ChangeLogs.Add(newChangeLog);
-                _context.Cases.Remove(caseInDb);
-                _context.Cases.Add(caseToSave);
+
+                // Update parent
+                _context.Entry(caseInDb)
+                    .CurrentValues.SetValues(caseToSave);
+
+                // Delete children
+                if (caseToSave.Controlador.Id != caseInDb.Controlador.Id)
+                {
+                    _context.AgentesTratamento.Remove(caseInDb.Controlador);
+                }
+
+                if (caseToSave.Encarregado.Id != caseInDb.Encarregado.Id)
+                {
+                    _context.AgentesTratamento.Remove(caseInDb.Encarregado);
+                }
+
+                if (caseToSave.ExtensaoEncarregado.Id != caseInDb.ExtensaoEncarregado.Id)
+                {
+                    _context.AgentesTratamento.Remove(caseInDb.ExtensaoEncarregado);
+                }
+
+                if (caseToSave.AreaTratamentoDados.Id != caseInDb.AreaTratamentoDados.Id)
+                {
+                    _context.AgentesTratamento.Remove(caseInDb.AreaTratamentoDados);
+                }
+
+                if (caseToSave.Operador.Id != caseInDb.Operador.Id)
+                {
+                    _context.AgentesTratamento.Remove(caseInDb.Operador);
+                }
+
+                if (caseToSave.FasesCicloTratamento.Id != caseInDb.FasesCicloTratamento.Id)
+                {
+                    _context.FasesCicloTratamento.Remove(caseInDb.FasesCicloTratamento);
+                }
+
+                if (caseToSave.FinalidadeTratamento.Id != caseInDb.FinalidadeTratamento.Id)
+                {
+                    _context.FinalidadesTratamento.Remove(caseInDb.FinalidadeTratamento);
+                }
+
+                if (caseToSave.CategoriasTitulares.Id != caseInDb.CategoriasTitulares.Id)
+                {
+                    _context.CategoriasTitulares.Remove(caseInDb.CategoriasTitulares);
+                }
+
+                foreach (var item in caseInDb.ItensCategoriaDadosPessoais.ToList()
+                             .Where(item => caseToSave.ItensCategoriaDadosPessoais.All(c => c.Id != item.Id)))
+                {
+                    _context.ItensCategoriaDadosPessoais.Remove(item);
+                }
+
+                foreach (var item in caseInDb.CompartilhamentoDadosPessoais.ToList()
+                             .Where(item => caseToSave.CompartilhamentoDadosPessoais.All(c => c.Id != item.Id)))
+                {
+                    _context.ItensCompartilhamentoDados.Remove(item);
+                }
+
+                foreach (var item in caseInDb.MedidasSegurancaPrivacidade.ToList()
+                             .Where(item => caseToSave.MedidasSegurancaPrivacidade.All(c => c.Id != item.Id)))
+                {
+                    _context.ItensMedidaSegurancaPrivacidade.Remove(item);
+                }
+
+                foreach (var item in caseInDb.TransferenciaInternacional.ToList()
+                             .Where(item => caseToSave.TransferenciaInternacional.All(c => c.Id != item.Id)))
+                {
+                    _context.ItensTransferenciaInternacional.Remove(item);
+                }
+
+                foreach (var item in caseInDb.ContratoServicosTi.ToList()
+                             .Where(item => caseToSave.ContratoServicosTi.All(c => c.Id != item.Id)))
+                {
+                    _context.ItensContratoTi.Remove(item);
+                }
+
+                foreach (var item in caseInDb.RiscosPrivacidade.ToList()
+                             .Where(item => caseToSave.RiscosPrivacidade.All(c => c.Id != item.Id)))
+                {
+                    _context.ItensRiscoPrivacidade.Remove(item);
+                }
+
+                foreach (var item in caseInDb.ObservacoesProcesso.ToList()
+                             .Where(item => caseToSave.ObservacoesProcesso.All(c => c.Id != item.Id)))
+                {
+                    _context.ItensObservacoesProcesso.Remove(item);
+                }
+
+                // Update and Insert children
+                var controladorInDb = caseInDb.Controlador;
+                if (controladorInDb != null)
+                    // Update child
+                    _context.Entry(controladorInDb)
+                        .CurrentValues.SetValues(caseToSave.Controlador);
+                else
+                {
+                    // Insert child
+                    var newControlador = new AgenteTratamento()
+                    {
+                        Nome = caseToSave.Controlador.Nome,
+                        Area = caseToSave.Controlador.Area,
+                        Email = caseToSave.Controlador.Email,
+                        Telefone = caseToSave.Controlador.Telefone
+                    };
+                    caseInDb.Controlador = newControlador;
+                }
+
+                var encarregadoInDb = caseInDb.Encarregado;
+                if (encarregadoInDb != null)
+                    // Update child
+                    _context.Entry(encarregadoInDb)
+                        .CurrentValues.SetValues(caseToSave.Encarregado);
+                else
+                {
+                    // Insert child
+                    var newEncarregado = new AgenteTratamento()
+                    {
+                        Nome = caseToSave.Encarregado.Nome,
+                        Area = caseToSave.Encarregado.Area,
+                        Email = caseToSave.Encarregado.Email,
+                        Telefone = caseToSave.Encarregado.Telefone
+                    };
+                    caseInDb.Encarregado = newEncarregado;
+                }
+
+                var extensaoEncarregadoInDb = caseInDb.ExtensaoEncarregado;
+                if (extensaoEncarregadoInDb != null)
+                    // Update child
+                    _context.Entry(extensaoEncarregadoInDb)
+                        .CurrentValues.SetValues(caseToSave.ExtensaoEncarregado);
+                else
+                {
+                    // Insert child
+                    var newExtensaoEncarregado = new AgenteTratamento()
+                    {
+                        Nome = caseToSave.ExtensaoEncarregado.Nome,
+                        Area = caseToSave.ExtensaoEncarregado.Area,
+                        Email = caseToSave.ExtensaoEncarregado.Email,
+                        Telefone = caseToSave.ExtensaoEncarregado.Telefone
+                    };
+                    caseInDb.ExtensaoEncarregado = newExtensaoEncarregado;
+                }
+
+                var areaTratamentoDadosInDb = caseInDb.AreaTratamentoDados;
+                if (areaTratamentoDadosInDb != null)
+                    // Update child
+                    _context.Entry(areaTratamentoDadosInDb)
+                        .CurrentValues.SetValues(caseToSave.AreaTratamentoDados);
+                else
+                {
+                    // Insert child
+                    var newAreaTratamentoDados = new AgenteTratamento()
+                    {
+                        Nome = caseToSave.AreaTratamentoDados.Nome,
+                        Area = caseToSave.AreaTratamentoDados.Area,
+                        Email = caseToSave.AreaTratamentoDados.Email,
+                        Telefone = caseToSave.AreaTratamentoDados.Telefone
+                    };
+                    caseInDb.AreaTratamentoDados = newAreaTratamentoDados;
+                }
+
+                var operadorInDb = caseInDb.Operador;
+                if (operadorInDb != null)
+                    // Update child
+                    _context.Entry(operadorInDb)
+                        .CurrentValues.SetValues(caseToSave.Operador);
+                else
+                {
+                    // Insert child
+                    var newOperador = new AgenteTratamento()
+                    {
+                        Nome = caseToSave.Operador.Nome,
+                        Area = caseToSave.Operador.Area,
+                        Email = caseToSave.Operador.Email,
+                        Telefone = caseToSave.Operador.Telefone
+                    };
+                    caseInDb.Operador = newOperador;
+                }
+
+                var faseCicloTratamentoInDb = caseInDb.FasesCicloTratamento;
+                if (faseCicloTratamentoInDb != null)
+                    // Update child
+                    _context.Entry(faseCicloTratamentoInDb)
+                        .CurrentValues.SetValues(caseToSave.FasesCicloTratamento);
+                else
+                {
+                    // Insert child
+                    var newFasesCicloTratamento = new FasesCicloTratamento()
+                    {
+                        Coleta = caseToSave.FasesCicloTratamento.Coleta,
+                        Compartilhamento = caseToSave.FasesCicloTratamento.Compartilhamento,
+                        Eliminacao = caseToSave.FasesCicloTratamento.Eliminacao,
+                        Processamento = caseToSave.FasesCicloTratamento.Processamento,
+                        Retencao = caseToSave.FasesCicloTratamento.Retencao,
+                    };
+                    caseInDb.FasesCicloTratamento = newFasesCicloTratamento;
+                }
+
+                var finalidadeTratamentoInDb = caseInDb.FinalidadeTratamento;
+                if (finalidadeTratamentoInDb != null)
+                    // Update child
+                    _context.Entry(finalidadeTratamentoInDb)
+                        .CurrentValues.SetValues(caseToSave.FinalidadeTratamento);
+                else
+                {
+                    // Insert child
+                    var newFinalidadeTratamento = new FinalidadeTratamento()
+                    {
+                        BeneficiosEsperados = caseToSave.FinalidadeTratamento.BeneficiosEsperados,
+                        DescricaoFinalidade = caseToSave.FinalidadeTratamento.DescricaoFinalidade,
+                        HipoteseTratamento = caseToSave.FinalidadeTratamento.HipoteseTratamento,
+                        PrevisaoLegal = caseToSave.FinalidadeTratamento.PrevisaoLegal,
+                        ResultadosTitular = caseToSave.FinalidadeTratamento.ResultadosTitular,
+                    };
+                    caseInDb.FinalidadeTratamento = newFinalidadeTratamento;
+                }
+
+                var categoriasTitularesInDb = caseInDb.CategoriasTitulares;
+                if (categoriasTitularesInDb != null)
+                    // Update child
+                    _context.Entry(categoriasTitularesInDb)
+                        .CurrentValues.SetValues(caseToSave.CategoriasTitulares);
+                else
+                {
+                    // Insert child
+                    var newCategoriasTitulares = new CategoriasTitulares()
+                    {
+                        Categorias = caseToSave.CategoriasTitulares.Categorias,
+                        CriancasAdolescentes = caseToSave.CategoriasTitulares.CriancasAdolescentes,
+                        OutrosGruposVulneraveis = caseToSave.CategoriasTitulares.OutrosGruposVulneraveis,
+                    };
+                    caseInDb.CategoriasTitulares = newCategoriasTitulares;
+                }
+
+                foreach (var item in caseToSave.ItensCategoriaDadosPessoais)
+                {
+                    var itemInDb =
+                        caseInDb.ItensCategoriaDadosPessoais.SingleOrDefault(i => i.Id == item.Id && i.Id != 0);
+                    if (itemInDb != null)
+                        // Update child
+                        _context.Entry(itemInDb)
+                            .CurrentValues.SetValues(item);
+                    else
+                    {
+                        // Insert child
+                        var newItem = new ItemCategoriaDadosPessoais()
+                        {
+                            CategoriaDadosPessoais = item.CategoriaDadosPessoais,
+                            Descricao = item.Descricao,
+                            FonteRetencao = item.FonteRetencao,
+                            LocalArmazenamento = item.LocalArmazenamento,
+                            TempoRetencao = item.TempoRetencao,
+                        };
+                        caseInDb.ItensCategoriaDadosPessoais.Add(newItem);
+                    }
+                }
+
+                foreach (var item in caseToSave.CompartilhamentoDadosPessoais)
+                {
+                    var itemInDb =
+                        caseInDb.CompartilhamentoDadosPessoais.SingleOrDefault(i => i.Id == item.Id && i.Id != 0);
+                    if (itemInDb != null)
+                        // Update child
+                        _context.Entry(itemInDb)
+                            .CurrentValues.SetValues(item);
+                    else
+                    {
+                        // Insert child
+                        var newItem = new ItemCompartilhamentoDados()
+                        {
+                            DescricaoDadosCompartilhados = item.DescricaoDadosCompartilhados,
+                            DescricaoFinalidadeComp = item.DescricaoFinalidadeComp,
+                            FinalidadeComp = item.FinalidadeComp,
+                            NivelCompartilhamento = item.NivelCompartilhamento,
+                            NomeInstituicao = item.NomeInstituicao,
+                            TipoCompDados = item.TipoCompDados,
+                        };
+                        caseInDb.CompartilhamentoDadosPessoais.Add(newItem);
+                    }
+                }
+
+                foreach (var item in caseToSave.MedidasSegurancaPrivacidade)
+                {
+                    var itemInDb =
+                        caseInDb.MedidasSegurancaPrivacidade.SingleOrDefault(i => i.Id == item.Id && i.Id != 0);
+                    if (itemInDb != null)
+                        // Update child
+                        _context.Entry(itemInDb)
+                            .CurrentValues.SetValues(item);
+                    else
+                    {
+                        // Insert child
+                        var newItem = new ItemMedidaSegurancaPrivacidade()
+                        {
+                            Descricao = item.Descricao,
+                            Tipo = item.Tipo
+                        };
+                        caseInDb.MedidasSegurancaPrivacidade.Add(newItem);
+                    }
+                }
+
+                foreach (var item in caseToSave.TransferenciaInternacional)
+                {
+                    var itemInDb =
+                        caseInDb.TransferenciaInternacional.SingleOrDefault(i => i.Id == item.Id && i.Id != 0);
+                    if (itemInDb != null)
+                        // Update child
+                        _context.Entry(itemInDb)
+                            .CurrentValues.SetValues(item);
+                    else
+                    {
+                        // Insert child
+                        var newItem = new ItemTransferenciaInternacional()
+                        {
+                            DadosTransferidos = item.DadosTransferidos,
+                            NomeOrganizacao = item.NomeOrganizacao,
+                            Pais = item.Pais,
+                            TipoGarantia = item.TipoGarantia
+                        };
+                        caseInDb.TransferenciaInternacional.Add(newItem);
+                    }
+                }
+
+                foreach (var item in caseToSave.ContratoServicosTi)
+                {
+                    var itemInDb = caseInDb.ContratoServicosTi.SingleOrDefault(i => i.Id == item.Id && i.Id != 0);
+                    if (itemInDb != null)
+                        // Update child
+                        _context.Entry(itemInDb)
+                            .CurrentValues.SetValues(item);
+                    else
+                    {
+                        // Insert child
+                        var newItem = new ItemContratoTi()
+                        {
+                        };
+                        caseInDb.ContratoServicosTi.Add(newItem);
+                    }
+                }
+
+                foreach (var item in caseToSave.RiscosPrivacidade)
+                {
+                    var itemInDb = caseInDb.RiscosPrivacidade.SingleOrDefault(i => i.Id == item.Id && i.Id != 0);
+                    if (itemInDb != null)
+                        // Update child
+                        _context.Entry(itemInDb)
+                            .CurrentValues.SetValues(item);
+                    else
+                    {
+                        // Insert child
+                        var newItem = new ItemRiscoPrivacidade()
+                        {
+                            Observacoes = item.Observacoes,
+                            TipoRisco = item.TipoRisco
+                        };
+                        caseInDb.RiscosPrivacidade.Add(newItem);
+                    }
+                }
+
+                foreach (var item in caseToSave.ObservacoesProcesso)
+                {
+                    var itemInDb = caseInDb.ObservacoesProcesso.SingleOrDefault(i => i.Id == item.Id && i.Id != 0);
+                    if (itemInDb != null)
+                        // Update child
+                        _context.Entry(itemInDb)
+                            .CurrentValues.SetValues(item);
+                    else
+                    {
+                        // Insert child
+                        var newItem = new ItemObservacoesProcesso()
+                        {
+                            DescricaoObs = item.DescricaoObs
+                        };
+                        caseInDb.ObservacoesProcesso.Add(newItem);
+                    }
+                }
 
                 await _context.SaveChangesAsync();
 
@@ -934,33 +1258,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .Include(c => c.Operador)
                     .Include(c => c.FasesCicloTratamento)
                     .Include(c => c.FinalidadeTratamento)
-                    .Include(c => c.CategoriaDadosPessoais)
-                    .Include(c => c.CategoriaDadosPessoais.Associacoes)
-                    .Include(c => c.CategoriaDadosPessoais.Caracteristicas)
-                    .Include(c => c.CategoriaDadosPessoais.CaracteristicasPsicologicas)
-                    .Include(c => c.CategoriaDadosPessoais.ComposicaoFamiliar)
-                    .Include(c => c.CategoriaDadosPessoais.EducacaoTreinamento)
-                    .Include(c => c.CategoriaDadosPessoais.Financeiros)
-                    .Include(c => c.CategoriaDadosPessoais.Habitos)
-                    .Include(c => c.CategoriaDadosPessoais.HabitosConsumo)
-                    .Include(c => c.CategoriaDadosPessoais.Identificacao)
-                    .Include(c => c.CategoriaDadosPessoais.InteressesLazer)
-                    .Include(c => c.CategoriaDadosPessoais.Outros)
-                    .Include(c => c.CategoriaDadosPessoais.ProcessoJudAdmCrim)
-                    .Include(c => c.CategoriaDadosPessoais.ProfissaoEmprego)
-                    .Include(c => c.CategoriaDadosPessoais.RegVideoImgVoz)
-                    .Include(c => c.CategoriaDadosPessoais.Residenciais)
-                    .Include(c => c.CatDadosPessoaisSensiveis)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OpiniaoPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoCrencaFilosofica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.ConviccaoReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoPreferenciaPolitica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoSindicato)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Geneticos)
-                    .Include(c => c.CatDadosPessoaisSensiveis.OrigemRacialEtnica)
-                    .Include(c => c.CatDadosPessoaisSensiveis.SaudeVidaSexual)
-                    .Include(c => c.CatDadosPessoaisSensiveis.FiliacaoOrgReligiosa)
-                    .Include(c => c.CatDadosPessoaisSensiveis.Biometricos)
+                    .Include(c => c.ItensCategoriaDadosPessoais)
                     .Include(c => c.CategoriasTitulares)
                     .Include(c => c.CategoriasTitulares.Categorias)
                     .Include(c => c.CategoriasTitulares.CriancasAdolescentes)
