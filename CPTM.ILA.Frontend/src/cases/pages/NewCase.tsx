@@ -85,6 +85,7 @@ const NewCase = () => {
 
         initialCase.grupoCriadorId = currentGroup.id;
         initialCase.usernameResponsavel = user.username;
+        initialCase.area = initialCase.areaTratamentoDados.area!;
         const dateCriacaoParts = initialCase.dataCriacao.split("/");
         const dateAtualizacaoParts = initialCase.dataAtualizacao.split("/");
         initialCase.dataCriacao = new Date(
@@ -97,7 +98,6 @@ const NewCase = () => {
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        initialCase.area = currentGroup.nome;
         for (const value of Object.values(
             initialCase.catDadosPessoaisSensiveis
         )) {
@@ -160,7 +160,7 @@ const NewCase = () => {
 
         initialCase.grupoCriadorId = currentGroup.id;
         initialCase.usernameResponsavel = user.username;
-        initialCase.area = currentGroup.nome;
+        initialCase.area = initialCase.areaTratamentoDados.area!;
         const dateCriacaoParts = initialCase.dataCriacao.split("/");
         const dateAtualizacaoParts = initialCase.dataAtualizacao.split("/");
         initialCase.dataCriacao = new Date(
@@ -173,7 +173,6 @@ const NewCase = () => {
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        initialCase.area = currentGroup.nome;
         for (const value of Object.values(
             initialCase.catDadosPessoaisSensiveis
         )) {

@@ -83,7 +83,7 @@ const ContinueCase = () => {
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        fullCase.area = currentGroup.nome;
+        fullCase.area = fullCase.areaTratamentoDados.area!;
 
         for (const value of Object.values(fullCase.catDadosPessoaisSensiveis)) {
             if (value.length !== 0) {
@@ -155,7 +155,7 @@ const ContinueCase = () => {
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        fullCase.area = currentGroup.nome;
+        fullCase.area = fullCase.areaTratamentoDados.area!;
 
         for (const value of Object.values(fullCase.catDadosPessoaisSensiveis)) {
             if (value.length !== 0) {
