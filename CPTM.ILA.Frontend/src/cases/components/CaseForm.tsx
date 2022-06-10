@@ -62,7 +62,7 @@ const CaseForm = (props: {
     onReproveSubmit?: onSubmitFn;
 }) => {
     const [isEditing, setIsEditing] = useState(props.new || false);
-    const [itemValues, setItemValues] = useState<Case>(emptyCase());
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [formIsValid, setFormIsValid] = useState(true);
     const [isFormAllTouched, setIsFormAllTouched] = useState({
         "0": true,
@@ -82,10 +82,6 @@ const CaseForm = (props: {
         "14": false,
         "15": false,
     });
-
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showApproveModal, setShowApproveModal] = useState(false);
-    const [showReproveModal, setShowReproveModal] = useState(false);
 
     const { token, tokenExpirationDate, user } = useContext(AuthContext);
     const { minutes } = useCountdown(tokenExpirationDate);
@@ -160,14 +156,6 @@ const CaseForm = (props: {
         }
         // props.onSendToApprovalSubmit!(item);
     };
-    const handleApprovalClick = (item: Case) => {
-        setItemValues(item);
-        setShowApproveModal(true);
-    };
-    const handleReprovalClick = (item: Case) => {
-        setItemValues(item);
-        setShowReproveModal(true);
-    };
 
     // handle auto-save
     useEffect(() => {
@@ -215,58 +203,6 @@ const CaseForm = (props: {
                     </Button>
                     <Button variant="danger" onClick={() => onDelete(cid)}>
                         Prosseguir com Remoção
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal
-                show={showApproveModal}
-                onHide={() => setShowApproveModal(false)}
-                animation={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>Aprovar Processo!</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Você tem certeza que deseja aprovar este processo?
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        variant="danger"
-                        onClick={() => setShowApproveModal(false)}
-                    >
-                        Não
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={() => props.onApproveSubmit!(itemValues)}
-                    >
-                        Sim
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal
-                show={showReproveModal}
-                onHide={() => setShowReproveModal(false)}
-                animation={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>Reprovar Processo!</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Você tem certeza que deseja reprovar este processo?
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        variant="danger"
-                        onClick={() => setShowReproveModal(false)}
-                    >
-                        Não
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={() => props.onReproveSubmit!(itemValues)}
-                    >
-                        Sim
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -907,24 +843,39 @@ const CaseForm = (props: {
                                                 value,
                                                 ref,
                                             },
-                                        }) => (
-                                            <Form.Select
-                                                disabled={!isEditing}
-                                                onChange={onChange}
-                                                onBlur={onBlur}
-                                                value={value}
-                                                ref={ref}
-                                            >
-                                                {user.groups.map((g) => (
-                                                    <option
-                                                        value={g.nome}
-                                                        key={g.id}
-                                                    >
-                                                        {g.nome}
-                                                    </option>
-                                                ))}
-                                            </Form.Select>
-                                        )}
+                                        }) => {
+                                            return props.new ||
+                                                props.edit ||
+                                                props.continue ||
+                                                props.reprovado ? (
+                                                <Form.Select
+                                                    disabled={!isEditing}
+                                                    onChange={onChange}
+                                                    onBlur={onBlur}
+                                                    value={value}
+                                                    ref={ref}
+                                                >
+                                                    {user.groups.map((g) => (
+                                                        <option
+                                                            value={g.nome}
+                                                            key={g.id}
+                                                        >
+                                                            {g.nome}
+                                                        </option>
+                                                    ))}
+                                                </Form.Select>
+                                            ) : (
+                                                <Form.Control
+                                                    disabled={!isEditing}
+                                                    type="text"
+                                                    onChange={onChange}
+                                                    onBlur={onBlur}
+                                                    value={value}
+                                                    ref={ref}
+                                                    readOnly
+                                                />
+                                            );
+                                        }}
                                     />
                                 </Col>
                                 <Col>
