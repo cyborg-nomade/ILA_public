@@ -10,6 +10,7 @@ const SaveProgressModal = (props: {
     children?: React.ReactNode;
     showChildrenContent: boolean;
     isLoading: boolean;
+    hasError: boolean;
 }) => {
     return (
         <Modal
@@ -46,11 +47,22 @@ const SaveProgressModal = (props: {
                         </Button>
                     </React.Fragment>
                 )}
-                {props.showChildrenContent && (
+                {props.showChildrenContent && !props.hasError && (
                     <React.Fragment>
                         <Button
                             variant="primary"
                             onClick={props.onDismissSaveProgressModal}
+                            disabled={props.isLoading}
+                        >
+                            OK
+                        </Button>
+                    </React.Fragment>
+                )}
+                {props.showChildrenContent && props.hasError && (
+                    <React.Fragment>
+                        <Button
+                            variant="danger"
+                            onClick={props.onHideSaveProgressModal}
                             disabled={props.isLoading}
                         >
                             Voltar

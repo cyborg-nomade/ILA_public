@@ -310,6 +310,7 @@ const NewCase = () => {
                 showSaveProgressModal={showSaveProgressModal}
                 showChildrenContent={isLoading || error || !!message}
                 isLoading={isLoading}
+                hasError={!!error}
             >
                 {contentChildren}
             </SaveProgressModal>
@@ -320,6 +321,7 @@ const NewCase = () => {
                 onSendToApprovalSubmit={sendToApprovalHandler}
                 showChildrenContent={isLoading || error || !!message}
                 showSendToApprovalModal={showSendToApprovalModal}
+                hasError={!!error}
             >
                 {contentChildren}
             </SendToApprovalModal>

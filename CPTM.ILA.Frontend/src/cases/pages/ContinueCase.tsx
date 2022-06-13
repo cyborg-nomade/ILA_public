@@ -329,6 +329,7 @@ const ContinueCase = () => {
                 showSaveProgressModal={showSaveProgressModal}
                 showChildrenContent={isLoading || error || !!message}
                 isLoading={isLoading}
+                hasError={!!error}
             >
                 {contentChildren}
             </SaveProgressModal>
@@ -339,6 +340,7 @@ const ContinueCase = () => {
                 onSendToApprovalSubmit={sendToApprovalHandler}
                 showChildrenContent={isLoading || error || !!message}
                 showSendToApprovalModal={showSendToApprovalModal}
+                hasError={!!error}
             >
                 {contentChildren}
             </SendToApprovalModal>

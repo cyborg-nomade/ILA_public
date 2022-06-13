@@ -11,6 +11,7 @@ const RepproveCaseModal = (props: {
     children?: React.ReactNode;
     showChildrenContent: boolean;
     isLoading: boolean;
+    hasError: boolean;
 }) => {
     const [comentarioReprovacao, setComentarioReprovacao] = useState("");
     return (
@@ -67,11 +68,22 @@ const RepproveCaseModal = (props: {
                         </Button>
                     </React.Fragment>
                 )}
-                {props.showChildrenContent && (
+                {props.showChildrenContent && !props.hasError && (
                     <React.Fragment>
                         <Button
                             variant="primary"
                             onClick={props.onDismissRepproveModal}
+                            disabled={props.isLoading}
+                        >
+                            OK
+                        </Button>
+                    </React.Fragment>
+                )}
+                {props.showChildrenContent && props.hasError && (
+                    <React.Fragment>
+                        <Button
+                            variant="danger"
+                            onClick={props.onHideRepproveModal}
                             disabled={props.isLoading}
                         >
                             Voltar
