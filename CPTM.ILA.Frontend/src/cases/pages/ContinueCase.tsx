@@ -346,7 +346,7 @@ const ContinueCase = () => {
             </SendToApprovalModal>
             <CaseForm
                 item={fullCase}
-                edit={true}
+                continue={true}
                 onSaveProgressSubmit={showSaveProgressModalHandler}
                 onSendToApprovalSubmit={showSendToApprovalModalHandler}
             />
