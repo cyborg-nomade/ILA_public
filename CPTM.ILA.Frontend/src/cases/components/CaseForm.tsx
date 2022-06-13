@@ -45,6 +45,7 @@ import Section14FormRow from "./form-items/Section14FormRow";
 import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
 import { useCountdown } from "../../shared/hooks/timer-hook";
+import DeleteModal from "./modals/DeleteModal";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -61,6 +62,7 @@ const CaseForm = (props: {
     onApproveSubmit?: onSubmitFn;
     onReproveSubmit?: onSubmitFn;
 }) => {
+    const [message, setMessage] = useState("");
     const [isEditing, setIsEditing] = useState(props.new || false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [formIsValid, setFormIsValid] = useState(true);
@@ -118,7 +120,7 @@ const CaseForm = (props: {
     const onCancel = () => {
         navigate(-1);
     };
-    const onDelete = async (itemId: string) => {
+    const onDelete = async (itemId: number) => {
         console.log("itemId: ", itemId);
 
         try {
@@ -133,15 +135,14 @@ const CaseForm = (props: {
             );
 
             console.log("delete case response: ", responseData);
-            navigate(`/`);
+            setMessage(responseData.message);
         } catch (err) {
             console.log(err);
-            setShowDeleteModal(false);
         }
     };
 
     const handleSendToApprovalClick = async (item: Case) => {
-        console.log(item);
+        console.log("case form, send to approval, item: ", item);
 
         const isAllTouched = props.new
             ? Object.values(isFormAllTouched).reduce((t, n) => {
@@ -172,46 +173,46 @@ const CaseForm = (props: {
         props.onSaveProgressSubmit,
     ]);
 
-    if (isLoading) {
-        return (
-            <Row className="justify-content-center">
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            </Row>
-        );
-    }
-
     return (
         <React.Fragment>
-            <Modal
-                show={showDeleteModal}
-                onHide={() => setShowDeleteModal(false)}
-                animation={false}
+            <DeleteModal
+                item={props.item}
+                onDeleteSubmit={onDelete}
+                onDismissDeleteModal={onCancel}
+                onHideDeleteModal={() => setShowDeleteModal(false)}
+                showChildrenContent={isLoading || error || !!message}
+                isLoading={isLoading}
+                hasError={!!error}
+                showDeleteModal={showDeleteModal}
             >
-                <Modal.Header closeButton>
-                    <Modal.Title>Remover Registro!</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Você está prestes a deletar o registro {props.item.nome}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        variant="primary"
-                        onClick={() => setShowDeleteModal(false)}
-                    >
-                        Cancelar
-                    </Button>
-                    <Button variant="danger" onClick={() => onDelete(cid)}>
-                        Prosseguir com Remoção
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            {error && (
-                <Alert variant="danger" onClose={clearError} dismissible>
-                    Ocorreu um erro ao enviar o processo: {error}
-                </Alert>
-            )}
+                <React.Fragment>
+                    {isLoading && (
+                        <Row className="justify-content-center">
+                            <Spinner animation="border" role="status">
+                                <span className="visually-hidden">
+                                    Loading...
+                                </span>
+                            </Spinner>
+                        </Row>
+                    )}
+                    {error && (
+                        <Row
+                            className="justify-content-center mx-auto"
+                            style={{ width: "28rem" }}
+                        >
+                            <Alert variant="danger">{error}</Alert>
+                        </Row>
+                    )}
+                    {message && (
+                        <Row
+                            className="justify-content-center mx-auto"
+                            style={{ width: "28rem" }}
+                        >
+                            <Alert variant="success">{message}</Alert>
+                        </Row>
+                    )}
+                </React.Fragment>
+            </DeleteModal>
             {methods.getValues().comentarioReprovacao && props.reprovado && (
                 <Alert variant="danger">
                     Este processo foi reprovado pelo seguinte motivo:{" "}
