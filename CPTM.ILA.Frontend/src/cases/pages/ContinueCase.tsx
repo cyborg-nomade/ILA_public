@@ -17,13 +17,16 @@ import LoadingModal from "./../components/modals/LoadingModal";
 import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
 
 const ContinueCase = () => {
-    const { user, token, currentGroup } = useContext(AuthContext);
+    const { user, token, currentGroup, areaTratamentoDados } =
+        useContext(AuthContext);
 
     const [message, setMessage] = useState("");
     const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
     const [showSendToApprovalModal, setShowSendToApprovalModal] =
         useState(false);
-    const [fullCase, setFullCase] = useState<Case>(emptyCase());
+    const [fullCase, setFullCase] = useState<Case>(
+        emptyCase(areaTratamentoDados)
+    );
     const [isLoadingUseStateData, setIsLoadingUseStateData] = useState(false);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
@@ -51,7 +54,7 @@ const ContinueCase = () => {
             console.log("loadedCase dates altered: ", loadedCase);
 
             setFullCase(loadedCase);
-            setIsLoadingUseStateData(true);
+            setIsLoadingUseStateData(false);
         };
 
         getCaseToEdit().catch((error) => {
@@ -91,9 +94,15 @@ const ContinueCase = () => {
         });
 
         return () => {
-            setFullCase(emptyCase());
+            setFullCase((prevCase) => prevCase);
         };
-    }, [currentGroup.id, currentGroup.nome, sendRequest, token]);
+    }, [
+        areaTratamentoDados,
+        currentGroup.id,
+        currentGroup.nome,
+        sendRequest,
+        token,
+    ]);
 
     const dismissModalHandler = () => {
         navigate(-1);
@@ -112,6 +121,9 @@ const ContinueCase = () => {
         console.log("save progress, Initial item: ", fullCase);
         setFullCase(fullCase);
 
+        fullCase.grupoCriadorId = currentGroup.id;
+        fullCase.usernameResponsavel = user.username;
+        fullCase.area = fullCase.areaTratamentoDados.area!;
         const dateCriacaoParts = fullCase.dataCriacao.split("/");
         const dateAtualizacaoParts = fullCase.dataAtualizacao.split("/");
         fullCase.dataCriacao = new Date(
@@ -124,7 +136,6 @@ const ContinueCase = () => {
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        fullCase.area = fullCase.areaTratamentoDados.area!;
 
         for (const value of Object.values(fullCase.catDadosPessoaisSensiveis)) {
             if (value.length !== 0) {
@@ -184,6 +195,10 @@ const ContinueCase = () => {
         console.log("send to approval, Initial item: ", fullCase);
         setFullCase(fullCase);
 
+        fullCase.grupoCriadorId = currentGroup.id;
+        fullCase.usernameResponsavel = user.username;
+        fullCase.area = fullCase.areaTratamentoDados.area!;
+
         const dateCriacaoParts = fullCase.dataCriacao.split("/");
         const dateAtualizacaoParts = fullCase.dataAtualizacao.split("/");
         fullCase.dataCriacao = new Date(
@@ -196,13 +211,14 @@ const ContinueCase = () => {
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        fullCase.area = fullCase.areaTratamentoDados.area!;
 
         for (const value of Object.values(fullCase.catDadosPessoaisSensiveis)) {
             if (value.length !== 0) {
                 fullCase.dadosPessoaisSensiveis = true;
             }
         }
+
+        fullCase.encaminhadoAprovacao = true;
 
         console.log("send to approval, Altered item: ", fullCase);
 

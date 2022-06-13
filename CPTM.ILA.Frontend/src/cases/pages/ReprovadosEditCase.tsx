@@ -17,13 +17,16 @@ import LoadingModal from "./../components/modals/LoadingModal";
 import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
 
 const ReprovadosEditCase = () => {
-    const { user, token, currentGroup } = useContext(AuthContext);
+    const { user, token, currentGroup, areaTratamentoDados } =
+        useContext(AuthContext);
 
     const [message, setMessage] = useState("");
     const [showSaveProgressModal, setShowSaveProgressModal] = useState(false);
     const [showSendToApprovalModal, setShowSendToApprovalModal] =
         useState(false);
-    const [fullCase, setFullCase] = useState<Case>(emptyCase());
+    const [fullCase, setFullCase] = useState<Case>(
+        emptyCase(areaTratamentoDados)
+    );
     const [isLoadingUseStateData, setIsLoadingUseStateData] = useState(false);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
@@ -51,13 +54,17 @@ const ReprovadosEditCase = () => {
             console.log("loadedCase, dates altered: ", loadedCase);
 
             setFullCase(loadedCase);
-            setIsLoadingUseStateData(true);
+            setIsLoadingUseStateData(false);
         };
 
         getCaseToEdit().catch((error) => {
             console.log(error);
         });
-    }, [cid, sendRequest, token]);
+
+        return () => {
+            setFullCase(emptyCase(areaTratamentoDados));
+        };
+    }, [areaTratamentoDados, cid, sendRequest, token]);
 
     useEffect(() => {
         const getComiteMembers = async () => {
@@ -91,9 +98,15 @@ const ReprovadosEditCase = () => {
         });
 
         return () => {
-            setFullCase(emptyCase());
+            setFullCase(emptyCase(areaTratamentoDados));
         };
-    }, [currentGroup.id, currentGroup.nome, sendRequest, token]);
+    }, [
+        areaTratamentoDados,
+        currentGroup.id,
+        currentGroup.nome,
+        sendRequest,
+        token,
+    ]);
 
     const dismissModalHandler = () => {
         navigate(-1);
@@ -112,6 +125,10 @@ const ReprovadosEditCase = () => {
         console.log("save progress, Initial item: ", fullCase);
         setFullCase(fullCase);
 
+        fullCase.grupoCriadorId = currentGroup.id;
+        fullCase.usernameResponsavel = user.username;
+        fullCase.area = fullCase.areaTratamentoDados.area!;
+
         const dateCriacaoParts = fullCase.dataCriacao.split("/");
         const dateAtualizacaoParts = fullCase.dataAtualizacao.split("/");
         fullCase.dataCriacao = new Date(
@@ -124,7 +141,7 @@ const ReprovadosEditCase = () => {
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        fullCase.area = fullCase.areaTratamentoDados.area!;
+
         fullCase.aprovado = false;
         fullCase.encaminhadoAprovacao = false;
 
@@ -186,6 +203,10 @@ const ReprovadosEditCase = () => {
         console.log("send to approval, Initial item: ", fullCase);
         setFullCase(fullCase);
 
+        fullCase.grupoCriadorId = currentGroup.id;
+        fullCase.usernameResponsavel = user.username;
+        fullCase.area = fullCase.areaTratamentoDados.area!;
+
         const dateCriacaoParts = fullCase.dataCriacao.split("/");
         const dateAtualizacaoParts = fullCase.dataAtualizacao.split("/");
         fullCase.dataCriacao = new Date(
@@ -198,7 +219,10 @@ const ReprovadosEditCase = () => {
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
-        fullCase.area = fullCase.areaTratamentoDados.area!;
+
+        fullCase.aprovado = false;
+        fullCase.encaminhadoAprovacao = true;
+        fullCase.reprovado = false;
 
         for (const value of Object.values(fullCase.catDadosPessoaisSensiveis)) {
             if (value.length !== 0) {
