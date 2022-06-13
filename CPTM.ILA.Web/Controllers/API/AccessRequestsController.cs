@@ -676,16 +676,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (oldDpo != null)
                 {
-                    var existOldDpo = Seguranca.ExisteUsuario(oldDpo.Username.ToUpper());
-
-                    if (existOldDpo)
-                    {
-                        oldDpo.IsDPO = false;
-                    }
-                    else
-                    {
-                        _context.Users.Remove(oldDpo);
-                    }
+                    _context.Users.Remove(oldDpo);
                 }
 
                 var userInDb =
@@ -694,20 +685,31 @@ namespace CPTM.ILA.Web.Controllers.API
                 if (userInDb == null)
                 {
                     var userAd = Seguranca.ObterUsuario(newDpoUsername.ToUpper());
-                    var newGroup = new Group()
+
+                    var groupInDb =
+                        await _context.Groups.SingleOrDefaultAsync(g =>
+                            g.Nome.ToUpper() == userAd.Departamento.ToUpper());
+
+                    if (groupInDb == null)
                     {
-                        Nome = userAd.Departamento.ToUpper(),
-                    };
+                        var newGroup = new Group()
+                        {
+                            Nome = userAd.Departamento.ToUpper(),
+                        };
+                        groupInDb = newGroup;
+                        _context.Groups.Add(groupInDb);
+                        await _context.SaveChangesAsync();
+                    }
 
                     var newUser = new User()
                     {
                         Username = userAd.Login.ToUpper(),
-                        OriginGroup = newGroup,
+                        OriginGroup = groupInDb,
                         IsComite = true,
                         IsDPO = true,
                         IsSystem = false,
                         GroupAccessExpirations = new List<GroupAccessExpiration>()
-                            { new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = newGroup } }
+                            { new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = groupInDb } }
                     };
                     _context.Users.Add(newUser);
 
