@@ -30,7 +30,7 @@ const ReviewCasesListGetter = () => {
 
             const filteredCases: CaseListItem[] = loadedCases.filter((c) =>
                 c.dataProxRevisao
-                    ? new Date(c.dataProxRevisao) > new Date()
+                    ? new Date(c.dataProxRevisao) < new Date()
                     : true
             );
 
