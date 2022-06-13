@@ -175,6 +175,7 @@ const NewCase = () => {
         initialCase.grupoCriadorId = currentGroup.id;
         initialCase.usernameResponsavel = user.username;
         initialCase.area = initialCase.areaTratamentoDados.area!;
+
         const dateCriacaoParts = initialCase.dataCriacao.split("/");
         const dateAtualizacaoParts = initialCase.dataAtualizacao.split("/");
         initialCase.dataCriacao = new Date(
@@ -187,6 +188,7 @@ const NewCase = () => {
             +dateAtualizacaoParts[1] - 1,
             +dateAtualizacaoParts[0]
         ).toISOString();
+
         for (const value of Object.values(
             initialCase.catDadosPessoaisSensiveis
         )) {
@@ -194,6 +196,8 @@ const NewCase = () => {
                 initialCase.dadosPessoaisSensiveis = true;
             }
         }
+
+        initialCase.encaminhadoAprovacao = true;
 
         console.log("send to approval, Altered item: ", initialCase);
 

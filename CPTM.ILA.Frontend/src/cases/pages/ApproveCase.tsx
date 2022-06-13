@@ -10,7 +10,7 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
 import ApproveCaseModal from "../components/modals/ApproveCaseModal";
 import RepproveCaseModal from "../components/modals/RepproveCaseModal";
-import LoadingModal from "./../components/modals/LoadingModal";
+import LoadingModal from "../components/modals/LoadingModal";
 
 const ApproveCaseGetter = () => {
     const { token } = useContext(AuthContext);

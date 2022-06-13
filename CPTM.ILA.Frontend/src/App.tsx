@@ -26,9 +26,7 @@ const UserCasesListGetter = React.lazy(
     () => import("./users/pages/UserCasesListGetter")
 );
 const UserPage = React.lazy(() => import("./users/pages/UserPage"));
-const ApproveCaseGetter = React.lazy(
-    () => import("./cases/pages/ApproveCaseGetter")
-);
+const ApproveCaseGetter = React.lazy(() => import("./cases/pages/ApproveCase"));
 const RequestAccess = React.lazy(() => import("./users/pages/RequestAccess"));
 const AllAccessRequestsPage = React.lazy(
     () => import("./access-requests/pages/AllAccessRequestsPage")
