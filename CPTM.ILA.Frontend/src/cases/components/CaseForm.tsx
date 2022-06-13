@@ -1436,7 +1436,11 @@ const CaseForm = (props: {
                                                     <Tooltip className="text-muted">
                                                         Para maiores informações
                                                         visite o{" "}
-                                                        <a href="http://intranet/adm/CADA/Paginas/default.aspx">
+                                                        <a
+                                                            href="http://intranet/adm/CADA/Paginas/default.aspx"
+                                                            target={"_blank"}
+                                                            rel="noreferrer"
+                                                        >
                                                             site da CADA
                                                         </a>
                                                     </Tooltip>
