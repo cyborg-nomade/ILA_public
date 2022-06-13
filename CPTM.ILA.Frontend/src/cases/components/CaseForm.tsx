@@ -83,7 +83,8 @@ const CaseForm = (props: {
         "15": false,
     });
 
-    const { token, tokenExpirationDate, user } = useContext(AuthContext);
+    const { token, tokenExpirationDate, user, changeGroup } =
+        useContext(AuthContext);
     const { minutes } = useCountdown(tokenExpirationDate);
     const { sendRequest, error, clearError, isLoading } = useHttpClient();
     const { systems, countries } = useUtilities();
@@ -859,6 +860,9 @@ const CaseForm = (props: {
                                                         <option
                                                             value={g.nome}
                                                             key={g.id}
+                                                            onClick={() =>
+                                                                changeGroup(g)
+                                                            }
                                                         >
                                                             {g.nome}
                                                         </option>
@@ -866,7 +870,7 @@ const CaseForm = (props: {
                                                 </Form.Select>
                                             ) : (
                                                 <Form.Control
-                                                    disabled={!isEditing}
+                                                    disabled
                                                     type="text"
                                                     onChange={onChange}
                                                     onBlur={onBlur}

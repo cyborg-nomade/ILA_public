@@ -51,6 +51,10 @@ const NewCase = () => {
                 setInitialCase((prevCase) => ({
                     ...prevCase,
                     extensaoEncarregado: loadedComiteMember,
+                    areaTratamentoDados: {
+                        ...prevCase.areaTratamentoDados,
+                        area: currentGroup.nome,
+                    },
                 }));
             } catch (e) {
                 console.log(e);
