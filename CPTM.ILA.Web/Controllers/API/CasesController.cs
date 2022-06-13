@@ -63,7 +63,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var caseListItems = cases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { caseListItems, message = "Casos obtidos com sucesso" });
             }
             catch (Exception e)
             {
