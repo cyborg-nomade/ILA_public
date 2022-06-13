@@ -96,7 +96,7 @@ const CasesDashboard = () => {
 
         const getComiteCasesTotals = async () => {
             const responseData = await sendRequest(
-                `${process.env.REACT_APP_CONNSTR}/cases/group/comite-member/totals`,
+                `${process.env.REACT_APP_CONNSTR}/cases/user/comite-member/group/totals`,
                 undefined,
                 undefined,
                 {

@@ -128,64 +128,58 @@ namespace CPTM.ILA.Web.Controllers.API
         }
 
         /// <summary>
-        /// Retorna os totais de Casos de Uso por grupo de um membro do Comitê LGPD.
-        /// Endpoint disponibilizado para os membros do Comitê LGPD, com cada membro tendo acesso apenas a seus grupos.
+        /// Retorna todos os Casos de Uso dos grupos de acesso de um membro especificado do Comitê LGPD (Extensão Encarregado).
+        /// Endpoint disponibilizado apenas para o DPO.
         /// </summary>
+        /// <param name="uid">Id do membro do comitê</param>
         /// <returns>
-        /// Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto GroupTotals).
-        /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+        /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
-        [ResponseType(typeof(TotalsResponseType<GroupTotals>))]
-        [Route("group/comite-member/totals")]
+        [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
+        [Route("extensao-encarregado/{uid:int}")]
         [Authorize]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTotalsByComiteMemberGroups()
+        public async Task<HttpResponseMessage> GetByExtensaoEncarregado(int uid)
         {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDpo || claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            if (uid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválido." });
+            }
+
             try
             {
-                var userGroups = new List<Group>();
-                if (User.Identity is ClaimsIdentity identity)
-                {
-                    var claims = TokenUtil.GetTokenClaims(identity);
-
-                    userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
-                        .ToListAsync();
-
-                    if (!(claims.IsComite || claims.IsDeveloper))
+                var comiteMember = await _context.Users.Where(u => u.Id == uid)
+                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync();
+                if (comiteMember == null)
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new
                     {
-                        return Request.CreateResponse(HttpStatusCode.NotFound,
-                            new { message = "Recurso não encontrado" });
-                    }
-                }
+                        message = "Usuário não encontrado."
+                    });
 
-                var userGroupIds = userGroups.Select(g => g.Id)
+                var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Group.Id)
                     .ToList();
 
-                var totals = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
-                    .GroupBy(c => c.GrupoCriadorId)
-                    .Select(c => new GroupTotals()
-                    {
-                        GroupId = c.FirstOrDefault()
-                            .GrupoCriadorId,
-                        GroupName = "",
-                        QuantityInGroup = c.Count()
-                    })
+                var pendingCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId) &&
+                                !c.Aprovado &&
+                                c.EncaminhadoAprovacao)
                     .ToListAsync();
 
-                foreach (var total in totals)
-                {
-                    total.GroupName = await GetGroupName(total.GroupId);
-                }
+                var caseListItems = pendingCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
-                totals = totals.OrderBy(t => t.GroupName)
-                    .ToList();
-
-                var totalQuantity = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
-                    .CountAsync();
-
-                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+                return Request.CreateResponse(HttpStatusCode.OK, new { caseListItems });
             }
             catch (Exception e)
             {
@@ -195,6 +189,14 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
+        [Route("status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetByStatus(bool encaminhadoAprovacao, bool aprovado, bool reprovado)
+        {
+            return new HttpResponseMessage();
+        }
 
         /// <summary>
         /// Retorna todos os Casos de Uso de um grupo de acesso que estejam em um certo status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
@@ -257,55 +259,80 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
+        [Route("extensao-encarregado/{uid:int}/status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}")]
+        public async Task<HttpResponseMessage> GetByExtensaoEncarregadoByStatus(int uid, bool encaminhadoAprovacao,
+            bool aprovado, bool reprovado)
+        {
+            return new HttpResponseMessage();
+        }
+
+        [ResponseType(typeof(TotalsResponseType<GroupTotals>))]
+        [Route("user/{uid:int}/group/totals")]
+        public async Task<HttpResponseMessage> GetTotalsByUserGroups(int uid)
+        {
+            return new HttpResponseMessage();
+        }
+
         /// <summary>
-        /// Retorna o total de Casos de Uso pendentes de aprovação para um grupo especificado. 
-        /// Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+        /// Retorna os totais de Casos de Uso por grupo de um membro do Comitê LGPD.
+        /// Endpoint disponibilizado para os membros do Comitê LGPD, com cada membro tendo acesso apenas a seus grupos.
         /// </summary>
-        /// <param name="gid">Id do grupo</param>
         /// <returns>
-        /// Status da transação e um objeto JSON com uma chave "totalPeding" onde se encontra o total dos Casos de Uso pendentes.
+        /// Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto GroupTotals).
+        /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
         /// </returns>
-        [ResponseType(typeof(ApiResponseType<int>))]
-        [Route("group/{gid:int}/status/pending/totals")]
+        [ResponseType(typeof(TotalsResponseType<GroupTotals>))]
+        [Route("user/comite-member/group/totals")]
         [Authorize]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTotalPendingByGroup(int gid)
+        public async Task<HttpResponseMessage> GetTotalsByComiteMemberGroups()
         {
             try
             {
+                var userGroups = new List<Group>();
                 if (User.Identity is ClaimsIdentity identity)
                 {
                     var claims = TokenUtil.GetTokenClaims(identity);
 
-                    var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                    userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
                         .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                         .ToListAsync();
 
-                    var searchedGroup = await _context.Groups.FindAsync(gid);
-
-                    if (!(userGroups.Contains(searchedGroup) || claims.IsDpo || claims.IsDeveloper))
+                    if (!(claims.IsComite || claims.IsDeveloper))
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound,
                             new { message = "Recurso não encontrado" });
                     }
                 }
 
-                if (gid <= 0)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
-                }
+                var userGroupIds = userGroups.Select(g => g.Id)
+                    .ToList();
 
-                var pendingGroupCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
-                    .Where(c => c.GrupoCriadorId == gid &&
-                                c.Aprovado == false &&
-                                c.Reprovado == false &&
-                                c.EncaminhadoAprovacao == true)
+                var totals = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
+                    .GroupBy(c => c.GrupoCriadorId)
+                    .Select(c => new GroupTotals()
+                    {
+                        GroupId = c.FirstOrDefault()
+                            .GrupoCriadorId,
+                        GroupName = "",
+                        QuantityInGroup = c.Count()
+                    })
                     .ToListAsync();
 
-                var totalPending = pendingGroupCases.Count;
+                foreach (var total in totals)
+                {
+                    total.GroupName = await GetGroupName(total.GroupId);
+                }
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { totalPending });
+                totals = totals.OrderBy(t => t.GroupName)
+                    .ToList();
+
+                var totalQuantity = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
+                    .CountAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
             }
             catch (Exception e)
             {
@@ -313,6 +340,80 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
                     new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
+        }
+
+        /// <summary>
+        /// Retorna os totais de Casos de Uso por membro do Comitê LGPD (Extensão Encarregado).
+        /// Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto ExtensaoEncarregadoTotals).
+        /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+        /// </returns>
+        [ResponseType(typeof(TotalsResponseType<ExtensaoEncarregadoTotals>))]
+        [Route("extensao-encarregado/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsByExtensaoEncarregado()
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDpo || claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var comiteMembers = await _context.Users.Where(u => u.IsComite)
+                    .Include(g => g.GroupAccessExpirations.Select(gae => gae.Group))
+                    .ToListAsync();
+
+                var totals = new List<ExtensaoEncarregadoTotals>();
+                var totalQuantity = 0;
+
+                foreach (var comiteMember in comiteMembers)
+                {
+                    var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Group.Id)
+                        .ToList();
+
+                    var pendingCases = await _context.Cases.CountAsync(c =>
+                        comiteMemberGroupsIds.Contains(c.GrupoCriadorId) && !c.Aprovado && c.EncaminhadoAprovacao);
+
+                    if (pendingCases == 0) continue;
+
+                    totals.Add(new ExtensaoEncarregadoTotals()
+                    {
+                        ExtensaoId = comiteMember.Id,
+                        ExtensaoNome = Seguranca.ObterUsuario(comiteMember.Username.ToUpper())
+                            .Nome,
+                        QuantityByExtensao = pendingCases
+                    });
+
+                    totalQuantity += pendingCases;
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        [ResponseType(typeof(TotalsResponseType<StatusTotals>))]
+        [Route("status/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsByStatus()
+        {
+            return new HttpResponseMessage();
         }
 
         /// <summary>
@@ -381,133 +482,6 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var totalQuantity = await _context.Cases.Where(c => c.GrupoCriadorId == gid)
                     .CountAsync();
-
-                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
-            }
-        }
-
-        /// <summary>
-        /// Retorna todos os Casos de Uso dos grupos de acesso de um membro especificado do Comitê LGPD (Extensão Encarregado).
-        /// Endpoint disponibilizado apenas para o DPO.
-        /// </summary>
-        /// <param name="uid">Id do membro do comitê</param>
-        /// <returns>
-        /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
-        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
-        /// </returns>
-        [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
-        [Route("extensao-encarregado/{uid:int}")]
-        [Authorize]
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetByExtensaoEncarregado(int uid)
-        {
-            if (User.Identity is ClaimsIdentity identity)
-            {
-                var claims = TokenUtil.GetTokenClaims(identity);
-
-                if (!(claims.IsDpo || claims.IsDeveloper))
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
-                }
-            }
-
-            if (uid <= 0)
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválido." });
-            }
-
-            try
-            {
-                var comiteMember = await _context.Users.Where(u => u.Id == uid)
-                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
-                    .SingleOrDefaultAsync();
-                if (comiteMember == null)
-                    return Request.CreateResponse(HttpStatusCode.NotFound, new
-                    {
-                        message = "Usuário não encontrado."
-                    });
-
-                var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Group.Id)
-                    .ToList();
-
-                var pendingCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
-                    .Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId) &&
-                                !c.Aprovado &&
-                                c.EncaminhadoAprovacao)
-                    .ToListAsync();
-
-                var caseListItems = pendingCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
-
-                return Request.CreateResponse(HttpStatusCode.OK, new { caseListItems });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
-            }
-        }
-
-        /// <summary>
-        /// Retorna os totais de Casos de Uso por membro do Comitê LGPD (Extensão Encarregado).
-        /// Endpoint disponibilizado apenas para o DPO.
-        /// </summary>
-        /// <returns>
-        /// Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto ExtensaoEncarregadoTotals).
-        /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
-        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
-        /// </returns>
-        [ResponseType(typeof(TotalsResponseType<ExtensaoEncarregadoTotals>))]
-        [Route("extensao-encarregado/totals")]
-        [Authorize]
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetTotalsByExtensaoEncarregado()
-        {
-            if (User.Identity is ClaimsIdentity identity)
-            {
-                var claims = TokenUtil.GetTokenClaims(identity);
-
-                if (!(claims.IsDpo || claims.IsDeveloper))
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
-                }
-            }
-
-            try
-            {
-                var comiteMembers = await _context.Users.Where(u => u.IsComite)
-                    .Include(g => g.GroupAccessExpirations.Select(gae => gae.Group))
-                    .ToListAsync();
-
-                var totals = new List<ExtensaoEncarregadoTotals>();
-                var totalQuantity = 0;
-
-                foreach (var comiteMember in comiteMembers)
-                {
-                    var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Group.Id)
-                        .ToList();
-
-                    var pendingCases = await _context.Cases.CountAsync(c =>
-                        comiteMemberGroupsIds.Contains(c.GrupoCriadorId) && !c.Aprovado && c.EncaminhadoAprovacao);
-
-                    if (pendingCases == 0) continue;
-
-                    totals.Add(new ExtensaoEncarregadoTotals()
-                    {
-                        ExtensaoId = comiteMember.Id,
-                        ExtensaoNome = Seguranca.ObterUsuario(comiteMember.Username.ToUpper())
-                            .Nome,
-                        QuantityByExtensao = pendingCases
-                    });
-
-                    totalQuantity += pendingCases;
-                }
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
             }
@@ -591,6 +565,67 @@ namespace CPTM.ILA.Web.Controllers.API
                     .CountAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+        }
+
+        // MARKED FOR REFACTOR: make do with GetTotalsByStatus
+
+        /// <summary>
+        /// Retorna o total de Casos de Uso pendentes de aprovação para um grupo especificado. 
+        /// Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+        /// 
+        /// </summary>
+        /// <param name="gid">Id do grupo</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "totalPeding" onde se encontra o total dos Casos de Uso pendentes.
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+        /// </returns>
+        [ResponseType(typeof(ApiResponseType<int>))]
+        [Route("group/{gid:int}/status/pending/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalPendingByGroup(int gid)
+        {
+            try
+            {
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                        .ToListAsync();
+
+                    var searchedGroup = await _context.Groups.FindAsync(gid);
+
+                    if (!(userGroups.Contains(searchedGroup) || claims.IsDpo || claims.IsDeveloper))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+                if (gid <= 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+                }
+
+                var pendingGroupCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.GrupoCriadorId == gid &&
+                                c.Aprovado == false &&
+                                c.Reprovado == false &&
+                                c.EncaminhadoAprovacao == true)
+                    .ToListAsync();
+
+                var totalPending = pendingGroupCases.Count;
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totalPending });
             }
             catch (Exception e)
             {
