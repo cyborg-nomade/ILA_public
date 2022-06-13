@@ -1005,7 +1005,8 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     user.GroupAccessExpirations.Add(new GroupAccessExpiration()
                     {
-                        ExpirationDate = user.IsComite ? DateTime.MaxValue : DateTime.Now.AddDays(30),
+                        ExpirationDate = user.IsComite ? DateTime.MaxValue : DateTime.Now,
+                        //ExpirationDate = user.IsComite ? DateTime.MaxValue : DateTime.Now.AddDays(30),
                         Group = group
                     });
                 }
@@ -1083,6 +1084,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var gaeToRemove = user.GroupAccessExpirations.SingleOrDefault(gae => gae.Group == groupToRemove);
 
                 user.GroupAccessExpirations.Remove(gaeToRemove);
+                if (gaeToRemove != null) _context.GroupAccessExpirations.Remove(gaeToRemove);
 
                 _context.Entry(user)
                     .State = EntityState.Modified;

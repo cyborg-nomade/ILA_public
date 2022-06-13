@@ -29,6 +29,7 @@ namespace CPTM.ILA.Web.Models
         public virtual DbSet<Case> Cases { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
+        public virtual DbSet<GroupAccessExpiration> GroupAccessExpirations { get; set; }
         public virtual DbSet<AccessRequest> AccessRequests { get; set; }
         public virtual DbSet<ChangeLog> ChangeLogs { get; set; }
         public virtual DbSet<AgenteTratamento> AgentesTratamento { get; set; }
