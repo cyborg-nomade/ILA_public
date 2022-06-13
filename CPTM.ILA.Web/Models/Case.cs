@@ -101,7 +101,7 @@ namespace CPTM.ILA.Web.Models
             Reprovado = false;
             EncaminhadoAprovacao = false;
             DataAprovacao = DateTime.Today;
-            DataProxRevisao = DataAprovacao?.AddMonths(6);
+            DataProxRevisao = DataAprovacao?.AddYears(1);
             return this;
         }
 

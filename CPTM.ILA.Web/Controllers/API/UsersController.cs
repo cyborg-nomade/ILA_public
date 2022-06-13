@@ -222,11 +222,12 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Seu usuário ainda não tem acesso a este sistema. Solicite acesso." });
                 }
 
-                foreach (var groupAccessExpiration in userInDb.GroupAccessExpirations)
+                foreach (var groupAccessExpiration in userInDb.GroupAccessExpirations.ToList())
                 {
-                    if (groupAccessExpiration.ExpirationDate <= DateTime.Now && !isDeveloper)
+                    if (groupAccessExpiration.ExpirationDate <= DateTime.Now)
                     {
                         userInDb.GroupAccessExpirations.Remove(groupAccessExpiration);
+                        _context.GroupAccessExpirations.Remove(groupAccessExpiration);
                     }
                 }
 
