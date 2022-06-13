@@ -32,7 +32,7 @@ const CaseRegisterOptions = () => {
                         <Button
                             variant="info"
                             size="lg"
-                            style={{ height: "5rem" }}
+                            style={{ height: "8rem" }}
                             onClick={newHandler}
                         >
                             NOVO PROCESSO
@@ -44,7 +44,7 @@ const CaseRegisterOptions = () => {
                         <Button
                             variant="success"
                             size="lg"
-                            style={{ height: "5rem" }}
+                            style={{ height: "8rem" }}
                             onClick={continueHandler}
                         >
                             CONTINUAR PROCESSO
@@ -56,7 +56,7 @@ const CaseRegisterOptions = () => {
                         <Button
                             variant="secondary"
                             size="lg"
-                            style={{ height: "5rem" }}
+                            style={{ height: "8rem" }}
                             onClick={editHandler}
                         >
                             ALTERAR PROCESSO EXISTENTE
@@ -68,7 +68,7 @@ const CaseRegisterOptions = () => {
                         <Button
                             variant="danger"
                             size="lg"
-                            style={{ height: "5rem" }}
+                            style={{ height: "8rem" }}
                             onClick={reprovadosHandler}
                         >
                             REVISAR PROCESSOS REPROVADOS
