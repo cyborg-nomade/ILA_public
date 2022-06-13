@@ -609,7 +609,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "uniqueCase" que contém os dados do Caso de Uso (objeto Case).
         /// Em caso de erro, retorna um objeto JSON com uma chave "message" contendo a descrição do erro.
         /// </returns>
-        [ResponseType(typeof(ApiResponseType<Case>))]
+        [ResponseType(typeof(ApiResponseType<CaseDTO>))]
         [Route("{cid:int}")]
         [Authorize]
         [HttpGet]
@@ -691,7 +691,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido.
         /// Também retorna uma chave "caseToSave" contendo o Caso de Uso salvo
         /// </returns>
-        [ResponseType(typeof(ApiResponseType<Case>))]
+        [ResponseType(typeof(ApiResponseType<CaseDTO>))]
         [Route("")]
         [Authorize]
         [HttpPost]
@@ -760,7 +760,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
         /// Também retorna uma chave "caseToSave" contendo o Caso de Uso salvo
         /// </returns>
-        [ResponseType(typeof(ApiResponseType<Case>))]
+        [ResponseType(typeof(ApiResponseType<CaseDTO>))]
         [Route("{cid:int}")]
         [Authorize]
         [HttpPost]
@@ -1219,8 +1219,10 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 await _context.SaveChangesAsync();
 
+                var responseCase = CaseDTO.ConvertToCaseDTO(caseToSave);
+
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Processo alterado com sucesso!", caseToSave });
+                    new { message = "Processo alterado com sucesso!", caseToSave = responseCase });
             }
             catch (Exception e)
             {
@@ -1340,10 +1342,10 @@ namespace CPTM.ILA.Web.Controllers.API
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
         /// </returns>
-        [Route("approve/{cid:int}")]
+        [Route("approve/{cid:int}/{aprovado:bool}")]
         [Authorize]
         [HttpPost]
-        public async Task<HttpResponseMessage> Approve(int cid, [FromBody] bool aprovado)
+        public async Task<HttpResponseMessage> Approve(int cid, bool aprovado, [FromBody] string comentarioReprovado)
         {
             if (cid <= 0)
             {
@@ -1394,7 +1396,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (!aprovado)
                 {
-                    caseToApprove.ReproveCase();
+                    caseToApprove.ReproveCase(comentarioReprovado);
 
                     changeLog.CaseDiff = @"
                         {

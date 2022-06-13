@@ -105,11 +105,12 @@ namespace CPTM.ILA.Web.Models
             return this;
         }
 
-        public Case ReproveCase()
+        public Case ReproveCase(string comentarioReprovacao)
         {
             Aprovado = false;
             EncaminhadoAprovacao = false;
             Reprovado = true;
+            ComentarioReprovacao = comentarioReprovacao;
             return this;
         }
 
