@@ -18,6 +18,7 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
 import SaveProgressModal from "../components/modals/SaveProgressModal";
 import SendToApprovalModal from "../components/modals/SendToApprovalModal";
+import LoadingModal from "../components/modals/LoadingModal";
 
 const NewCase = () => {
     const { token, user, currentGroup, areaTratamentoDados } =
@@ -30,6 +31,7 @@ const NewCase = () => {
     const [initialCase, setInitialCase] = useState<Case>(
         emptyCase(areaTratamentoDados)
     );
+    const [isLoadingUseStateData, setIsLoadingUseStateData] = useState(false);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
@@ -39,6 +41,7 @@ const NewCase = () => {
     useEffect(() => {
         const getComiteMembers = async () => {
             try {
+                setIsLoadingUseStateData(true);
                 const responseData = await sendRequest(
                     `${process.env.REACT_APP_CONNSTR}/users/comite-members/${currentGroup.id}`,
                     undefined,
@@ -56,6 +59,7 @@ const NewCase = () => {
                         area: currentGroup.nome,
                     },
                 }));
+                setIsLoadingUseStateData(false);
             } catch (e) {
                 console.log(e);
             }
@@ -68,7 +72,13 @@ const NewCase = () => {
         return () => {
             setInitialCase(emptyCase(areaTratamentoDados));
         };
-    }, [areaTratamentoDados, currentGroup.id, sendRequest, token]);
+    }, [
+        areaTratamentoDados,
+        currentGroup.id,
+        currentGroup.nome,
+        sendRequest,
+        token,
+    ]);
 
     const dismissModalHandler = () => {
         navigate(-1);
@@ -288,6 +298,7 @@ const NewCase = () => {
                     Ocorreu um erro: {error}
                 </Alert>
             )}
+            <LoadingModal isLoading={isLoadingUseStateData} />
             <SaveProgressModal
                 onHideSaveProgressModal={hideSaveProgressModalHandler}
                 onSaveProgressSubmit={saveProgressHandler}

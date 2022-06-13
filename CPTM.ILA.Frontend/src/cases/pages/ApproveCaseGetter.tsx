@@ -10,6 +10,7 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
 import ApproveCaseModal from "../components/modals/ApproveCaseModal";
 import RepproveCaseModal from "../components/modals/RepproveCaseModal";
+import LoadingModal from "./../components/modals/LoadingModal";
 
 const ApproveCaseGetter = () => {
     const { token } = useContext(AuthContext);
@@ -18,6 +19,7 @@ const ApproveCaseGetter = () => {
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showRepproveModal, setShowRepproveModal] = useState(false);
     const [fullCase, setFullCase] = useState<Case>(emptyCase());
+    const [isLoadingUseStateData, setIsLoadingUseStateData] = useState(false);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
@@ -27,6 +29,7 @@ const ApproveCaseGetter = () => {
 
     useEffect(() => {
         const getCaseToApprove = async () => {
+            setIsLoadingUseStateData(true);
             const responseData = await sendRequest(
                 `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
                 undefined,
@@ -44,6 +47,7 @@ const ApproveCaseGetter = () => {
 
             console.log("loadedCase dates altered: ", loadedCase);
             setFullCase(loadedCase);
+            setIsLoadingUseStateData(false);
         };
 
         getCaseToApprove().catch((error) => {
@@ -160,6 +164,7 @@ const ApproveCaseGetter = () => {
                     Ocorreu um erro: {error}
                 </Alert>
             )}
+            <LoadingModal isLoading={isLoadingUseStateData} />
             <ApproveCaseModal
                 onApproveSubmit={approveCaseHandler}
                 onHideApproveModal={hideApproveHandler}
