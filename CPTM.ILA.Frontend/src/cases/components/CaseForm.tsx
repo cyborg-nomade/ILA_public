@@ -10,7 +10,6 @@ import Accordion from "react-bootstrap/Accordion";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Stack from "react-bootstrap/Stack";
@@ -46,6 +45,7 @@ import Section15FormRow from "./form-items/Section15FormRow";
 import Section16FormRow from "./form-items/Section16FormRow";
 import { useCountdown } from "../../shared/hooks/timer-hook";
 import DeleteModal from "./modals/DeleteModal";
+import _ from "lodash";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -1407,6 +1407,27 @@ const CaseForm = (props: {
                         <Accordion.Body>
                             <Accordion
                                 defaultActiveKey={formIsValid ? "" : "0"}
+                                activeKey={
+                                    !formIsValid
+                                        ? [
+                                              "60",
+                                              "61",
+                                              "62",
+                                              "63",
+                                              "64",
+                                              "65",
+                                              "66",
+                                              "67",
+                                              "68",
+                                              "69",
+                                              "610",
+                                              "611",
+                                              "612",
+                                              "613",
+                                              "614",
+                                          ]
+                                        : undefined
+                                }
                                 alwaysOpen={!formIsValid}
                             >
                                 <Accordion.Item eventKey="60">
@@ -4391,7 +4412,7 @@ const CaseForm = (props: {
                                 handleSendToApprovalClick(methods.getValues())
                             }
                         >
-                            Encaminhar para encarregado de Dados
+                            Encaminhar para aprovação
                         </Button>
                     </Stack>
                 )}
@@ -4419,6 +4440,26 @@ const CaseForm = (props: {
                         </Button>
                     </Stack>
                 )}
+                {props.edit && !isEditing && (
+                    <Stack direction="horizontal" className="mt-3" gap={0}>
+                        <Button variant="light" onClick={() => onCancel()}>
+                            Cancelar
+                        </Button>
+                        <Button
+                            variant="danger"
+                            className="ms-auto"
+                            onClick={() => setShowDeleteModal(true)}
+                        >
+                            Remover
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => onStartEditing()}
+                        >
+                            Editar
+                        </Button>
+                    </Stack>
+                )}
                 {props.edit && isEditing && (
                     <Stack direction="horizontal" className="mt-3" gap={3}>
                         <Button variant="light" onClick={() => onCancel()}>
@@ -4442,11 +4483,11 @@ const CaseForm = (props: {
                                 handleSendToApprovalClick(methods.getValues())
                             }
                         >
-                            Encaminhar para encarregado de Dados
+                            Re-Encaminhar para aprovação
                         </Button>
                     </Stack>
                 )}
-                {props.edit && !isEditing && (
+                {props.continue && !isEditing && (
                     <Stack direction="horizontal" className="mt-3" gap={0}>
                         <Button variant="light" onClick={() => onCancel()}>
                             Cancelar
@@ -4463,6 +4504,35 @@ const CaseForm = (props: {
                             onClick={() => onStartEditing()}
                         >
                             Editar
+                        </Button>
+                    </Stack>
+                )}
+                {props.continue && isEditing && (
+                    <Stack direction="horizontal" className="mt-3" gap={3}>
+                        <Button variant="light" onClick={() => onCancel()}>
+                            Cancelar
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            className="ms-auto"
+                            onClick={() =>
+                                props.onSaveProgressSubmit!(methods.getValues())
+                            }
+                        >
+                            Salvar Alterações
+                        </Button>
+                        <Button
+                            type="button"
+                            disabled={_.isEmpty(
+                                methods.formState.touchedFields
+                            )}
+                            variant="warning"
+                            onClick={() =>
+                                handleSendToApprovalClick(methods.getValues())
+                            }
+                        >
+                            Encaminhar para aprovação
                         </Button>
                     </Stack>
                 )}
