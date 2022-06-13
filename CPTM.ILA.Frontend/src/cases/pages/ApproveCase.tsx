@@ -172,6 +172,7 @@ const ApproveCaseGetter = () => {
                 showApproveModal={showApproveModal}
                 showChildrenContent={isLoading || error || !!message}
                 isLoading={isLoading}
+                hasError={!!error}
             >
                 {contentChildren}
             </ApproveCaseModal>
@@ -182,6 +183,7 @@ const ApproveCaseGetter = () => {
                 onRepproveSubmit={reproveCaseHandler}
                 showChildrenContent={isLoading || error || !!message}
                 showRepproveModal={showRepproveModal}
+                hasError={!!error}
             >
                 {contentChildren}
             </RepproveCaseModal>
