@@ -75,9 +75,9 @@ const ApproveCaseGetter = () => {
 
         try {
             const approveRespose = await sendRequest(
-                `${process.env.REACT_APP_CONNSTR}/cases/approve/${cid}`,
+                `${process.env.REACT_APP_CONNSTR}/cases/approve/${cid}/${fullCase.aprovado}`,
                 "POST",
-                JSON.stringify(fullCase.aprovado),
+                JSON.stringify(fullCase.comentarioReprovacao),
                 {
                     "Content-Type": "application/json",
                     Authorization: "Bearer " + token,
@@ -108,9 +108,9 @@ const ApproveCaseGetter = () => {
 
         try {
             const repproveResponse = await sendRequest(
-                `${process.env.REACT_APP_CONNSTR}/cases/approve/${cid}`,
+                `${process.env.REACT_APP_CONNSTR}/cases/approve/${cid}/${fullCase.aprovado}`,
                 "POST",
-                JSON.stringify(fullCase.aprovado),
+                JSON.stringify(fullCase.comentarioReprovacao),
                 {
                     "Content-Type": "application/json",
                     Authorization: "Bearer " + token,

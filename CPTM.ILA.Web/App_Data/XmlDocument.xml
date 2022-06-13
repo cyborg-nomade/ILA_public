@@ -848,7 +848,7 @@
             Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
             </returns>
         </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Approve(System.Int32,System.Boolean)">
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Approve(System.Int32,System.Boolean,System.String)">
             <summary>
             Realiza a aprovação ou reprovação de um Caso de Uso.
             Endpoint disponibilizado para o DPO e para membros do Comitê LGPD com acesso ao grupo criador.
