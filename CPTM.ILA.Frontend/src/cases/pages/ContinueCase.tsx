@@ -13,6 +13,8 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
 import SaveProgressModal from "../components/modals/SaveProgressModal";
 import SendToApprovalModal from "../components/modals/SendToApprovalModal";
+import LoadingModal from "./../components/modals/LoadingModal";
+import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
 
 const ContinueCase = () => {
     const { user, token, currentGroup } = useContext(AuthContext);
@@ -22,6 +24,7 @@ const ContinueCase = () => {
     const [showSendToApprovalModal, setShowSendToApprovalModal] =
         useState(false);
     const [fullCase, setFullCase] = useState<Case>(emptyCase());
+    const [isLoadingUseStateData, setIsLoadingUseStateData] = useState(false);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
@@ -31,6 +34,7 @@ const ContinueCase = () => {
 
     useEffect(() => {
         const getCaseToEdit = async () => {
+            setIsLoadingUseStateData(true);
             const responseData = await sendRequest(
                 `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
                 undefined,
@@ -47,12 +51,49 @@ const ContinueCase = () => {
             console.log("loadedCase dates altered: ", loadedCase);
 
             setFullCase(loadedCase);
+            setIsLoadingUseStateData(true);
         };
 
         getCaseToEdit().catch((error) => {
             console.log(error);
         });
     }, [cid, sendRequest, token]);
+
+    useEffect(() => {
+        const getComiteMembers = async () => {
+            try {
+                setIsLoadingUseStateData(true);
+                const responseData = await sendRequest(
+                    `${process.env.REACT_APP_CONNSTR}/users/comite-members/${currentGroup.id}`,
+                    undefined,
+                    undefined,
+                    { Authorization: "Bearer " + token }
+                );
+                const loadedComiteMember: AgenteTratamento =
+                    responseData.comiteMember;
+                console.log("loadedComiteMember: ", loadedComiteMember);
+                setFullCase((prevCase) => ({
+                    ...prevCase,
+                    extensaoEncarregado: loadedComiteMember,
+                    areaTratamentoDados: {
+                        ...prevCase.areaTratamentoDados,
+                        area: currentGroup.nome,
+                    },
+                }));
+                setIsLoadingUseStateData(false);
+            } catch (e) {
+                console.log(e);
+            }
+        };
+
+        getComiteMembers().catch((error) => {
+            console.log(error);
+        });
+
+        return () => {
+            setFullCase(emptyCase());
+        };
+    }, [currentGroup.id, currentGroup.nome, sendRequest, token]);
 
     const dismissModalHandler = () => {
         navigate(-1);
@@ -264,6 +305,7 @@ const ContinueCase = () => {
                     Ocorreu um erro: {error}
                 </Alert>
             )}
+            <LoadingModal isLoading={isLoadingUseStateData} />
             <SaveProgressModal
                 onHideSaveProgressModal={hideSaveProgressModalHandler}
                 onSaveProgressSubmit={saveProgressHandler}

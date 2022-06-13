@@ -8,9 +8,11 @@ import { Case, emptyCase } from "../../shared/models/cases.model";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CaseForm from "../components/CaseForm";
+import LoadingModal from "../components/modals/LoadingModal";
 
 const CheckCase = () => {
     const [fullCase, setFullCase] = useState<Case>(emptyCase());
+    const [isLoadingUseStateData, setIsLoadingUseStateData] = useState(false);
 
     const { token } = useContext(AuthContext);
 
@@ -21,6 +23,7 @@ const CheckCase = () => {
 
     useEffect(() => {
         const getCaseToApprove = async () => {
+            setIsLoadingUseStateData(true);
             const responseData = await sendRequest(
                 `${process.env.REACT_APP_CONNSTR}/cases/${cid}`,
                 undefined,
@@ -38,6 +41,7 @@ const CheckCase = () => {
 
             console.log("loadedCase dates altered: ", loadedCase);
             setFullCase(loadedCase);
+            setIsLoadingUseStateData(false);
         };
 
         getCaseToApprove().catch((error) => {
@@ -67,6 +71,7 @@ const CheckCase = () => {
                     Ocorreu um erro: {error}
                 </Alert>
             )}
+            <LoadingModal isLoading={isLoadingUseStateData} />
             <CaseForm item={fullCase} check={true} />
         </React.Fragment>
     );
