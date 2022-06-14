@@ -26,7 +26,7 @@ const UserCasesListGetter = React.lazy(
     () => import("./users/pages/UserCasesListGetter")
 );
 const UserPage = React.lazy(() => import("./users/pages/UserPage"));
-const ApproveCaseGetter = React.lazy(() => import("./cases/pages/ApproveCase"));
+const ApproveCase = React.lazy(() => import("./cases/pages/ApproveCase"));
 const RequestAccess = React.lazy(() => import("./users/pages/RequestAccess"));
 const AllAccessRequestsPage = React.lazy(
     () => import("./access-requests/pages/AllAccessRequestsPage")
@@ -59,7 +59,7 @@ const ComiteCasesListGetter = React.lazy(
 );
 const ComiteHomePage = React.lazy(() => import("./users/pages/ComiteHomePage"));
 const DpoPage = React.lazy(() => import("./users/pages/DpoPage"));
-const DpoCasesListGetter = React.lazy(
+const DpoPendingCasesListGetter = React.lazy(
     () => import("./users/pages/DpoPendingCasesListGetter")
 );
 const AlterComiteMemberCockpit = React.lazy(
@@ -147,7 +147,7 @@ const App = () => {
                 </Route>
                 <Route
                     path="/comite/cases/approve/:cid"
-                    element={<ApproveCaseGetter />}
+                    element={<ApproveCase />}
                 />
                 <Route path="/comite/cases/:cid" element={<CheckCase />} />
                 <Route
@@ -190,7 +190,7 @@ const App = () => {
                     <Route path="cases" element={<UserCasesLayout />}>
                         <Route
                             path="pending"
-                            element={<DpoCasesListGetter />}
+                            element={<DpoPendingCasesListGetter />}
                         />
                     </Route>
                 </Route>
