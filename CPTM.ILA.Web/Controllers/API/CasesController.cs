@@ -248,8 +248,8 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Retorna todos os Casos de Uso de um grupo de acesso que estejam em um certo status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
         /// </summary>
         /// <param name="gid">Id do grupo</param>
-        /// <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
         /// <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+        /// <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
         /// <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
