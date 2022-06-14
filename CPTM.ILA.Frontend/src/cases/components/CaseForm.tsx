@@ -46,6 +46,7 @@ import Section16FormRow from "./form-items/Section16FormRow";
 import { useCountdown } from "../../shared/hooks/timer-hook";
 import DeleteModal from "./modals/DeleteModal";
 import _ from "lodash";
+import LoadingModal from "./modals/LoadingModal";
 
 type onSubmitFn = (item: Case) => void;
 
@@ -89,7 +90,7 @@ const CaseForm = (props: {
         useContext(AuthContext);
     const { minutes } = useCountdown(tokenExpirationDate);
     const { sendRequest, error, clearError, isLoading } = useHttpClient();
-    const { systems, countries } = useUtilities();
+    const { systems, countries, isLoadingUtilities } = useUtilities();
     let navigate = useNavigate();
     const cid = useParams().cid || "";
 
@@ -192,6 +193,7 @@ const CaseForm = (props: {
 
     return (
         <React.Fragment>
+            <LoadingModal isLoading={isLoadingUtilities} />
             <DeleteModal
                 item={props.item}
                 onDeleteSubmit={onDelete}
@@ -1325,7 +1327,8 @@ const CaseForm = (props: {
                                         finalidade, import
                                         NewSection9QuantityRow from
                                         './new-form-import NewSection11FormRow
-                                        from
+                                        fromimport LoadingModal from
+                                        './modals/LoadingModal';
                                         './new-form-items/NewSection11FormRow';
                                         items/NewSection9QuantityRow'; pois é
                                         ela que justifica o tratamento de dados
