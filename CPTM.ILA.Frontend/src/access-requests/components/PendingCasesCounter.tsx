@@ -14,7 +14,7 @@ const PendingCasesCounter = (props: { gid: number }) => {
         const getGroupCasePendingTotals = async () => {
             try {
                 const responseData = await sendRequest(
-                    `${process.env.REACT_APP_CONNSTR}/cases/group/${props.gid}/status/pending/totals`,
+                    `${process.env.REACT_APP_CONNSTR}/cases/group/${props.gid}/status/true/false/false/totals`,
                     undefined,
                     undefined,
                     {
