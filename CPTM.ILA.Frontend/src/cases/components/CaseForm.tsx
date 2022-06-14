@@ -95,11 +95,30 @@ const CaseForm = (props: {
     const cid = useParams().cid || "";
 
     const methods = useForm<Case>({
-        defaultValues: { ...props.item, encarregado: dpo },
+        defaultValues: {
+            ...props.item,
+            controlador: {
+                ...props.item.controlador,
+                area: dpo.area,
+                email: dpo.email,
+                telefone: dpo.telefone,
+            },
+            encarregado: dpo,
+        },
     });
     const { reset, getValues } = methods;
     useEffect(
-        () => reset({ ...props.item, encarregado: dpo }),
+        () =>
+            reset({
+                ...props.item,
+                controlador: {
+                    ...props.item.controlador,
+                    area: dpo.area,
+                    email: dpo.email,
+                    telefone: dpo.telefone,
+                },
+                encarregado: dpo,
+            }),
         [reset, props.item, dpo]
     );
 
@@ -515,8 +534,43 @@ const CaseForm = (props: {
                                 </Col>
                                 <Col>
                                     <Controller
+                                        rules={{
+                                            required: true,
+                                            maxLength: 250,
+                                        }}
                                         control={methods.control}
                                         name="controlador.nome"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                onBlur,
+                                                value,
+                                                ref,
+                                            },
+                                        }) => (
+                                            <Form.Control
+                                                disabled={!isEditing}
+                                                type="text"
+                                                onChange={(event) =>
+                                                    onChange(
+                                                        event.currentTarget.value.toUpperCase()
+                                                    )
+                                                }
+                                                onBlur={onBlur}
+                                                value={value}
+                                                ref={ref}
+                                                isInvalid={
+                                                    !!methods.formState.errors
+                                                        .controlador?.nome
+                                                }
+                                            />
+                                        )}
+                                    />
+                                </Col>
+                                <Col>
+                                    <Controller
+                                        control={methods.control}
+                                        name="controlador.area"
                                         render={({
                                             field: {
                                                 onChange,
@@ -538,13 +592,52 @@ const CaseForm = (props: {
                                     />
                                 </Col>
                                 <Col>
-                                    <Form.Control disabled />
+                                    <Controller
+                                        control={methods.control}
+                                        name="controlador.telefone"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                onBlur,
+                                                value,
+                                                ref,
+                                            },
+                                        }) => (
+                                            <Form.Control
+                                                disabled
+                                                type="text"
+                                                onChange={onChange}
+                                                onBlur={onBlur}
+                                                value={value}
+                                                ref={ref}
+                                                readOnly
+                                            />
+                                        )}
+                                    />
                                 </Col>
                                 <Col>
-                                    <Form.Control disabled />
-                                </Col>
-                                <Col>
-                                    <Form.Control disabled />
+                                    <Controller
+                                        control={methods.control}
+                                        name="controlador.email"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                onBlur,
+                                                value,
+                                                ref,
+                                            },
+                                        }) => (
+                                            <Form.Control
+                                                disabled
+                                                type="text"
+                                                onChange={onChange}
+                                                onBlur={onBlur}
+                                                value={value}
+                                                ref={ref}
+                                                readOnly
+                                            />
+                                        )}
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mb-3">
