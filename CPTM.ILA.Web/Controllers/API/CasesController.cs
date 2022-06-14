@@ -15,6 +15,7 @@ using CPTM.ILA.Web.Models.ChangeLogging;
 using CPTM.ILA.Web.Util;
 using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.CaseHelpers;
+using Microsoft.Ajax.Utilities;
 
 
 namespace CPTM.ILA.Web.Controllers.API
@@ -26,6 +27,9 @@ namespace CPTM.ILA.Web.Controllers.API
     public class CasesController : ApiController
     {
         private readonly ILAContext _context;
+        private const string _successMessage = "com sucesso!";
+        private static readonly string CaseListSuccessMessage = $@"Casos obtidos {_successMessage}";
+        private static readonly string TotalsSuccessMessage = $@"Totais obtidos {_successMessage}";
 
         /// <inheritdoc />
         public CasesController()
@@ -64,7 +68,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var caseListItems = cases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { caseListItems, message = "Casos obtidos com sucesso" });
+                    new { caseListItems, message = CaseListSuccessMessage });
             }
             catch (Exception e)
             {
@@ -117,7 +121,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var caseListItems = cases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { caseListItems, message = CaseListSuccessMessage });
             }
             catch (Exception e)
             {
@@ -179,7 +184,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var caseListItems = pendingCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { caseListItems });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { caseListItems, message = CaseListSuccessMessage });
             }
             catch (Exception e)
             {
@@ -195,7 +201,35 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpGet]
         public async Task<HttpResponseMessage> GetByStatus(bool encaminhadoAprovacao, bool aprovado, bool reprovado)
         {
-            return new HttpResponseMessage();
+            try
+            {
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    if (!(claims.IsDpo || claims.IsDeveloper))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+                var filteredCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.Aprovado == aprovado &&
+                                c.EncaminhadoAprovacao == encaminhadoAprovacao &&
+                                c.Reprovado == reprovado)
+                    .ToListAsync();
+
+                var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems, message= CaseListSuccessMessage });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
         }
 
         /// <summary>
@@ -249,7 +283,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems });
+                return Request.CreateResponse(HttpStatusCode.OK, new { cases = caseListItems, message = CaseListSuccessMessage });
             }
             catch (Exception e)
             {
@@ -264,14 +298,14 @@ namespace CPTM.ILA.Web.Controllers.API
         public async Task<HttpResponseMessage> GetByExtensaoEncarregadoByStatus(int uid, bool encaminhadoAprovacao,
             bool aprovado, bool reprovado)
         {
-            return new HttpResponseMessage();
+            return Request.CreateResponse(HttpStatusCode.OK, new {message = CaseListSuccessMessage});
         }
 
         [ResponseType(typeof(TotalsResponseType<GroupTotals>))]
         [Route("user/{uid:int}/group/totals")]
         public async Task<HttpResponseMessage> GetTotalsByUserGroups(int uid)
         {
-            return new HttpResponseMessage();
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = TotalsSuccessMessage });
         }
 
         /// <summary>
@@ -332,7 +366,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var totalQuantity = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
                     .CountAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity, message = TotalsSuccessMessage });
             }
             catch (Exception e)
             {
@@ -397,7 +431,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     totalQuantity += pendingCases;
                 }
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity, message = TotalsSuccessMessage });
             }
             catch (Exception e)
             {
@@ -413,7 +447,7 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpGet]
         public async Task<HttpResponseMessage> GetTotalsByStatus()
         {
-            return new HttpResponseMessage();
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = TotalsSuccessMessage });
         }
 
         /// <summary>
@@ -483,7 +517,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var totalQuantity = await _context.Cases.Where(c => c.GrupoCriadorId == gid)
                     .CountAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity, message = TotalsSuccessMessage });
             }
             catch (Exception e)
             {
@@ -564,7 +598,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var totalQuantity = await _context.Cases.Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId))
                     .CountAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity });
+                return Request.CreateResponse(HttpStatusCode.OK, new { totals, totalQuantity, message = TotalsSuccessMessage });
             }
             catch (Exception e)
             {
