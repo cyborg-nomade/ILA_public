@@ -18,6 +18,8 @@ namespace CPTM.ILA.Web.Controllers.API
     public class GroupsController : ApiController
     {
         private readonly ILAContext _context;
+        private readonly string ErrorMessage = "Algo deu errado no servidor.Problema foi reportado ao suporte técnico";
+
 
         /// <inheritdoc />
         public GroupsController()
@@ -67,8 +69,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
     }
