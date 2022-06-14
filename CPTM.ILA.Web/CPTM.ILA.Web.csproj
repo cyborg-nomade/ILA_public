@@ -405,6 +405,7 @@
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Util\ApiResponseType.cs" />
+    <Compile Include="Util\ErrorReportingUtil.cs" />
     <Compile Include="Util\ITSMUtil.cs" />
     <Compile Include="Util\TokenClaimNames.cs" />
     <Compile Include="Util\DbUtil.cs" />

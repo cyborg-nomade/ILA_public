@@ -608,7 +608,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var totalInStatus = await _context.Cases.Include(c => c.FinalidadeTratamento)
                     .Where(c => c.Aprovado == aprovado &&
-                                c.Reprovado == aprovado &&
+                                c.Reprovado == reprovado &&
                                 c.EncaminhadoAprovacao == encaminhadoAprovacao)
                     .CountAsync();
 
@@ -1645,6 +1645,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// </summary>
         /// <param name="cid">Id do caso de uso</param>
         /// <param name="aprovado">Objeto vindo do corpo da requisição HTTP, indicando se o caso foi aprovado ou não</param>
+        /// <param name="comentarioReprovado">String contendo o comentário de reprovação</param>
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
         /// </returns>
