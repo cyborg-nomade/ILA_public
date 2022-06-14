@@ -12,7 +12,7 @@ import ApproveCaseModal from "../components/modals/ApproveCaseModal";
 import RepproveCaseModal from "../components/modals/RepproveCaseModal";
 import LoadingModal from "../components/modals/LoadingModal";
 
-const ApproveCaseGetter = () => {
+const ApproveCase = () => {
     const { token } = useContext(AuthContext);
 
     const [message, setMessage] = useState("");
@@ -197,4 +197,4 @@ const ApproveCaseGetter = () => {
     );
 };
 
-export default ApproveCaseGetter;
+export default ApproveCase;
