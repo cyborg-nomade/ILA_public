@@ -243,7 +243,8 @@ namespace CPTM.ILA.Web.Controllers.API
         }
 
         /// <summary>
-        /// Retorna todos os Casos de Uso de um grupo de acesso que estejam em um certo status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+        /// Retorna todos os Casos de Uso de um grupo de acesso que estejam em um certo status de aprovação.
+        /// Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
         /// </summary>
         /// <param name="gid">Id do grupo</param>
         /// <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
@@ -304,6 +305,18 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Retorna todos os Casos de Uso dos grupos de um membro do Comitê LGPD que estejam em um certo status de aprovação.
+        /// Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <param name="uid">Id do membro do comitê</param>
+        /// <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+        /// <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
+        /// <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+        /// </returns>
         [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
         [Route("extensao-encarregado/{uid:int}/status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}")]
         public async Task<HttpResponseMessage> GetByExtensaoEncarregadoByStatus(int uid, bool encaminhadoAprovacao,
@@ -356,7 +369,6 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
                     new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
-
         }
 
         [ResponseType(typeof(TotalsResponseType<GroupTotals>))]
