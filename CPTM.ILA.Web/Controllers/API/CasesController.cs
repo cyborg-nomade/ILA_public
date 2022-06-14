@@ -177,9 +177,7 @@ namespace CPTM.ILA.Web.Controllers.API
                     .ToList();
 
                 var pendingCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
-                    .Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId) &&
-                                !c.Aprovado &&
-                                c.EncaminhadoAprovacao)
+                    .Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId))
                     .ToListAsync();
 
                 var caseListItems = pendingCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
@@ -311,7 +309,54 @@ namespace CPTM.ILA.Web.Controllers.API
         public async Task<HttpResponseMessage> GetByExtensaoEncarregadoByStatus(int uid, bool encaminhadoAprovacao,
             bool aprovado, bool reprovado)
         {
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = CaseListSuccessMessage });
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDpo || claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            if (uid <= 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de usuário inválido." });
+            }
+
+            try
+            {
+                var comiteMember = await _context.Users.Where(u => u.Id == uid && u.IsComite)
+                    .Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .SingleOrDefaultAsync();
+                if (comiteMember == null)
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new
+                    {
+                        message = "Usuário requisitado não encontrado."
+                    });
+
+                var comiteMemberGroupsIds = comiteMember.GroupAccessExpirations.Select(g => g.Group.Id)
+                    .ToList();
+
+                var filteredCases = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => comiteMemberGroupsIds.Contains(c.GrupoCriadorId) &&
+                                c.Aprovado == aprovado &&
+                                c.EncaminhadoAprovacao == encaminhadoAprovacao &&
+                                c.Reprovado == reprovado)
+                    .ToListAsync();
+
+                var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { cases = caseListItems, message = CaseListSuccessMessage });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+
         }
 
         [ResponseType(typeof(TotalsResponseType<GroupTotals>))]

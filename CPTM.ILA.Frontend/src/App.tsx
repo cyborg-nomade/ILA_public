@@ -60,7 +60,7 @@ const ComiteCasesListGetter = React.lazy(
 const ComiteHomePage = React.lazy(() => import("./users/pages/ComiteHomePage"));
 const DpoPage = React.lazy(() => import("./users/pages/DpoPage"));
 const DpoCasesListGetter = React.lazy(
-    () => import("./users/pages/DpoCasesListGetter")
+    () => import("./users/pages/DpoPendingCasesListGetter")
 );
 const AlterComiteMemberCockpit = React.lazy(
     () => import("./access-requests/pages/AlterComiteMemberCockpit")

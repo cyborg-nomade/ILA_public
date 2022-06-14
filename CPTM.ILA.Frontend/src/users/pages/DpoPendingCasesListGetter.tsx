@@ -8,7 +8,7 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CasesList from "../../cases/components/CasesList";
 
-const DpoCasesListGetter = () => {
+const DpoPendingCasesListGetter = () => {
     const [cases, setCases] = useState<CaseListItem[]>([]);
 
     const { token, currentComiteMember } = useContext(AuthContext);
@@ -19,7 +19,7 @@ const DpoCasesListGetter = () => {
     useEffect(() => {
         const getPendingCases = async () => {
             const responseData = await sendRequest(
-                `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${currentComiteMember.id}`,
+                `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${currentComiteMember.id}/true/false/false`,
                 undefined,
                 undefined,
                 {
@@ -65,4 +65,4 @@ const DpoCasesListGetter = () => {
     );
 };
 
-export default DpoCasesListGetter;
+export default DpoPendingCasesListGetter;
