@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import Select from "react-select";
 import Form from "react-bootstrap/Form";
@@ -21,7 +21,7 @@ import {
     emptyItemObservacoesProcesso,
     emptyItemRiscoPrivacidade,
 } from "../../shared/models/case-helpers/case-helpers.model";
-import { Case, emptyCase } from "../../shared/models/cases.model";
+import { Case } from "../../shared/models/cases.model";
 import { CaseIndexDictionary } from "../../shared/models/case-index.dictionary";
 import {
     hipotesesTratamento,
@@ -89,10 +89,9 @@ const CaseForm = (props: {
     const { token, tokenExpirationDate, user, changeGroup } =
         useContext(AuthContext);
     const { minutes } = useCountdown(tokenExpirationDate);
-    const { sendRequest, error, clearError, isLoading } = useHttpClient();
+    const { sendRequest, error, isLoading } = useHttpClient();
     const { systems, countries, dpo, isLoadingUtilities } = useUtilities();
     let navigate = useNavigate();
-    const cid = useParams().cid || "";
 
     const methods = useForm<Case>({
         defaultValues: {
