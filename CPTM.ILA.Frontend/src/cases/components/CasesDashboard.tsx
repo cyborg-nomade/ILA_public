@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 // import { PieChart } from "react-minimal-pie-chart";
 import {
     PieChart,
@@ -19,6 +20,7 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
+import { CategoricalChartState } from "recharts/types/chart/generateCategoricalChart";
 
 type PieChartData = {
     name: string;
@@ -61,6 +63,8 @@ const CasesDashboard = () => {
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
+
+    let navigate = useNavigate();
 
     useEffect(() => {
         const getGroupCaseTotals = async () => {
@@ -181,6 +185,41 @@ const CasesDashboard = () => {
         user.id,
     ]);
 
+    const onClickChart = (arg: CategoricalChartState) => {
+        if (arg) {
+            arg.activePayload?.map((ap) => {
+                if (ap.payload.name === "Em Preenchimento") {
+                    if (!user.isComite) {
+                        return navigate("../cases/continue");
+                    }
+                }
+                if (ap.payload.name === "Pendente Aprovação") {
+                    if (user.isDPO) {
+                        return navigate("../cases/pending");
+                    }
+                    if (user.isComite && !user.isDPO) {
+                        return navigate("../cases/approve");
+                    }
+                }
+                if (ap.payload.name === "Concluído") {
+                    if (!user.isComite) {
+                        return navigate("../cases/edit");
+                    }
+                    if (user.isComite && !user.isDPO) {
+                        return navigate("../cases/");
+                    }
+                }
+                if (ap.payload.name === "Reprovado") {
+                    if (!user.isComite) {
+                        return navigate("../cases/reprovados");
+                    }
+                }
+
+                return console.log(ap.payload.name);
+            });
+        }
+    };
+
     if (isLoading) {
         return (
             <Row className="justify-content-center">
@@ -221,7 +260,11 @@ const CasesDashboard = () => {
                     style={{ height: "400px" }}
                 >
                     <ResponsiveContainer width="100%" height="100%">
-                        <PieChart width={400} height={400}>
+                        <PieChart
+                            width={400}
+                            height={400}
+                            onClick={onClickChart}
+                        >
                             <Pie
                                 data={pieChartData}
                                 cx={"50%"}
