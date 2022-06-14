@@ -51,12 +51,6 @@ const headers: {
         isFilterable: true,
         isSortable: true,
     },
-    {
-        title: "Trata Dados Pessoais Sensíveis?",
-        prop: "dadosPessoaisSensiveis",
-        isSortable: true,
-        isFilterable: false,
-    },
 ];
 const headersMinimal: {
     title: string;
