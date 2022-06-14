@@ -672,11 +672,20 @@ namespace CPTM.ILA.Web.Controllers.API
                     });
                 }
 
-                var oldDpo = await _context.Users.SingleOrDefaultAsync(u => u.IsDPO);
+                var oldDpo = await _context.Users.Where(u => u.IsDPO)
+                    .Include(u => u.GroupAccessExpirations)
+                    .Include(u => u.OriginGroup)
+                    .SingleOrDefaultAsync();
 
                 if (oldDpo != null)
                 {
+                    foreach (var groupAccessExpiration in oldDpo.GroupAccessExpirations.ToList())
+                    {
+                        _context.GroupAccessExpirations.Remove(groupAccessExpiration);
+                    }
+
                     _context.Users.Remove(oldDpo);
+                    await _context.SaveChangesAsync();
                 }
 
                 var userInDb =
