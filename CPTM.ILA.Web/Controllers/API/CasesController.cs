@@ -379,7 +379,58 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpGet]
         public async Task<HttpResponseMessage> GetTotalsByUserGroups(int uid)
         {
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = TotalsSuccessMessage });
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsComite || claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound,
+                        new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var userGroups = await _context.Users.Where(u => u.Id == uid)
+                    .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .ToListAsync();
+
+                var userGroupIds = userGroups.Select(g => g.Id)
+                    .ToList();
+
+                var totals = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
+                    .GroupBy(c => c.GrupoCriadorId)
+                    .Select(c => new GroupTotals()
+                    {
+                        GroupId = c.FirstOrDefault()
+                            .GrupoCriadorId,
+                        GroupName = "",
+                        QuantityInGroup = c.Count()
+                    })
+                    .ToListAsync();
+
+                foreach (var total in totals)
+                {
+                    total.GroupName = await GetGroupName(total.GroupId);
+                }
+
+                totals = totals.OrderBy(t => t.GroupName)
+                    .ToList();
+
+                var totalQuantity = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
+                    .CountAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { totals, totalQuantity, message = TotalsSuccessMessage });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
+
         }
 
         /// <summary>
