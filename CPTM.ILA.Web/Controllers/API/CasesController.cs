@@ -319,6 +319,8 @@ namespace CPTM.ILA.Web.Controllers.API
         /// </returns>
         [ResponseType(typeof(ApiResponseType<List<CaseListItem>>))]
         [Route("extensao-encarregado/{uid:int}/status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}")]
+        [Authorize]
+        [HttpGet]
         public async Task<HttpResponseMessage> GetByExtensaoEncarregadoByStatus(int uid, bool encaminhadoAprovacao,
             bool aprovado, bool reprovado)
         {
@@ -373,6 +375,8 @@ namespace CPTM.ILA.Web.Controllers.API
 
         [ResponseType(typeof(TotalsResponseType<GroupTotals>))]
         [Route("user/{uid:int}/group/totals")]
+        [Authorize]
+        [HttpGet]
         public async Task<HttpResponseMessage> GetTotalsByUserGroups(int uid)
         {
             return Request.CreateResponse(HttpStatusCode.OK, new { message = TotalsSuccessMessage });
@@ -522,6 +526,16 @@ namespace CPTM.ILA.Web.Controllers.API
             return Request.CreateResponse(HttpStatusCode.OK, new { message = TotalsSuccessMessage });
         }
 
+        [ResponseType(typeof(ApiResponseType<int>))]
+        [Route("status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsBySelectedStatus(bool encaminhadoAprovacao, bool aprovado,
+            bool reprovado)
+        {
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = TotalsSuccessMessage });
+        }
+
         /// <summary>
         /// Retorna os totais dos Casos de Uso de um grupo de acesso por status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
         /// </summary>
@@ -598,6 +612,16 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
                     new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
+        }
+
+        [ResponseType(typeof(ApiResponseType<int>))]
+        [Route("group/{gid:int}/status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsByGroupsBySelectedStatus(int gid, bool encaminhadoAprovacao,
+            bool aprovado, bool reprovado)
+        {
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = TotalsSuccessMessage });
         }
 
         /// <summary>
@@ -680,6 +704,17 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,
                     new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
             }
+        }
+
+        [ResponseType(typeof(TotalsResponseType<StatusTotals>))]
+        [Route(
+            "extensao-encarregado/{uid:int}/status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}/totals")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTotalsByExtensaoEncarregadoBySelectedStatus(int uid,
+            bool encaminhadoAprovacao, bool aprovado, bool reprovado)
+        {
+            return Request.CreateResponse(HttpStatusCode.OK, new { message = TotalsSuccessMessage });
         }
 
         // MARKED FOR REFACTOR: make do with GetTotalsByStatus
