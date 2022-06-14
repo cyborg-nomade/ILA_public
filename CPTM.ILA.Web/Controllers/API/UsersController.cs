@@ -461,6 +461,11 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Usuário não encontrado. Verifique o id" });
                 }
 
+                foreach (var groupAccessExpiration in userToDelete.GroupAccessExpirations.ToList())
+                {
+                    _context.GroupAccessExpirations.Remove(groupAccessExpiration);
+                }
+
                 _context.Users.Remove(userToDelete);
                 await _context.SaveChangesAsync();
 
