@@ -25,7 +25,7 @@ const headers: {
     prop: headersCaseListItem;
 }[] = [
     { title: "Nome", prop: "nome", isFilterable: true, isSortable: true },
-    { title: "Ref", prop: "ref", isFilterable: true, isSortable: true },
+    { title: "ID", prop: "id", isFilterable: true, isSortable: true },
     { title: "Área", prop: "area", isFilterable: true, isSortable: true },
     {
         title: "Usuário Responsável",
@@ -65,7 +65,7 @@ const headersMinimal: {
     prop: headersCaseListItem;
 }[] = [
     { title: "Nome", prop: "nome", isFilterable: true, isSortable: true },
-    { title: "Ref", prop: "ref", isFilterable: true, isSortable: true },
+    { title: "ID", prop: "id", isFilterable: true, isSortable: true },
     { title: "Área", prop: "area", isFilterable: true, isSortable: true },
     {
         title: "Usuário Responsável",
@@ -175,9 +175,6 @@ const CasesList = (props: {
                                 cursor: props.redirect ? "pointer" : "",
                             },
                         })}
-                        // rowProps={{
-                        //     style: { cursor: props.redirect ? "pointer" : "" },
-                        // }}
                     />
                 </Table>
             </DatatableWrapper>

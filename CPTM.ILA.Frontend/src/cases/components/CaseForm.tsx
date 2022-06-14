@@ -301,7 +301,7 @@ const CaseForm = (props: {
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
-                            {/* {!props.new && (
+                            {!props.new && (
                                 <Row className="mb-3">
                                     <Col lg={1}>
                                         <p>{CaseIndexDictionary.id.number}</p>
@@ -337,8 +337,8 @@ const CaseForm = (props: {
                                         />
                                     </Form.Group>
                                 </Row>
-                            )} */}
-                            {!props.new && (
+                            )}
+                            {/* {!props.new && (
                                 <Row className="mb-3">
                                     <Col lg={1}>
                                         <p>{CaseIndexDictionary.ref.number}</p>
@@ -374,7 +374,7 @@ const CaseForm = (props: {
                                         />
                                     </Form.Group>
                                 </Row>
-                            )}
+                            )} */}
                             <Row className="mb-3">
                                 <Col lg={1}>
                                     <p>
