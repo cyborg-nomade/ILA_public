@@ -476,23 +476,29 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Retorna uma lista de nomes de usuário correspondentes a pesquisa de nome recebida.
         /// Endpoint disponibilizado publicamente.
         /// </summary>
-        /// <param name="nameString">Query busca por nome</param>
+        /// <param name="queryString">Query busca por nome</param>
         /// <returns>Status da transação e um objeto JSON com uma chave "results" contendo o conjunto de nomes de usuário e nomes correspondentes à pesquisa</returns>
         [ResponseType(typeof(ApiResponseType<List<UsernameQueryResult>>))]
         [Route("query")]
         [AllowAnonymous]
         [HttpPost]
-        public async Task<HttpResponseMessage> QueryByName([FromBody] string nameString)
+        public async Task<HttpResponseMessage> QueryByName([FromBody] string queryString)
         {
-            var results = await _context.ILA_VW_USUARIO.Where(u => u.TX_NOMEUSUARIO.Contains(nameString.ToUpper()))
+            var wordsToSearch = queryString.ToUpper()
+                .Split(' ');
+            var results = await _context.ILA_VW_USUARIO.Where(u =>
+                    wordsToSearch.Any(s => u.TX_NOMEUSUARIO.Contains(s)) ||
+                    wordsToSearch.Any(s => u.TX_USERNAME.Contains(s)))
                 .Select(u => new { username = u.TX_USERNAME, name = u.TX_NOMEUSUARIO })
+                .OrderBy(u => u.username)
                 .ToListAsync();
             var formattedResults = results.Select(u => new { value = u.username, label = $"{u.username} - {u.name}" });
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 message = "Nomes de usuário obtidos com sucesso!",
                 results,
-                formattedResults, nameString
+                formattedResults,
+                nameString = queryString
             });
         }
     }
