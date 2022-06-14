@@ -90,13 +90,18 @@ const CaseForm = (props: {
         useContext(AuthContext);
     const { minutes } = useCountdown(tokenExpirationDate);
     const { sendRequest, error, clearError, isLoading } = useHttpClient();
-    const { systems, countries, isLoadingUtilities } = useUtilities();
+    const { systems, countries, dpo, isLoadingUtilities } = useUtilities();
     let navigate = useNavigate();
     const cid = useParams().cid || "";
 
-    const methods = useForm<Case>({ defaultValues: props.item });
+    const methods = useForm<Case>({
+        defaultValues: { ...props.item, encarregado: dpo },
+    });
     const { reset, getValues } = methods;
-    useEffect(() => reset(props.item), [reset, props.item]);
+    useEffect(
+        () => reset({ ...props.item, encarregado: dpo }),
+        [reset, props.item, dpo]
+    );
 
     const categoriasTitularesCategorias = useFieldArray({
         control: methods.control,
