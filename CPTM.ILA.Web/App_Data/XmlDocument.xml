@@ -1032,6 +1032,16 @@
             </summary>
             <returns>Status da transação e um objeto JSON com uma chave "comiteMembers" contendo os dados dos membros do Comitê LGPD (objeto ComiteMembers)</returns>
         </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.GetDpo">
+            <summary>
+            Retorna os dados do DPO cadastrado.
+            Endpoint disponibilizado para todos os usuários com acesso ao ILA.
+            </summary>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "dpoAgenteTratamento" contendo os dados do DPO (objeto AgenteTratamento)
+            Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
+            </returns>
+        </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.GetUserGroups(System.String)">
             <summary>
             Retorna os grupos de um usuário.
