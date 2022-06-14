@@ -30,6 +30,7 @@ namespace CPTM.ILA.Web.Controllers.API
         private const string SuccessMessage = "com sucesso!";
         private static readonly string CaseListSuccessMessage = $@"Casos obtidos {SuccessMessage}";
         private static readonly string TotalsSuccessMessage = $@"Totais obtidos {SuccessMessage}";
+        private readonly string ErrorMessage = "Algo deu errado no servidor.Problema foi reportado ao suporte técnico";
 
         /// <inheritdoc />
         public CasesController()
@@ -73,8 +74,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -127,8 +128,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -188,8 +189,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -237,8 +238,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -300,8 +301,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -368,8 +369,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -436,8 +437,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -502,8 +503,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -570,8 +571,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -608,7 +609,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var totalInStatus = await _context.Cases.Include(c => c.FinalidadeTratamento)
                     .Where(c => c.Aprovado == aprovado &&
-                                c.Reprovado == aprovado &&
+                                c.Reprovado == reprovado &&
                                 c.EncaminhadoAprovacao == encaminhadoAprovacao)
                     .CountAsync();
 
@@ -617,8 +618,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -696,8 +697,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -756,8 +757,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -839,8 +840,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -900,8 +901,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -983,8 +984,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -1051,8 +1052,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -1533,8 +1534,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -1634,8 +1635,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -1645,6 +1646,7 @@ namespace CPTM.ILA.Web.Controllers.API
         /// </summary>
         /// <param name="cid">Id do caso de uso</param>
         /// <param name="aprovado">Objeto vindo do corpo da requisição HTTP, indicando se o caso foi aprovado ou não</param>
+        /// <param name="comentarioReprovado">String contendo o comentário de reprovação</param>
         /// <returns>
         /// Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
         /// </returns>
@@ -1736,8 +1738,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -1838,8 +1840,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
