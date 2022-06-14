@@ -27,9 +27,9 @@ namespace CPTM.ILA.Web.Controllers.API
     public class CasesController : ApiController
     {
         private readonly ILAContext _context;
-        private const string _successMessage = "com sucesso!";
-        private static readonly string CaseListSuccessMessage = $@"Casos obtidos {_successMessage}";
-        private static readonly string TotalsSuccessMessage = $@"Totais obtidos {_successMessage}";
+        private const string SuccessMessage = "com sucesso!";
+        private static readonly string CaseListSuccessMessage = $@"Casos obtidos {SuccessMessage}";
+        private static readonly string TotalsSuccessMessage = $@"Totais obtidos {SuccessMessage}";
 
         /// <inheritdoc />
         public CasesController()
@@ -582,7 +582,10 @@ namespace CPTM.ILA.Web.Controllers.API
         /// <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
         /// <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
         /// <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "totalInStatus" onde se encontra o total dos Casos de Uso no status selecionado.
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+        /// </returns>
         [ResponseType(typeof(ApiResponseType<int>))]
         [Route("status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}/totals")]
         [Authorize]
@@ -611,10 +614,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var totalInStatus = casesInStatus.Count;
 
-                return Request.CreateResponse(HttpStatusCode.OK, new
-                {
-                    totalInStatus
-                });
+                return Request.CreateResponse(HttpStatusCode.OK, new { totalInStatus, message = TotalsSuccessMessage });
             }
             catch (Exception e)
             {
@@ -625,7 +625,8 @@ namespace CPTM.ILA.Web.Controllers.API
         }
 
         /// <summary>
-        /// Retorna os totais dos Casos de Uso de um grupo de acesso por status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+        /// Retorna os totais dos Casos de Uso de um grupo de acesso por status de aprovação.
+        /// Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
         /// </summary>
         /// <param name="gid">Id do grupo</param>
         /// <returns>
@@ -702,14 +703,66 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Retorna o total de Casos de Uso de um grupo de acesso no status de aprovação selecionado. 
+        /// Endpoint disponibilizado apenas para o DPO e membros do grupo selecionado.
+        /// </summary>
+        /// <param name="gid">Id do grupo</param>
+        /// <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+        /// <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
+        /// <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "totalInStatus" onde se encontra o total dos Casos de Uso do grupo especificado no status selecionado.
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+        /// </returns>
         [ResponseType(typeof(ApiResponseType<int>))]
         [Route("group/{gid:int}/status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}/totals")]
         [Authorize]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTotalsByGroupsBySelectedStatus(int gid, bool encaminhadoAprovacao,
+        public async Task<HttpResponseMessage> GetTotalsByGroupBySelectedStatus(int gid, bool encaminhadoAprovacao,
             bool aprovado, bool reprovado)
         {
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = TotalsSuccessMessage });
+            try
+            {
+                if (User.Identity is ClaimsIdentity identity)
+                {
+                    var claims = TokenUtil.GetTokenClaims(identity);
+
+                    var userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
+                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                        .ToListAsync();
+
+                    var searchedGroup = await _context.Groups.FindAsync(gid);
+
+                    if (!(userGroups.Contains(searchedGroup) || claims.IsDpo || claims.IsDeveloper))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound,
+                            new { message = "Recurso não encontrado" });
+                    }
+                }
+
+                if (gid <= 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { message = "Id de grupo inválido." });
+                }
+
+                var groupCasesInStatus = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.GrupoCriadorId == gid &&
+                                c.Aprovado == aprovado &&
+                                c.Reprovado == reprovado &&
+                                c.EncaminhadoAprovacao == encaminhadoAprovacao)
+                    .ToListAsync();
+
+                var totalInStatus = groupCasesInStatus.Count;
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { totalInStatus, message = TotalsSuccessMessage });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
         }
 
         /// <summary>
