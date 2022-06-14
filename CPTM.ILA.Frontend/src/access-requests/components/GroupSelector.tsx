@@ -36,9 +36,11 @@ const GroupSelector = () => {
                                 onClick={() => changeGroup(g)}
                                 active={g === currentGroup}
                             >
-                                {g.nome} -{" "}
+                                {g.nome}
                                 {user.isComite && (
-                                    <PendingCasesCounter gid={g.id} />
+                                    <React.Fragment>
+                                        - <PendingCasesCounter gid={g.id} />
+                                    </React.Fragment>
                                 )}
                             </Button>
                         ))}
