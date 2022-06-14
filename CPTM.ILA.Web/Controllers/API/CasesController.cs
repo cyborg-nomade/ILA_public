@@ -575,6 +575,14 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Retorna o total de Casos de Uso no status de aprovação selecionado. 
+        /// Endpoint disponibilizado apenas para o DPO.
+        /// </summary>
+        /// <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+        /// <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
+        /// <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
+        /// <returns></returns>
         [ResponseType(typeof(ApiResponseType<int>))]
         [Route("status/{encaminhadoAprovacao:bool}/{aprovado:bool}/{reprovado:bool}/totals")]
         [Authorize]
@@ -582,7 +590,38 @@ namespace CPTM.ILA.Web.Controllers.API
         public async Task<HttpResponseMessage> GetTotalsBySelectedStatus(bool encaminhadoAprovacao, bool aprovado,
             bool reprovado)
         {
-            return Request.CreateResponse(HttpStatusCode.OK, new { message = TotalsSuccessMessage });
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+
+                if (!(claims.IsComite || claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var casesInStatus = await _context.Cases.Include(c => c.FinalidadeTratamento)
+                    .Where(c => c.Aprovado == aprovado &&
+                                c.Reprovado == aprovado &&
+                                c.EncaminhadoAprovacao == encaminhadoAprovacao)
+                    .ToListAsync();
+
+                var totalInStatus = casesInStatus.Count;
+
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    totalInStatus
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+            }
         }
 
         /// <summary>
@@ -771,7 +810,6 @@ namespace CPTM.ILA.Web.Controllers.API
         /// <summary>
         /// Retorna o total de Casos de Uso pendentes de aprovação para um grupo especificado. 
         /// Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
-        /// 
         /// </summary>
         /// <param name="gid">Id do grupo</param>
         /// <returns>
