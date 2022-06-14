@@ -25,6 +25,8 @@ namespace CPTM.ILA.Web.Controllers.API
     public class UsersController : ApiController
     {
         private readonly ILAContext _context;
+        private readonly string ErrorMessage = "Algo deu errado no servidor.Problema foi reportado ao suporte técnico";
+
 
         /// <inheritdoc />
         public UsersController()
@@ -69,8 +71,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -250,8 +252,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -340,8 +342,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -380,8 +382,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -419,8 +421,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -467,8 +469,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -484,22 +486,32 @@ namespace CPTM.ILA.Web.Controllers.API
         [HttpPost]
         public async Task<HttpResponseMessage> QueryByName([FromBody] string queryString)
         {
-            var wordsToSearch = queryString.ToUpper()
-                .Split(' ');
-            var results = await _context.ILA_VW_USUARIO.Where(u =>
-                    wordsToSearch.Any(s => u.TX_NOMEUSUARIO.Contains(s)) ||
-                    wordsToSearch.Any(s => u.TX_USERNAME.Contains(s)))
-                .Select(u => new { username = u.TX_USERNAME, name = u.TX_NOMEUSUARIO })
-                .OrderBy(u => u.username)
-                .ToListAsync();
-            var formattedResults = results.Select(u => new { value = u.username, label = $"{u.username} - {u.name}" });
-            return Request.CreateResponse(HttpStatusCode.OK, new
+            try
             {
-                message = "Nomes de usuário obtidos com sucesso!",
-                results,
-                formattedResults,
-                nameString = queryString
-            });
+                var wordsToSearch = queryString.ToUpper()
+                    .Split(' ');
+                var results = await _context.ILA_VW_USUARIO.Where(u =>
+                        wordsToSearch.Any(s => u.TX_NOMEUSUARIO.Contains(s)) ||
+                        wordsToSearch.Any(s => u.TX_USERNAME.Contains(s)))
+                    .Select(u => new { username = u.TX_USERNAME, name = u.TX_NOMEUSUARIO })
+                    .OrderBy(u => u.username)
+                    .ToListAsync();
+                var formattedResults =
+                    results.Select(u => new { value = u.username, label = $"{u.username} - {u.name}" });
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    message = "Nomes de usuário obtidos com sucesso!",
+                    results,
+                    formattedResults,
+                    nameString = queryString
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
+            }
         }
     }
 }
