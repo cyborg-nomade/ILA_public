@@ -373,6 +373,16 @@ namespace CPTM.ILA.Web.Controllers.API
             }
         }
 
+        /// <summary>
+        /// Retorna os totais de Casos de Uso por grupo de um usuário.
+        /// Endpoint disponibilizado para os membros do Comitê LGPD, com cada membro tendo acesso apenas a seus grupos.
+        /// </summary>
+        /// <param name="uid">Id do usuário selecionado</param>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto GroupTotals).
+        /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+        /// </returns>
         [ResponseType(typeof(TotalsResponseType<GroupTotals>))]
         [Route("user/{uid:int}/group/totals")]
         [Authorize]
@@ -385,8 +395,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (!(claims.IsComite || claims.IsDeveloper))
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound,
-                        new { message = "Recurso não encontrado" });
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
             }
 
@@ -395,76 +404,6 @@ namespace CPTM.ILA.Web.Controllers.API
                 var userGroups = await _context.Users.Where(u => u.Id == uid)
                     .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
                     .ToListAsync();
-
-                var userGroupIds = userGroups.Select(g => g.Id)
-                    .ToList();
-
-                var totals = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
-                    .GroupBy(c => c.GrupoCriadorId)
-                    .Select(c => new GroupTotals()
-                    {
-                        GroupId = c.FirstOrDefault()
-                            .GrupoCriadorId,
-                        GroupName = "",
-                        QuantityInGroup = c.Count()
-                    })
-                    .ToListAsync();
-
-                foreach (var total in totals)
-                {
-                    total.GroupName = await GetGroupName(total.GroupId);
-                }
-
-                totals = totals.OrderBy(t => t.GroupName)
-                    .ToList();
-
-                var totalQuantity = await _context.Cases.Where(c => userGroupIds.Contains(c.GrupoCriadorId))
-                    .CountAsync();
-
-                return Request.CreateResponse(HttpStatusCode.OK,
-                    new { totals, totalQuantity, message = TotalsSuccessMessage });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
-            }
-
-        }
-
-        /// <summary>
-        /// Retorna os totais de Casos de Uso por grupo de um membro do Comitê LGPD.
-        /// Endpoint disponibilizado para os membros do Comitê LGPD, com cada membro tendo acesso apenas a seus grupos.
-        /// </summary>
-        /// <returns>
-        /// Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto GroupTotals).
-        /// Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
-        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
-        /// </returns>
-        [ResponseType(typeof(TotalsResponseType<GroupTotals>))]
-        [Route("user/comite-member/group/totals")]
-        [Authorize]
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetTotalsByComiteMemberGroups()
-        {
-            try
-            {
-                var userGroups = new List<Group>();
-                if (User.Identity is ClaimsIdentity identity)
-                {
-                    var claims = TokenUtil.GetTokenClaims(identity);
-
-                    userGroups = await _context.Users.Where(u => u.Id == claims.UserId)
-                        .SelectMany(u => u.GroupAccessExpirations.Select(gae => gae.Group))
-                        .ToListAsync();
-
-                    if (!(claims.IsComite || claims.IsDeveloper))
-                    {
-                        return Request.CreateResponse(HttpStatusCode.NotFound,
-                            new { message = "Recurso não encontrado" });
-                    }
-                }
 
                 var userGroupIds = userGroups.Select(g => g.Id)
                     .ToList();
