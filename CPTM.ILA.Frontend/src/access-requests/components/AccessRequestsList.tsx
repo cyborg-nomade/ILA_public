@@ -117,6 +117,7 @@ const AccessRequestsList = (props: { items: AccessRequestDTO[] }) => {
                     <TableBody
                         onRowClick={handleRowClick}
                         labels={{ noResults: "Nenhum resultado encontrado" }}
+                        rowProps={{ style: { cursor: "pointer" } }}
                     />
                 </Table>
             </DatatableWrapper>
