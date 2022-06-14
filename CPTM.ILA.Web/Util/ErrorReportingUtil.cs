@@ -10,11 +10,9 @@ namespace CPTM.ILA.Web.Util
 {
     public class ErrorReportingUtil
     {
-        private readonly ILAContext _context;
-
-        public bool SendErrorEmail(Exception e)
+        public static bool SendErrorEmail(Exception e, ILAContext context)
         {
-            var userEmailId = _context.ILA_VW_USUARIO.Where(u => u.TX_USERNAME == "URIELF")
+            var userEmailId = context.ILA_VW_USUARIO.Where(u => u.TX_USERNAME == "URIELF")
                 .Select(u => u.ID_CODUSUARIO)
                 .SingleOrDefault();
             var userAd = Seguranca.ObterUsuario("urielf");
