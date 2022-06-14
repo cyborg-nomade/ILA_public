@@ -187,30 +187,38 @@ const CasesDashboard = () => {
 
     const onClickChart = (arg: CategoricalChartState) => {
         if (arg) {
-            arg.activePayload?.map((ap) => {
+            console.log(arg.activePayload);
+
+            arg.activePayload?.forEach((ap) => {
                 if (ap.payload.name === "Em Preenchimento") {
                     if (!user.isComite) {
+                        console.log("Em Preenchimento");
                         return navigate("../cases/continue");
                     }
                 }
                 if (ap.payload.name === "Pendente Aprovação") {
                     if (user.isDPO) {
+                        console.log("Pendente Aprovação");
                         return navigate("../cases/pending");
                     }
                     if (user.isComite && !user.isDPO) {
+                        console.log("Pendente Aprovação");
                         return navigate("../cases/approve");
                     }
                 }
                 if (ap.payload.name === "Concluído") {
                     if (!user.isComite) {
+                        console.log("Concluído");
                         return navigate("../cases/edit");
                     }
                     if (user.isComite && !user.isDPO) {
+                        console.log("Concluído");
                         return navigate("../cases/");
                     }
                 }
                 if (ap.payload.name === "Reprovado") {
                     if (!user.isComite) {
+                        console.log("Reprovado");
                         return navigate("../cases/reprovados");
                     }
                 }
