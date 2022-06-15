@@ -1622,6 +1622,7 @@ const CaseForm = (props: {
                                                 }
                                                 isSearchable
                                                 isDisabled={!isEditing}
+                                                placeholder="Selecione a fonte de dados"
                                             />
                                         )}
                                     />
