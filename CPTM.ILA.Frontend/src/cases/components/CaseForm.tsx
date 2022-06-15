@@ -87,7 +87,14 @@ const CaseForm = (props: {
         "14": false,
         "15": false,
     });
-    const [hasOperador, setHasOperador] = useState("NÃO");
+    const [hasOperador, setHasOperador] = useState(
+        props.item.operador.nome ||
+            props.item.operador.area ||
+            props.item.operador.telefone ||
+            props.item.operador.email
+            ? "SIM"
+            : "NÃO"
+    );
 
     const { token, tokenExpirationDate, user, changeGroup } =
         useContext(AuthContext);
@@ -142,8 +149,11 @@ const CaseForm = (props: {
     });
 
     const toggleEnableOperador = (value: string) => {
+        if (value === "NÃO") {
+            methods.clearErrors(["operador"]);
+        }
         setHasOperador(value);
-        console.log(value);
+        console.log("hasOperador: ", value);
     };
 
     const onStartEditing = () => {
