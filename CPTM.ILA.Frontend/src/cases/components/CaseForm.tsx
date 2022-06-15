@@ -13,6 +13,8 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Stack from "react-bootstrap/Stack";
+import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
 import { AiFillQuestionCircle } from "react-icons/ai";
 
 import {
@@ -85,6 +87,7 @@ const CaseForm = (props: {
         "14": false,
         "15": false,
     });
+    const [hasOperador, setHasOperador] = useState("NÃO");
 
     const { token, tokenExpirationDate, user, changeGroup } =
         useContext(AuthContext);
@@ -137,6 +140,11 @@ const CaseForm = (props: {
         control: methods.control,
         name: "observacoesProcesso",
     });
+
+    const toggleEnableOperador = (value: string) => {
+        setHasOperador(value);
+        console.log(value);
+    };
 
     const onStartEditing = () => {
         setIsEditing(true);
@@ -1052,7 +1060,7 @@ const CaseForm = (props: {
                                 <Col lg={1}>
                                     <p>{CaseIndexDictionary.operador.number}</p>
                                 </Col>
-                                <Col>
+                                <Col className="d-flex justify-content-between">
                                     <OverlayTrigger
                                         placement="right"
                                         overlay={
@@ -1069,18 +1077,181 @@ const CaseForm = (props: {
                                             {CaseIndexDictionary.operador.title}
                                         </Form.Label>
                                     </OverlayTrigger>
+                                    <ToggleButtonGroup
+                                        type="radio"
+                                        name="hasOperador"
+                                        value={hasOperador}
+                                        onChange={(val) => {
+                                            toggleEnableOperador(val);
+                                        }}
+                                    >
+                                        <ToggleButton
+                                            id={`operador-toggle-1`}
+                                            disabled={!isEditing}
+                                            value="SIM"
+                                        >
+                                            SIM
+                                        </ToggleButton>
+                                        <ToggleButton
+                                            id={`operador-toggle-2`}
+                                            disabled={!isEditing}
+                                            value="NÃO"
+                                        >
+                                            NÃO
+                                        </ToggleButton>
+                                    </ToggleButtonGroup>
                                 </Col>
                                 <Col>
-                                    <Form.Control disabled />
+                                    <Controller
+                                        rules={
+                                            hasOperador === "SIM"
+                                                ? {
+                                                      required: true,
+                                                      maxLength: 250,
+                                                  }
+                                                : {}
+                                        }
+                                        control={methods.control}
+                                        name="operador.nome"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                onBlur,
+                                                value,
+                                                ref,
+                                            },
+                                        }) => (
+                                            <Form.Control
+                                                disabled={
+                                                    !isEditing ||
+                                                    hasOperador === "NÃO"
+                                                }
+                                                type="text"
+                                                onChange={onChange}
+                                                onBlur={onBlur}
+                                                value={value}
+                                                ref={ref}
+                                                isInvalid={
+                                                    !!methods.formState.errors
+                                                        .operador?.nome
+                                                }
+                                            />
+                                        )}
+                                    />
                                 </Col>
                                 <Col>
-                                    <Form.Control disabled />
+                                    <Controller
+                                        rules={
+                                            hasOperador === "SIM"
+                                                ? {
+                                                      required: true,
+                                                      maxLength: 250,
+                                                  }
+                                                : {}
+                                        }
+                                        control={methods.control}
+                                        name="operador.area"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                onBlur,
+                                                value,
+                                                ref,
+                                            },
+                                        }) => (
+                                            <Form.Control
+                                                disabled={
+                                                    !isEditing ||
+                                                    hasOperador === "NÃO"
+                                                }
+                                                type="text"
+                                                onChange={onChange}
+                                                onBlur={onBlur}
+                                                value={value}
+                                                ref={ref}
+                                                isInvalid={
+                                                    !!methods.formState.errors
+                                                        .operador?.area
+                                                }
+                                            />
+                                        )}
+                                    />
                                 </Col>
                                 <Col>
-                                    <Form.Control disabled />
+                                    <Controller
+                                        rules={
+                                            hasOperador === "SIM"
+                                                ? {
+                                                      required: true,
+                                                      maxLength: 250,
+                                                  }
+                                                : {}
+                                        }
+                                        control={methods.control}
+                                        name="operador.telefone"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                onBlur,
+                                                value,
+                                                ref,
+                                            },
+                                        }) => (
+                                            <Form.Control
+                                                disabled={
+                                                    !isEditing ||
+                                                    hasOperador === "NÃO"
+                                                }
+                                                type="text"
+                                                onChange={onChange}
+                                                onBlur={onBlur}
+                                                value={value}
+                                                ref={ref}
+                                                isInvalid={
+                                                    !!methods.formState.errors
+                                                        .operador?.telefone
+                                                }
+                                            />
+                                        )}
+                                    />
                                 </Col>
                                 <Col>
-                                    <Form.Control disabled />
+                                    <Controller
+                                        rules={
+                                            hasOperador === "SIM"
+                                                ? {
+                                                      required: true,
+                                                      maxLength: 250,
+                                                  }
+                                                : {}
+                                        }
+                                        control={methods.control}
+                                        name="operador.email"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                onBlur,
+                                                value,
+                                                ref,
+                                            },
+                                        }) => (
+                                            <Form.Control
+                                                disabled={
+                                                    !isEditing ||
+                                                    hasOperador === "NÃO"
+                                                }
+                                                type="text"
+                                                onChange={onChange}
+                                                onBlur={onBlur}
+                                                value={value}
+                                                ref={ref}
+                                                isInvalid={
+                                                    !!methods.formState.errors
+                                                        .operador?.email
+                                                }
+                                            />
+                                        )}
+                                    />
                                 </Col>
                             </Row>
                         </Accordion.Body>
