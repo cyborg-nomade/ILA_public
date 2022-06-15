@@ -108,9 +108,10 @@ const CaseForm = (props: {
             ...props.item,
             controlador: {
                 ...props.item.controlador,
-                area: dpo.area,
-                email: dpo.email,
-                telefone: dpo.telefone,
+                area: props.item.controlador.nome === "CPTM" ? dpo.area : "",
+                email: props.item.controlador.nome === "CPTM" ? dpo.email : "",
+                telefone:
+                    props.item.controlador.nome === "CPTM" ? dpo.telefone : "",
             },
             encarregado: dpo,
         },
@@ -122,9 +123,14 @@ const CaseForm = (props: {
                 ...props.item,
                 controlador: {
                     ...props.item.controlador,
-                    area: dpo.area,
-                    email: dpo.email,
-                    telefone: dpo.telefone,
+                    area:
+                        props.item.controlador.nome === "CPTM" ? dpo.area : "",
+                    email:
+                        props.item.controlador.nome === "CPTM" ? dpo.email : "",
+                    telefone:
+                        props.item.controlador.nome === "CPTM"
+                            ? dpo.telefone
+                            : "",
                 },
                 encarregado: dpo,
             }),
@@ -149,11 +155,11 @@ const CaseForm = (props: {
     });
 
     const toggleEnableOperador = (value: string) => {
+        console.log("hasOperador: ", value);
         if (value === "NÃO") {
             methods.clearErrors(["operador"]);
         }
         setHasOperador(value);
-        console.log("hasOperador: ", value);
     };
 
     const onStartEditing = () => {
@@ -195,6 +201,8 @@ const CaseForm = (props: {
         if (valid && isAllTouched) {
             props.onSendToApprovalSubmit!(item);
         } else {
+            console.log(methods.formState.errors);
+
             setIsFormAllTouched({
                 "0": true,
                 "1": true,
@@ -568,11 +576,58 @@ const CaseForm = (props: {
                                             <Form.Control
                                                 disabled={!isEditing}
                                                 type="text"
-                                                onChange={(event) =>
-                                                    onChange(
+                                                onChange={(event) => {
+                                                    if (
+                                                        event.currentTarget
+                                                            .value === "CPTM"
+                                                    ) {
+                                                        methods.setValue(
+                                                            "controlador.area",
+                                                            dpo.area
+                                                        );
+                                                        methods.setValue(
+                                                            "controlador.email",
+                                                            dpo.email
+                                                        );
+                                                        methods.setValue(
+                                                            "controlador.telefone",
+                                                            dpo.telefone
+                                                        );
+                                                        methods.clearErrors([
+                                                            "controlador",
+                                                        ]);
+                                                    }
+                                                    if (
+                                                        event.currentTarget
+                                                            .value !== "CPTM" &&
+                                                        methods.watch(
+                                                            "controlador.area"
+                                                        ) !== "" &&
+                                                        methods.watch(
+                                                            "controlador.email"
+                                                        ) !== "" &&
+                                                        methods.watch(
+                                                            "controlador.telefone"
+                                                        ) !== ""
+                                                    ) {
+                                                        methods.setValue(
+                                                            "controlador.area",
+                                                            ""
+                                                        );
+                                                        methods.setValue(
+                                                            "controlador.email",
+                                                            ""
+                                                        );
+                                                        methods.setValue(
+                                                            "controlador.telefone",
+                                                            ""
+                                                        );
+                                                    }
+
+                                                    return onChange(
                                                         event.currentTarget.value.toUpperCase()
-                                                    )
-                                                }
+                                                    );
+                                                }}
                                                 onBlur={onBlur}
                                                 value={value}
                                                 ref={ref}
@@ -586,6 +641,10 @@ const CaseForm = (props: {
                                 </Col>
                                 <Col>
                                     <Controller
+                                        rules={{
+                                            required: true,
+                                            maxLength: 250,
+                                        }}
                                         control={methods.control}
                                         name="controlador.area"
                                         render={({
@@ -597,19 +656,30 @@ const CaseForm = (props: {
                                             },
                                         }) => (
                                             <Form.Control
-                                                disabled
+                                                disabled={
+                                                    methods.watch(
+                                                        "controlador.nome"
+                                                    ) === "CPTM"
+                                                }
                                                 type="text"
                                                 onChange={onChange}
                                                 onBlur={onBlur}
                                                 value={value}
                                                 ref={ref}
-                                                readOnly
+                                                isInvalid={
+                                                    !!methods.formState.errors
+                                                        .controlador?.area
+                                                }
                                             />
                                         )}
                                     />
                                 </Col>
                                 <Col>
                                     <Controller
+                                        rules={{
+                                            required: true,
+                                            maxLength: 250,
+                                        }}
                                         control={methods.control}
                                         name="controlador.telefone"
                                         render={({
@@ -621,19 +691,30 @@ const CaseForm = (props: {
                                             },
                                         }) => (
                                             <Form.Control
-                                                disabled
+                                                disabled={
+                                                    methods.watch(
+                                                        "controlador.nome"
+                                                    ) === "CPTM"
+                                                }
                                                 type="text"
                                                 onChange={onChange}
                                                 onBlur={onBlur}
                                                 value={value}
                                                 ref={ref}
-                                                readOnly
+                                                isInvalid={
+                                                    !!methods.formState.errors
+                                                        .controlador?.telefone
+                                                }
                                             />
                                         )}
                                     />
                                 </Col>
                                 <Col>
                                     <Controller
+                                        rules={{
+                                            required: true,
+                                            maxLength: 250,
+                                        }}
                                         control={methods.control}
                                         name="controlador.email"
                                         render={({
@@ -645,13 +726,20 @@ const CaseForm = (props: {
                                             },
                                         }) => (
                                             <Form.Control
-                                                disabled
+                                                disabled={
+                                                    methods.watch(
+                                                        "controlador.nome"
+                                                    ) === "CPTM"
+                                                }
                                                 type="text"
                                                 onChange={onChange}
                                                 onBlur={onBlur}
                                                 value={value}
                                                 ref={ref}
-                                                readOnly
+                                                isInvalid={
+                                                    !!methods.formState.errors
+                                                        .controlador?.email
+                                                }
                                             />
                                         )}
                                     />
