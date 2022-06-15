@@ -83,7 +83,7 @@ export const emptyBaseCase = (): BaseCase => ({
     comentarioReprovacao: "",
     encaminhadoAprovacao: false,
     dadosPessoaisSensiveis: false,
-    controlador: emptyAgenteTratamento(),
+    controlador: emptyAgenteTratamento("CPTM"),
     encarregado: emptyAgenteTratamento(),
     extensaoEncarregado: emptyAgenteTratamento(),
     areaTratamentoDados: emptyAgenteTratamento(),
