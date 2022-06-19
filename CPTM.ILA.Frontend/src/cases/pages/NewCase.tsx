@@ -19,6 +19,7 @@ import CaseForm from "../components/CaseForm";
 import SaveProgressModal from "../components/modals/SaveProgressModal";
 import SendToApprovalModal from "../components/modals/SendToApprovalModal";
 import LoadingModal from "../components/modals/LoadingModal";
+import { usePrompt } from "../../shared/hooks/prompt-hook";
 
 const NewCase = () => {
     const { token, user, currentGroup, areaTratamentoDados } =
@@ -37,6 +38,11 @@ const NewCase = () => {
         useHttpClient();
 
     let navigate = useNavigate();
+
+    usePrompt(
+        "Tem certeza que deseja sair? Você perderá todos o dados! Clique em Cancelar e depois em Salvar Alterações",
+        !showSaveProgressModal && !showSendToApprovalModal
+    );
 
     useEffect(() => {
         const getComiteMembers = async () => {

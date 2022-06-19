@@ -27,7 +27,7 @@ const SendToApprovalModal = (props: {
             </Modal.Header>
             <Modal.Body>
                 {!props.showChildrenContent &&
-                    "Você tem certeza que deseja enviar as informações para validação do time de Privacidade de Dados?"}
+                    "Você tem certeza que deseja enviar as informações para validação do Comitê LGPD?"}
                 {props.showChildrenContent && props.children}
             </Modal.Body>
             <Modal.Footer>

@@ -24,7 +24,7 @@ const EditCaseListGetter = () => {
                 undefined,
                 { Authorization: "Bearer " + token }
             );
-            const loadedCases: CaseListItem[] = responseData.cases;
+            const loadedCases: CaseListItem[] = responseData.caseListItems;
             console.log("currentGroup: ", currentGroup);
             console.log("loadedCases: ", loadedCases);
 

@@ -29,6 +29,22 @@ const GroupSelector = () => {
                         vertical
                         className="d-block align-content-center text-center"
                     >
+                        {user.isComite && (
+                            <Button
+                                key={"TODOS"}
+                                variant="outline-secondary"
+                                onClick={() =>
+                                    changeGroup({
+                                        id: 0,
+                                        nome: "TODOS",
+                                        users: [],
+                                    })
+                                }
+                                active={currentGroup.nome === "TODOS"}
+                            >
+                                TODOS
+                            </Button>
+                        )}
                         {user.groups.map((g) => (
                             <Button
                                 key={g.id}
@@ -36,9 +52,11 @@ const GroupSelector = () => {
                                 onClick={() => changeGroup(g)}
                                 active={g === currentGroup}
                             >
-                                {g.nome} -{" "}
+                                {g.nome}
                                 {user.isComite && (
-                                    <PendingCasesCounter gid={g.id} />
+                                    <React.Fragment>
+                                        - <PendingCasesCounter gid={g.id} />
+                                    </React.Fragment>
                                 )}
                             </Button>
                         ))}

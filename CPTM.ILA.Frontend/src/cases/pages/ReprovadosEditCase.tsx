@@ -15,6 +15,7 @@ import SaveProgressModal from "../components/modals/SaveProgressModal";
 import SendToApprovalModal from "../components/modals/SendToApprovalModal";
 import LoadingModal from "./../components/modals/LoadingModal";
 import { AgenteTratamento } from "../../shared/models/case-helpers/case-helpers.model";
+import { usePrompt } from "../../shared/hooks/prompt-hook";
 
 const ReprovadosEditCase = () => {
     const { user, token, currentGroup, areaTratamentoDados } =
@@ -34,6 +35,11 @@ const ReprovadosEditCase = () => {
 
     const cid = +(useParams().cid || "");
     let navigate = useNavigate();
+
+    usePrompt(
+        "Tem certeza que deseja sair? Você perderá todos o dados! Clique em Cancelar e depois em Salvar Alterações",
+        !showSaveProgressModal && !showSendToApprovalModal
+    );
 
     useEffect(() => {
         const getCaseToEdit = async () => {

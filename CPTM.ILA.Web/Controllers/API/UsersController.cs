@@ -300,9 +300,9 @@ namespace CPTM.ILA.Web.Controllers.API
                         message = "Nenhum usuário do Comitê LGPD é responsável por este grupo",
                         comiteMember = new AgenteTratamento()
                         {
-                            Nome = "Olivia Shibata Nishiyama",
+                            Nome = "OLIVIA SHIBATA NISHIYAMA",
                             Area = "Encarregado de Dados (DPO)",
-                            Telefone = "+ 55 11 3117 – 7001",
+                            Telefone = "3117-7001",
                             Email = "encarregado.dados@cptm.sp.gov.br"
                         }
                     });
@@ -312,6 +312,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (comiteMemberUserAd == null)
                 {
+                    foreach (var groupAccessExpiration in selectedComiteMember.GroupAccessExpirations.ToList())
+                    {
+                        _context.GroupAccessExpirations.Remove(groupAccessExpiration);
+                    }
+
                     _context.Users.Remove(selectedComiteMember);
                     await _context.SaveChangesAsync();
 
@@ -320,9 +325,9 @@ namespace CPTM.ILA.Web.Controllers.API
                         message = "Nenhum usuário do Comitê LGPD é responsável por este grupo",
                         comiteMember = new AgenteTratamento()
                         {
-                            Nome = "Olivia Shibata Nishiyama",
+                            Nome = "OLIVIA SHIBATA NISHIYAMA",
                             Area = "Encarregado de Dados (DPO)",
-                            Telefone = "+ 55 11 3117 – 7001",
+                            Telefone = "3117-7001",
                             Email = "encarregado.dados@cptm.sp.gov.br"
                         }
                     });
@@ -378,6 +383,73 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 return Request.CreateResponse(HttpStatusCode.OK,
                     new { comiteMembers, message = "Membros do comitê obtidos com sucesso!" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
+            }
+        }
+
+        /// <summary>
+        /// Retorna os dados do DPO cadastrado.
+        /// Endpoint disponibilizado para todos os usuários com acesso ao ILA.
+        /// </summary>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "dpoAgenteTratamento" contendo os dados do DPO (objeto AgenteTratamento)
+        /// Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
+        /// </returns>
+        [ResponseType(typeof(ApiResponseType<AgenteTratamento>))]
+        [Route("dpo")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetDpo()
+        {
+            try
+            {
+                var dpo = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .Where(u => u.IsDPO)
+                    .SingleOrDefaultAsync();
+
+                if (dpo == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new
+                    {
+                        message =
+                            "Nenhum usuário cadastrado como DPO. Entre em contato com encarregado.dados@cptm.sp.gov.br para maiores informações",
+                    });
+                }
+
+                var dpoUserAd = Seguranca.ObterUsuario(dpo.Username.ToUpper());
+
+                if (dpoUserAd == null)
+                {
+                    foreach (var groupAccessExpiration in dpo.GroupAccessExpirations.ToList())
+                    {
+                        _context.GroupAccessExpirations.Remove(groupAccessExpiration);
+                    }
+
+                    _context.Users.Remove(dpo);
+                    await _context.SaveChangesAsync();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        message =
+                            "Nenhum usuário cadastrado como DPO. Entre em contato com encarregado.dados@cptm.sp.gov.br para maiores informações",
+                    });
+                }
+
+                var dpoAgenteTratamento = new AgenteTratamento()
+                {
+                    Area = "Encarregado de Dados (DPO)",
+                    Email = "encarregado.dados@cptm.sp.gov.br",
+                    Nome = dpoUserAd.Nome.ToUpper(),
+                    Telefone = dpoUserAd.TelefoneComercial
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { dpoAgenteTratamento, message = "Membro do Comitê obtido com sucesso!" });
             }
             catch (Exception e)
             {
@@ -459,6 +531,11 @@ namespace CPTM.ILA.Web.Controllers.API
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound,
                         new { message = "Usuário não encontrado. Verifique o id" });
+                }
+
+                foreach (var groupAccessExpiration in userToDelete.GroupAccessExpirations.ToList())
+                {
+                    _context.GroupAccessExpirations.Remove(groupAccessExpiration);
                 }
 
                 _context.Users.Remove(userToDelete);

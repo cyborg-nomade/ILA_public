@@ -83,19 +83,19 @@ export const emptyBaseCase = (): BaseCase => ({
     comentarioReprovacao: "",
     encaminhadoAprovacao: false,
     dadosPessoaisSensiveis: false,
-    controlador: emptyAgenteTratamento(),
+    controlador: emptyAgenteTratamento("CPTM"),
     encarregado: emptyAgenteTratamento(),
     extensaoEncarregado: emptyAgenteTratamento(),
     areaTratamentoDados: emptyAgenteTratamento(),
     operador: emptyAgenteTratamento(),
     fasesCicloTratamento: emptyFasesCicloTratamento(),
     descricaoFluxoTratamento: "",
-    abrangenciaGeografica: { value: tipoAbrangenciaGeografica.regional },
+    abrangenciaGeografica: { value: tipoAbrangenciaGeografica.na },
     fonteDados: "",
     finalidadeTratamento: emptyFinalidadeTratamento(),
     categoriaDadosPessoais: emptyCategoriaDadosPessoais(),
     catDadosPessoaisSensiveis: emptyCategoriaDadosPessoaisSensiveis(),
-    frequenciaTratamento: { value: tipoFrequenciaTratamento.total24por7 },
+    frequenciaTratamento: { value: tipoFrequenciaTratamento.na },
     qtdeDadosTratados: 0,
     qtdeDadosSensiveisTratados: 0,
     categoriasTitulares: emptyCategoriaTitulares(),
@@ -107,7 +107,10 @@ export const emptyBaseCase = (): BaseCase => ({
     observacoesProcesso: [],
 });
 
-export const emptyCase = (currentAreaTratamento?: AgenteTratamento): Case => ({
+export const emptyCase = (
+    currentAreaTratamento?: AgenteTratamento,
+    currentDpo?: AgenteTratamento
+): Case => ({
     id: 0,
     ref: "",
     nome: "",
@@ -125,12 +128,14 @@ export const emptyCase = (currentAreaTratamento?: AgenteTratamento): Case => ({
     encaminhadoAprovacao: false,
     dadosPessoaisSensiveis: false,
     controlador: emptyAgenteTratamento("CPTM"),
-    encarregado: emptyAgenteTratamento(
-        "Olivia Shibata Nishiyama",
-        "Encarregado de Dados (DPO)",
-        "+ 55 11 3117 – 7001",
-        "encarregado.dados@cptm.sp.gov.br"
-    ),
+    encarregado: currentDpo
+        ? emptyAgenteTratamento(
+              currentDpo.nome,
+              currentDpo.area,
+              currentDpo.telefone,
+              currentDpo.email
+          )
+        : emptyAgenteTratamento(),
     extensaoEncarregado: emptyAgenteTratamento(),
     areaTratamentoDados: currentAreaTratamento
         ? emptyAgenteTratamento(
@@ -143,12 +148,12 @@ export const emptyCase = (currentAreaTratamento?: AgenteTratamento): Case => ({
     operador: emptyAgenteTratamento(),
     fasesCicloTratamento: emptyFasesCicloTratamento(),
     descricaoFluxoTratamento: "",
-    abrangenciaGeografica: { value: tipoAbrangenciaGeografica.regional },
+    abrangenciaGeografica: { value: tipoAbrangenciaGeografica.na },
     fonteDados: "",
     finalidadeTratamento: emptyFinalidadeTratamento(),
     categoriaDadosPessoais: emptyCategoriaDadosPessoais(),
     catDadosPessoaisSensiveis: emptyCategoriaDadosPessoaisSensiveis(),
-    frequenciaTratamento: { value: tipoFrequenciaTratamento.total24por7 },
+    frequenciaTratamento: { value: tipoFrequenciaTratamento.na },
     qtdeDadosTratados: 0,
     qtdeDadosSensiveisTratados: 0,
     categoriasTitulares: emptyCategoriaTitulares(),
