@@ -152,7 +152,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (!(claims.IsDpo || claims.IsDeveloper))
+                if (!(claims.UserId == uid || claims.IsDpo || claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -364,7 +364,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { cases = caseListItems, message = CaseListSuccessMessage });
+                    new { caseListItems, message = CaseListSuccessMessage });
             }
             catch (Exception e)
             {

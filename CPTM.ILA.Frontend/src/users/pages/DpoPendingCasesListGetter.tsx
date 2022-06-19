@@ -19,7 +19,7 @@ const DpoPendingCasesListGetter = () => {
     useEffect(() => {
         const getPendingCases = async () => {
             const responseData = await sendRequest(
-                `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${currentComiteMember.id}/true/false/false`,
+                `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${currentComiteMember.id}/status/true/false/false`,
                 undefined,
                 undefined,
                 {
