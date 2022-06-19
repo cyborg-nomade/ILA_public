@@ -97,6 +97,7 @@ const CaseForm = (props: {
             : "NÃO"
     );
     const [isAllRadioClicked, setIsAllRadioClicked] = useState({
+        fasesCicloTratamento: false,
         "categoriaDadosPessoais.identificacao.idPessoal": false,
         "categoriaDadosPessoais.identificacao.idGov": false,
         "categoriaDadosPessoais.identificacao.idEletronica": false,
@@ -1492,6 +1493,8 @@ const CaseForm = (props: {
                             <Section3FormRow
                                 disabled={!isEditing}
                                 methods={methods}
+                                radioCheckedHandler={checkAllRadiosHandler}
+                                isNew={props.new || false}
                             />
                         </Accordion.Body>
                     </Accordion.Item>
