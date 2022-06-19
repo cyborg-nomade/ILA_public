@@ -29,6 +29,8 @@ const Section7FormRow = (props: {
     itemRef: { number: string; title: string };
     systems: string[];
     methods: UseFormReturn<Case>;
+    radioCheckedHandler: (radioChackedName: string) => void;
+    isNew: boolean;
 }) => {
     const { getValues } = props.methods;
 
@@ -37,7 +39,7 @@ const Section7FormRow = (props: {
         name: props.name as FieldArrayPath<Case>, // unique name for your Field Array
     });
 
-    const [trata, setTrata] = useState(false);
+    const [trata, setTrata] = useState("INVALID");
 
     useEffect(() => {
         const categoriaArrayUseEffect: itemCategoriaDadosPessoais[] = getValues(
@@ -45,18 +47,21 @@ const Section7FormRow = (props: {
         ) as itemCategoriaDadosPessoais[];
 
         if (categoriaArrayUseEffect && categoriaArrayUseEffect.length > 0) {
-            setTrata(true);
+            setTrata("SIM");
+        } else if (props.isNew) {
+            setTrata("INVALID");
         } else {
-            setTrata(false);
+            setTrata("NÃO");
         }
         return () => {};
-    }, [getValues, props.name]);
+    }, [getValues, props.isNew, props.name]);
 
     const handleTrataRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.currentTarget.value === "SIM") {
-            setTrata(true);
-        } else {
-            setTrata(false);
+        setTrata(event.currentTarget.value);
+        if (event.currentTarget.value !== "INVALID") {
+            props.radioCheckedHandler(props.name);
+        }
+        if (event.currentTarget.value === "NÃO") {
             props.methods.setValue(props.name, []);
         }
     };
@@ -88,9 +93,10 @@ const Section7FormRow = (props: {
                         required
                         label="Sim"
                         value="SIM"
-                        checked={trata}
+                        checked={trata === "SIM"}
                         disabled={props.disabled}
                         onChange={handleTrataRadio}
+                        isInvalid={trata === "INVALID"}
                     />
                     <Form.Check
                         type="radio"
@@ -99,17 +105,18 @@ const Section7FormRow = (props: {
                         inline
                         label="Não"
                         value="NÃO"
-                        checked={!trata}
+                        checked={trata === "NÃO"}
                         disabled={props.disabled}
                         onChange={handleTrataRadio}
+                        isInvalid={trata === "INVALID"}
                     />
                     <Form.Check
                         type="radio"
                         name={`trata-${props.itemRef.number}`}
                         required
                         inline
-                        value="INITIAL"
-                        checked={!trata}
+                        value="INVALID"
+                        checked={trata === "INVALID"}
                         disabled={props.disabled}
                         onChange={handleTrataRadio}
                         style={{ display: "none" }}
