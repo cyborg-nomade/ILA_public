@@ -10,6 +10,7 @@ export enum hipotesesTratamento {
     interessesLegitimosControlador = "Atender aos interesses legítimos do controlador ou de terceiro",
     protecaoCredito = "Proteção do crédito",
     prevencaoFraude = "Garantia da prevenção à fraude e à segurança do titular",
+    na = "",
 }
 
 export enum tipoAbrangenciaGeografica {
@@ -17,6 +18,7 @@ export enum tipoAbrangenciaGeografica {
     estadual = "Estadual",
     municipal = "Municipal",
     regional = "Regional",
+    na = "",
 }
 
 export enum tipoCategoriaTitulares {
@@ -25,11 +27,13 @@ export enum tipoCategoriaTitulares {
     empregados = "Empregados Terceirizados",
     clientes = "Clientes",
     outros = "Outros",
+    na = "",
 }
 
 export enum tipoCompartilhamentoDados {
     publico = "Público",
     privado = "Privado",
+    na = "",
 }
 
 export enum tipoFinalidadeCompartilhamento {
@@ -40,18 +44,21 @@ export enum tipoFinalidadeCompartilhamento {
     prevencaoFraudesIrregularidades = "V. prevenção de fraudes e irregularidades",
     protecaoSegurancaIntegridadeTitular = "VI. proteção à segurança e à integridade do Titular de Dados Pessoais",
     consentimento = "VII. com o consentimento do Titular de Dados Pessoais",
+    na = "",
 }
 
 export enum tipoFontesRetencao {
     docPapel = "Documento em Papel",
     docEletronico = "Documento Eletrônico",
     sistema = "Sistema",
+    na = "",
 }
 
 export enum tipoFrequenciaTratamento {
     total24por7 = "24/7",
     horarioOperacional = "Horário Operacional",
     horarioComercial = "Horário Comercial",
+    na = "",
 }
 
 export enum tipoMedidaSegurancaPrivacidade {
@@ -78,11 +85,13 @@ export enum tipoMedidaSegurancaPrivacidade {
     segurancaWeb = "Segurança Web",
     usoRetencaoLimitacaoDivulgacao = "Uso, Retenção e Limitação de Divulgação",
     respostaIncidente = "Resposta a Incidente",
+    na = "",
 }
 
 export enum tipoNivelCompartilhamento {
     todoOProcesso = "Todo o processo",
     parcial = "Parcial",
+    na = "",
 }
 
 export enum tipoRiscoPrivacidade {
@@ -100,6 +109,7 @@ export enum tipoRiscoPrivacidade {
     vinculacaoAssociacaoIndevida = "Vinculação ou associação indevida, direta ou indireta, dos dados pessoais ao titular",
     falhaErroProcessamento = "Falha ou erro de processamento (Ex.: execução de script de banco de dados que atualiza dado pessoal com informação equivocada, ausência de validação dos dados de entrada, etc.)",
     reidentificacaoPsudonimizados = "Reidentificação de dados pseudonimizados",
+    na = "",
 }
 
 export enum tipoTempoRetencao {
@@ -110,4 +120,5 @@ export enum tipoTempoRetencao {
     ano20 = "20 anos",
     ano30 = "30 anos",
     maisQue30 = "Mais que 30 anos",
+    na = "",
 }

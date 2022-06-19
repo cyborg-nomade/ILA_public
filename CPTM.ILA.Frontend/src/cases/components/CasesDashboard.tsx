@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 // import { PieChart } from "react-minimal-pie-chart";
 import {
     PieChart,
@@ -19,6 +20,7 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
+import { CategoricalChartState } from "recharts/types/chart/generateCategoricalChart";
 
 type PieChartData = {
     name: string;
@@ -61,6 +63,8 @@ const CasesDashboard = () => {
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
+
+    let navigate = useNavigate();
 
     useEffect(() => {
         const getGroupCaseTotals = async () => {
@@ -158,8 +162,51 @@ const CasesDashboard = () => {
             }
         };
 
-        if (user.isComite && user.isDPO) {
+        const getDpoAllComiteMembersTotals = async () => {
+            const responseData = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/status/totals`,
+                undefined,
+                undefined,
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                }
+            );
+
+            const loadedTotals: StatusTotals[] = responseData.totals;
+            console.log("dpoCase loadedTotals: ", loadedTotals);
+
+            if (loadedTotals.length === 0) {
+                setPieChartData([]);
+            } else {
+                const transformedData: PieChartData[] = loadedTotals.map(
+                    (d, index) => {
+                        return {
+                            name: d.nome,
+                            value: d.quantidadeByStatus,
+                        };
+                    }
+                );
+
+                console.log("transformedData: ", transformedData);
+                setPieChartData(transformedData);
+            }
+        };
+
+        if (
+            user.isComite &&
+            user.isDPO &&
+            currentComiteMember.nome !== "TODOS"
+        ) {
             getDpoCasesTotals().catch((error) => {
+                console.log(error);
+            });
+        } else if (user.isComite && currentGroup.nome === "TODOS") {
+            getComiteCasesTotals().catch((error) => {
+                console.log(error);
+            });
+        } else if (user.isDPO && currentComiteMember.nome === "TODOS") {
+            getDpoAllComiteMembersTotals().catch((error) => {
                 console.log(error);
             });
         } else {
@@ -179,7 +226,52 @@ const CasesDashboard = () => {
         user.isDPO,
         currentComiteMember.id,
         user.id,
+        currentGroup.nome,
+        currentComiteMember.nome,
     ]);
+
+    const onClickChart = (arg: CategoricalChartState) => {
+        if (arg) {
+            console.log(arg.activePayload);
+
+            arg.activePayload?.forEach((ap) => {
+                if (ap.payload.name === "Em Preenchimento") {
+                    if (!user.isComite) {
+                        console.log("Em Preenchimento");
+                        return navigate("../cases/continue");
+                    }
+                }
+                if (ap.payload.name === "Pendente Aprovação") {
+                    if (user.isDPO) {
+                        console.log("Pendente Aprovação");
+                        return navigate("../cases/pending");
+                    }
+                    if (user.isComite && !user.isDPO) {
+                        console.log("Pendente Aprovação");
+                        return navigate("../cases/approve");
+                    }
+                }
+                if (ap.payload.name === "Concluído") {
+                    if (!user.isComite) {
+                        console.log("Concluído");
+                        return navigate("../cases/edit");
+                    }
+                    if (user.isComite && !user.isDPO) {
+                        console.log("Concluído");
+                        return navigate("../cases/");
+                    }
+                }
+                if (ap.payload.name === "Reprovado") {
+                    if (!user.isComite) {
+                        console.log("Reprovado");
+                        return navigate("../cases/reprovados");
+                    }
+                }
+
+                return console.log(ap.payload.name);
+            });
+        }
+    };
 
     if (isLoading) {
         return (
@@ -221,7 +313,11 @@ const CasesDashboard = () => {
                     style={{ height: "400px" }}
                 >
                     <ResponsiveContainer width="100%" height="100%">
-                        <PieChart width={400} height={400}>
+                        <PieChart
+                            width={400}
+                            height={400}
+                            onClick={onClickChart}
+                        >
                             <Pie
                                 data={pieChartData}
                                 cx={"50%"}

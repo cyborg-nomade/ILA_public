@@ -152,7 +152,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (!(claims.IsDpo || claims.IsDeveloper))
+                if (!(claims.UserId == uid || claims.IsDpo || claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -233,7 +233,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { cases = caseListItems, message = CaseListSuccessMessage });
+                    new { caseListItems, message = CaseListSuccessMessage });
             }
             catch (Exception e)
             {
@@ -296,7 +296,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { cases = caseListItems, message = CaseListSuccessMessage });
+                    new { caseListItems, message = CaseListSuccessMessage });
             }
             catch (Exception e)
             {
@@ -308,7 +308,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
         /// <summary>
         /// Retorna todos os Casos de Uso dos grupos de um membro do Comitê LGPD que estejam em um certo status de aprovação.
-        /// Endpoint disponibilizado apenas para o DPO.
+        /// Endpoint disponibilizado apenas para o DPO e para o membro do Comitê LGPD em questão.
         /// </summary>
         /// <param name="uid">Id do membro do comitê</param>
         /// <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
@@ -329,7 +329,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (!(claims.IsDpo || claims.IsDeveloper))
+                if (!(claims.UserId == uid || claims.IsDpo || claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -364,7 +364,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { cases = caseListItems, message = CaseListSuccessMessage });
+                    new { caseListItems, message = CaseListSuccessMessage });
             }
             catch (Exception e)
             {
@@ -764,7 +764,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
         /// <summary>
         /// Retorna os totais dos Casos de Uso dos grupos de acesso de um Mebro do Comitê por status de aprovação.
-        /// Endpoint disponibilizado apenas para o DPO.
+        /// Endpoint disponibilizado apenas para o DPO e para o membro do comitê em questão.
         /// </summary>
         /// <param name="uid">Id do membro do Comitê especificado</param>
         /// <returns>
@@ -782,7 +782,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (!(claims.IsDpo || claims.IsDeveloper))
+                if (!(claims.UserId == uid || claims.IsDpo || claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -807,7 +807,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     .GroupBy(c => new
                     {
                         c.Aprovado,
-                        c.EncaminhadoAprovacao
+                        c.EncaminhadoAprovacao,
+                        c.Reprovado
                     })
                     .Select(c => new StatusTotals()
                     {
@@ -847,7 +848,7 @@ namespace CPTM.ILA.Web.Controllers.API
 
         /// <summary>
         /// Retorna o total de Casos de Uso dos grupos de acesso de um Mebro do Comitê no status de aprovação selecionado. 
-        /// Endpoint disponibilizado apenas para o DPO.
+        /// Endpoint disponibilizado apenas para o DPO e para o membro do comitê em questão.
         /// </summary>
         /// <param name="uid">Id do membro do Comitê especificado</param>
         /// <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
@@ -869,7 +870,7 @@ namespace CPTM.ILA.Web.Controllers.API
             {
                 var claims = TokenUtil.GetTokenClaims(identity);
 
-                if (!(claims.IsDpo || claims.IsDeveloper))
+                if (!(claims.UserId == uid || claims.IsDpo || claims.IsDeveloper))
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
                 }
@@ -978,8 +979,10 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var caseDto = CaseDTO.ConvertToCaseDTO(uniqueCase);
 
-                return Request.CreateResponse(HttpStatusCode.OK,
-                    new { uniqueCase = caseDto, message = "Caso obtido com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    uniqueCase = caseDto, message = $"Processo ID {caseDto.Id} - {caseDto.Nome} obtido com sucesso!"
+                });
             }
             catch (Exception e)
             {
@@ -1046,8 +1049,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var responseCase = CaseDTO.ConvertToCaseDTO(caseToSave);
 
-                return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Processo registrado com sucesso!", caseToSave = responseCase });
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    message = $"Processo ID {responseCase.Id} - {responseCase.Nome} registrado com sucesso!",
+                    caseToSave = responseCase
+                });
             }
             catch (Exception e)
             {
@@ -1528,8 +1534,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var responseCase = CaseDTO.ConvertToCaseDTO(caseToSave);
 
-                return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Processo alterado com sucesso!", caseToSave = responseCase });
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    message = $"Processo ID {responseCase.Id} - {responseCase.Nome} alterado com sucesso!",
+                    caseToSave = responseCase
+                });
             }
             catch (Exception e)
             {
@@ -1630,7 +1639,8 @@ namespace CPTM.ILA.Web.Controllers.API
                 _context.Cases.Remove(caseToDelete);
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Processo removido com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = $"Processo ID {cid} removido com sucesso!" });
             }
             catch (Exception e)
             {
@@ -1716,8 +1726,10 @@ namespace CPTM.ILA.Web.Controllers.API
                         .State = EntityState.Modified;
                     await _context.SaveChangesAsync();
 
-                    return Request.CreateResponse(HttpStatusCode.OK,
-                        new { message = "Processo reprovado com sucesso!" });
+                    return Request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        message = $"Processo ID {caseToApprove.Id} - {caseToApprove.Nome} reprovado com sucesso!"
+                    });
                 }
 
                 caseToApprove.ApproveCase();
@@ -1733,7 +1745,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     .State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Processo aprovado com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = $"Processo ID {caseToApprove.Id} - {caseToApprove.Nome} aprovado com sucesso!" });
             }
             catch (Exception e)
             {
@@ -1834,8 +1847,11 @@ namespace CPTM.ILA.Web.Controllers.API
                     .State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Processo enviado para aprovação com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    message =
+                        $"Processo ID {caseToRequestApproval.Id} - {caseToRequestApproval.Nome} enviado para aprovação com sucesso!"
+                });
             }
             catch (Exception e)
             {
