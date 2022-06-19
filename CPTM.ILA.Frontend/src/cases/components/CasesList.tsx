@@ -17,6 +17,8 @@ import {
     CaseListItem,
     headersCaseListItem,
 } from "../../shared/models/DTOs/case-list-item.model";
+import { useContext } from "react";
+import { AuthContext } from "../../shared/context/auth-context";
 
 const headers: {
     title: string;
@@ -52,6 +54,47 @@ const headers: {
         isSortable: true,
     },
 ];
+const headersDpo: {
+    title: string;
+    isFilterable: boolean;
+    isSortable: boolean;
+    prop: headersCaseListItem;
+}[] = [
+    { title: "Nome", prop: "nome", isFilterable: true, isSortable: true },
+    { title: "ID", prop: "id", isFilterable: true, isSortable: true },
+    { title: "Área", prop: "area", isFilterable: true, isSortable: true },
+    {
+        title: "Membro Resp. do Comitê",
+        prop: "comiteMemberResp",
+        isFilterable: true,
+        isSortable: true,
+    },
+    {
+        title: "Usuário Responsável",
+        prop: "usuarioResp",
+        isFilterable: true,
+        isSortable: true,
+    },
+    {
+        title: "Data de Envio",
+        prop: "dataEnvio",
+        isFilterable: true,
+        isSortable: true,
+    },
+    {
+        title: "Data de Aprovação",
+        prop: "dataAprovacao",
+        isFilterable: true,
+        isSortable: true,
+    },
+    {
+        title: "Data de Próxima Revisão",
+        prop: "dataProxRevisao",
+        isFilterable: true,
+        isSortable: true,
+    },
+];
+
 const headersMinimal: {
     title: string;
     isFilterable: boolean;
@@ -74,6 +117,8 @@ const CasesList = (props: {
     redirect: boolean;
     minimal?: boolean;
 }) => {
+    const { user } = useContext(AuthContext);
+
     let navigate = useNavigate();
 
     if (props.items.length === 0) {
@@ -101,7 +146,13 @@ const CasesList = (props: {
         <Card>
             <DatatableWrapper
                 body={props.items}
-                headers={props.minimal ? headersMinimal : headers}
+                headers={
+                    props.minimal
+                        ? headersMinimal
+                        : user.isDPO
+                        ? headersDpo
+                        : headers
+                }
                 paginationOptionsProps={{
                     initialState: {
                         rowsPerPage: 10,

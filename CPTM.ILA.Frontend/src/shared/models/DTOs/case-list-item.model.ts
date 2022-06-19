@@ -12,6 +12,7 @@ export interface CaseListItem {
     aprovado: boolean;
     reprovado: boolean;
     encaminhadoAprovacao: boolean;
+    comiteMemberResp: string;
 }
 
 export type headersCaseListItem = keyof CaseListItem;
