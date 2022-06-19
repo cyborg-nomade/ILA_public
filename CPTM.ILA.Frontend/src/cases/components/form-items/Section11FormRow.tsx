@@ -137,7 +137,7 @@ const Section11FormRow = (props: {
                                 onClick={() =>
                                     append(emptyItemCompatilhamentoDados())
                                 }
-                                disabled={!trata}
+                                disabled={!(trata === "SIM")}
                             >
                                 +
                             </Button>

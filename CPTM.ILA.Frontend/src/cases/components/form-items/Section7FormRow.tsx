@@ -176,7 +176,7 @@ const Section7FormRow = (props: {
                         <ButtonGroup as={Col} className="mt-1 mb-3" lg={2}>
                             <Button
                                 variant="primary"
-                                disabled={!trata}
+                                disabled={!(trata === "SIM")}
                                 onClick={() =>
                                     append(emptyItemCategoriaDadosPessoais())
                                 }

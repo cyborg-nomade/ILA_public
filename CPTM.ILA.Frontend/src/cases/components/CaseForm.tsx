@@ -165,6 +165,8 @@ const CaseForm = (props: {
         "catDadosPessoaisSensiveis.geneticos": false,
         "catDadosPessoaisSensiveis.biometricos": false,
         compartilhamentoDadosPessoais: false,
+        transferenciaInternacional: false,
+        contratoServicosTITratamentoDados: false,
     });
 
     const { token, tokenExpirationDate, user, changeGroup } =
@@ -4833,6 +4835,8 @@ const CaseForm = (props: {
                                 countries={countries}
                                 disabled={!isEditing}
                                 methods={methods}
+                                radioCheckedHandler={checkAllRadiosHandler}
+                                isNew={props.new || false}
                             />
                         </Accordion.Body>
                     </Accordion.Item>
@@ -4874,6 +4878,8 @@ const CaseForm = (props: {
                             <Section14FormRow
                                 disabled={!isEditing}
                                 methods={methods}
+                                radioCheckedHandler={checkAllRadiosHandler}
+                                isNew={props.new || false}
                             />
                         </Accordion.Body>
                     </Accordion.Item>
