@@ -65,9 +65,55 @@ const GroupCasesByStatusDashboard = () => {
             }
         };
 
-        getGroupCaseTotals().catch((error) => {
-            console.log(error);
-        });
+        const getAllComiteGroupCaseTotals = async () => {
+            try {
+                const responseData = await sendRequest(
+                    `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${user.id}/status/totals`,
+                    undefined,
+                    undefined,
+                    {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    }
+                );
+
+                const loadedTotals: StatusTotals[] = responseData.totals;
+                console.log("comiteCase loadedTotals: ", loadedTotals);
+
+                loadedTotals.sort((a, b) => (a.nome > b.nome ? 1 : -1));
+                console.log("comiteCase loadedTotals sorted: ", loadedTotals);
+
+                if (loadedTotals.length !== 0) {
+                    loadedTotals.map((lt) => {
+                        if (lt.nome === "Concluído") {
+                            setConcluidos(lt.quantidadeByStatus);
+                        }
+                        if (lt.nome === "Em Preenchimento") {
+                            setEmPreenchimento(lt.quantidadeByStatus);
+                        }
+                        if (lt.nome === "Pendente Aprovação") {
+                            setPendenteAprovacao(lt.quantidadeByStatus);
+                        }
+                        if (lt.nome === "Reprovado") {
+                            setReprovado(lt.quantidadeByStatus);
+                        }
+                        return lt;
+                    });
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        };
+
+        if (user.isComite && currentGroup.nome === "TODOS") {
+            getAllComiteGroupCaseTotals().catch((error) => {
+                console.log(error);
+            });
+        } else {
+            getGroupCaseTotals().catch((error) => {
+                console.log(error);
+            });
+        }
 
         return () => {
             setConcluidos(0);
@@ -75,7 +121,14 @@ const GroupCasesByStatusDashboard = () => {
             setPendenteAprovacao(0);
             setReprovado(0);
         };
-    }, [sendRequest, token, currentGroup.id]);
+    }, [
+        sendRequest,
+        token,
+        currentGroup.id,
+        user.id,
+        user.isComite,
+        currentGroup.nome,
+    ]);
 
     if (isLoading) {
         return (

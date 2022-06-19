@@ -766,7 +766,7 @@
         <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByExtensaoEncarregadoByStatus(System.Int32,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Retorna todos os Casos de Uso dos grupos de um membro do Comitê LGPD que estejam em um certo status de aprovação.
-            Endpoint disponibilizado apenas para o DPO.
+            Endpoint disponibilizado apenas para o DPO e para o membro do Comitê LGPD em questão.
             </summary>
             <param name="uid">Id do membro do comitê</param>
             <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
@@ -853,7 +853,7 @@
         <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByExtensaoEncarregadoByStatus(System.Int32)">
             <summary>
             Retorna os totais dos Casos de Uso dos grupos de acesso de um Mebro do Comitê por status de aprovação.
-            Endpoint disponibilizado apenas para o DPO.
+            Endpoint disponibilizado apenas para o DPO e para o membro do comitê em questão.
             </summary>
             <param name="uid">Id do membro do Comitê especificado</param>
             <returns>
@@ -865,7 +865,7 @@
         <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByExtensaoEncarregadoBySelectedStatus(System.Int32,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Retorna o total de Casos de Uso dos grupos de acesso de um Mebro do Comitê no status de aprovação selecionado. 
-            Endpoint disponibilizado apenas para o DPO.
+            Endpoint disponibilizado apenas para o DPO e para o membro do comitê em questão.
             </summary>
             <param name="uid">Id do membro do Comitê especificado</param>
             <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
