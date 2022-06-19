@@ -807,7 +807,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     .GroupBy(c => new
                     {
                         c.Aprovado,
-                        c.EncaminhadoAprovacao
+                        c.EncaminhadoAprovacao,
+                        c.Reprovado
                     })
                     .Select(c => new StatusTotals()
                     {
