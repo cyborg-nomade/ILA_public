@@ -978,8 +978,10 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var caseDto = CaseDTO.ConvertToCaseDTO(uniqueCase);
 
-                return Request.CreateResponse(HttpStatusCode.OK,
-                    new { uniqueCase = caseDto, message = "Caso obtido com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    uniqueCase = caseDto, message = $"Processo ID {caseDto.Id} - {caseDto.Nome} obtido com sucesso!"
+                });
             }
             catch (Exception e)
             {
@@ -1046,8 +1048,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var responseCase = CaseDTO.ConvertToCaseDTO(caseToSave);
 
-                return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Processo registrado com sucesso!", caseToSave = responseCase });
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    message = $"Processo ID {responseCase.Id} - {responseCase.Nome} registrado com sucesso!",
+                    caseToSave = responseCase
+                });
             }
             catch (Exception e)
             {
@@ -1528,8 +1533,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 var responseCase = CaseDTO.ConvertToCaseDTO(caseToSave);
 
-                return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Processo alterado com sucesso!", caseToSave = responseCase });
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    message = $"Processo ID {responseCase.Id} - {responseCase.Nome} alterado com sucesso!",
+                    caseToSave = responseCase
+                });
             }
             catch (Exception e)
             {
@@ -1630,7 +1638,8 @@ namespace CPTM.ILA.Web.Controllers.API
                 _context.Cases.Remove(caseToDelete);
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Processo removido com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = $"Processo ID {cid} removido com sucesso!" });
             }
             catch (Exception e)
             {
@@ -1716,8 +1725,10 @@ namespace CPTM.ILA.Web.Controllers.API
                         .State = EntityState.Modified;
                     await _context.SaveChangesAsync();
 
-                    return Request.CreateResponse(HttpStatusCode.OK,
-                        new { message = "Processo reprovado com sucesso!" });
+                    return Request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        message = $"Processo ID {caseToApprove.Id} - {caseToApprove.Nome} reprovado com sucesso!"
+                    });
                 }
 
                 caseToApprove.ApproveCase();
@@ -1733,7 +1744,8 @@ namespace CPTM.ILA.Web.Controllers.API
                     .State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK, new { message = "Processo aprovado com sucesso!" });
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { message = $"Processo ID {caseToApprove.Id} - {caseToApprove.Nome} aprovado com sucesso!" });
             }
             catch (Exception e)
             {
@@ -1835,7 +1847,11 @@ namespace CPTM.ILA.Web.Controllers.API
                 await _context.SaveChangesAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { message = "Processo enviado para aprovação com sucesso!" });
+                    new
+                    {
+                        message =
+                            $"Processo ID {caseToRequestApproval.Id} - {caseToRequestApproval.Nome} enviado para aprovação com sucesso!"
+                    });
             }
             catch (Exception e)
             {
