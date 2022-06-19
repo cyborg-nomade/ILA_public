@@ -164,6 +164,7 @@ const CaseForm = (props: {
         "catDadosPessoaisSensiveis.saudeVidaSexual": false,
         "catDadosPessoaisSensiveis.geneticos": false,
         "catDadosPessoaisSensiveis.biometricos": false,
+        compartilhamentoDadosPessoais: false,
     });
 
     const { token, tokenExpirationDate, user, changeGroup } =
@@ -4675,6 +4676,8 @@ const CaseForm = (props: {
                             <Section11FormRow
                                 disabled={!isEditing}
                                 methods={methods}
+                                radioCheckedHandler={checkAllRadiosHandler}
+                                isNew={props.new || false}
                             />
                         </Accordion.Body>
                     </Accordion.Item>
