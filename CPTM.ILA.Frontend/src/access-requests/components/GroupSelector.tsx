@@ -40,10 +40,7 @@ const GroupSelector = () => {
                                         users: [],
                                     })
                                 }
-                                active={
-                                    { id: 0, nome: "TODOS", users: [] } ===
-                                    currentGroup
-                                }
+                                active={currentGroup.nome === "TODOS"}
                             >
                                 TODOS
                             </Button>
