@@ -11,13 +11,13 @@ import CasesList from "../../cases/components/CasesList";
 const ComiteCasesListGetter = () => {
     const [cases, setCases] = useState<CaseListItem[]>([]);
 
-    const { token, currentGroup } = useContext(AuthContext);
+    const { token, currentGroup, user } = useContext(AuthContext);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
 
     useEffect(() => {
-        const getApprovedCases = async () => {
+        const getSelectedGroupApprovedCases = async () => {
             const responseData = await sendRequest(
                 `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/false/true/false`,
                 undefined,
@@ -32,10 +32,31 @@ const ComiteCasesListGetter = () => {
             console.log("loadedCases: ", loadedCases);
             setCases(loadedCases);
         };
+        const getAllComiteApprovedCases = async () => {
+            const responseData = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${user.id}/status/false/true/false`,
+                undefined,
+                undefined,
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                }
+            );
 
-        getApprovedCases().catch((error) => {
-            console.log(error);
-        });
+            const loadedCases: CaseListItem[] = responseData.cases;
+            console.log("loadedCases: ", loadedCases);
+            setCases(loadedCases);
+        };
+
+        if (user.isComite && currentGroup.nome === "TODOS") {
+            getAllComiteApprovedCases().catch((error) => {
+                console.log(error);
+            });
+        } else {
+            getSelectedGroupApprovedCases().catch((error) => {
+                console.log(error);
+            });
+        }
     }, [sendRequest, token, currentGroup.id]);
 
     if (isLoading) {

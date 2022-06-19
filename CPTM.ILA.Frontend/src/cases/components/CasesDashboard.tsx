@@ -166,6 +166,10 @@ const CasesDashboard = () => {
             getDpoCasesTotals().catch((error) => {
                 console.log(error);
             });
+        } else if (user.isComite && currentGroup.nome === "TODOS") {
+            getComiteCasesTotals().catch((error) => {
+                console.log(error);
+            });
         } else {
             getGroupCaseTotals().catch((error) => {
                 console.log(error);
