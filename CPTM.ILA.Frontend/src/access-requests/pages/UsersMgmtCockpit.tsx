@@ -7,6 +7,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
 
 import { ComiteMember } from "../../shared/models/DTOs/comite-member";
 import { AuthContext } from "../../shared/context/auth-context";
@@ -21,7 +22,8 @@ const UsersMgmtCockpit = () => {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
     const [users, setUsers] = useState<UserDto[]>([]);
-    const [memberToAdd, setMemberToAdd] = useState("");
+    const [showUsers, setShowUsers] = useState<UserDto[]>([]);
+    const [userSearch, setUserSearch] = useState("");
     const [message, setMessage] = useState("");
 
     let navigate = useNavigate();
@@ -41,6 +43,7 @@ const UsersMgmtCockpit = () => {
             const loadedUsers: UserDto[] = responseData.users;
             console.log("loadedUsers: ", loadedUsers);
             setUsers(loadedUsers);
+            setShowUsers(loadedUsers);
         };
 
         getAllUsers().catch((error) => {
@@ -49,6 +52,7 @@ const UsersMgmtCockpit = () => {
 
         return () => {
             setUsers([]);
+            setShowUsers([]);
         };
     }, [sendRequest, token]);
 
@@ -87,6 +91,24 @@ const UsersMgmtCockpit = () => {
         }
     };
 
+    const handleSearchUsers = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setUserSearch(event.target.value);
+        console.log("target value", event.target.value);
+        if (event.target.value === "") {
+            setShowUsers(users);
+        } else {
+            setShowUsers((prevUsers) =>
+                prevUsers.filter(
+                    (u) =>
+                        u.nome.includes(event.target.value.toUpperCase()) ||
+                        u.username.includes(event.target.value.toUpperCase())
+                )
+            );
+        }
+        console.log("users: ", users);
+        console.log("show users: ", showUsers);
+    };
+
     const clearMessage = () => {
         setMessage("");
     };
@@ -118,6 +140,21 @@ const UsersMgmtCockpit = () => {
                     </Alert>
                 </Row>
             )}
+            <Card className="mx-auto mt-4" style={{ width: "28rem" }}>
+                <Card.Title className="pt-3 px-3">Adicionar Grupo</Card.Title>
+                <Card.Body>
+                    <InputGroup>
+                        <InputGroup.Text>Pesquisar usuários: </InputGroup.Text>
+                        <div className="form-control p-0">
+                            <Form.Control
+                                onChange={handleSearchUsers}
+                                value={userSearch}
+                                placeholder="Pesquisar usuários..."
+                            />
+                        </div>
+                    </InputGroup>
+                </Card.Body>
+            </Card>
             <Card
                 className="justify-content-center mx-auto mt-4"
                 style={{ width: "28rem" }}
@@ -125,7 +162,7 @@ const UsersMgmtCockpit = () => {
                 <Card.Title className="pt-3 px-3">Usuários Atuais</Card.Title>
                 <Card.Body>
                     <ListGroup>
-                        {users.map((u) => (
+                        {showUsers.map((u) => (
                             <ListGroup.Item className="p-0" key={u.id}>
                                 <InputGroup>
                                     <InputGroup.Text key={u.id} as={Col} lg={9}>
