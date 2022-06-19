@@ -24,7 +24,7 @@ const AllCasesListGetter = () => {
                 undefined,
                 { Authorization: "Bearer " + token }
             );
-            const loadedCases: CaseListItem[] = responseData.cases;
+            const loadedCases: CaseListItem[] = responseData.caseListItems;
             console.log("loadedCases: ", loadedCases);
 
             setCases(loadedCases);

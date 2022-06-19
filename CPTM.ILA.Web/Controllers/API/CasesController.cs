@@ -233,7 +233,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { cases = caseListItems, message = CaseListSuccessMessage });
+                    new { caseListItems, message = CaseListSuccessMessage });
             }
             catch (Exception e)
             {
@@ -296,7 +296,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var caseListItems = filteredCases.ConvertAll<CaseListItem>(CaseListItem.ReduceToListItem);
 
                 return Request.CreateResponse(HttpStatusCode.OK,
-                    new { cases = caseListItems, message = CaseListSuccessMessage });
+                    new { caseListItems, message = CaseListSuccessMessage });
             }
             catch (Exception e)
             {

@@ -162,12 +162,51 @@ const CasesDashboard = () => {
             }
         };
 
-        if (user.isComite && user.isDPO) {
+        const getDpoAllComiteMembersTotals = async () => {
+            const responseData = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/status/totals`,
+                undefined,
+                undefined,
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                }
+            );
+
+            const loadedTotals: StatusTotals[] = responseData.totals;
+            console.log("dpoCase loadedTotals: ", loadedTotals);
+
+            if (loadedTotals.length === 0) {
+                setPieChartData([]);
+            } else {
+                const transformedData: PieChartData[] = loadedTotals.map(
+                    (d, index) => {
+                        return {
+                            name: d.nome,
+                            value: d.quantidadeByStatus,
+                        };
+                    }
+                );
+
+                console.log("transformedData: ", transformedData);
+                setPieChartData(transformedData);
+            }
+        };
+
+        if (
+            user.isComite &&
+            user.isDPO &&
+            currentComiteMember.nome !== "TODOS"
+        ) {
             getDpoCasesTotals().catch((error) => {
                 console.log(error);
             });
         } else if (user.isComite && currentGroup.nome === "TODOS") {
             getComiteCasesTotals().catch((error) => {
+                console.log(error);
+            });
+        } else if (user.isDPO && currentComiteMember.nome === "TODOS") {
+            getDpoAllComiteMembersTotals().catch((error) => {
                 console.log(error);
             });
         } else {
@@ -187,6 +226,8 @@ const CasesDashboard = () => {
         user.isDPO,
         currentComiteMember.id,
         user.id,
+        currentGroup.nome,
+        currentComiteMember.nome,
     ]);
 
     const onClickChart = (arg: CategoricalChartState) => {

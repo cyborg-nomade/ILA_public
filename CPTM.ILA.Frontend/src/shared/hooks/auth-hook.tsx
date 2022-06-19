@@ -16,6 +16,7 @@ interface storageObject {
     token: string;
     tokenExpirationDate: string;
     currentGroup: Group;
+    currentComiteMember: ComiteMember;
     areaTratamentoDados: AgenteTratamento;
 }
 
@@ -38,6 +39,7 @@ export const useAuth = () => {
             isDeveloper: boolean,
             token: string,
             currentGroup: Group,
+            currentComiteMember: ComiteMember,
             areaTratamentoDados: AgenteTratamento,
             tokenExpirationDate?: Date
         ) => {
@@ -45,6 +47,7 @@ export const useAuth = () => {
             setIsDeveloper(isDeveloper);
             setToken(token);
             setCurrentGroup(currentGroup);
+            setCurrentComiteMember(currentComiteMember);
             setAreaTratamentoDados(areaTratamentoDados);
             const expDate =
                 tokenExpirationDate ||
@@ -55,6 +58,7 @@ export const useAuth = () => {
                 user,
                 isDeveloper,
                 currentGroup,
+                currentComiteMember,
                 areaTratamentoDados,
                 token,
                 tokenExpirationDate: expDate.toISOString(),
@@ -83,6 +87,8 @@ export const useAuth = () => {
     };
 
     const changeComiteMember = (cm: ComiteMember) => {
+        console.log("cm change, comite member: ", cm);
+
         setCurrentComiteMember(cm);
     };
 
@@ -120,6 +126,7 @@ export const useAuth = () => {
                 userDataObject.isDeveloper,
                 userDataObject.token,
                 userDataObject.currentGroup,
+                userDataObject.currentComiteMember,
                 userDataObject.areaTratamentoDados,
                 storedExpirationDate
             );
