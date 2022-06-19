@@ -117,7 +117,7 @@ const Section3FormRow = (props: {
                     name="fasesCicloTratamento.coleta"
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Form.Check
-                            disabled={!atua || props.disabled}
+                            disabled={!(atua === "SIM") || props.disabled}
                             type="checkbox"
                             onChange={onChange}
                             onBlur={onBlur}
@@ -137,7 +137,7 @@ const Section3FormRow = (props: {
                     name="fasesCicloTratamento.retencao"
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Form.Check
-                            disabled={!atua || props.disabled}
+                            disabled={!(atua === "SIM") || props.disabled}
                             type="checkbox"
                             onChange={onChange}
                             onBlur={onBlur}
@@ -157,7 +157,7 @@ const Section3FormRow = (props: {
                     name="fasesCicloTratamento.processamento"
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Form.Check
-                            disabled={!atua || props.disabled}
+                            disabled={!(atua === "SIM") || props.disabled}
                             type="checkbox"
                             onChange={onChange}
                             onBlur={onBlur}
@@ -177,7 +177,7 @@ const Section3FormRow = (props: {
                     name="fasesCicloTratamento.compartilhamento"
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Form.Check
-                            disabled={!atua || props.disabled}
+                            disabled={!(atua === "SIM") || props.disabled}
                             type="checkbox"
                             onChange={onChange}
                             onBlur={onBlur}
@@ -197,7 +197,7 @@ const Section3FormRow = (props: {
                     name="fasesCicloTratamento.eliminacao"
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Form.Check
-                            disabled={!atua || props.disabled}
+                            disabled={!(atua === "SIM") || props.disabled}
                             type="checkbox"
                             onChange={onChange}
                             onBlur={onBlur}
