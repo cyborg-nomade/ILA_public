@@ -11,7 +11,7 @@ import CasesList from "../../cases/components/CasesList";
 const DpoPendingCasesListGetter = () => {
     const [cases, setCases] = useState<CaseListItem[]>([]);
 
-    const { token, currentComiteMember } = useContext(AuthContext);
+    const { token, currentComiteMember, user } = useContext(AuthContext);
 
     const { isLoading, error, isWarning, sendRequest, clearError } =
         useHttpClient();
@@ -33,10 +33,38 @@ const DpoPendingCasesListGetter = () => {
             setCases(loadedCases);
         };
 
-        getPendingCases().catch((error) => {
-            console.log(error);
-        });
-    }, [sendRequest, token, currentComiteMember.id]);
+        const getAllPendingCases = async () => {
+            const responseData = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/status/true/false/false`,
+                undefined,
+                undefined,
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                }
+            );
+
+            const loadedCases: CaseListItem[] = responseData.caseListItems;
+            console.log("loadedCases: ", loadedCases);
+            setCases(loadedCases);
+        };
+
+        if (user.isDPO && currentComiteMember.nome === "TODOS") {
+            getAllPendingCases().catch((error) => {
+                console.log(error);
+            });
+        } else {
+            getPendingCases().catch((error) => {
+                console.log(error);
+            });
+        }
+    }, [
+        sendRequest,
+        token,
+        currentComiteMember.id,
+        user.isDPO,
+        currentComiteMember.nome,
+    ]);
 
     if (isLoading) {
         return (
@@ -50,7 +78,12 @@ const DpoPendingCasesListGetter = () => {
 
     return (
         <React.Fragment>
-            <h1>Processos Pendentes do Membro Selecionado</h1>
+            {currentComiteMember.nome !== "TODOS" && (
+                <h1>Processos Pendentes do Membro Selecionado</h1>
+            )}
+            {currentComiteMember.nome === "TODOS" && (
+                <h1>Processos de Todo o Comitê LGPD</h1>
+            )}
             {error && (
                 <Alert
                     variant={isWarning ? "warning" : "danger"}

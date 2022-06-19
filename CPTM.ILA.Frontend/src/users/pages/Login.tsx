@@ -28,7 +28,7 @@ const initialValues: AuthUser = {
 };
 
 const Login = () => {
-    const { login, changeComiteMember } = useContext(AuthContext);
+    const { login } = useContext(AuthContext);
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
@@ -56,25 +56,9 @@ const Login = () => {
                 isDeveloper,
                 responseData.token,
                 receivedUser.originGroup,
+                { id: 0, nome: "TODOS" },
                 receivedAreaTratamentoDados
             );
-
-            if (receivedUser.isDPO) {
-                const responseDataComiteMembers = await sendRequest(
-                    `${process.env.REACT_APP_CONNSTR}/users/comite-members`,
-                    undefined,
-                    undefined,
-                    {
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + responseData.token,
-                    }
-                );
-
-                const loadedMembers: ComiteMember[] =
-                    responseDataComiteMembers.comiteMembers;
-                console.log("loadedMembers", loadedMembers);
-                changeComiteMember(loadedMembers[0]);
-            }
 
             navigate(`/${receivedUser.id}/`);
         } catch (error) {

@@ -28,7 +28,7 @@ const ComiteCasesListGetter = () => {
                 }
             );
 
-            const loadedCases: CaseListItem[] = responseData.cases;
+            const loadedCases: CaseListItem[] = responseData.caseListItems;
             console.log("loadedCases: ", loadedCases);
             setCases(loadedCases);
         };
@@ -43,7 +43,7 @@ const ComiteCasesListGetter = () => {
                 }
             );
 
-            const loadedCases: CaseListItem[] = responseData.cases;
+            const loadedCases: CaseListItem[] = responseData.caseListItems;
             console.log("loadedCases: ", loadedCases);
             setCases(loadedCases);
         };
@@ -57,7 +57,14 @@ const ComiteCasesListGetter = () => {
                 console.log(error);
             });
         }
-    }, [sendRequest, token, currentGroup.id]);
+    }, [
+        sendRequest,
+        token,
+        currentGroup.id,
+        user.isComite,
+        user.id,
+        currentGroup.nome,
+    ]);
 
     if (isLoading) {
         return (
@@ -71,10 +78,18 @@ const ComiteCasesListGetter = () => {
 
     return (
         <React.Fragment>
-            <h1>
-                Meus Processos - Todos os processos aprovados do grupo
-                selecionado
-            </h1>
+            {currentGroup.nome !== "TODOS" && (
+                <h1>
+                    Meus Processos - Todos os processos aprovados do grupo
+                    selecionado
+                </h1>
+            )}
+            {currentGroup.nome === "TODOS" && (
+                <h1>
+                    Meus Processos - Todos os processos aprovados de todos os
+                    meus grupos
+                </h1>
+            )}
             {error && (
                 <Alert
                     variant={isWarning ? "warning" : "danger"}
