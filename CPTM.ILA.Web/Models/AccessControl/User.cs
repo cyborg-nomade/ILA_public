@@ -38,10 +38,8 @@ namespace CPTM.ILA.Web.Models.AccessControl
                 IsSystem = user.IsSystem, OriginGroup = user.OriginGroup, Groups = user.GroupAccessExpirations
                     .Select(gae => gae.Group)
                     .ToList(),
-                Nome = user.Username == "LGPDCOMUM"
-                    ? "LGPDCOMUM"
-                    : Seguranca.ObterUsuario(user.Username)
-                        .Nome.ToUpper()
+                Nome = Seguranca.ObterUsuario(user.Username)
+                    .Nome.ToUpper()
             };
 
             return userDto;
