@@ -35,10 +35,8 @@ namespace CPTM.ILA.Web.DTOs
                 Id = fullCase.Id,
                 Ref = fullCase.Ref,
                 Area = fullCase.Area,
-                UsuarioResp = fullCase.UsernameResponsavel == "LGPDCOMUM"
-                    ? "LGPDCOMUM"
-                    : Seguranca.ObterUsuario(fullCase.UsernameResponsavel)
-                        .Nome.ToUpper(),
+                UsuarioResp = Seguranca.ObterUsuario(fullCase.UsernameResponsavel)
+                    .Nome.ToUpper(),
                 DataEnvio = fullCase.DataEnvio?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
                 DataAprovacao = fullCase.DataAprovacao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
                 DataProxRevisao = fullCase.DataProxRevisao?.ToString("d", CultureInfo.GetCultureInfo("pt-BR")) ?? "",
@@ -68,11 +66,6 @@ namespace CPTM.ILA.Web.DTOs
             if (selectedComiteMember == null)
             {
                 return "OLIVIA SHIBATA NISHIYAMA";
-            }
-
-            if (selectedComiteMember.OriginGroup.Nome == "LGPDTESTE")
-            {
-                return "LGPDCOMUM";
             }
 
             var comiteMemberUserAd = Seguranca.ObterUsuario(selectedComiteMember.Username.ToUpper());

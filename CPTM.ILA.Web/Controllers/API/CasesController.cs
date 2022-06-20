@@ -1813,22 +1813,12 @@ namespace CPTM.ILA.Web.Controllers.API
                 }
 
 
-                if (usuarioChamadoItsm.Username.ToUpper() != "LGPDCOMUM")
-                {
-                    var userEmailId = _context.ILA_VW_USUARIO
-                        .Where(u => u.TX_USERNAME == usuarioChamadoItsm.Username.ToUpper())
-                        .Select(u => u.ID_CODUSUARIO)
-                        .SingleOrDefault();
+                var userEmailId = _context.ILA_VW_USUARIO
+                    .Where(u => u.TX_USERNAME == usuarioChamadoItsm.Username.ToUpper())
+                    .Select(u => u.ID_CODUSUARIO)
+                    .SingleOrDefault();
 
-                    caseToRequestApproval.SendCaseToApproval(usuarioChamadoItsm.Username.ToUpper(), userEmailId);
-                }
-                else
-                {
-                    var userEmailId = _context.ILA_VW_USUARIO.Where(u => u.TX_USERNAME == "URIELF")
-                        .Select(u => u.ID_CODUSUARIO)
-                        .SingleOrDefault();
-                    caseToRequestApproval.SendCaseToApproval("URIELF", userEmailId);
-                }
+                caseToRequestApproval.SendCaseToApproval(usuarioChamadoItsm.Username.ToUpper(), userEmailId);
 
 
                 var changeLog = new ChangeLog()
