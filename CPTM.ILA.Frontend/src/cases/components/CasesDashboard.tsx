@@ -1,5 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { PieChart } from "react-minimal-pie-chart";
+import { useNavigate, useParams } from "react-router-dom";
+// import { PieChart } from "react-minimal-pie-chart";
+import {
+    PieChart,
+    Pie,
+    Sector,
+    Cell,
+    ResponsiveContainer,
+    Tooltip,
+} from "recharts";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import randomColor from "randomcolor";
@@ -11,219 +20,328 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
+import { CategoricalChartState } from "recharts/types/chart/generateCategoricalChart";
 
 type PieChartData = {
-  title: string;
-  value: number;
-  color: string;
-  key: number;
+    name: string;
+    value: number;
 };
 
 const colors = randomColor({
-  count: 100,
-  hue: "random",
-  luminosity: "random",
-  seed: "same2",
+    count: 100,
+    hue: "random",
+    luminosity: "random",
+    seed: "same2",
 });
 
+const getChartColor = (statusName: string, index: number) => {
+    if (statusName === "Em Preenchimento") {
+        return "#ffc107";
+    }
+    if (statusName === "Pendente Aprovação") {
+        return "#6c757d";
+    }
+    if (statusName === "Concluído") {
+        return "#198754";
+    }
+    if (statusName === "Reprovado") {
+        return "#dc3545";
+    }
+    return colors[index];
+};
+
+const renderLabel = (entry: any) => {
+    return `${entry.name}: ${Math.round(entry.percent * 100)}%`;
+};
+
 const CasesDashboard = () => {
-  const [selected, setSelected] = useState<number | undefined>(0);
-  const [, setHovered] = useState<number | undefined>(undefined);
-  const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
-  const [showAlert, setShowAlert] = useState(true);
+    const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
+    const [showAlert, setShowAlert] = useState(true);
 
-  const { user, token, currentGroup } = useContext(AuthContext);
+    const { user, token, currentGroup, currentComiteMember } =
+        useContext(AuthContext);
 
-  const { isLoading, error, isWarning, sendRequest, clearError } =
-    useHttpClient();
+    const { isLoading, error, isWarning, sendRequest, clearError } =
+        useHttpClient();
 
-  useEffect(() => {
-    const getGroupCaseTotals = async () => {
-      const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/totals`,
-        undefined,
-        undefined,
-        {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
+    let navigate = useNavigate();
+
+    useEffect(() => {
+        const getGroupCaseTotals = async () => {
+            const responseData = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/group/${currentGroup.id}/status/totals`,
+                undefined,
+                undefined,
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                }
+            );
+
+            const loadedTotals: StatusTotals[] = responseData.totals;
+            console.log("groupCase loadedTotals: ", loadedTotals);
+
+            if (loadedTotals.length === 0) {
+                setPieChartData([]);
+            } else {
+                const transformedData: PieChartData[] = loadedTotals.map(
+                    (d, index) => {
+                        return {
+                            name: d.nome,
+                            value: d.quantidadeByStatus,
+                        };
+                    }
+                );
+
+                console.log("transformedData: ", transformedData);
+                setPieChartData(transformedData);
+            }
+        };
+
+        const getComiteCasesTotals = async () => {
+            const responseData = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/user/${user.id}/group/totals`,
+                undefined,
+                undefined,
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                }
+            );
+
+            const loadedTotals: GroupTotals[] = responseData.totals;
+            console.log("comiteCase loadedTotals: ", loadedTotals);
+
+            if (loadedTotals.length === 0) {
+                setPieChartData([]);
+            } else {
+                const transformedData: PieChartData[] = loadedTotals.map(
+                    (d, index) => {
+                        return {
+                            name: d.groupName,
+                            value: d.quantityInGroup,
+                            // color: colors[index],
+                            // key: index,
+                        };
+                    }
+                );
+
+                console.log("transformedData: ", transformedData);
+                setPieChartData(transformedData);
+            }
+        };
+
+        const getDpoCasesTotals = async () => {
+            const responseData = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/${currentComiteMember.id}/status/totals`,
+                undefined,
+                undefined,
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                }
+            );
+
+            const loadedTotals: StatusTotals[] = responseData.totals;
+            console.log("dpoCase loadedTotals: ", loadedTotals);
+
+            if (loadedTotals.length === 0) {
+                setPieChartData([]);
+            } else {
+                const transformedData: PieChartData[] = loadedTotals.map(
+                    (d, index) => {
+                        return {
+                            name: d.nome,
+                            value: d.quantidadeByStatus,
+                        };
+                    }
+                );
+
+                console.log("transformedData: ", transformedData);
+                setPieChartData(transformedData);
+            }
+        };
+
+        const getDpoAllComiteMembersTotals = async () => {
+            const responseData = await sendRequest(
+                `${process.env.REACT_APP_CONNSTR}/cases/status/totals`,
+                undefined,
+                undefined,
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                }
+            );
+
+            const loadedTotals: StatusTotals[] = responseData.totals;
+            console.log("dpoCase loadedTotals: ", loadedTotals);
+
+            if (loadedTotals.length === 0) {
+                setPieChartData([]);
+            } else {
+                const transformedData: PieChartData[] = loadedTotals.map(
+                    (d, index) => {
+                        return {
+                            name: d.nome,
+                            value: d.quantidadeByStatus,
+                        };
+                    }
+                );
+
+                console.log("transformedData: ", transformedData);
+                setPieChartData(transformedData);
+            }
+        };
+
+        if (
+            user.isComite &&
+            user.isDPO &&
+            currentComiteMember.nome !== "TODOS"
+        ) {
+            getDpoCasesTotals().catch((error) => {
+                console.log(error);
+            });
+        } else if (user.isComite && currentGroup.nome === "TODOS") {
+            getComiteCasesTotals().catch((error) => {
+                console.log(error);
+            });
+        } else if (user.isDPO && currentComiteMember.nome === "TODOS") {
+            getDpoAllComiteMembersTotals().catch((error) => {
+                console.log(error);
+            });
+        } else {
+            getGroupCaseTotals().catch((error) => {
+                console.log(error);
+            });
         }
-      );
 
-      const loadedTotals: StatusTotals[] = responseData.totals;
-      console.log("groupCase loadedTotals: ", loadedTotals);
+        return () => {
+            setPieChartData([]);
+        };
+    }, [
+        sendRequest,
+        token,
+        currentGroup.id,
+        user.isComite,
+        user.isDPO,
+        currentComiteMember.id,
+        user.id,
+        currentGroup.nome,
+        currentComiteMember.nome,
+    ]);
 
-      if (loadedTotals.length === 0) {
-        setPieChartData([]);
-      } else {
-        const transformedData: PieChartData[] = loadedTotals.map((d, index) => {
-          return {
-            title: d.nome,
-            value: d.quantidadeByStatus,
-            color: colors[index],
-            key: index,
-          };
-        });
+    const onClickChart = (arg: CategoricalChartState) => {
+        if (arg) {
+            console.log(arg.activePayload);
 
-        console.log("transformedData: ", transformedData);
-        setPieChartData(transformedData);
-      }
+            arg.activePayload?.forEach((ap) => {
+                if (ap.payload.name === "Em Preenchimento") {
+                    if (!user.isComite) {
+                        console.log("Em Preenchimento");
+                        return navigate("../cases/continue");
+                    }
+                }
+                if (ap.payload.name === "Pendente Aprovação") {
+                    if (user.isDPO) {
+                        console.log("Pendente Aprovação");
+                        return navigate("../cases/pending");
+                    }
+                    if (user.isComite && !user.isDPO) {
+                        console.log("Pendente Aprovação");
+                        return navigate("../cases/approve");
+                    }
+                }
+                if (ap.payload.name === "Concluído") {
+                    if (!user.isComite) {
+                        console.log("Concluído");
+                        return navigate("../cases/edit");
+                    }
+                    if (user.isComite && !user.isDPO) {
+                        console.log("Concluído");
+                        return navigate("../cases/");
+                    }
+                }
+                if (ap.payload.name === "Reprovado") {
+                    if (!user.isComite) {
+                        console.log("Reprovado");
+                        return navigate("../cases/reprovados");
+                    }
+                }
+
+                return console.log(ap.payload.name);
+            });
+        }
     };
 
-    const getComiteCasesTotals = async () => {
-      const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/group/comite-member/totals`,
-        undefined,
-        undefined,
-        {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        }
-      );
-
-      const loadedTotals: GroupTotals[] = responseData.totals;
-      console.log("comiteCase loadedTotals: ", loadedTotals);
-
-      if (loadedTotals.length === 0) {
-        setPieChartData([]);
-      } else {
-        const transformedData: PieChartData[] = loadedTotals.map((d, index) => {
-          return {
-            title: d.groupName,
-            value: d.quantityInGroup,
-            color: colors[index],
-            key: index,
-          };
-        });
-
-        console.log("transformedData: ", transformedData);
-        setPieChartData(transformedData);
-      }
-    };
-
-    const getDpoCasesTotals = async () => {
-      const responseData = await sendRequest(
-        `${process.env.REACT_APP_CONNSTR}/cases/extensao-encarregado/totals`,
-        undefined,
-        undefined,
-        {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        }
-      );
-
-      const loadedTotals: ExtensaoEncarregadoTotals[] = responseData.totals;
-      console.log("dpoCase loadedTotals: ", loadedTotals);
-
-      if (loadedTotals.length === 0) {
-        setPieChartData([]);
-      } else {
-        const transformedData: PieChartData[] = loadedTotals.map((d, index) => {
-          return {
-            title: d.extensaoNome,
-            value: d.quantityByExtensao,
-            color: colors[index],
-            key: index,
-          };
-        });
-
-        console.log("transformedData: ", transformedData);
-        setPieChartData(transformedData);
-      }
-    };
-
-    if (user.isComite && user.isDPO) {
-      getDpoCasesTotals().catch((error) => {
-        console.log(error);
-      });
-    } else if (user.isComite && !user.isDPO) {
-      getComiteCasesTotals().catch((error) => {
-        console.log(error);
-      });
-    } else {
-      getGroupCaseTotals().catch((error) => {
-        console.log(error);
-      });
+    if (isLoading) {
+        return (
+            <Row className="justify-content-center">
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </Row>
+        );
     }
 
-    return () => {
-      setPieChartData([]);
-    };
-  }, [sendRequest, token, currentGroup.id, user.isComite, user.isDPO]);
-
-  if (isLoading) {
     return (
-      <Row className="justify-content-center">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </Row>
-    );
-  }
-
-  return (
-    <React.Fragment>
-      {error && (
-        <Alert
-          variant={isWarning ? "warning" : "danger"}
-          onClose={clearError}
-          dismissible
-        >
-          {error}
-        </Alert>
-      )}
-      {pieChartData.length === 0 && showAlert && (
-        <Alert
-          variant="warning"
-          dismissible
-          onClose={() => setShowAlert(false)}
-        >
-          "Não existem dados para a seleção!"
-        </Alert>
-      )}
-      <Row>
-        <h3 className="mb-4">Visão de Processos</h3>
-      </Row>
-      <Row>
-        <Card border="primary" className="m-0" style={{ height: "400px" }}>
-          <PieChart
-            data={pieChartData}
-            label={({ x, y, dx, dy, dataEntry, dataIndex }) => (
-              <text
-                key={dataIndex}
-                x={x + 5}
-                y={y + 9}
-                dx={dx}
-                dy={dy}
-                dominantBaseline="auto"
-                textAnchor="middle"
-                style={{
-                  fontSize: "4px",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                {dataEntry.title +
-                  ": " +
-                  Math.round(dataEntry.percentage) +
-                  "%"}
-              </text>
+        <React.Fragment>
+            {error && (
+                <Alert
+                    variant={isWarning ? "warning" : "danger"}
+                    onClose={clearError}
+                    dismissible
+                >
+                    {error}
+                </Alert>
             )}
-            radius={20}
-            labelPosition={200}
-            onClick={(event, index) => {
-              console.log("CLICK", { event, index });
-              setSelected(index === selected ? undefined : index);
-            }}
-            onMouseOver={(_, index) => {
-              setHovered(index);
-            }}
-            onMouseOut={() => {
-              setHovered(undefined);
-            }}
-          />
-        </Card>
-      </Row>
-    </React.Fragment>
-  );
+            {pieChartData.length === 0 && showAlert && (
+                <Alert
+                    variant="warning"
+                    dismissible
+                    onClose={() => setShowAlert(false)}
+                >
+                    "Não existem dados para o grupo selecionado!"
+                </Alert>
+            )}
+            <Row>
+                <h3 className="mb-4">Visão de Processos</h3>
+            </Row>
+            <Row>
+                <Card
+                    border="primary"
+                    className="m-0"
+                    style={{ height: "400px" }}
+                >
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart
+                            width={400}
+                            height={400}
+                            onClick={onClickChart}
+                        >
+                            <Pie
+                                data={pieChartData}
+                                cx={"50%"}
+                                cy={"50%"}
+                                labelLine
+                                label={renderLabel}
+                                outerRadius={40}
+                                fill="#8884d8"
+                                dataKey="value"
+                            >
+                                {pieChartData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={getChartColor(entry.name, index)}
+                                    />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </Card>
+            </Row>
+        </React.Fragment>
+    );
 };
 
 export default CasesDashboard;

@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using CPTM.ILA.Web.DTOs;
 using CPTM.ILA.Web.Models;
-using CPTM.ILA.Web.Models.AccessControl.VIEWS;
 using CPTM.ILA.Web.Util;
 
 namespace CPTM.ILA.Web.Controllers.API
@@ -22,6 +18,8 @@ namespace CPTM.ILA.Web.Controllers.API
     public class GroupsController : ApiController
     {
         private readonly ILAContext _context;
+        private readonly string ErrorMessage = "Algo deu errado no servidor.Problema foi reportado ao suporte técnico";
+
 
         /// <inheritdoc />
         public GroupsController()
@@ -71,8 +69,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
     }

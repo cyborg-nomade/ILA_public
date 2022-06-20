@@ -5,7 +5,7 @@ namespace CPTM.ILA.Web.DTOs
 {
     public class CaseChange
     {
-        public Case Case { get; set; }
+        public CaseDTO Case { get; set; }
         public ChangeLog ChangeLog { get; set; }
     }
 }

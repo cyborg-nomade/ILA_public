@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using CPTM.ILA.Web.Models.AccessControl;
+﻿using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.Messaging;
 
 namespace CPTM.ILA.Web.DTOs

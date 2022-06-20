@@ -1,10 +1,8 @@
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Linq;
 using CPTM.ILA.Web.Models.AccessControl;
 using CPTM.ILA.Web.Models.AccessControl.VIEWS;
+using CPTM.ILA.Web.Models.CaseHelpers;
 using CPTM.ILA.Web.Models.ChangeLogging;
 using CPTM.ILA.Web.Models.Configuration;
 
@@ -31,8 +29,20 @@ namespace CPTM.ILA.Web.Models
         public virtual DbSet<Case> Cases { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
+        public virtual DbSet<GroupAccessExpiration> GroupAccessExpirations { get; set; }
         public virtual DbSet<AccessRequest> AccessRequests { get; set; }
         public virtual DbSet<ChangeLog> ChangeLogs { get; set; }
+        public virtual DbSet<AgenteTratamento> AgentesTratamento { get; set; }
+        public virtual DbSet<CategoriasTitulares> CategoriasTitulares { get; set; }
+        public virtual DbSet<FasesCicloTratamento> FasesCicloTratamento { get; set; }
+        public virtual DbSet<FinalidadeTratamento> FinalidadesTratamento { get; set; }
+        public virtual DbSet<ItemCategoriaDadosPessoais> ItensCategoriaDadosPessoais { get; set; }
+        public virtual DbSet<ItemCompartilhamentoDados> ItensCompartilhamentoDados { get; set; }
+        public virtual DbSet<ItemContratoTi> ItensContratoTi { get; set; }
+        public virtual DbSet<ItemMedidaSegurancaPrivacidade> ItensMedidaSegurancaPrivacidade { get; set; }
+        public virtual DbSet<ItemObservacoesProcesso> ItensObservacoesProcesso { get; set; }
+        public virtual DbSet<ItemRiscoPrivacidade> ItensRiscoPrivacidade { get; set; }
+        public virtual DbSet<ItemTransferenciaInternacional> ItensTransferenciaInternacional { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

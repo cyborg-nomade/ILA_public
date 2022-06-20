@@ -1,9 +1,6 @@
 ﻿namespace CPTM.ILA.Web.Migrations
 {
-    using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<CPTM.ILA.Web.Models.ILAContext>
     {
