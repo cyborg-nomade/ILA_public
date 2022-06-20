@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using CPTM.ILA.Web.Models.AccessControl;
 
 namespace CPTM.ILA.Web.Models.Messaging
 {

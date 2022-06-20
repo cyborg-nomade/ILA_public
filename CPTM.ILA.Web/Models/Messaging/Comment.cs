@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using CPTM.ILA.Web.Models.AccessControl;
-using CPTM.ILA.Web.Models.CaseHelpers;
 
 namespace CPTM.ILA.Web.Models.Messaging
 {

@@ -725,40 +725,6 @@
             Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
             </returns>
         </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByComiteMemberGroups">
-            <summary>
-            Retorna os totais de Casos de Uso por grupo de um membro do Comitê LGPD.
-            Endpoint disponibilizado para os membros do Comitê LGPD, com cada membro tendo acesso apenas a seus grupos.
-            </summary>
-            <returns>
-            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto GroupTotals).
-            Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
-            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
-            </returns>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByGroupByStatus(System.Int32,System.Boolean,System.Boolean)">
-            <summary>
-            Retorna todos os Casos de Uso de um grupo de acesso que estejam em um certo status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
-            </summary>
-            <param name="gid">Id do grupo</param>
-            <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
-            <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
-            <returns>
-            Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
-            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
-            </returns>
-        </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByGroupByStatus(System.Int32)">
-            <summary>
-            Retorna os totais dos Casos de Uso de um grupo de acesso por status de aprovação. Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
-            </summary>
-            <param name="gid">Id do grupo</param>
-            <returns>
-            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos status (objeto StatusTotals).
-            Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
-            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
-            </returns>
-        </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByExtensaoEncarregado(System.Int32)">
             <summary>
             Retorna todos os Casos de Uso dos grupos de acesso de um membro especificado do Comitê LGPD (Extensão Encarregado).
@@ -770,6 +736,59 @@
             Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
             </returns>
         </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByStatus(System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Retorna todos os Casos de Uso dos grupos de acesso de um status especificado.
+            Endpoint disponibilizado apenas para o DPO.
+            </summary>
+            <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+            <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
+            <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByGroupByStatus(System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Retorna todos os Casos de Uso de um grupo de acesso que estejam em um certo status de aprovação.
+            Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+            </summary>
+            <param name="gid">Id do grupo</param>
+            <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+            <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
+            <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetByExtensaoEncarregadoByStatus(System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Retorna todos os Casos de Uso dos grupos de um membro do Comitê LGPD que estejam em um certo status de aprovação.
+            Endpoint disponibilizado apenas para o DPO e para o membro do Comitê LGPD em questão.
+            </summary>
+            <param name="uid">Id do membro do comitê</param>
+            <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+            <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
+            <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "caseListItems" onde se encontram os dados dos Casos de Uso selecionados, em formato reduzido (CaseListItem)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByUserGroups(System.Int32)">
+            <summary>
+            Retorna os totais de Casos de Uso por grupo de um usuário.
+            Endpoint disponibilizado para os membros do Comitê LGPD, com cada membro tendo acesso apenas a seus grupos.
+            </summary>
+            <param name="uid">Id do usuário selecionado</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto GroupTotals).
+            Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByExtensaoEncarregado">
             <summary>
             Retorna os totais de Casos de Uso por membro do Comitê LGPD (Extensão Encarregado).
@@ -778,6 +797,82 @@
             <returns>
             Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos grupos (objeto ExtensaoEncarregadoTotals).
             Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByStatus">
+            <summary>
+            Retorna os totais de Casos de Uso por status de aprovação.
+            Endpoint disponibilizado apenas para o DPO.
+            </summary>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos status (objeto StatusTotals).
+            Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsBySelectedStatus(System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Retorna o total de Casos de Uso no status de aprovação selecionado. 
+            Endpoint disponibilizado apenas para o DPO.
+            </summary>
+            <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+            <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
+            <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totalInStatus" onde se encontra o total dos Casos de Uso no status selecionado.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByGroupByStatus(System.Int32)">
+            <summary>
+            Retorna os totais dos Casos de Uso de um grupo de acesso por status de aprovação.
+            Endpoint disponibilizado apenas para o DPO e membros do grupo especificado.
+            </summary>
+            <param name="gid">Id do grupo</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos status (objeto StatusTotals).
+            Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByGroupBySelectedStatus(System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Retorna o total de Casos de Uso de um grupo de acesso no status de aprovação selecionado. 
+            Endpoint disponibilizado apenas para o DPO e membros do grupo selecionado.
+            </summary>
+            <param name="gid">Id do grupo</param>
+            <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+            <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
+            <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totalInStatus" onde se encontra o total dos Casos de Uso do grupo especificado no status selecionado.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByExtensaoEncarregadoByStatus(System.Int32)">
+            <summary>
+            Retorna os totais dos Casos de Uso dos grupos de acesso de um Mebro do Comitê por status de aprovação.
+            Endpoint disponibilizado apenas para o DPO e para o membro do comitê em questão.
+            </summary>
+            <param name="uid">Id do membro do Comitê especificado</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totals" onde se encontram os totais de Casos de Uso, com identificadores dos status (objeto StatusTotals).
+            Também há uma chave "totalQuantity" com o totais somados, a fim de facilitar cálculos de percentagem.
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.GetTotalsByExtensaoEncarregadoBySelectedStatus(System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Retorna o total de Casos de Uso dos grupos de acesso de um Mebro do Comitê no status de aprovação selecionado. 
+            Endpoint disponibilizado apenas para o DPO e para o membro do comitê em questão.
+            </summary>
+            <param name="uid">Id do membro do Comitê especificado</param>
+            <param name="encaminhadoAprovacao">Bool definindo se os casos de uso a serem selecionados já foram encaminhados para aprovação</param>
+            <param name="aprovado">Bool definindo se os casos de uso a serem selecionados já foram aprovados</param>
+            <param name="reprovado">Bool definindo se os casos de uso a serem selecionados já foram reprovados</param>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "totalInStatus" onde se encontra o total dos Casos de Uso dos grupos de acesso de um Mebro do Comitê especificado no status selecionado.
             Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
             </returns>
         </member>
@@ -825,13 +920,14 @@
             Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
             </returns>
         </member>
-        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Approve(System.Int32,System.Boolean)">
+        <member name="M:CPTM.ILA.Web.Controllers.API.CasesController.Approve(System.Int32,System.Boolean,System.String)">
             <summary>
             Realiza a aprovação ou reprovação de um Caso de Uso.
             Endpoint disponibilizado para o DPO e para membros do Comitê LGPD com acesso ao grupo criador.
             </summary>
             <param name="cid">Id do caso de uso</param>
             <param name="aprovado">Objeto vindo do corpo da requisição HTTP, indicando se o caso foi aprovado ou não</param>
+            <param name="comentarioReprovado">String contendo o comentário de reprovação</param>
             <returns>
             Status da transação e um objeto JSON com uma chave "message" confirmando o registro do Caso de Uso, ou indicando o erro ocorrido
             </returns>
@@ -894,6 +990,16 @@
         <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.#ctor">
             <inheritdoc />
         </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.Get">
+            <summary>
+            Retorna todos os usuários cadastrados para acesso ao sistema ILA
+            Endpoint disponibilizado apenas para o DPO
+            </summary>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "users" onde se encontram os dados dos usuários do sistema, em formato reduzido (UserDto)
+            Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+            </returns>
+        </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.Login(CPTM.ILA.Web.DTOs.AuthUser)">
             <summary>
             Realiza o login do usuário.
@@ -926,6 +1032,16 @@
             </summary>
             <returns>Status da transação e um objeto JSON com uma chave "comiteMembers" contendo os dados dos membros do Comitê LGPD (objeto ComiteMembers)</returns>
         </member>
+        <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.GetDpo">
+            <summary>
+            Retorna os dados do DPO cadastrado.
+            Endpoint disponibilizado para todos os usuários com acesso ao ILA.
+            </summary>
+            <returns>
+            Status da transação e um objeto JSON com uma chave "dpoAgenteTratamento" contendo os dados do DPO (objeto AgenteTratamento)
+            Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
+            </returns>
+        </member>
         <member name="M:CPTM.ILA.Web.Controllers.API.UsersController.GetUserGroups(System.String)">
             <summary>
             Retorna os grupos de um usuário.
@@ -951,7 +1067,7 @@
             Retorna uma lista de nomes de usuário correspondentes a pesquisa de nome recebida.
             Endpoint disponibilizado publicamente.
             </summary>
-            <param name="nameString">Query busca por nome</param>
+            <param name="queryString">Query busca por nome</param>
             <returns>Status da transação e um objeto JSON com uma chave "results" contendo o conjunto de nomes de usuário e nomes correspondentes à pesquisa</returns>
         </member>
         <member name="T:CPTM.ILA.Web.Controllers.API.UtilitiesController">

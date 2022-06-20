@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Linq.Dynamic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -26,11 +25,55 @@ namespace CPTM.ILA.Web.Controllers.API
     public class UsersController : ApiController
     {
         private readonly ILAContext _context;
+        private readonly string ErrorMessage = "Algo deu errado no servidor.Problema foi reportado ao suporte técnico";
+
 
         /// <inheritdoc />
         public UsersController()
         {
             _context = new ILAContext();
+        }
+
+        /// <summary>
+        /// Retorna todos os usuários cadastrados para acesso ao sistema ILA
+        /// Endpoint disponibilizado apenas para o DPO
+        /// </summary>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "users" onde se encontram os dados dos usuários do sistema, em formato reduzido (UserDto)
+        /// Em caso de erro, retorna um objeto JSON com uma chave "message" onde se encontra a mensagem de erro.
+        /// </returns>
+        [ResponseType(typeof(ApiResponseType<List<UserDto>>))]
+        [Route("")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> Get()
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var claims = TokenUtil.GetTokenClaims(identity);
+
+                if (!(claims.IsDpo || claims.IsDeveloper))
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new { message = "Recurso não encontrado" });
+                }
+            }
+
+            try
+            {
+                var users = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .ToListAsync();
+
+                var userDtos = users.ConvertAll<UserDto>(Models.AccessControl.User.ReduceToUserDto);
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { users = userDtos, message = "Usuários obtidos com sucesso!" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
+            }
         }
 
         /// <summary>
@@ -112,11 +155,12 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Seu usuário ainda não tem acesso a este sistema. Solicite acesso." });
                 }
 
-                foreach (var groupAccessExpiration in userInDb.GroupAccessExpirations)
+                foreach (var groupAccessExpiration in userInDb.GroupAccessExpirations.ToList())
                 {
-                    if (groupAccessExpiration.ExpirationDate <= DateTime.Now && !isDeveloper)
+                    if (groupAccessExpiration.ExpirationDate <= DateTime.Now)
                     {
                         userInDb.GroupAccessExpirations.Remove(groupAccessExpiration);
+                        _context.GroupAccessExpirations.Remove(groupAccessExpiration);
                     }
                 }
 
@@ -139,8 +183,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -187,9 +231,9 @@ namespace CPTM.ILA.Web.Controllers.API
                         message = "Nenhum usuário do Comitê LGPD é responsável por este grupo",
                         comiteMember = new AgenteTratamento()
                         {
-                            Nome = "Olivia Shibata Nishiyama",
+                            Nome = "OLIVIA SHIBATA NISHIYAMA",
                             Area = "Encarregado de Dados (DPO)",
-                            Telefone = "+ 55 11 3117 – 7001",
+                            Telefone = "3117-7001",
                             Email = "encarregado.dados@cptm.sp.gov.br"
                         }
                     });
@@ -199,6 +243,11 @@ namespace CPTM.ILA.Web.Controllers.API
 
                 if (comiteMemberUserAd == null)
                 {
+                    foreach (var groupAccessExpiration in selectedComiteMember.GroupAccessExpirations.ToList())
+                    {
+                        _context.GroupAccessExpirations.Remove(groupAccessExpiration);
+                    }
+
                     _context.Users.Remove(selectedComiteMember);
                     await _context.SaveChangesAsync();
 
@@ -207,9 +256,9 @@ namespace CPTM.ILA.Web.Controllers.API
                         message = "Nenhum usuário do Comitê LGPD é responsável por este grupo",
                         comiteMember = new AgenteTratamento()
                         {
-                            Nome = "Olivia Shibata Nishiyama",
+                            Nome = "OLIVIA SHIBATA NISHIYAMA",
                             Area = "Encarregado de Dados (DPO)",
-                            Telefone = "+ 55 11 3117 – 7001",
+                            Telefone = "3117-7001",
                             Email = "encarregado.dados@cptm.sp.gov.br"
                         }
                     });
@@ -229,8 +278,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -269,8 +318,75 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
+            }
+        }
+
+        /// <summary>
+        /// Retorna os dados do DPO cadastrado.
+        /// Endpoint disponibilizado para todos os usuários com acesso ao ILA.
+        /// </summary>
+        /// <returns>
+        /// Status da transação e um objeto JSON com uma chave "dpoAgenteTratamento" contendo os dados do DPO (objeto AgenteTratamento)
+        /// Em caso de erro, um objeto JSON com uma chave "message" descrevendo o erro ocorrido.
+        /// </returns>
+        [ResponseType(typeof(ApiResponseType<AgenteTratamento>))]
+        [Route("dpo")]
+        [Authorize]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetDpo()
+        {
+            try
+            {
+                var dpo = await _context.Users.Include(u => u.GroupAccessExpirations.Select(gae => gae.Group))
+                    .Where(u => u.IsDPO)
+                    .SingleOrDefaultAsync();
+
+                if (dpo == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new
+                    {
+                        message =
+                            "Nenhum usuário cadastrado como DPO. Entre em contato com encarregado.dados@cptm.sp.gov.br para maiores informações",
+                    });
+                }
+
+                var dpoUserAd = Seguranca.ObterUsuario(dpo.Username.ToUpper());
+
+                if (dpoUserAd == null)
+                {
+                    foreach (var groupAccessExpiration in dpo.GroupAccessExpirations.ToList())
+                    {
+                        _context.GroupAccessExpirations.Remove(groupAccessExpiration);
+                    }
+
+                    _context.Users.Remove(dpo);
+                    await _context.SaveChangesAsync();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        message =
+                            "Nenhum usuário cadastrado como DPO. Entre em contato com encarregado.dados@cptm.sp.gov.br para maiores informações",
+                    });
+                }
+
+                var dpoAgenteTratamento = new AgenteTratamento()
+                {
+                    Area = "Encarregado de Dados (DPO)",
+                    Email = "encarregado.dados@cptm.sp.gov.br",
+                    Nome = dpoUserAd.Nome.ToUpper(),
+                    Telefone = dpoUserAd.TelefoneComercial
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new { dpoAgenteTratamento, message = "Membro do Comitê obtido com sucesso!" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -308,8 +424,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -348,6 +464,11 @@ namespace CPTM.ILA.Web.Controllers.API
                         new { message = "Usuário não encontrado. Verifique o id" });
                 }
 
+                foreach (var groupAccessExpiration in userToDelete.GroupAccessExpirations.ToList())
+                {
+                    _context.GroupAccessExpirations.Remove(groupAccessExpiration);
+                }
+
                 _context.Users.Remove(userToDelete);
                 await _context.SaveChangesAsync();
 
@@ -356,8 +477,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -365,24 +486,40 @@ namespace CPTM.ILA.Web.Controllers.API
         /// Retorna uma lista de nomes de usuário correspondentes a pesquisa de nome recebida.
         /// Endpoint disponibilizado publicamente.
         /// </summary>
-        /// <param name="nameString">Query busca por nome</param>
+        /// <param name="queryString">Query busca por nome</param>
         /// <returns>Status da transação e um objeto JSON com uma chave "results" contendo o conjunto de nomes de usuário e nomes correspondentes à pesquisa</returns>
         [ResponseType(typeof(ApiResponseType<List<UsernameQueryResult>>))]
         [Route("query")]
         [AllowAnonymous]
         [HttpPost]
-        public async Task<HttpResponseMessage> QueryByName([FromBody] string nameString)
+        public async Task<HttpResponseMessage> QueryByName([FromBody] string queryString)
         {
-            var results = await _context.ILA_VW_USUARIO.Where(u => u.TX_NOMEUSUARIO.Contains(nameString.ToUpper()))
-                .Select(u => new { username = u.TX_USERNAME, name = u.TX_NOMEUSUARIO })
-                .ToListAsync();
-            var formattedResults = results.Select(u => new { value = u.username, label = $"{u.username} - {u.name}" });
-            return Request.CreateResponse(HttpStatusCode.OK, new
+            try
             {
-                message = "Nomes de usuário obtidos com sucesso!",
-                results,
-                formattedResults, nameString
-            });
+                var wordsToSearch = queryString.ToUpper()
+                    .Split(' ');
+                var results = await _context.ILA_VW_USUARIO.Where(u =>
+                        wordsToSearch.Any(s => u.TX_NOMEUSUARIO.Contains(s)) ||
+                        wordsToSearch.Any(s => u.TX_USERNAME.Contains(s)))
+                    .Select(u => new { username = u.TX_USERNAME, name = u.TX_NOMEUSUARIO })
+                    .OrderBy(u => u.username)
+                    .ToListAsync();
+                var formattedResults =
+                    results.Select(u => new { value = u.username, label = $"{u.username} - {u.name}" });
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    message = "Nomes de usuário obtidos com sucesso!",
+                    results,
+                    formattedResults,
+                    nameString = queryString
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
+            }
         }
     }
 }

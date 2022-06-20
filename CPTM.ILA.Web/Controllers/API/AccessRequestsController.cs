@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
@@ -30,6 +28,8 @@ namespace CPTM.ILA.Web.Controllers.API
     public class AccessRequestsController : ApiController
     {
         private readonly ILAContext _context;
+
+        private readonly string ErrorMessage = "Algo deu errado no servidor.Problema foi reportado ao suporte técnico";
         //private const string ItsmUrl = "https://panelas-app2:8443/api/";
         //private const string ApiLogin = "INTEGRACAO_CPTM_LGPD";
         //private const string ApiPass = "INTEGRACAO_CPTM_LGPD";
@@ -97,8 +97,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -180,10 +180,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, new
-                {
-                    message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e
-                });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -237,8 +235,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -406,8 +404,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", error = e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -471,8 +469,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico." });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -633,8 +631,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -674,20 +672,20 @@ namespace CPTM.ILA.Web.Controllers.API
                     });
                 }
 
-                var oldDpo = await _context.Users.SingleOrDefaultAsync(u => u.IsDPO);
+                var oldDpo = await _context.Users.Where(u => u.IsDPO)
+                    .Include(u => u.GroupAccessExpirations)
+                    .Include(u => u.OriginGroup)
+                    .SingleOrDefaultAsync();
 
                 if (oldDpo != null)
                 {
-                    var existOldDpo = Seguranca.ExisteUsuario(oldDpo.Username.ToUpper());
+                    foreach (var groupAccessExpiration in oldDpo.GroupAccessExpirations.ToList())
+                    {
+                        _context.GroupAccessExpirations.Remove(groupAccessExpiration);
+                    }
 
-                    if (existOldDpo)
-                    {
-                        oldDpo.IsDPO = false;
-                    }
-                    else
-                    {
-                        _context.Users.Remove(oldDpo);
-                    }
+                    _context.Users.Remove(oldDpo);
+                    await _context.SaveChangesAsync();
                 }
 
                 var userInDb =
@@ -696,20 +694,31 @@ namespace CPTM.ILA.Web.Controllers.API
                 if (userInDb == null)
                 {
                     var userAd = Seguranca.ObterUsuario(newDpoUsername.ToUpper());
-                    var newGroup = new Group()
+
+                    var groupInDb =
+                        await _context.Groups.SingleOrDefaultAsync(g =>
+                            g.Nome.ToUpper() == userAd.Departamento.ToUpper());
+
+                    if (groupInDb == null)
                     {
-                        Nome = userAd.Departamento.ToUpper(),
-                    };
+                        var newGroup = new Group()
+                        {
+                            Nome = userAd.Departamento.ToUpper(),
+                        };
+                        groupInDb = newGroup;
+                        _context.Groups.Add(groupInDb);
+                        await _context.SaveChangesAsync();
+                    }
 
                     var newUser = new User()
                     {
                         Username = userAd.Login.ToUpper(),
-                        OriginGroup = newGroup,
+                        OriginGroup = groupInDb,
                         IsComite = true,
                         IsDPO = true,
                         IsSystem = false,
                         GroupAccessExpirations = new List<GroupAccessExpiration>()
-                            { new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = newGroup } }
+                            { new GroupAccessExpiration() { ExpirationDate = DateTime.MaxValue, Group = groupInDb } }
                     };
                     _context.Users.Add(newUser);
 
@@ -732,8 +741,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -828,8 +837,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -882,8 +891,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -934,8 +943,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -1021,8 +1030,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 
@@ -1083,6 +1092,7 @@ namespace CPTM.ILA.Web.Controllers.API
                 var gaeToRemove = user.GroupAccessExpirations.SingleOrDefault(gae => gae.Group == groupToRemove);
 
                 user.GroupAccessExpirations.Remove(gaeToRemove);
+                if (gaeToRemove != null) _context.GroupAccessExpirations.Remove(gaeToRemove);
 
                 _context.Entry(user)
                     .State = EntityState.Modified;
@@ -1094,8 +1104,8 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,
-                    new { message = "Algo deu errado no servidor. Reporte ao suporte técnico.", e });
+                ErrorReportingUtil.SendErrorEmail(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
 

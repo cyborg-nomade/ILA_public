@@ -1,6 +1,7 @@
 export interface StatusTotals {
-  aprovado: boolean;
-  encaminhadoAprovacao: boolean;
-  nome: string;
-  quantidadeByStatus: number;
+    aprovado: boolean;
+    encaminhadoAprovacao: boolean;
+    reprovado: boolean;
+    nome: string;
+    quantidadeByStatus: number;
 }
