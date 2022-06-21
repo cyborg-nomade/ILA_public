@@ -16,7 +16,7 @@ namespace CPTM.ILA.Web.Controllers.API
     public class ThreadsCommentsController : ApiController
     {
         private readonly ILAContext _context;
-        private readonly string ErrorMessage = "Algo deu errado no servidor.Problema foi reportado ao suporte técnico";
+        private const string ErrorMessage = "Algo deu errado no servidor. Problema foi reportado ao suporte técnico";
 
         /// <inheritdoc />
         public ThreadsCommentsController()
@@ -38,7 +38,7 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var chamadoAberto = await ItsmUtil.AbrirChamado(commentDto.Author.Username.ToUpper(),
-                    "Item " + commentDto.RefItem + ": " + commentDto.Text, true);
+                    "Item " + commentDto.RefItem + ": " + commentDto.Text, TipoChamado.DUVIDA);
 
                 if (!chamadoAberto)
                 {
@@ -51,8 +51,9 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
+                var errorReport = await ErrorReportingUtil.SendErrorReport(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = ErrorMessage, e, errorReport });
             }
         }
 
