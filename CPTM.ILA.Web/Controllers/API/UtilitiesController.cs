@@ -81,5 +81,37 @@ namespace CPTM.ILA.Web.Controllers.API
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
+
+        //[Route("test-itsm")]
+        //[Authorize]
+        //[HttpGet]
+        //public async Task<HttpResponseMessage> TestITSM()
+        //{
+        //    try
+        //    {
+        //        var e = new Exception("test");
+        //        var erro = await ErrorReportingUtil.SendErrorReport(e, _context);
+
+        //        var chamadoAbertoAcessoSistema = await ItsmUtil.AbrirChamado("URIELF", "TESTE: \n\n ACESSO AO SISTEMA",
+        //            TipoChamado.ACESSO_AO_SISTEMA);
+        //        var chamadoAbertoAcessoGrupos = await ItsmUtil.AbrirChamado("URIELF", "ERRO: \n\n ACESSO A GRUPOS",
+        //            TipoChamado.ACESSO_A_GRUPOS);
+        //        var chamadoAbertoDuvida =
+        //            await ItsmUtil.AbrirChamado("URIELF", "ERRO: \n\n  DUVIDA", TipoChamado.DUVIDA);
+
+
+        //        return Request.CreateResponse(HttpStatusCode.OK, new
+        //        {
+        //            erro, chamadoAbertoDuvida, chamadoAbertoAcessoGrupos, chamadoAbertoAcessoSistema,
+        //            message = "ITSM com sucesso!"
+        //        });
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        await ErrorReportingUtil.SendErrorReport(e, _context);
+        //        return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
+        //    }
+        //}
     }
 }
