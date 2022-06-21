@@ -38,7 +38,7 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var chamadoAberto = await ItsmUtil.AbrirChamado(commentDto.Author.Username.ToUpper(),
-                    "Item " + commentDto.RefItem + ": " + commentDto.Text, true);
+                    "Item " + commentDto.RefItem + ": " + commentDto.Text, TipoChamado.DUVIDA);
 
                 if (!chamadoAberto)
                 {
@@ -51,7 +51,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }

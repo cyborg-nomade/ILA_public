@@ -97,7 +97,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -180,7 +180,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -235,7 +235,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -320,7 +320,10 @@ namespace CPTM.ILA.Web.Controllers.API
             try
             {
                 var chamadoAberto = await ItsmUtil.AbrirChamado(accessRequestDto.UsernameSolicitante.ToUpper(),
-                    tipo.ToString(), false);
+                    tipo.ToString(),
+                    accessRequestDto.TipoSolicitacaoAcesso == TipoSolicitacaoAcesso.AcessoAGrupos
+                        ? TipoChamado.ACESSO_A_GRUPOS
+                        : TipoChamado.ACESSO_AO_SISTEMA);
 
                 if (!chamadoAberto)
                 {
@@ -404,7 +407,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -469,7 +472,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -631,7 +634,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -741,7 +744,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -837,7 +840,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -891,7 +894,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -943,7 +946,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -1030,7 +1033,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
@@ -1104,7 +1107,7 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ErrorReportingUtil.SendErrorEmail(e, _context);
+                await ErrorReportingUtil.SendErrorReport(e, _context);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
             }
         }
