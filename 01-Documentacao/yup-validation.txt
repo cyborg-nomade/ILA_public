@@ -1,0 +1,557 @@
+// const schema = yup.object().shape({
+//   nome: yup.string().required(),
+//   id: yup.number().required(),
+//   ref: yup.string().required(),
+//   dataCriacao: yup.date().required(),
+//   dataAtualizacao: yup.date().required(),
+//   controlador: yup.object().shape({
+//     nome: yup.string().required(),
+//     area: yup.string().optional(),
+//     telefone: yup.string().optional(),
+//     email: yup.string().email().optional(),
+//   }),
+//   encarregado: yup.object().shape({
+//     nome: yup.string().required(),
+//     area: yup.string().optional(),
+//     telefone: yup.string().optional(),
+//     email: yup.string().email().optional(),
+//   }),
+//   extensaoEncarregado: yup.object().shape({
+//     nome: yup.string().required(),
+//     area: yup.string().required(),
+//     telefone: yup.string().required(),
+//     email: yup.string().email().required(),
+//   }),
+//   areaTratamentoDados: yup.object().shape({
+//     nome: yup.string().optional(),
+//     area: yup.string().optional(),
+//     telefone: yup.string().optional(),
+//     email: yup.string().email().optional(),
+//   }),
+//   operador: yup.object().shape({
+//     nome: yup.string().required(),
+//     area: yup.string().optional(),
+//     telefone: yup.string().optional(),
+//     email: yup.string().email().optional(),
+//   }),
+//   fasesCicloTratamento: yup.object({
+//     coleta: yup.boolean(),
+//     retencao: yup.boolean(),
+//     processamento: yup.boolean(),
+//     compartilhamento: yup.boolean(),
+//     eliminacao: yup.boolean(),
+//     verbos: yup.array().optional(),
+//   }),
+//   descricaoFluxoTratamento: yup.string().required(),
+//   abrangenciaGeografica: yup.string().required(),
+//   fonteDados: yup.string().required(),
+//   finalidadeTratamento: yup.object().shape({
+//     hipoteseTratamento: yup.string().required(),
+//     descricaoFinalidade: yup.string().required(),
+//     previsaoLegal: yup.string().required(),
+//     resultadosTitular: yup.string().required(),
+//     beneficiosEsperados: yup.string().required(),
+//   }),
+//   categoriaDadosPessoais: yup.object().shape({
+//     identificacao: yup.object().shape({
+//       idPessoal: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       idGov: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       idEletronica: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       locEletronica: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     financeiros: yup.object().shape({
+//       idFin: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       recursosFin: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       dividasDespesas: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       solvencia: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       emprestimosHipotecaCredito: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       assistenciaFin: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       apoliceSeguro: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       planoPensao: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       transacaoFin: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       compensacao: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       atividadeProfissional: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       acordosAjustes: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       autorizacoesConsentimentos: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     caracteristicas: yup.object().shape({
+//       detalhesPessoais: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       detalhesMilitares: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       situacaoImigracao: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       descricaoFisica: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     habitos: yup.object().shape({
+//       habitos: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       estiloVida: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       viagensDeslocamento: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       contatosSociais: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       posses: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       denunciasIncidentesAcidentes: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       distincoes: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       usoMidia: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     caracteristicasPsicologicas: yup.object().shape({
+//       descricaoPsi: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     composicaoFamiliar: yup.object().shape({
+//       casamentoCoabitacao: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       historicoConjugal: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       membrosFamilia: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     interessesLazer: yup.object().shape({
+//       atividadesInteressesLaz: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     associacoes: yup.object().shape({
+//       outrasAssociacoesNaoSensiveis: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     processoJudAdmCrim: yup.object().shape({
+//       suspeitas: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       condenacoesSentencas: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       acoesJud: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       penalidadesAdm: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     habitosConsumo: yup.object().shape({
+//       dadosBensServicos: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     residenciais: yup.object().shape({
+//       dadosResidencia: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     educacaoTreinamento: yup.object().shape({
+//       academicosEscolares: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       registroFinanceiro: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       qualificacaoExperienciaProf: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     profissaoEmprego: yup.object().shape({
+//       empregoAtual: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       recrutamento: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       rescisao: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       carreira: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       absenteismoDisciplina: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       avaliacaoDesempenho: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     regVideoImgVoz: yup.object().shape({
+//       videoImagem: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       imagemVigilancia: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//       voz: yup.object().shape({
+//         descricao: yup.string().required(),
+//         tempoRetencao: yup.string().optional(),
+//         fonteRetencao: yup.string().optional(),
+//         caminhoRedeSistema: yup.string().optional(),
+//       }),
+//     }),
+//     outros: yup.object().shape({
+//       outros: yup.array(),
+//     }),
+//   }),
+//   categoriaDadosPessoaisSensiveis: yup.object().shape({
+//     origemRacialEtnica: yup.object().shape({
+//       descricao: yup.string().required(),
+//       tempoRetencao: yup.string().optional(),
+//       fonteRetencao: yup.string().optional(),
+//       caminhoRedeSistema: yup.string().optional(),
+//     }),
+//     conviccaoReligiosa: yup.object().shape({
+//       descricao: yup.string().required(),
+//       tempoRetencao: yup.string().optional(),
+//       fonteRetencao: yup.string().optional(),
+//       caminhoRedeSistema: yup.string().optional(),
+//     }),
+//     opiniaoPolitica: yup.object().shape({
+//       descricao: yup.string().required(),
+//       tempoRetencao: yup.string().optional(),
+//       fonteRetencao: yup.string().optional(),
+//       caminhoRedeSistema: yup.string().optional(),
+//     }),
+//     filiacaoSindicato: yup.object().shape({
+//       descricao: yup.string().required(),
+//       tempoRetencao: yup.string().optional(),
+//       fonteRetencao: yup.string().optional(),
+//       caminhoRedeSistema: yup.string().optional(),
+//     }),
+//     filiacaoOrganizacaoReligiosa: yup.object().shape({
+//       descricao: yup.string().required(),
+//       tempoRetencao: yup.string().optional(),
+//       fonteRetencao: yup.string().optional(),
+//       caminhoRedeSistema: yup.string().optional(),
+//     }),
+//     filiacaoCrencaFilosofica: yup.object().shape({
+//       descricao: yup.string().required(),
+//       tempoRetencao: yup.string().optional(),
+//       fonteRetencao: yup.string().optional(),
+//       caminhoRedeSistema: yup.string().optional(),
+//     }),
+//     filiacaoPreferenciaPolitica: yup.object().shape({
+//       descricao: yup.string().required(),
+//       tempoRetencao: yup.string().optional(),
+//       fonteRetencao: yup.string().optional(),
+//       caminhoRedeSistema: yup.string().optional(),
+//     }),
+//     saudeVidaSexual: yup.object().shape({
+//       descricao: yup.string().required(),
+//       tempoRetencao: yup.string().optional(),
+//       fonteRetencao: yup.string().optional(),
+//       caminhoRedeSistema: yup.string().optional(),
+//     }),
+//     geneticos: yup.object().shape({
+//       descricao: yup.string().required(),
+//       tempoRetencao: yup.string().optional(),
+//       fonteRetencao: yup.string().optional(),
+//       caminhoRedeSistema: yup.string().optional(),
+//     }),
+//     biometricos: yup.object().shape({
+//       descricao: yup.string().required(),
+//       tempoRetencao: yup.string().optional(),
+//       fonteRetencao: yup.string().optional(),
+//       caminhoRedeSistema: yup.string().optional(),
+//     }),
+//   }),
+//   frequenciaTratamento: yup.string().required(),
+//   quantidadeDadosTratados: yup.string().required(),
+//   categoriasTitulares: yup.object().shape({
+//     categorias: yup
+//       .array()
+//       .required()
+//       .of(
+//         yup.object().shape({
+//           tipoCategoria: yup.string().required(),
+//           descricao: yup.string().optional(),
+//         })
+//       ),
+//     criancasAdolescentes: yup
+//       .array()
+//       .optional()
+//       .of(
+//         yup.object().shape({
+//           tipoCategoria: yup.string().required(),
+//           descricao: yup.string().optional(),
+//         })
+//       ),
+//     outrosGruposVulneraveis: yup
+//       .array()
+//       .optional()
+//       .of(
+//         yup.object().shape({
+//           tipoCategoria: yup.string().required(),
+//           descricao: yup.string().optional(),
+//         })
+//       ),
+//   }),
+//   compartilhamentoDadosPessoais: yup
+//     .array()
+//     .optional()
+//     .of(
+//       yup.object().shape({
+//         nomeInstituicao: yup.string().required(),
+//         dadosCompartilhados: yup.string().optional(),
+//         finalidadeCompartilhamento: yup.string().optional(),
+//       })
+//     ),
+//   medidasSegurancaPrivacidade: yup
+//     .array()
+//     .optional()
+//     .of(
+//       yup.object().shape({
+//         tipo: yup.string().required(),
+//         descricaoControles: yup.string().optional(),
+//       })
+//     ),
+//   transferenciaInternacional: yup
+//     .array()
+//     .optional()
+//     .of(
+//       yup.object().shape({
+//         nomeOrganizacao: yup.string().required(),
+//         pais: yup.string().required(),
+//         dadosTransferidos: yup.string().required(),
+//         tipoGarantia: yup.string().required(),
+//       })
+//     ),
+//   contratoServicosTITratamentoDados: yup
+//     .array()
+//     .optional()
+//     .of(
+//       yup.object().shape({
+//         numeroContrato: yup.string().required(),
+//         numeroProcessoContratacao: yup.string().optional(),
+//         objetoContrato: yup.string().required(),
+//         emailGestorContrato: yup.string().required(),
+//       })
+//     ),
+//   riscosPrivacidade: yup
+//     .array()
+//     .optional()
+//     .of(
+//       yup.object().shape({
+//         tipoRisco: yup.string().required(),
+//         observacoes: yup.string().optional(),
+//       })
+//     ),
+//   observacoesProcesso: yup
+//     .array()
+//     .optional()
+//     .of(
+//       yup.object().shape({
+//         descricaoObs: yup.string().required(),
+//       })
+//     ),
+// });
