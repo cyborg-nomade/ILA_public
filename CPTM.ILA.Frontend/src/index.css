@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Swiss721", "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-image: url("../public/background.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+h1,
+h2,
+h3 {
+    color: #e7f2ff;
+    /* font-family: "Swiss721"; */
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.swiss721 {
+    font-family: "Swiss721", serif;
+}
+
+@font-face {
+    font-family: "Swiss721";
+    src: local("Swis721"), url(./shared/assets/fonts/swiss.ttf) format("truetype");
+}
+
+.invalid-feedback-react-select {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: .875em;
+    color: #dc3545;
+    display: block;
+}
+
+.invalid-border-react-select {
+    border: 1px solid #dc3545;
+    border-radius: .25rem;
+}

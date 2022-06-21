@@ -1,0 +1,43 @@
+﻿@using System.Configuration;
+@using CPTM.Comum;
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ConfigurationManager.AppSettings["CasisLibrary.CodigoSistema"].ToString() - @ViewBag.Title</title>
+    @Html.Partial("_ReferenciasCSSeJS")
+</head>
+<body>
+    @RenderBody()
+    @*Exportação Excel*@
+    <iframe id="txtArea1" style="display:none"></iframe>
+    @*Exportação Excel*@
+	@*modalUsuarioDetalhe*@
+    <div id="modalUsuarioDetalhe" title="Usuário" class="modal fade" role="dialog"></div>
+    @*modalUsuarioDetalhe*@
+    @*modalUsuarioPesquisar*@
+    <div id="modalUsuarioPesquisar" title="Usuário" class="modal fade" role="dialog"></div>
+    @*modalUsuarioPesquisar*@
+    @*modalEstruturaOrganizacionalDetalhe*@
+    <div id="modalEstruturaOrganizacionalDetalhe" title="Estrutura Organizacional" class="modal fade" role="dialog"></div>
+    @*modalEstruturaOrganizacionalDetalhe*@
+    @*modalEstruturaOrganizacionalPesquisa*@
+    <div id="modalEstruturaOrganizacionalPesquisa" title="Estrutura Organizacional" class="modal fade" role="dialog"></div>
+    @*modalEstruturaOrganizacionalPesquisa*@
+</body>
+</html>
+
+@*Java Script - JQuery *@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        // Carregar Controles
+        carregarControles();
+    });
+            
+</script>
+@*Java Script - JQuery *@

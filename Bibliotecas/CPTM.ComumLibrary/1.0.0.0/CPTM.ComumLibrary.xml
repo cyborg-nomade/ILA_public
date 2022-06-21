@@ -1,0 +1,891 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CPTM.ComumLibrary</name>
+    </assembly>
+    <members>
+        <member name="T:CPTM.Comum.Constantes">
+            <summary>
+            Classe Responsável por armazenar as constantes
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ConfiguracaoListaTodas">
+            <summary>
+            Nome do cache que armazenará as configurações da aplicação
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ConfiguracaoCacheConfiguracaoLista">
+            <summary>
+            Tempo em minutos do cache da aplicação
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ConfiguracaoAplicacaoNome">
+            <summary>
+            Nome da aplicação
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ConfiguracaoAplicacaoVersao">
+            <summary>
+            Versão da aplicação
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ConfiguracaoGestorSigla">
+            <summary>
+            Sigla do Gestor da aplicação
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ConfiguracaoGestorEnderecoIntranet">
+            <summary>
+            Endereço do Gestor da aplicação na intranet
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ConfiguracaoEmailRemetenteNome">
+            <summary>
+            Nome do remetente do e-mail da aplicação
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ConfiguracaoEmailRemetenteEmail">
+            <summary>
+            Endereço do remetente do e-mail da aplicação
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExibirNotificacoes">
+            <summary>
+            Constante que indica se a aplicação exibirá ou não as notificações
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.UsuarioLogado">
+            <summary>
+            Constante que utilizada para identificar a sessão com as informações do usuário logado
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.UsuarioLogadoFoto">
+            <summary>
+            Constante que utilizada para identificar a sessão com a foto do usuário logado
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Constantes.EnderecoIntranet">
+            <summary>
+            Endereço da Intranet
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Constantes.EnderecoNormasEProcedimento">
+            <summary>
+            Endereço da Intranet
+            </summary>
+        </member>
+        <member name="P:CPTM.Comum.Constantes.DominioCPTM">
+            <summary>
+            Endereço da Intranet
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.GridPaginaPadrao">
+            <summary>
+            Página padrão do grid
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.GridTamanhoPaginaPadrao">
+            <summary>
+            Tamanho padrão da página do grid
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.OrdenacaoAscendente">
+            <summary>
+            Ordenação Ascendente
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.OrdenacaoDescendente">
+            <summary>
+            Ordenação Descendente
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExportacaoListaTipoArquivoXLS">
+            <summary>
+            Exportação - Tipo arquivo - Excel Antigo = xls
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExportacaoListaTipoArquivoXLSX">
+            <summary>
+            Exportação - Tipo arquivo - Excel Novo = xlsx
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExportacaoListaTipoArquivoDOC">
+            <summary>
+            Exportação - Tipo arquivo - Word Antigo = doc
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExportacaoListaTipoArquivoDOCX">
+            <summary>
+            Exportação - Tipo arquivo - Word Novo = docx
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExportacaoListaTipoArquivoPDF">
+            <summary>
+            Exportação - Tipo arquivo - PDF
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgRegistroDuplicado">
+            <summary>
+            Mensagem de registro duplicado
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgCampoObrigatorioNaoPreenchido">
+            <summary>
+            campo obrigatório nao preenchido
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgTamanhoCampoMaiorQueDefinido">
+            <summary>
+            Tamanho de campo maior do que o definido.
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgCampoInvalido">
+            <summary>
+            Campo inválido.
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgRegistroReferenciadoInexistente">
+            <summary>
+            Registro referenciado inexistente.
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgViolacaoExclusaoRegistro">
+            <summary>
+            Violação de exclusão de registro.
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgErroExclusaoRegistroAssociado">
+            <summary>
+            Mensagem para operações que não foi possível completar a operação porque existe(m) registro(s) associado(s).
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.InvalidExceptionMessage">
+            <summary>
+            Mensagem de Invalid Exception 
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgSessaoMensagemMonitor">
+            <summary>
+            Constante para strMensagem de validação do monitor da estrutura de contingência sintética
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgOperacaoRealizadaComSucesso">
+            <summary>
+            Mensagem para operações realizadas com sucesso
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgNaoFoiPossivelCompletarOperacao">
+            <summary>
+            Mensagem para operações que não foi possível completar
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgCancelamentoOperacao">
+            <summary>
+            Mensagem para confirmação do cancelamento da operação
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgSessaoExpirada">
+            <summary>
+            Mensagem para sessão expirada
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgRegistroNaoSelecionado">
+            <summary>
+            Nenhum Registro Selecionado
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgRegistroPeloMenosUmSelecionado">
+            <summary>
+            Pelo Menos Um Registro Deve Ser Selecionado
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgRegistroNaoEncontrado">
+            <summary>
+            Mensagem de Registro Não Encontrado 
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgQtdRegistroPorConsulta">
+            <summary>
+            Quantidade de registros encontrada
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.MsgPesquisaNaoRetornaDado">
+            <summary>
+            Mensagem informando que não há registros no sistema que atendam aos critérios de pesquisa utilizados 
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ENTRADA">
+            <summary>
+            Constante que indica a hora de Entrada
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.SAIDA">
+            <summary>
+            Constante que indica a hora de Saída
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.Valor_E">
+            <summary>
+            Constante que indica o valor E para concatenação dos tipos de contrato
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.Valor_VIRGULA">
+            <summary>
+            Constante que indica o valor virgula
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.TextoNuloGrid">
+            <summary>
+            Constante para texto nulo na grid
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.FormatoDataPadrao">
+            <summary>
+            Formato de data/hora
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.FormatoTelefone">
+            <summary>
+            Formato Telefone
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ValorSim">
+            <summary>
+            Valor SIM / NÃO
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.AcaoBotao">
+            <summary>
+            Constante que define QueryString para ação da página
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ValorAprovado">
+            <summary>
+            Constante Aprovado/Reprovado
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.UrlBolaVerde">
+            <summary>
+            Constante imagens Bullet
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.VALOR_0">
+            <summary>
+            Constante para Combo
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.PessoaFisica">
+            <summary>
+            Constante para Pessoa
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.SexoMasculino">
+            <summary>
+            Constante para Sexo
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.caracteresEspeciaisOriginais">
+            <summary>
+            Substituição de caracteres especiais
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularCaracteresEspeciais">
+            <summary>
+            Constante com expressão regular de caracteres especiais, permitindo somente: (.), (-) e (/)
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularCaracteresEspeciaisSemExcecao">
+            <summary>
+            Constante com expressão regular de caracteres especiais
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumero">
+            <summary>
+            Constante com expressão regular de números
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumeroSemZero">
+            <summary>
+            Constante com expressão regular de números
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumeroNegativo">
+            <summary>
+            Constante com expressão regular de números
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumeroDecimal">
+            <summary>
+            Constante com expressão regular de números
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularFormatoCau">
+            <summary>
+            Constante com expressão regular de Nº de CAU (C.0001.01.01)
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularLetra">
+            <summary>
+            Constante com expressão regular de letras
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumeroPonto">
+            <summary>
+            Constante com expressão regular de números e pontos
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumeroVirgula">
+            <summary>
+            Constante com expressão regular de números e pontos
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumeroVirgulaPercent">
+            <summary>
+            Constante com expressão regular de números e pontos
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularDecimalDuasCasas">
+            <summary>
+            Constante com expressão regular decimal de duas casas
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularDecimalTresCasas">
+            <summary>
+            Constante com expressão regular decimal de tres casas
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumeroDecimalNegativo">
+            <summary>
+            Constante com expressão regular de números negativos
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumerosLetras">
+            <summary>
+            Constante com expressão regular de números e letras
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumerosLetrasPonto">
+            <summary>
+            Constante com expressão regular de números e letras com ponto.
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumerosLetrasPontoVirgula">
+            <summary>
+            Constante com expressão regular de números e letras com ponto e virgula.
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumerosLetrasUnderline">
+            <summary>
+            Constante com expressão regular de números e letras com underline.
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumerosLetrasUnderlineParentesesHifen">
+            <summary>
+            Constante com expressão regular de números e letras com underline, parenteses e hífen.
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumerosLetrasUnderlineParentesesHifenBarraVirgulaPonto">
+            <summary>
+            Constante com expressão regular de números e letras com underline, parenteses, hífen, barra, vírgula e ponto.
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularChave">
+            <summary>
+            Constante com expressão regular chave
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularNumeroTraco">
+            <summary>
+            Constante com expressão regular de números e traços
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularValidarHora">
+            <summary>
+            Constante com expressão regular de validar hora
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularEmail">
+            <summary>
+            /// Constante com expressão regular de validar E-mail
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Constantes.ExpressaoRegularLetraEspaco">
+            <summary>
+            Constante com expressão regular de letras com espaço
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Conversao">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador">
+            <summary>
+            Classe que possui os métodos de representação dos domínios fixos e enumerações 
+            a serem utilizados na aplicação.
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.NotificacaoImediata">
+            <summary>
+            Enum NotificacaoImediata
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.Acoes">
+            <summary>
+            Enum para as ações do sistema
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Acoes.Incluir">
+            <summary>
+            Ação de Inclusão
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Acoes.Alterar">
+            <summary>
+            Ação de Alteração
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Acoes.Excluir">
+            <summary>
+            Ação de Exclusão
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Acoes.Detalhar">
+            <summary>
+            Ação de Detalhe
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.AcaoTela">
+            <summary>
+            Codificação das ações passadas entre as telas de pesquisa e cadastro.
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.AcaoTela.Incluir">
+            <summary>
+            Tipo Incluir
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.AcaoTela.Alterar">
+            <summary>
+            Tipo Alterar
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.AcaoTela.Detalhe">
+            <summary>
+            Tipo Detalhe
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.AcaoTela.Excluir">
+            <summary>
+            Tipo Excluir
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.Status">
+            <summary>
+            Status usados no sistema
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Status.Inativo">
+            <summary>
+            Tipo Inativo
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Status.Ativo">
+            <summary>
+            Tipo Ativo
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.TipoPessoa">
+            <summary>
+            Tipo Pessoa usado para Respresentar o tipo do usuário
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.TipoPessoa.Física">
+            <summary>
+            Tipo Fisica
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.TipoPessoa.Jurídica">
+            <summary>
+            Tipo Juridica
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.Sexo">
+            <summary>
+            Sexo usado para Respresentar o Sexo do usuário
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Sexo.Masculino">
+            <summary>
+            Tipo Masculino
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Sexo.Feminino">
+            <summary>
+            Tipo Feminino
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.SituacaoRegistro">
+            <summary>
+            Utilizado para controlar os registros da qualificacao
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.SituacaoRegistro.Incluido">
+            <summary>
+            Tipo Incluindo
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.SituacaoRegistro.Excluido">
+            <summary>
+            Tipo Excluindo
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.SituacaoRegistro.Alterado">
+            <summary>
+            Tipo Alterado
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.AcaoControle">
+            <summary>
+            Enum Acao Controle
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.AcaoControle.Alterar">
+            <summary>
+            Tipo Alterar
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.AcaoControle.Incluir">
+            <summary>
+            Tipo Incluir
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.AcaoControle.Excluir">
+            <summary>
+            Tipo Excluir
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.OpcaoBotoes">
+            <summary>
+            Enum Opcao Botoes
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.OpcaoBotoes.Ok">
+            <summary>
+            Item Tipo OK
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.OpcaoBotoes.SimNao">
+            <summary>
+            Item Tipo Sim/Nao
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.OpcaoBotoes.SimNaoCancelar">
+            <summary>
+            Item Tipo Sim/Nao/Cancelar
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.OpcaoBotoes.SimCancelar">
+            <summary>
+            Item Tipo Sim/Cancelar
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.OpcaoBotoes.Sair">
+            <summary>
+            Item Tipo Sair
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.OpcaoBotoes.OKCancelar">
+            <summary>
+            Item Tipo Ok/Cancelar
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.Retorno">
+            <summary>
+            Enumeration com o retorno do botão
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Retorno.Sim">
+            <summary>
+            Item Tipo SIM
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Retorno.Nao">
+            <summary>
+            Item Tipo NAO
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Retorno.Cancelar">
+            <summary>
+            Item Tipo Cancelar
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Retorno.Ok">
+            <summary>
+            Item Tipo OK
+            </summary>
+        </member>
+        <member name="F:CPTM.Comum.Enumerador.Retorno.Sair">
+            <summary>
+            Item Tipo Sair
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.Enumerador.FlagSimNAo">
+            <summary>
+            Enumeration com Sim e Não
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:CPTM.Comum.Enumerador.GetDescription``1(System.Int32)" -->
+        <member name="M:CPTM.Comum.Enumerador.InvokeToEnum``1(System.Int32)">
+            <summary>
+            Invoca o método conforme o tipo do Enumerador passado como parâmetro (usado apenas no método GetDescription())
+            </summary>
+        </member>
+        <member name="T:CPTM.Comum.CPTMException">
+            <summary>
+            Classe para tratamento de CPTMException
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.CPTMException.#ctor">
+            <summary>
+            Construtor da classe
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.CPTMException.#ctor(System.String)">
+            <summary>
+            Construtor da classe
+            </summary>
+            <param name="strMensagem">Mensagem de exceção</param>
+        </member>
+        <member name="M:CPTM.Comum.CPTMException.#ctor(System.String,System.Exception)">
+            <summary>
+            Construtor da classe
+            </summary>
+            <param name="strMensagem">Mensagem de exceção</param>
+            <param name="innerException">InnerException</param>
+        </member>
+        <member name="M:CPTM.Comum.CPTMException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Construtor da classe
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.CloneExtensions.Clone``1(``0)">
+            <summary>
+            Perform a deep Copy of the object.
+            </summary>
+            <typeparam name="T">The type of object being copied.</typeparam>
+            <param name="source">The object instance to copy.</param>
+            <returns>The copied object.</returns>
+        </member>
+        <member name="M:CPTM.Comum.IOrderedQueryableHelper.OrderByChildrens``1(System.Linq.IQueryable{``0},System.String)">
+            <summary>
+            Essa pode passar os parametros com ASC e DESC, inclusive multiplos orders by
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="source"></param>
+            <param name="orderByValues"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CPTM.Comum.StringExtensions">
+            <summary>
+            Extensão de String
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToApenasNumeros(System.String)">
+            <summary>
+            Método que remove todos os caracteres que não sejam numéricos da string
+            </summary>
+            <param name="texto">The texto.</param>
+            <returns>String</returns>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToApenasAlfaNumerico(System.String)">
+            <summary>
+            Método que remove todos os caracteres que não sejam alfanuméricos da string
+            </summary>
+            <param name="texto">The texto.</param>
+            <returns>String</returns>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToCPF(System.String)">
+            <summary>
+            Formata o CPF com a máscara padrão
+            </summary>
+            <param name="source">CPF a ser formatado</param>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToCNPJ(System.String)">
+            <summary>
+            Formata o CNPJ com a máscara padrão
+            </summary>
+            <param name="source">CNPJ a ser formatado</param>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToTelefone(System.String)">
+            <summary>
+            Formata Telefone
+            </summary>
+            <param name="telefone">Telefone a ser formatado</param>
+            <returns>Telefone formatado</returns>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToTelefoneComDDD(System.String)">
+            <summary>
+            Formata Telefone com DDD
+            </summary>
+            <param name="telefone">Telefone a ser formatado</param>
+            <returns>Telefone formatado</returns>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToTelefoneComPaisDDD(System.String)">
+            <summary>
+            Formata Telefone com País e DDD
+            </summary>
+            <param name="telefone">Telefone a ser formatado</param>
+            <returns>Telefone formatado</returns>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.RemoveAcentuacao(System.String)">
+            <summary>
+            Remove os acentos de uma cadeia de caracteres
+            </summary>
+            <param name="source">String a ser formatada</param>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToMatricula(System.String)">
+            <summary>
+            Formata o Matrícula com a máscara padrão (Ex: 92.010.968-3)
+            </summary>
+            <param name="source">Matrícula a ser formatado</param>
+        </member>
+        <member name="F:CPTM.Comum.StringExtensions.fraseSecretaPadrao">
+            <summary>
+            Frase secreta para a criptografia
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToCriptografado(System.String,System.String,System.String)">
+            <summary>
+            Criptografa
+            </summary>
+            <param name="valor">Valor a ser criptografado</param>
+            <param name="vetorInicial">Vetor inicial para criptografia. Deve ter 16 caracteres.</param>
+            <param name="fraseSecreta">Frase secreta para criptografia.</param>
+            <returns>Valor Criptografado</returns>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToCriptografado(System.String)">
+            <summary>
+            Criptografa
+            </summary>
+            <param name="valor">Valor a ser criptografado</param>
+            <returns>Valor Criptografado</returns>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToDecriptografado(System.String,System.String,System.String)">
+            <summary>
+            Decriptografa
+            </summary>
+            <param name="valor">Valor a ser decriptografado</param>
+            <param name="vetorInicial">Vetor inicial para decriptografado. Deve ter 16 caracteres.</param>
+            <param name="fraseSecreta">Frase secreta para decriptografado.</param>
+            <returns>Valor decriptografado</returns>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToDecriptografado(System.String)">
+            <summary>
+            Decriptografa
+            </summary>
+            <param name="valor">Valor a ser decriptografado</param>
+            <returns>Valor decriptografado</returns>
+        </member>
+        <member name="M:CPTM.Comum.StringExtensions.ToShort(System.String,System.Int32)">
+            <summary>
+            Reduz o tamanho da string para o tamanho determinado e adiciona "..." no final.
+            </summary>
+            <param name="source">Texto a ser reduzido</param>
+            <param name="numChar">Quantidade de caracteres</param>
+        </member>
+        <member name="T:CPTM.Comum.InteiroExtensions">
+            <summary>
+            Extensão de Inteiro
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.InteiroExtensions.ToExtenso(System.Int16)">
+            <summary>
+            Escreve o valor do número por extenso
+            </summary>
+            <param name="numero">Valor</param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.Comum.InteiroExtensions.ToMoedaExtenso(System.Int16)">
+            <summary>
+            Escreve o valor do número por extenso com moeda Real
+            </summary>
+            <param name="numero">Valor</param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.Comum.InteiroExtensions.ToExtenso(System.Int32)">
+            <summary>
+            Escreve o valor do número por extenso
+            </summary>
+            <param name="numero">Valor</param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.Comum.InteiroExtensions.ToMoedaExtenso(System.Int64)">
+            <summary>
+            Escreve o valor do número por extenso com moeda Real
+            </summary>
+            <param name="numero">Valor</param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.Comum.InteiroExtensions.ToExtenso(System.Int64)">
+            <summary>
+            Escreve o valor do número por extenso
+            </summary>
+            <param name="numero">Valor</param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.Comum.InteiroExtensions.ToMoedaExtenso(System.Int32)">
+            <summary>
+            Escreve o valor do número por extenso com moeda Real
+            </summary>
+            <param name="numero">Valor</param>
+            <returns></returns>
+        </member>
+        <member name="T:CPTM.Comum.DecimalExtensions">
+            <summary>
+            Extensão de Decimal
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.DecimalExtensions.ToExtenso(System.Decimal)">
+            <summary>
+            Escreve o valor do número por extenso
+            </summary>
+            <param name="numero">Valor</param>
+            <returns></returns>
+        </member>
+        <member name="M:CPTM.Comum.DecimalExtensions.ToMoedaExtenso(System.Decimal)">
+            <summary>
+            Escreve o valor do número por extenso com moeda Real
+            </summary>
+            <param name="numero">Valor</param>
+            <returns></returns>
+        </member>
+        <member name="T:CPTM.Comum.Util">
+            <summary>
+            Classe que armazena os metodos de utilização comum a todas camadas do sistema
+            </summary>
+        </member>
+        <member name="M:CPTM.Comum.Util.ValidarDatas(System.DateTime,System.DateTime)">
+            <summary>
+            Compara se data inicial é menor que data final
+            </summary>
+            <param name="dtaInicial">Data incial</param>
+            <param name="dtaFinal">Data final</param>
+            <returns>True se a data inicial for menor que a data final</returns>
+        </member>
+        <member name="M:CPTM.Comum.Util.ValidarEmail(System.String)">
+            <summary>
+            Método para Validar E-mail
+            </summary>
+            <param name="email">Email a ser validado</param>
+            <returns>True se valido</returns>
+        </member>
+        <member name="M:CPTM.Comum.Util.GerarSenha(System.Int32)">
+            <summary>
+            Gera uma senha aleatória alfanumerica
+            </summary>
+            <param name="tamanho">Quantidade de caracteres da senha</param>
+            <returns>Senha gerada</returns>
+        </member>
+    </members>
+</doc>

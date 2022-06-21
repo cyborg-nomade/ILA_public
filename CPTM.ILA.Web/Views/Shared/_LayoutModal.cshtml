@@ -1,0 +1,41 @@
+﻿<div class="modal-dialog" style='max-width: @(ViewBag.larguraModal ?? "1170px"); width: 100%; padding-right: 10px;'>
+    <div class="modal-content">
+        <div class="modal-header panel-heading" data-toggle="collapse-next" id='cabecalhoModal'
+            style="cursor: pointer;">
+            <!--
+            Se desejado colocar o ícone de fechar no cabeçalho da janela, remover o comentário
+            <button type="button" class="close" data-dismiss="modal" style='padding-left: 20px;
+                font-size: 27px;'>
+                &times;</button>-->
+            <h4 class="modal-title">
+                <span class='fa fa-arrow-circle-up' id='iconeSeta'></span>&nbsp;@ViewBag.Title<div
+                    style='float: right' id='complementoTituloModal'>
+                </div>
+            </h4>
+        </div>
+        <div class="modal-body panel-collapse collapse in" id='divCorpoModal'>
+            @RenderBody()
+        </div>
+        <!--Se desejado, incluir um rodapé para o modal-->
+        @if (ViewBag.exibirRodapeModal == true)
+        { 
+            <div class='modal-footer' id='rodapeModal'>
+            </div>
+        }
+    </div>
+</div>
+<script type='text/javascript'>
+    $('.panel-collapse').on('hidden.bs.collapse', function (e) {
+        var elemento = $(e.target).prev('.panel-heading');
+        if ($(elemento).find('.fa-arrow-circle-up').length > 0)
+            $(elemento).find('.fa-arrow-circle-up').removeClass('fa-arrow-circle-up').addClass('fa-arrow-circle-down');
+    })
+    //Muda a orientação da seta do Modal
+    .on('show.bs.collapse', function (e) {
+        var elemento = $(e.target).prev('.panel-heading');
+        if ($(elemento).find('.fa-arrow-circle-down').length > 0)
+            $(elemento).find('.fa-arrow-circle-down').removeClass('fa-arrow-circle-down').addClass('fa-arrow-circle-up');
+    })
+</script>
+<div class="modal fade" id='divModalFilha' role='modal'>
+</div>
