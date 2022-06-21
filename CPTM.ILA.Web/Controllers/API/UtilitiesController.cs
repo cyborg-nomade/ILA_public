@@ -50,8 +50,9 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                await ErrorReportingUtil.SendErrorReport(e, _context);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
+                var errorReport = await ErrorReportingUtil.SendErrorReport(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = ErrorMessage, e, errorReport });
             }
         }
 
@@ -77,8 +78,9 @@ namespace CPTM.ILA.Web.Controllers.API
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                await ErrorReportingUtil.SendErrorReport(e, _context);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ErrorMessage, e });
+                var errorReport = await ErrorReportingUtil.SendErrorReport(e, _context);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new { message = ErrorMessage, e, errorReport });
             }
         }
 

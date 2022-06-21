@@ -27,10 +27,10 @@ namespace CPTM.ILA.Web.Util
             switch (tipoChamado)
             {
                 case TipoChamado.ACESSO_AO_SISTEMA:
-                    template = "INC AUT SOLICITACAO INVENTARIO LGPD AUTOMATIZADO ";
+                    template = "INC AUT SOLICITACAO INVENTARIO LGPD AUTOMATIZADO";
                     break;
                 case TipoChamado.DUVIDA:
-                    template = "INC AUT DUVIDA INVENTARIO LGPD AUTOMATIZADO ";
+                    template = "INC AUT DUVIDA INVENTARIO LGPD AUTOMATIZADO";
                     break;
                 case TipoChamado.ACESSO_A_GRUPOS:
                     template = "INC AUT ACESSO GRUPO INVENTARIO LGPD AUTOMATIZADO";
